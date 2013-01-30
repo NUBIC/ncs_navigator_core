@@ -58,23 +58,55 @@ module NcsNavigator::Core
       event.completed?.send(event_complete ? :should : :should_not, be_true)
     end
 
-    context "for 18M part one prepopulators"
+    def take_num_hh_surveys(survey_type, valid_answers)
+      create_num_hh_for_18_and_24_month(survey_type
+                                            ) do |survey, data_export_id|
+        if valid_answers
+          block = Proc.new { |a| a.int(data_export_id, 5) }
+        else
+          answer_code = mock(NcsCode, :local_code => "neg_1")
+          block = Proc.new { |a| a.choice(data_export_id, answer_code) }
+        end
+        prepare_and_take_survey(nil, nil, nil, survey, &block)
+      end
+    end
+
+    context "for 24M part one prepopulators"
       describe "prepopulated_should_show_num_hh_group" do
-        def take_num_hh_surveys(survey_type, valid_answers)
-          create_num_hh_for_18_and_24_month(survey_type
-                                                ) do |survey, data_export_id|
-            unless survey_type == '18M' && survey.title =~ /18M/
-              if valid_answers
-                block = Proc.new { |a| a.int(data_export_id, 5) }
-              else
-                answer_code = mock(NcsCode, :local_code => "neg_1")
-                block = Proc.new { |a| a.choice(data_export_id, answer_code) }
-              end
-              prepare_and_take_survey(nil, nil, nil, survey, &block)
-            end
-          end
+        before(:each) do
+          @survey = create_generic_true_false_prepopulator_survey(
+                      "INS_QUE_24Month_INT_EHPBHILIPBS_M3.1_V3.0_PART_ONE",
+                      "prepopulated_should_show_num_hh_group")
+          init_common_vars
         end
 
+        it "should be TRUE when valid answers to NUM_HH exist" do
+          take_num_hh_surveys("24M", true)
+          rsp = ResponseSetPopulator::Postnatal.new(@person, @instrument,
+                                                    @survey)
+          get_response_as_string(rsp.populate,
+                      "prepopulated_should_show_num_hh_group").should == "TRUE"
+        end
+
+        it "should be FALSE when only invalid answers to NUM_HH exist" do
+          take_num_hh_surveys("24M", false)
+          rsp = ResponseSetPopulator::Postnatal.new(@person, @instrument,
+                                                    @survey)
+          get_response_as_string(rsp.populate,
+                      "prepopulated_should_show_num_hh_group").should == "FALSE"
+        end
+
+        it "should be FALSE when no responses to NUM_HH exist" do
+          rsp = ResponseSetPopulator::Postnatal.new(@person, @instrument,
+                                                    @survey)
+          get_response_as_string(rsp.populate,
+                      "prepopulated_should_show_num_hh_group").should == "FALSE"
+        end
+      end
+
+
+    context "for 18M part one prepopulators"
+      describe "prepopulated_should_show_num_hh_group" do
         before(:each) do
           @survey = create_generic_true_false_prepopulator_survey(
                       "INS_QUE_18Month_INT_EHPBHILIPBS_M3.1_V3.0_PART_ONE",
