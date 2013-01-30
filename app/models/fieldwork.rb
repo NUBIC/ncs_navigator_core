@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # == Schema Information
+# Schema version: 20130129202515
 #
 # Table name: fieldworks
 #
@@ -8,7 +9,6 @@
 #  contacts            :text
 #  created_at          :datetime
 #  end_date            :date
-#  event_templates     :text
 #  events              :text
 #  fieldwork_id        :string(36)
 #  generated_for       :string(255)

@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 # == Schema Information
+# Schema version: 20130129202515
 #
 # Table name: institution_person_links
 #
-#  created_at               :datetime
+#  created_at               :datetime         not null
 #  id                       :integer          not null, primary key
 #  institute_relation_code  :integer          not null
 #  institute_relation_other :string(255)
@@ -13,7 +14,7 @@
 #  person_institute_id      :string(36)       not null
 #  psu_code                 :string(36)       not null
 #  transaction_type         :string(36)
-#  updated_at               :datetime
+#  updated_at               :datetime         not null
 #
 
 

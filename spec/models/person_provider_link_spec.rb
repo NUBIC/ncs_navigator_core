@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # == Schema Information
+# Schema version: 20130129202515
 #
 # Table name: person_provider_links
 #
@@ -10,12 +11,12 @@
 #  is_active_code               :integer          not null
 #  person_id                    :integer
 #  person_provider_id           :string(36)       not null
-#  pre_screening_status_code    :integer
+#  pre_screening_status_code    :integer          not null
 #  provider_id                  :integer
 #  provider_intro_outcome_code  :integer          not null
 #  provider_intro_outcome_other :string(255)
 #  psu_code                     :integer          not null
-#  sampled_person_code          :integer
+#  sampled_person_code          :integer          not null
 #  transaction_type             :string(36)
 #  updated_at                   :datetime
 #

@@ -1,20 +1,20 @@
 # -*- coding: utf-8 -*-
 # == Schema Information
+# Schema version: 20130129202515
 #
 # Table name: response_sets
 #
-#  access_code                               :string(255)
-#  api_id                                    :string(255)
-#  completed_at                              :datetime
-#  created_at                                :datetime
-#  id                                        :integer          not null, primary key
-#  instrument_id                             :integer
-#  participant_id                            :integer
-#  processed_for_operational_data_extraction :boolean
-#  started_at                                :datetime
-#  survey_id                                 :integer
-#  updated_at                                :datetime
-#  user_id                                   :integer
+#  access_code    :string(255)
+#  api_id         :string(255)
+#  completed_at   :datetime
+#  created_at     :datetime
+#  id             :integer          not null, primary key
+#  instrument_id  :integer
+#  participant_id :integer
+#  started_at     :datetime
+#  survey_id      :integer
+#  updated_at     :datetime
+#  user_id        :integer
 #
 
 class ResponseSet < ActiveRecord::Base
