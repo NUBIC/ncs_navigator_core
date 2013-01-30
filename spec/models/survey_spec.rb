@@ -72,10 +72,4 @@ describe Survey do
         collect(&:title).should == expected
     end
   end
-
-  after(:all) do
-    Survey.destroy_all
-  end
-
 end
-
