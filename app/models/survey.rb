@@ -24,8 +24,6 @@
 #  updated_at             :datetime
 #
 
-
-
 class Survey < ActiveRecord::Base
   include Surveyor::Models::SurveyMethods
   include NcsNavigator::Core::Surveyor::HasPublicId
@@ -33,23 +31,19 @@ class Survey < ActiveRecord::Base
 
   attr_accessible :instrument_version, :instrument_type
 
-  def self.most_recent_for_title(title)
-    Survey.most_recent_for_access_code(Survey.to_normalized_string(title))
-  end
-
-  def self.most_recent_for_access_code(code)
-    Survey.where(:access_code => Survey.to_normalized_string(code)).order("survey_version DESC").first
-  end
-
-  def self.most_recent_for_each_title
-    maximums = except(:select, :group).
-      select(['title AS t', 'MAX(survey_version) AS ver']).group('t')
+  def self.most_recent
+    maximums = unscoped.select(['title AS t', 'MAX(survey_version) AS ver']).
+      group('t')
 
     joins(%Q{
       INNER JOIN (#{maximums.to_sql})
       AS sv
       ON sv.t = title AND sv.ver = survey_version
-    }).order('title')
+    })
+  end
+
+  def self.most_recent_for_access_code(code)
+    most_recent.where(:access_code => Survey.to_normalized_string(code)).first
   end
 end
 

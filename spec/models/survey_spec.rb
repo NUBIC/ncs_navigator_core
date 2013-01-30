@@ -55,7 +55,9 @@ describe Survey do
       it "finds the most recent survey for a given access code" do
         title = "INS_QUE_LIPregNotPreg_INT_LI_P2_V2.0"
         access_code = Survey.to_normalized_string(title)
-        Survey.most_recent_for_access_code(access_code).should == Survey.most_recent_for_title(title)
+
+        Survey.most_recent_for_access_code(access_code).should ==
+          Survey.order(:survey_version).where(:access_code => access_code).last
       end
       it "returns nil if code is blank" do
         Survey.most_recent_for_access_code("").should be_nil
@@ -68,8 +70,8 @@ describe Survey do
         'INS_QUE_LIPregNotPreg_INT_LI_P2_V2.0',
         'INS_QUE_PregVisit1_INT_EHPBHI_P2_V2.0'
       ]
-      Survey.most_recent_for_each_title.
-        collect(&:title).should == expected
+
+      Survey.most_recent.order(:title).map(&:title).should == expected
     end
   end
 end

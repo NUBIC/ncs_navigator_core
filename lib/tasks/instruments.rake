@@ -3,7 +3,7 @@ require 'ncs_navigator/mdes'
 namespace :instruments do
   desc 'Lists all MDES elements in the surveys'
   task :report => :environment do
-    Survey.most_recent_for_each_title.each do |survey|
+    Survey.most_recent.order(:title).each do |survey|
       puts
       puts survey.title
       puts '=' * survey.title.size
@@ -38,7 +38,7 @@ namespace :instruments do
   desc 'Cross-references the surveyor instruments with the MDES'
   task :analyze => :environment do
     mdes = NcsNavigatorCore.mdes
-    Survey.most_recent_for_each_title.each do |survey|
+    Survey.most_recent.order(:title).each do |survey|
       any_errors = false
       survey.mdes_table_map.each do |table_ident, t_contents|
         table_name = t_contents[:table]
@@ -132,7 +132,7 @@ namespace :instruments do
   end
 
   task :mdes_tree => :environment do
-    Survey.most_recent_for_each_title.each do |survey|
+    Survey.most_recent.order(:title).each do |survey|
       actual_title = survey.title.split(' ').first
       puts
       puts actual_title
@@ -171,7 +171,7 @@ namespace :instruments do
     # Gather all questions that are marked 'prepopulated'
     prepopulated_question_ids = []
     prepopulated_question_ids_for_surveys = {}
-    Survey.most_recent_for_each_title.each do |survey|
+    Survey.most_recent.order(:title).each do |survey|
       survey.sections_with_questions.each do |section|
         section.questions.each do |q|
           prepopulated_question_ids_for_surveys[q.reference_identifier] = survey.title if q.reference_identifier.to_s.include? "prepopulated"

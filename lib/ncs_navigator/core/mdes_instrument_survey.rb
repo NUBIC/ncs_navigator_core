@@ -24,7 +24,7 @@ module NcsNavigator::Core
       end
 
       def mdes_surveys_by_mdes_table
-        @mdes_surveys_by_mdes_table ||= most_recent_for_each_title.inject({}) do |h, survey|
+        @mdes_surveys_by_mdes_table ||= most_recent.inject({}) do |h, survey|
           survey.mdes_table_map.collect { |ti, tc| tc[:table] }.flatten.each do |table|
             h[table] = survey
           end
