@@ -124,6 +124,7 @@ GEM
       capybara (>= 1.1.2)
       cucumber (>= 1.1.8)
       nokogiri (>= 1.5.0)
+    dante (0.1.5)
     data_objects (0.10.12)
       addressable (~> 2.1)
     debugger (1.2.2)
@@ -473,6 +474,7 @@ DEPENDENCIES
   compass-rails
   cucumber (~> 1.1.9)
   cucumber-rails
+  dante
   database_cleaner!
   debugger
   dm-ar-finders (~> 1.2.0)

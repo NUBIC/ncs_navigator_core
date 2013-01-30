@@ -11,6 +11,7 @@ gem 'celluloid', '>= 0.12.0'
 gem 'clockwork'
 gem 'chronic'
 gem 'comma'
+gem 'dante'
 gem 'fastercsv', :platform => :ruby_18
 gem 'haml', '~> 3.1'
 gem 'lograge'
