@@ -39,7 +39,7 @@ module NcsNavigator::Core
     # (likely, unless Redis is really bogged down), we can be sure that we will
     # always have a valid result in the threshold window iff the workers are
     # alive.
-    def watchdog_periodicity
+    def watchdog_period
       worker_watchdog_threshold / 2
     end
   end

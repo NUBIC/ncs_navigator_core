@@ -7,7 +7,7 @@ class WatchdogWorker
   include Sidekiq::Worker
 
   def self.period
-    watchdog_periodicity
+    watchdog_period
   end
 
   def initialize
