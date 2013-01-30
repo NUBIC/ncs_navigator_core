@@ -13,7 +13,8 @@ module NcsNavigator::Core::ResponseSetPopulator
         "q_prepopulated_is_birth_deliver_collected_and_set_to_one",
         "prepopulated_mult_child_answer_from_part_one_for_6MM",
         "prepopulated_is_three_months_interview_set_to_complete",
-        "prepopulated_is_child_qnum_one"
+        "prepopulated_is_child_qnum_one",
+        "prepopulated_is_resp_rel_new"
       ]
     end
 
@@ -52,9 +53,12 @@ module NcsNavigator::Core::ResponseSetPopulator
                          is_event_completed?(Event::three_month_visit_code))
             when "prepopulated_is_child_qnum_one"
               answer_for(question, is_this_child_number_one?)
+            when "prepopulated_is_resp_rel_new"
+              answer_for(question, was_resp_rel_new_biological_mother?)
             else
               nil
             end
+
           build_response_for_value(response_type, response_set,
                                    question, answer, nil)
         end
@@ -113,6 +117,11 @@ module NcsNavigator::Core::ResponseSetPopulator
     def is_this_child_number_one?
       person.responses_for("PARTICIPANT_VERIF.CHILD_QNUM"
                           ).last.try(:integer_value) == 1 # Child number 1
+    end
+
+    def was_resp_rel_new_biological_mother?
+      get_last_response_as_string(
+          "PARTICIPANT_VERIF.RESP_REL_NEW") == "1" # BIOLOGICAL (OR BIRTH) MOTHER
     end
 
   end

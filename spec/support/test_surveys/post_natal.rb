@@ -353,4 +353,23 @@ module PostNatal
                 :text => "NUMBER", :response_class => "integer")
     survey
   end
+
+  def create_participant_verif_resp_rel_new
+    survey = Factory(:survey, :title =>
+                  "INS_QUE_ParticipantVerif_DCI_EHPBHILIPBS_M3.0_V1.0_PART_TWO",
+                :access_code =>
+                  "ins_que_participantverif_dci_ehpbhilipbs_m3_0_v1_0_part_two")
+    survey_section = Factory(:survey_section, :survey_id => survey.id)
+    q = Factory(:question,
+                :reference_identifier => "RESP_REL_NEW",
+                :data_export_identifier => "PARTICIPANT_VERIF.RESP_REL_NEW",
+                :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :reference_identifier => "1",
+                :text => "BIOLOGICAL (OR BIRTH) MOTHER",
+                :response_class => "answer")
+    a = Factory(:answer, :question_id => q.id, :reference_identifier => "2",
+                :text => "BIOLOGICAL FATHER", :response_class => "answer")
+    survey
+  end
+
 end

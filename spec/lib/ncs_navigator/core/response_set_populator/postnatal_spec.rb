@@ -59,6 +59,41 @@ module NcsNavigator::Core
     end
 
     context "for 6Month part two prepopulators" 
+      describe "prepopulated_is_resp_rel_new" do
+        before(:each) do
+          @survey = create_generic_true_false_prepopulator_survey(
+                      "INS_QUE_6Month_INT_EHPBHIPBS_M3.1_V2.0_PART_TWO",
+                      "prepopulated_is_resp_rel_new")
+          init_common_vars
+        end
+
+        it "should be TRUE if RESP_REL_NEW is set to biological mother (1)" do
+          prepare_and_take_survey("PARTICIPANT_VERIF.RESP_REL_NEW", 1, # Mother
+                                  :create_participant_verif_resp_rel_new)
+          rsp = ResponseSetPopulator::Postnatal.new(@person, @instrument,
+                                                    @survey)
+          get_response_as_string(rsp.populate,
+                            "prepopulated_is_resp_rel_new").should == "TRUE"
+        end
+
+        it "should be FALSE if RESP_REL_NEW isn't set to mother (not 1)" do
+          prepare_and_take_survey("PARTICIPANT_VERIF.RESP_REL_NEW",
+                                  2, # Not Mother
+                                  :create_participant_verif_resp_rel_new)
+          rsp = ResponseSetPopulator::Postnatal.new(@person, @instrument,
+                                                    @survey)
+          get_response_as_string(rsp.populate,
+                            "prepopulated_is_resp_rel_new").should == "FALSE"
+        end
+
+        it "should be FALSE if RESP_REL_NEW isn't set at all" do
+          rsp = ResponseSetPopulator::Postnatal.new(@person, @instrument,
+                                                    @survey)
+          get_response_as_string(rsp.populate,
+                            "prepopulated_is_resp_rel_new").should == "FALSE"
+        end
+      end
+
       describe "prepopulated_is_multiple_child" do
         before(:each) do
           @survey = create_generic_true_false_prepopulator_survey(
