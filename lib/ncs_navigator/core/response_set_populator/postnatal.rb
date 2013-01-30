@@ -14,7 +14,9 @@ module NcsNavigator::Core::ResponseSetPopulator
         "prepopulated_mult_child_answer_from_part_one_for_6MM",
         "prepopulated_is_three_months_interview_set_to_complete",
         "prepopulated_is_child_qnum_one",
-        "prepopulated_is_resp_rel_new"
+        "prepopulated_is_resp_rel_new",
+        "prepopulated_mult_child_answer_from_part_one_for_12MM",
+        "prepopulated_should_show_num_hh_group"
       ]
     end
 
@@ -47,7 +49,8 @@ module NcsNavigator::Core::ResponseSetPopulator
             when "q_prepopulated_is_birth_deliver_collected_and_set_to_one"
               answer_for(question, was_birth_given_at_hospital?)
             when "prepopulated_mult_child_answer_from_part_one_for_6MM"
-              answer_for(question, was_answer_to_mult_child_yes?)
+              answer_for(question,
+                         was_answer_to_mult_child_yes?("SIX_MTH_MOTHER"))
             when "prepopulated_is_three_months_interview_set_to_complete"
               answer_for(question, 
                          is_event_completed?(Event::three_month_visit_code))
@@ -55,6 +58,11 @@ module NcsNavigator::Core::ResponseSetPopulator
               answer_for(question, is_this_child_number_one?)
             when "prepopulated_is_resp_rel_new"
               answer_for(question, was_resp_rel_new_biological_mother?)
+            when "prepopulated_mult_child_answer_from_part_one_for_12MM"
+              answer_for(question,
+                         was_answer_to_mult_child_yes?("TWELVE_MTH_MOTHER"))
+            when "prepopulated_should_show_num_hh_group"
+              answer_for(question, was_household_number_collected?)
             else
               nil
             end
@@ -109,9 +117,9 @@ module NcsNavigator::Core::ResponseSetPopulator
                     "BIRTH_VISIT_LI_2.BIRTH_DELIVER") == "1" # HOSPITAL
     end
 
-    def was_answer_to_mult_child_yes?
+    def was_answer_to_mult_child_yes?(data_export_id)
       get_last_response_as_string(
-                    "SIX_MTH_MOTHER.MULT_CHILD") == NcsCode::YES.to_s
+                    "#{data_export_id}.MULT_CHILD") == NcsCode::YES.to_s
     end
 
     def is_this_child_number_one?
@@ -122,6 +130,18 @@ module NcsNavigator::Core::ResponseSetPopulator
     def was_resp_rel_new_biological_mother?
       get_last_response_as_string(
           "PARTICIPANT_VERIF.RESP_REL_NEW") == "1" # BIOLOGICAL (OR BIRTH) MOTHER
+    end
+
+    def was_household_number_collected?
+      Response.includes([:answer, :question, :response_set]).where(
+        "response_sets.user_id = ? AND questions.data_export_identifier like ?",
+        person.id, "%.NUM_HH").each do |response|
+          # Presense of an integer_value implies selection of answer with 
+          # ref_id "number", so no need to check.
+          return true if response.try(:integer_value)
+        end
+        
+      false
     end
 
   end

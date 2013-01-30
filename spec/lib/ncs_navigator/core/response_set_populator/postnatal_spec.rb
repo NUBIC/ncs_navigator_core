@@ -25,8 +25,8 @@ module NcsNavigator::Core
     end
 
     def prepare_and_take_survey(question_dexp_identifier = nil, answer = nil,
-                                survey_template, &block)
-      survey = send(survey_template)
+                                survey_template = nil, survey = nil, &block)
+      survey = send(survey_template) if survey_template
       response_set, instrument = prepare_instrument(@person, @participant,
                                                     survey)
       response_set.responses.should be_empty
@@ -57,6 +57,92 @@ module NcsNavigator::Core
                                                         event_type_code)
       event.completed?.send(event_complete ? :should : :should_not, be_true)
     end
+
+    context "for 18M part one prepopulators"
+      describe "prepopulated_should_show_num_hh_group" do
+        def take_num_hh_surveys(survey_type, valid_answers)
+          create_num_hh_for_18_and_24_month(survey_type
+                                                ) do |survey, data_export_id|
+            unless survey_type == '18M' && survey.title =~ /18M/
+              if valid_answers
+                block = Proc.new { |a| a.int(data_export_id, 5) }
+              else
+                answer_code = mock(NcsCode, :local_code => "neg_1")
+                block = Proc.new { |a| a.choice(data_export_id, answer_code) }
+              end
+              prepare_and_take_survey(nil, nil, nil, survey, &block)
+            end
+          end
+        end
+
+        before(:each) do
+          @survey = create_generic_true_false_prepopulator_survey(
+                      "INS_QUE_18Month_INT_EHPBHILIPBS_M3.1_V3.0_PART_ONE",
+                      "prepopulated_should_show_num_hh_group")
+          init_common_vars
+        end
+
+        it "should be TRUE when valid answers to NUM_HH exist" do
+          take_num_hh_surveys("18M", true)
+          rsp = ResponseSetPopulator::Postnatal.new(@person, @instrument,
+                                                    @survey)
+          get_response_as_string(rsp.populate,
+                      "prepopulated_should_show_num_hh_group").should == "TRUE"
+        end
+
+        it "should be FALSE when only invalid answers to NUM_HH exist" do
+          take_num_hh_surveys("18M", false)
+          rsp = ResponseSetPopulator::Postnatal.new(@person, @instrument,
+                                                    @survey)
+          get_response_as_string(rsp.populate,
+                      "prepopulated_should_show_num_hh_group").should == "FALSE"
+        end
+
+        it "should be FALSE when no responses to NUM_HH exist" do
+          rsp = ResponseSetPopulator::Postnatal.new(@person, @instrument,
+                                                    @survey)
+          get_response_as_string(rsp.populate,
+                      "prepopulated_should_show_num_hh_group").should == "FALSE"
+        end
+      end
+
+    context "for 12MM mother detail prepopulators"
+      describe "prepopulated_mult_child_answer_from_part_one_for_12MM" do
+        before(:each) do
+          @survey = create_generic_true_false_prepopulator_survey(
+                "INS_QUE_12MMother_INT_EHPBHI_P2_V11_TWELVE_MTH_MOTHER_DETAIL",
+                "prepopulated_mult_child_answer_from_part_one_for_12MM")
+          init_common_vars
+        end
+
+        it "should be TRUE when answer to MULT_CHILD from part one is YES" do
+          prepare_and_take_survey("TWELVE_MTH_MOTHER.MULT_CHILD", NcsCode::YES,
+                                  :create_12mm_part_one_mult_child)
+          rsp = ResponseSetPopulator::Postnatal.new(@person, @instrument,
+                                                    @survey)
+          get_response_as_string(rsp.populate,
+                  "prepopulated_mult_child_answer_from_part_one_for_12MM"
+                ).should == "TRUE"
+        end
+
+        it "should be FALSE when answer to MULT_CHILD from part one is NO" do
+          prepare_and_take_survey("TWELVE_MTH_MOTHER.MULT_CHILD", NcsCode::NO,
+                                  :create_12mm_part_one_mult_child)
+          rsp = ResponseSetPopulator::Postnatal.new(@person, @instrument,
+                                                    @survey)
+          get_response_as_string(rsp.populate,
+                  "prepopulated_mult_child_answer_from_part_one_for_12MM"
+                ).should == "FALSE"
+        end
+
+        it "should be TRUE when there's no answer to MULT_CHILD from part one" do
+          rsp = ResponseSetPopulator::Postnatal.new(@person, @instrument,
+                                                    @survey)
+          get_response_as_string(rsp.populate,
+                        "prepopulated_mult_child_answer_from_part_one_for_12MM"
+                ).should == "FALSE"
+        end
+      end
 
     context "for 6Month part two prepopulators" 
       describe "prepopulated_is_resp_rel_new" do
@@ -198,7 +284,6 @@ module NcsNavigator::Core
                   "prepopulated_is_three_months_interview_set_to_complete"
                 ).should == "FALSE"
         end
-
       end
 
     context "for 6MM mother detail prepopulators"

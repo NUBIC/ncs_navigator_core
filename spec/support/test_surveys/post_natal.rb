@@ -372,4 +372,60 @@ module PostNatal
     survey
   end
 
+  def create_12mm_part_one_mult_child
+    survey = Factory(:survey,
+                     :title => "INS_QUE_12MMother_INT_EHPBHI_P2_V11_PART_ONE",
+                     :access_code =>
+                               "ins_que_12mmother_int_ehpbhi_p2_v11_part_one")
+    survey_section = Factory(:survey_section, :survey_id => survey.id)
+    q = Factory(:question,
+                :reference_identifier => "MULT_CHILD",
+                :data_export_identifier => "TWELVE_MTH_MOTHER.MULT_CHILD",
+                :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :reference_identifier => "1",
+                :text => "YES", :response_class => "answer")
+    a = Factory(:answer, :question_id => q.id, :reference_identifier => "2",
+                :text => "NO", :response_class => "answer")
+    survey
+  end
+
+  def create_num_hh_for_18_and_24_month(survey_type)
+    def mum_hh_survey(title, data_export_id)
+      begin
+        survey = Factory(:survey,
+                        :title => title,
+                        :access_code => title.downcase.tr('.', '_'))
+      rescue
+        raise "Survey #{title} caused problems."
+      end
+      survey_section = Factory(:survey_section, :survey_id => survey.id)
+      q = Factory(:question,
+                  :reference_identifier => data_export_id.split('.')[1],
+                  :data_export_identifier => data_export_id,
+                  :survey_section_id => survey_section.id)
+    end
+
+    pairs = [
+      ["INS_QUE_Birth_INT_M3.2_V3.1_PART_TWO", "BIRTH_VISIT_4.NUM_HH"],
+      ["INS_QUE_Birth_INT_LI_M3.1_V2.0_PART_TWO", "BIRTH_VISIT_LI_2.NUM_HH"],
+      ["INS_QUE_Birth_INT_EHPBHIPBS_M3.0_V3.0_PART_TWO", "BIRTH_VISIT_3.NUM_HH"]
+    ]
+    pairs + [["INS_QUE_18Month_INT_EHPBHILIPBS_M3.1_V3.0_PART_ONE",
+     "EIGHTEEN_MTH_MOTHER_3.NUM_HH"]] if survey_type == "18M"
+
+    pairs.each do |args|
+      q = mum_hh_survey(*args)
+      a = Factory(:answer, :question_id => q.id,
+                  :reference_identifier => "number",
+                  :text => "NUMBER OF PERSONS", :response_class => "integer")
+      a = Factory(:answer, :question_id => q.id,
+                  :reference_identifier => "neg_1",
+                  :text => "REFUSED", :response_class => "answer")
+      a = Factory(:answer, :question_id => q.id,
+                  :reference_identifier => "neg_2",
+                  :text => "DON'T KNOW", :response_class => "answer")
+      yield q.survey_section.survey, q.data_export_identifier
+    end
+  end
+
 end
