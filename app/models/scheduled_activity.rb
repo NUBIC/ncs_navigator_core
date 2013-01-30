@@ -167,6 +167,20 @@ class ScheduledActivity
   end
 
   ##
+  # True if current_state == missed
+  def missed?
+    @current_state == Psc::ScheduledActivity::MISSED
+  end
+
+  def open?
+    scheduled? or conditional?
+  end
+
+  def closed?
+    not_applicable? or canceled? or occurred? or missed?
+  end
+
+  ##
   # Return a copy of this ScheduledActivity
   #
   # @return ScheduledActivity
