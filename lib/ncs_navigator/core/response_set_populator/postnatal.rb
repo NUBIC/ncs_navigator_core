@@ -95,10 +95,10 @@ module NcsNavigator::Core::ResponseSetPopulator
       (Set.new(person_events_array) - Set.new(Event::POSTNATAL_EVENTS)).empty?
     end
 
-    def is_event_completed?(target_event_code)
-      person.events.each do |event|
-        next unless event.event_type_code == target_event_code
-        event.completed? ? (return true) : (return false)
+    def is_event_completed?(code)
+      person.events.each do |e|
+        e.event_type_code == code && 
+                      e.completed? ? (return true) : (return false)
       end
       
       false

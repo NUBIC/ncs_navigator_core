@@ -55,7 +55,6 @@ module NcsNavigator::Core
                               :contact => contact, :event => event)
       ncs_code = NcsCode::for_list_name_and_local_code('EVENT_TYPE_CL1',
                                                         event_type_code)
-      event.completed?.send(event_complete ? :should : :should_not, be_true)
     end
 
     def take_num_hh_surveys(survey_type, valid_answers)
@@ -269,9 +268,10 @@ module NcsNavigator::Core
         end
 
         it "should be TRUE if child number is 1" do
-          block = Proc.new { |a| a.int("PARTICIPANT_VERIF.CHILD_QNUM", 1) }
-          prepare_and_take_survey(nil, nil, :create_participant_verif_child_qnum,
-                                  &block)
+          prepare_and_take_survey(nil, nil,
+                                  :create_participant_verif_child_qnum) do |a|
+            a.int("PARTICIPANT_VERIF.CHILD_QNUM", 1)
+          end
           rsp = ResponseSetPopulator::Postnatal.new(@person, @instrument,
                                                     @survey)
           get_response_as_string(rsp.populate,
@@ -279,9 +279,10 @@ module NcsNavigator::Core
         end
 
         it "should be FALSE if child number is not 1" do
-          block = Proc.new { |a| a.int("PARTICIPANT_VERIF.CHILD_QNUM", 2) }
-          prepare_and_take_survey(nil, nil, :create_participant_verif_child_qnum,
-                                  &block)
+          prepare_and_take_survey(nil, nil,
+                                  :create_participant_verif_child_qnum) do |a|
+            a.int("PARTICIPANT_VERIF.CHILD_QNUM", 2)
+          end
           rsp = ResponseSetPopulator::Postnatal.new(@person, @instrument,
                                                     @survey)
           get_response_as_string(rsp.populate,
