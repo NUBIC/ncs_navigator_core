@@ -285,7 +285,7 @@ class PatientStudyCalendar
   def scheduled_activities(participant)
     build_scheduled_activities(
       participant_activities(schedules(participant)),
-      [Psc::ScheduledActivity::SCHEDULED, Psc::ScheduledActivity::CONDITIONAL]
+      Psc::ScheduledActivity::OPEN_STATES
     )
   end
 

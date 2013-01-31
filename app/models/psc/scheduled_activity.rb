@@ -161,6 +161,8 @@ module Psc
       SCHEDULED
     ]
 
+    OPEN_STATES = [SCHEDULED, CONDITIONAL]
+
     attr_reader :contact
     attr_reader :contact_link
     attr_reader :event
@@ -273,7 +275,7 @@ module Psc
     # True if the activity's state is SCHEDULED or CONDITIONAL, false
     # otherwise.
     def open?
-      [SCHEDULED, CONDITIONAL].include?(downcased_state)
+      OPEN_STATES.include?(downcased_state)
     end
 
     ##
