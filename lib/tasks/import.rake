@@ -270,8 +270,8 @@ namespace :import do
   desc 'Cancel scheduled events that have no matching mdes versioned instrument in PSC for followed participants'
   task :cancel_activities_with_non_matching_mdes_instruments => [:psc_setup, :environment, :set_whodunnit, :find_participants_for_psc]  do
     expected_participants_for_psc.each do |part|
-      $stderr.print("Canceling activities for participant #{part.p_id}...")
-      Rails.logger.info("Canceling activities for participant #{part.p_id}")
+      $stderr.print("Looking for activities to cancel for participant #{part.p_id}...")
+      Rails.logger.info("Looking for activities to cancel for participant #{part.p_id}")
 
       psc.scheduled_activities(part).each do |a|
         if a.has_non_matching_mdes_version_instrument?
@@ -283,5 +283,28 @@ namespace :import do
       end
     end
   end
+
+  desc 'Cancel collection activities if not expanded phase two'
+  task :cancel_collection_activities => [:psc_setup, :environment, :set_whodunnit, :find_participants_for_psc]  do
+    expected_participants_for_psc.each do |part|
+      $stderr.print("Looking for activities to cancel for participant #{part.p_id}...")
+      Rails.logger.info("Looking for activities to cancel for participant #{part.p_id}")
+
+      if NcsNavigatorCore.expanded_phase_two?
+        $stderr.print("No need to cancel activities. Cases is configured for expanded phase two.")
+        Rails.logger.info("No need to cancel activities. Cases is configured for expanded phase two.")
+      else
+        psc.scheduled_activities(part).each do |a|
+          if Instrument.collection?(a.labels)
+            reason ="Study Center is not configured to collection samples or specimens."
+            $stderr.print("Activity #{a.activity_name} is a collection activity. Canceling activity for participant #{part.p_id}.")
+            Rails.logger.info("Activity #{a.activity_name} is a collection activity. Canceling activity for participant #{part.p_id}.")
+            psc.update_activity_state(a.activity_id, part, Psc::ScheduledActivity::CANCELED, Date.parse(a.ideal_date), reason)
+          end
+        end
+      end
+    end
+  end
+
 
 end
