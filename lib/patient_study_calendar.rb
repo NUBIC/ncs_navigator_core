@@ -399,7 +399,7 @@ class PatientStudyCalendar
   # match the given Event.scheduled_study_segment_identifier
   # pending events.
   # @param [Participant]
-  # @param [String] - segment id
+  # @param [String] segment id
   # @return [Array<Array>]
   def unique_label_ideal_date_pairs_for_scheduled_segment(participant, scheduled_study_segment_identifier)
     label_ideal_date_pairs = []
@@ -411,8 +411,8 @@ class PatientStudyCalendar
 
   # Helper method to gather the activities returned from call to
   # schedules
-  # @param[Hash] - result of json call to PSC
-  # @return[Array<Hash>] - the activities under days
+  # @param [Hash] result of json call to PSC
+  # @return [Array<Hash>] the activities under days
   def participant_activities(subject_schedules)
     activities = []
     if subject_schedules && subject_schedules["days"]
@@ -461,8 +461,8 @@ class PatientStudyCalendar
   # @see Participant#next_scheduled_event
   # @see PatientStudyCalendar#should_schedule_segment
   #
-  # @param[Participant]
-  # @param[Date] (optional)
+  # @param [Participant]
+  # @param [Date] (optional)
   def schedule_next_segment(participant, date = nil)
     return nil if participant.next_study_segment.blank?
 
@@ -485,9 +485,9 @@ class PatientStudyCalendar
   ##
   # Make POST request to schedule given event in PSC for given participant on the given date
   # @see build_next_scheduled_study_segment_request
-  # @param[Participant]
-  # @param[String] - describing event in format "EPOCH: SEGMENT"
-  # @param[String] - formatted date
+  # @param [Participant]
+  # @param event [String] describing event in format "EPOCH: SEGMENT"
+  # @param date [String] formatted date
   def schedule_segment(participant, event, date)
     post("studies/#{CGI.escape(study_identifier)}/schedules/#{psc_assignment_id(participant)}",
       build_next_scheduled_study_segment_request(event, date))
@@ -497,9 +497,9 @@ class PatientStudyCalendar
   # Defaults to True. If the given scheduled event exists on the given day for the participant
   # then return False since the participant already has that event scheduled on that date.
   #
-  # @param [Participant]
-  # @param [String] - event name
-  # @param [Date]
+  # @param participant [Participant]
+  # @param next_scheduled_event [String] event name
+  # @param next_scheduled_event_date [Date]
   # @return [Boolean]
   def should_schedule_segment(participant, next_scheduled_event, next_scheduled_event_date)
     next_scheduled_event = strip_epoch(next_scheduled_event)
@@ -518,10 +518,10 @@ class PatientStudyCalendar
   # Reschedules open activities for the PSC segment matching the given event on the participant's calendar.
   # Open activities are those activities that are "scheduled" or "conditional".
   #
-  # @param [Participant]
-  # @param [Date]
-  # @param [String] - reason (optional)
-  # @param [String] - time (optional)
+  # @param event [Event] the event to re-schedule
+  # @param date [Date] the date on which to schedule
+  # @param [String] reason (optional)
+  # @param [String] time (optional)
   def reschedule_pending_event(event, date, reason = nil, time = nil)
     participant = event.participant
     raise "No participant exists for event #{event.inspect}" unless participant
@@ -534,8 +534,8 @@ class PatientStudyCalendar
   ##
   # Returns the PSC activity identifier for the first participant scheduled activity
   # matching the given activity_name
-  # @param [Participant]
-  # @param [String]
+  # @param participant [Participant]
+  # @param activity_name [String]
   # @return [String]
   def get_scheduled_activity_identifier(participant, activity_name)
     scheduled_activity_identifier = nil
@@ -551,12 +551,12 @@ class PatientStudyCalendar
   ##
   # Updates the state of the scheduled activity in PSC.
   #
-  # @param [String] - activity_name
-  # @param [Participant]
-  # @param [String] - one of the valid enumerable state attributes for an activity in PSC
-  # @param [Date] (optional)
-  # @param [String] (optional) - reason for change
-  # @param [String] (optional) - scheduled time
+  # @param activity_identifier [String] the activity name
+  # @param participant [Participant]
+  # @param value [String] one of the valid enumerable state attributes for an activity in PSC
+  # @param date [Date] (optional)
+  # @param reason [String] (optional) reason for change
+  # @param time [String] (optional) scheduled time
   def update_activity_state(activity_identifier, participant, value, date = nil, reason = nil, time = nil)
     post("studies/#{CGI.escape(study_identifier)}/schedules/#{psc_assignment_id(participant)}/activities/#{activity_identifier}",
       build_scheduled_activity_state_request(activity_identifier, value, date, reason, time))
@@ -565,8 +565,10 @@ class PatientStudyCalendar
   ##
   # Cancels all activities as canceled for those labeled as collection instruments (environmental or biological)
   # for the participant. Called when scheduling new segments.
-  # @param[Participant]
-  # @param[String]
+  # @param participant [Participant]
+  # @param scheduled_study_segment_identifier [String]
+  # @param date [String]
+  # @param reason [String]
   def cancel_collection_instruments(participant, scheduled_study_segment_identifier, date, reason)
     activities_for_scheduled_segment(participant, scheduled_study_segment_identifier).each do |a|
       if Instrument.collection?(a.labels)
@@ -578,8 +580,10 @@ class PatientStudyCalendar
   ##
   # Cancels all activities as canceled for those that have instruments but those instruments do not match
   # the current mdes version known to the application. Called when scheduling new segments.
-  # @param[Participant]
-  # @param[String]
+  # @param participant [Participant]
+  # @param scheduled_study_segment_identifier [String]
+  # @param date [String]
+  # @param reason [String]
   def cancel_non_matching_mdes_version_instruments(participant, scheduled_study_segment_identifier, date, reason)
     activities_for_scheduled_segment(participant, scheduled_study_segment_identifier).each do |a|
       if a.has_non_matching_mdes_version_instrument?
