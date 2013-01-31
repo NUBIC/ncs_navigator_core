@@ -16,7 +16,8 @@ module NcsNavigator::Core::ResponseSetPopulator
         "prepopulated_is_child_qnum_one",
         "prepopulated_is_resp_rel_new",
         "prepopulated_mult_child_answer_from_part_one_for_12MM",
-        "prepopulated_should_show_num_hh_group"
+        "prepopulated_should_show_num_hh_group",
+        "prepopulated_is_valid_work_name_provided"
       ]
     end
 
@@ -63,6 +64,8 @@ module NcsNavigator::Core::ResponseSetPopulator
                          was_answer_to_mult_child_yes?("TWELVE_MTH_MOTHER"))
             when "prepopulated_should_show_num_hh_group"
               answer_for(question, was_household_number_collected?)
+            when "prepopulated_is_valid_work_name_provided"
+              answer_for(question, was_work_name_collected?)
             else
               nil
             end
@@ -124,7 +127,7 @@ module NcsNavigator::Core::ResponseSetPopulator
 
     def is_this_child_number_one?
       person.responses_for("PARTICIPANT_VERIF.CHILD_QNUM"
-                          ).last.try(:integer_value) == 1 # Child number 1
+                          ).last.try(:value) == 1 # Child number 1
     end
 
     def was_resp_rel_new_biological_mother?
@@ -132,17 +135,24 @@ module NcsNavigator::Core::ResponseSetPopulator
           "PARTICIPANT_VERIF.RESP_REL_NEW") == "1" # BIOLOGICAL (OR BIRTH) MOTHER
     end
 
-    def was_household_number_collected?
+    def check_multiple_surveys_for_response(reference_id)
       Response.includes([:answer, :question, :response_set]).where(
         "response_sets.user_id = ? AND questions.data_export_identifier like ?",
-        person.id, "%.NUM_HH").each do |response|
-          # Presense of an integer_value implies selection of answer with 
+        person.id, "%.#{reference_id}").each do |response|
+          # Presense of an value implies selection of answer with 
           # ref_id "number", so no need to check.
-          return true if response.try(:integer_value)
+          return true if response.try(:value)
         end
         
       false
     end
 
+    def was_household_number_collected?
+      check_multiple_surveys_for_response("NUM_HH")
+    end
+      
+    def was_work_name_collected?
+      check_multiple_surveys_for_response("WORK_NAME")
+    end
   end
 end

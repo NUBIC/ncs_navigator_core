@@ -62,16 +62,65 @@ module NcsNavigator::Core
       create_num_hh_for_18_and_24_month(survey_type
                                             ) do |survey, data_export_id|
         if valid_answers
-          block = Proc.new { |a| a.int(data_export_id, 5) }
+          prepare_and_take_survey(nil, nil, nil, survey) { |a|
+            a.int(data_export_id, 5)
+          }
         else
           answer_code = mock(NcsCode, :local_code => "neg_1")
-          block = Proc.new { |a| a.choice(data_export_id, answer_code) }
+          prepare_and_take_survey(nil, nil, nil, survey) { |a|
+            a.choice(data_export_id, answer_code)
+          }
         end
-        prepare_and_take_survey(nil, nil, nil, survey, &block)
       end
     end
 
     context "for 24M part one prepopulators"
+      def take_work_name_surveys(valid_answers)
+        create_work_name_24_month do |survey, data_export_id|
+          if valid_answers
+            prepare_and_take_survey(nil, nil, nil, survey) { |a|
+              a.str(data_export_id, "work_name") 
+            }
+          else
+            prepare_and_take_survey(nil, nil, nil, survey) { |a|
+              a.refused(data_export_id)
+            }
+          end
+        end
+      end
+
+      describe "prepopulated_is_valid_work_name_provided" do
+        before(:each) do
+          @survey = create_generic_true_false_prepopulator_survey(
+                      "INS_QUE_24Month_INT_EHPBHILIPBS_M3.1_V3.0_PART_TWO",
+                      "prepopulated_is_valid_work_name_provided")
+          init_common_vars
+        end
+
+        it "should be TRUE when valid answers to work name exist" do
+          take_work_name_surveys(true)
+          rsp = ResponseSetPopulator::Postnatal.new(@person, @instrument,
+                                                    @survey)
+          get_response_as_string(rsp.populate,
+                  "prepopulated_is_valid_work_name_provided").should == "TRUE"
+        end
+
+        it "should be FALSE when only invalid answers to work name exist" do
+          take_work_name_surveys(false)
+          rsp = ResponseSetPopulator::Postnatal.new(@person, @instrument,
+                                                    @survey)
+          get_response_as_string(rsp.populate,
+                  "prepopulated_is_valid_work_name_provided").should == "FALSE"
+        end
+
+        it "should be FALSE when only no answers to work name exist" do
+          rsp = ResponseSetPopulator::Postnatal.new(@person, @instrument,
+                                                    @survey)
+          get_response_as_string(rsp.populate,
+                  "prepopulated_is_valid_work_name_provided").should == "FALSE"
+        end
+      end
+
       describe "prepopulated_should_show_num_hh_group" do
         before(:each) do
           @survey = create_generic_true_false_prepopulator_survey(
@@ -103,7 +152,6 @@ module NcsNavigator::Core
                       "prepopulated_should_show_num_hh_group").should == "FALSE"
         end
       end
-
 
     context "for 18M part one prepopulators"
       describe "prepopulated_should_show_num_hh_group" do
