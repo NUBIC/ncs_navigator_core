@@ -138,32 +138,58 @@ class ScheduledActivity
 
   ##
   # True if current_state == scheduled
+  # @return[Boolean]
   def scheduled?
     @current_state == Psc::ScheduledActivity::SCHEDULED
   end
 
   ##
   # True if current_state == conditional
+  # @return[Boolean]
   def conditional?
     @current_state == Psc::ScheduledActivity::CONDITIONAL
   end
 
   ##
   # True if current_state == NA
+  # @return[Boolean]
   def not_applicable?
     @current_state == Psc::ScheduledActivity::NA
   end
 
   ##
   # True if current_state == canceled
+  # @return[Boolean]
   def canceled?
     @current_state == Psc::ScheduledActivity::CANCELED
   end
 
   ##
   # True if current_state == occurred
+  # @return[Boolean]
   def occurred?
     @current_state == Psc::ScheduledActivity::OCCURRED
+  end
+
+  ##
+  # True if current_state == missed
+  # @return[Boolean]
+  def missed?
+    @current_state == Psc::ScheduledActivity::MISSED
+  end
+
+  ##
+  # True if scheduled or conditional
+  # @return[Boolean]
+  def open?
+    scheduled? or conditional?
+  end
+
+  ##
+  # True unless scheduled or conditional
+  # @return[Boolean]
+  def closed?
+    !open?
   end
 
   ##
