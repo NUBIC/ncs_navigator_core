@@ -37,11 +37,14 @@ module NcsNavigator::Core::ResponseSetPopulator
                   when "prepopulated_mode_of_contact"
                     prepopulated_mode_of_contact(question)
                   when "prepopulated_birth_deliver_from_birth_visit_part_one"
-                    answer_equal_to_response_from_part_one_for(question, "BIRTH_VISIT_3.BIRTH_DELIVER")
+                    dei =  response_set.survey.title.include?("LI") ? "BIRTH_VISIT_LI.BIRTH_DELIVER" : "BIRTH_VISIT_3.BIRTH_DELIVER"
+                    answer_equal_to_response_from_part_one_for(question, dei)
                   when "prepopulated_release_from_birth_visit_part_one"
-                    answer_equal_to_response_from_part_one_for(question, "BIRTH_VISIT_3.RELEASE")
+                    dei =  response_set.survey.title.include?("LI") ? "BIRTH_VISIT_LI.RELEASE" : "BIRTH_VISIT_3.RELEASE"
+                    answer_equal_to_response_from_part_one_for(question, dei)
                   when "prepopulated_multiple_from_birth_visit_part_one"
-                    answer_equal_to_response_from_part_one_for(question, "BIRTH_VISIT_3.MULTIPLE")
+                    dei =  response_set.survey.title.include?("LI") ? "BIRTH_VISIT_LI.MULTIPLE" : "BIRTH_VISIT_3.MULTIPLE"
+                    answer_equal_to_response_from_part_one_for(question, dei)
                   when "prepopulated_is_valid_work_name_provided"
                     is_valid_work_name_provided?(question)
                   when "prepopulated_is_valid_work_address_provided"
