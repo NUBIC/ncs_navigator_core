@@ -374,6 +374,55 @@ end
       end
     end
 
+    describe 'with a string-valued answer for a phone' do
+      include_context 'nil-handling reportable_value type'
+
+      let(:questions_dsl) {
+        <<-DSL
+          q_PHONE_NBR "Would you please tell me a telephone number where she can be reached? ",
+          :pick => :one,
+          :data_export_identifier=>"PHONE_NBR"
+          a_phone "Phone number", :string, :custom_class => "phone"
+        DSL
+      }
+
+      let(:response) {
+        create_response(
+          :answer => question.answers.find_by_response_class('string')
+        )
+      }
+
+      describe 'with a phone value' do
+        before do
+          response.string_value = '312-555-1212'
+        end
+
+        it 'returns the MDES phone formatted string value' do
+          response.reportable_value.should == '3125551212'
+        end
+      end
+
+      describe 'with a string value' do
+        before do
+          response.string_value = 'No comment'
+        end
+
+        it 'returns a blank string' do
+          response.reportable_value.should == ''
+        end
+      end
+
+      describe 'with a string value including numbers' do
+        before do
+          response.string_value = 'PEnnsylvania 6-5000'
+        end
+
+        it 'returns the numbers' do
+          response.reportable_value.should == '65000'
+        end
+      end
+    end
+
     describe 'with a text-valued answer' do
       include_context 'nil-handling reportable_value type'
 
