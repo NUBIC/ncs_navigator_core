@@ -108,6 +108,9 @@ $(document).ready(function() {
   // four-digit limiter with 'Y' as the placeholder
   $("input[type='text'].four_digit_year").mask("9999", { placeholder: "Y" });
 
+  // four-digit year and two-digit month separated by a hyphen
+  $("input[type='text'].four_digit_year_hyphen_two_digit_month").mask("9999-99", { placeholder: 'YYYY-MM' });
+
   $('.mdes_documentation_link').click(function(event) {
     var definition = $(this).next('.mdes_definition').val();
     var title = $(this).next('.mdes_definition').attr('title');
