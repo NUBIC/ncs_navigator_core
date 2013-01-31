@@ -1042,6 +1042,26 @@ module NcsNavigator::Core::Warehouse::ThreePointZero
       end
     end
 
+    describe 'for SampledPersonsIneligibility' do
+      let(:producer_names) { [:sampled_persons_ineligibilities] }
+      let(:warehouse_model) { wh_config.model(:SampledPersonsIneligibility) }
+
+      before do
+        Factory(:sampled_persons_ineligibility)
+      end
+
+      include_examples 'one to one'
+
+      it 'uses the public ID for person' do
+        results.first.person_id.should == Person.first.public_id
+      end
+
+      it 'uses the public ID for provider' do
+        results.first.provider_id.should == Provider.first.public_id
+      end
+    end
+
+
     # TODO: Task #3069
     #       This model has a problem because the alias column is too long for postgres.
     #       cf. http://www.postgresql.org/docs/current/static/sql-syntax-lexical.html#SQL-SYNTAX-IDENTIFIERS
