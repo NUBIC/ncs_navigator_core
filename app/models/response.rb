@@ -50,7 +50,7 @@ class Response < ActiveRecord::Base
     when 'answer'
       self.answer.reference_identifier.sub(/neg_/, '-')
     when 'string'
-      format_string_value
+      reportable_string_value
     when 'integer'
       self.integer_value ? self.integer_value.to_s : nil
     when 'datetime'
@@ -73,8 +73,8 @@ class Response < ActiveRecord::Base
   # to the MDES specifications, format the response.
   # Otherwise (most of the time), simply return the string_value
   # @return [String]
-  def format_string_value
-    if answer.custom_class.to_s == "phone"
+  def reportable_string_value
+    if answer.custom_class_present?("phone")
       self.string_value.scan(/\d/).join unless self.string_value.blank?
     else
       self.string_value
