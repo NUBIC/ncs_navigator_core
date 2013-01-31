@@ -17,7 +17,8 @@ module NcsNavigator::Core::ResponseSetPopulator
         "prepopulated_is_resp_rel_new",
         "prepopulated_mult_child_answer_from_part_one_for_12MM",
         "prepopulated_should_show_num_hh_group",
-        "prepopulated_is_valid_work_name_provided"
+        "prepopulated_is_valid_work_name_provided",
+        "prepopulated_is_valid_work_address_provided"
       ]
     end
 
@@ -66,6 +67,8 @@ module NcsNavigator::Core::ResponseSetPopulator
               answer_for(question, was_household_number_collected?)
             when "prepopulated_is_valid_work_name_provided"
               answer_for(question, was_work_name_collected?)
+            when "prepopulated_is_valid_work_address_provided"
+              answer_for(question, was_work_address_collected?)
             else
               nil
             end
@@ -154,5 +157,10 @@ module NcsNavigator::Core::ResponseSetPopulator
     def was_work_name_collected?
       check_multiple_surveys_for_response("WORK_NAME")
     end
+
+    def was_work_address_collected?
+      check_multiple_surveys_for_response("WORK_ADDRESS_1")
+    end
+    
   end
 end

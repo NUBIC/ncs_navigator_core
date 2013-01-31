@@ -61,30 +61,63 @@ module NcsNavigator::Core
       create_num_hh_for_18_and_24_month(survey_type
                                             ) do |survey, data_export_id|
         if valid_answers
-          prepare_and_take_survey(nil, nil, nil, survey) { |a|
+          prepare_and_take_survey(nil, nil, nil, survey) do |a|
             a.int(data_export_id, 5)
-          }
+          end
         else
           answer_code = mock(NcsCode, :local_code => "neg_1")
-          prepare_and_take_survey(nil, nil, nil, survey) { |a|
+          prepare_and_take_survey(nil, nil, nil, survey) do |a|
             a.choice(data_export_id, answer_code)
-          }
+          end
         end
       end
     end
 
     context "for 24M part one prepopulators"
-      def take_work_name_surveys(valid_answers)
-        create_work_name_24_month do |survey, data_export_id|
+      def take_work_surveys(reference_id, valid_answers)
+        create_work_name_or_address_24_month(reference_id
+                                            ) do |survey, data_export_id|
           if valid_answers
-            prepare_and_take_survey(nil, nil, nil, survey) { |a|
+            prepare_and_take_survey(nil, nil, nil, survey) do |a|
               a.str(data_export_id, "work_name") 
-            }
+            end 
           else
-            prepare_and_take_survey(nil, nil, nil, survey) { |a|
+            prepare_and_take_survey(nil, nil, nil, survey) do |a|
               a.refused(data_export_id)
-            }
+            end
           end
+        end
+      end
+
+      describe "prepopulated_is_valid_work_address_provided" do
+        before(:each) do
+          @survey = create_generic_true_false_prepopulator_survey(
+                      "INS_QUE_24Month_INT_EHPBHILIPBS_M3.1_V3.0_PART_TWO",
+                      "prepopulated_is_valid_work_address_provided")
+          init_common_vars
+        end
+
+        it "should be TRUE when valid answers to work address exist" do
+          take_work_surveys("WORK_ADDRESS_1", true)
+          rsp = ResponseSetPopulator::Postnatal.new(@person, @instrument,
+                                                    @survey)
+          get_response_as_string(rsp.populate,
+                "prepopulated_is_valid_work_address_provided").should == "TRUE"
+        end
+
+        it "should be FALSE when only invalid answers to work address exist" do
+          take_work_surveys("WORK_ADDRESS_1", false)
+          rsp = ResponseSetPopulator::Postnatal.new(@person, @instrument,
+                                                    @survey)
+          get_response_as_string(rsp.populate,
+                "prepopulated_is_valid_work_address_provided").should == "FALSE"
+        end
+
+        it "should be FALSE when only no answers to work address exist" do
+          rsp = ResponseSetPopulator::Postnatal.new(@person, @instrument,
+                                                    @survey)
+          get_response_as_string(rsp.populate,
+                "prepopulated_is_valid_work_address_provided").should == "FALSE"
         end
       end
 
@@ -97,7 +130,7 @@ module NcsNavigator::Core
         end
 
         it "should be TRUE when valid answers to work name exist" do
-          take_work_name_surveys(true)
+          take_work_surveys("WORK_NAME", true)
           rsp = ResponseSetPopulator::Postnatal.new(@person, @instrument,
                                                     @survey)
           get_response_as_string(rsp.populate,
@@ -105,7 +138,7 @@ module NcsNavigator::Core
         end
 
         it "should be FALSE when only invalid answers to work name exist" do
-          take_work_name_surveys(false)
+          take_work_surveys("WORK_NAME", false)
           rsp = ResponseSetPopulator::Postnatal.new(@person, @instrument,
                                                     @survey)
           get_response_as_string(rsp.populate,

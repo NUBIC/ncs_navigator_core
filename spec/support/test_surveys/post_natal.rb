@@ -427,14 +427,18 @@ module PostNatal
     end
   end
 
-  def create_work_name_24_month
+  def create_work_name_or_address_24_month(reference_id)
     pairs = [
       ["INS_QUE_Birth_INT_EHPBHIPBS_M3.0_V3.0_PART_TWO",
-       "BIRTH_VISIT_3.WORK_NAME"],
-      ["INS_QUE_Birth_INT_LI_M3.1_V2.0_PART_TWO", "BIRTH_VISIT_LI_2.WORK_NAME"],
-      ["INS_QUE_Birth_INT_M3.2_V3.1_PART_TWO", "BIRTH_VISIT_4.WORK_NAME"],
-      ["INS_QUE_PregVisit1_INT_EHPBHIPBS_M3.0_V3.0", "PREG_VISIT_1_3.WORK_NAME"],
-      ["INS_QUE_PregVisit2_INT_EHPBHIPBS_M3.0_V3.0", "PREG_VISIT_2_3.WORK_NAME"]
+       "BIRTH_VISIT_3.#{reference_id}"],
+      ["INS_QUE_Birth_INT_LI_M3.1_V2.0_PART_TWO",
+       "BIRTH_VISIT_LI_2.#{reference_id}"],
+      ["INS_QUE_Birth_INT_M3.2_V3.1_PART_TWO",
+       "BIRTH_VISIT_4.#{reference_id}"],
+      ["INS_QUE_PregVisit1_INT_EHPBHIPBS_M3.0_V3.0",
+       "PREG_VISIT_1_3.#{reference_id}"],
+      ["INS_QUE_PregVisit2_INT_EHPBHIPBS_M3.0_V3.0",
+       "PREG_VISIT_2_3.#{reference_id}"]
     ]
 
     pairs.each do |args|
