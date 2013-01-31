@@ -29,7 +29,7 @@ Feature: Finalizing an instrument
   And I should see "Complete Contact Record"
   When I follow "Complete Contact Record"
   Then I should be on the edit_contact_link_contact page
-  When I select "Completed interview in English" from "contact_contact_disposition"
+  When I select "Completed Consent/Interview in English" from "contact_contact_disposition"
   And I press "Submit"
   Then I should be on the decision_page_contact_link page
   And I should see "Contact was successfully updated."
