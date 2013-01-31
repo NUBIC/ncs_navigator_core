@@ -502,7 +502,6 @@ class PatientStudyCalendar
   # @param [Date]
   # @return [Boolean]
   def should_schedule_segment(participant, next_scheduled_event, next_scheduled_event_date)
-
     next_scheduled_event = strip_epoch(next_scheduled_event)
 
     result = true
@@ -520,14 +519,15 @@ class PatientStudyCalendar
   # Open activities are those activities that are "scheduled" or "conditional".
   #
   # @param [Participant]
-  # @param [String] - the PSC status
   # @param [Date]
   # @param [String] - reason (optional)
   # @param [String] - time (optional)
-  def reschedule_pending_event(event, value, date, reason = nil, time = nil)
+  def reschedule_pending_event(event, date, reason = nil, time = nil)
+    participant = event.participant
+    raise "No participant exists for event #{event.inspect}" unless participant
     activities_for_event(event).each do |activity|
       next unless activity.open?
-      update_activity_state(activity.activity_id, participant, value, date, reason, time)
+      update_activity_state(activity.activity_id, participant, activity.current_state, date, reason, time)
     end
   end
 
@@ -563,27 +563,27 @@ class PatientStudyCalendar
   end
 
   ##
-  # Cancels all activities as NA for those labeled as collection instruments (environmental or biological)
+  # Cancels all activities as canceled for those labeled as collection instruments (environmental or biological)
   # for the participant. Called when scheduling new segments.
   # @param[Participant]
   # @param[String]
   def cancel_collection_instruments(participant, scheduled_study_segment_identifier, date, reason)
     activities_for_scheduled_segment(participant, scheduled_study_segment_identifier).each do |a|
       if Instrument.collection?(a.labels)
-        update_activity_state(a.activity_id, participant, Psc::ScheduledActivity::NA, date, reason)
+        update_activity_state(a.activity_id, participant, Psc::ScheduledActivity::CANCELED, date, reason)
       end
     end
   end
 
   ##
-  # Cancels all activities as NA for those that have instruments but those instruments do not match
+  # Cancels all activities as canceled for those that have instruments but those instruments do not match
   # the current mdes version known to the application. Called when scheduling new segments.
   # @param[Participant]
   # @param[String]
   def cancel_non_matching_mdes_version_instruments(participant, scheduled_study_segment_identifier, date, reason)
     activities_for_scheduled_segment(participant, scheduled_study_segment_identifier).each do |a|
       if a.has_non_matching_mdes_version_instrument?
-        update_activity_state(a.activity_id, participant, Psc::ScheduledActivity::NA, date, reason)
+        update_activity_state(a.activity_id, participant, Psc::ScheduledActivity::CANCELED, date, reason)
       end
     end
   end
@@ -730,7 +730,7 @@ class PatientStudyCalendar
       'reason' => reason.to_s,
       'state' => value
     }
-    state["time"] = time if time
+    state["time"] = time unless time.blank?
     activity_hash["#{activity_identifier}"] = state
     activity_hash
   end
