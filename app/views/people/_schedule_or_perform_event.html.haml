@@ -1,4 +1,4 @@
-- if participant.pending_events.blank?
+- if pending_event.blank?
   - unless participant.can_register_with_psc?(psc)
     - if next_event = participant.next_scheduled_event
       .schedule_next_event
@@ -28,7 +28,6 @@
   .pending_events
     %b
       New Contact for Pending Event
-    - event = participant.pending_events.first
     .pending_event
-      = link_to "Create Contact for #{event.to_s}", new_person_contact_path(person, :event_id => event.id), :class => "add_link icon_link", :title => "Initiate Contact"
-      = link_to "Reschedule", reschedule_event_path(event), :class => "reschedule_link icon_link"
+      = link_to "Create Contact for #{pending_event.event_type.to_s}", new_person_contact_path(person, :event_id => pending_event.id), :class => "add_link icon_link", :title => "Initiate Contact"
+      = link_to "Reschedule", reschedule_event_path(pending_event), :class => "reschedule_link icon_link" unless activities_for_event.blank?

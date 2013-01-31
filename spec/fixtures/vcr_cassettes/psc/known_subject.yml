@@ -1,32 +1,39 @@
 ---
-- !ruby/struct:VCR::HTTPInteraction
-  request: !ruby/struct:VCR::Request
-    method: :get
+http_interactions:
+- request:
+    method: get
     uri: https://ncsn-psc.local/api/v1/subjects/asdf
     body:
+      encoding: US-ASCII
+      string: ''
     headers:
-      authorization:
+      Authorization:
       - Basic cGZyOTU3OnBzYw==
-  response: !ruby/struct:VCR::Response
-    status: !ruby/struct:VCR::ResponseStatus
+  response:
+    status:
       code: 200
       message: OK
     headers:
-      content-type:
+      Content-Type:
       - application/json
-      server:
+      Server:
       - Restlet-Framework/2.0.3
-      date:
+      Date:
       - Fri, 26 Aug 2011 18:54:05 GMT
-      vary:
+      Vary:
       - Accept-Charset, Accept-Encoding, Accept-Language, Accept
-      accept-ranges:
+      Accept-Ranges:
       - bytes
-      cache-control:
+      Cache-Control:
       - no-store, no-cache, must-revalidate, post-check=0, pre-check=0
-      transfer-encoding:
+      Transfer-Encoding:
       - chunked
-      pragma:
+      Pragma:
       - no-cache
-    body: "{\"first_name\":\"As\",\"last_name\":\"Df\",\"full_name\":\"As Df\",\"last_first\":\"Df, As\",\"birth_date\":\"1900-01-01\",\"gender\":\"Female\",\"person_id\":\"asdf\",\"subject_identifier\":\"asdf\",\"properties\":[],\"href\":{\"schedules\":\"https://ncsn-psc.local/api/v1/subjects/asdf/schedules\"}}"
-    http_version: "1.1"
+    body:
+      encoding: UTF-8
+      string: ! '{"first_name":"As","last_name":"Df","full_name":"As Df","last_first":"Df,
+        As","birth_date":"1900-01-01","gender":"Female","person_id":"asdf","subject_identifier":"asdf","properties":[],"href":{"schedules":"https://ncsn-psc.local/api/v1/subjects/asdf/schedules"}}'
+    http_version: '1.1'
+  recorded_at: Thu, 10 Jan 2013 18:04:42 GMT
+recorded_with: VCR 2.4.0

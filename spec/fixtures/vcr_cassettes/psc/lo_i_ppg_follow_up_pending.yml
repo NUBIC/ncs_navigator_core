@@ -1,32 +1,73 @@
 ---
-- !ruby/struct:VCR::HTTPInteraction
-  request: !ruby/struct:VCR::Request
-    method: :get
+http_interactions:
+- request:
+    method: get
     uri: https://ncsn-psc.local/api/v1/subjects/allyg/schedules.json
     body:
+      encoding: US-ASCII
+      string: ''
     headers:
-      authorization:
+      Authorization:
       - Basic cGZyOTU3OnBzYw==
-  response: !ruby/struct:VCR::Response
-    status: !ruby/struct:VCR::ResponseStatus
+  response:
+    status:
       code: 200
       message: OK
     headers:
-      content-type:
+      Content-Type:
       - application/json
-      server:
+      Server:
       - Restlet-Framework/2.0.3
-      date:
+      Date:
       - Fri, 26 Aug 2011 18:54:05 GMT
-      vary:
+      Vary:
       - Accept-Charset, Accept-Encoding, Accept-Language, Accept
-      accept-ranges:
+      Accept-Ranges:
       - bytes
-      cache-control:
+      Cache-Control:
       - no-store, no-cache, must-revalidate, post-check=0, pre-check=0
-      transfer-encoding:
+      Transfer-Encoding:
       - chunked
-      pragma:
+      Pragma:
       - no-cache
-    body: "{\"subject\":{\"first_name\":\"ALLY\",\"last_name\":\"GOODFELLA\",\"full_name\":\"ALLY GOODFELLA\",\"last_first\":\"GOODFELLA, ALLY\",\"birth_date\":\"1980-10-31\",\"gender\":\"Female\",\"properties\":[]},\"assignments\":[{\"id\":\"42\",\"name\":\"NCS Hi-Lo\",\"privileges\":[\"visible\",\"update-schedule\",\"calendar-manager\",\"set-calendar-manager\"],\"notifications\":[],\"populations\":[],\"current_amendment\":{\"display_name\":\"12/29/2011 (Rev 2)\",\"natural_key\":\"2011-12-29~Rev 2\"},\"amendments\":[{\"display_name\":\"Initial template\",\"natural_key\":\"2011-07-07~[Original]\",\"applied\":true,\"href\":\"http://localhost:8080/psc/api/v1/studies/NCS+Hi-Lo/template/amendments/2011-07-07%7E%5BOriginal%5D\"},{\"display_name\":\"09/16/2011 (Rev1)\",\"natural_key\":\"2011-09-16~Rev1\",\"applied\":true,\"href\":\"http://localhost:8080/psc/api/v1/studies/NCS+Hi-Lo/template/amendments/2011-09-16%7ERev1\"},{\"display_name\":\"12/29/2011 (Rev 2)\",\"natural_key\":\"2011-12-29~Rev 2\",\"applied\":true,\"href\":\"http://localhost:8080/psc/api/v1/studies/NCS+Hi-Lo/template/amendments/2011-12-29%7ERev+2\"}]}],\"days\":{\"2011-05-07\":{\"hidden_activities\":\"false\",\"activities\":[{\"id\":\"12a783b5-4c4f-4127-b0f2-ad795481d635\",\"study\":\"NCS Hi-Lo\",\"study_segment\":\"LO-Intensity: Pregnancy Screener\",\"ideal_date\":\"2011-05-07\",\"plan_day\":\"1\",\"current_state\":{\"name\":\"occurred\",\"date\":\"2011-05-07\",\"reason\":\"Import for instrument [2634107340] with status [4] should update activity [Pregnancy Screener Interview (HI,LI)] to [occurred] on [2011-05-07]\"},\"activity\":{\"name\":\"Pregnancy Screener Interview\",\"type\":\"Instrument\"},\"assignment\":{\"id\":\"42\",\"name\":\"NCS Hi-Lo\",\"subject_coordinator\":{\"username\":\"pfr957\"},\"id\":\"42\",\"privileges\":[\"update\"]},\"subject\":\"ALLY GOODFELLA\",\"labels\":\"pregnancy_screener\",\"formatted_plan_day\":\"Day 1\",\"state_history\":[{\"name\":\"scheduled\",\"date\":\"2011-05-07\",\"reason\":\"Initialized from template\"},{\"name\":\"occurred\",\"date\":\"2011-05-07\",\"reason\":\"Import for instrument [2638840640] with status [4] should update activity [Pregnancy Screener Interview (HI,LI)] to [occurred] on [2011-05-07]\"},{\"name\":\"occurred\",\"date\":\"2011-05-07\",\"reason\":\"Import for instrument [2634107340] with status [4] should update activity [Pregnancy Screener Interview (HI,LI)] to [occurred] on [2011-05-07]\"}]}]},\"2011-11-14\":{\"hidden_activities\":\"false\",\"activities\":[{\"id\":\"fb6249e5-2bf6-40cc-81e9-dc30e2012410\",\"study\":\"NCS Hi-Lo\",\"study_segment\":\"LO-Intensity: PPG Follow-Up\",\"ideal_date\":\"2011-11-14\",\"labels\":\"event:pregnancy_probability\",\"plan_day\":\"1\",\"current_state\":{\"name\":\"scheduled\",\"date\":\"2011-11-14\",\"reason\":\"Initialized from template\"},\"activity\":{\"name\":\"Pregnancy Probability Group Follow-Up Interview\",\"type\":\"Instrument\"},\"assignment\":{\"id\":\"42\",\"name\":\"NCS Hi-Lo\",\"subject_coordinator\":{\"username\":\"pfr957\"},\"id\":\"42\",\"privileges\":[\"update\"]},\"subject\":\"ALLY GOODFELLA\",\"formatted_plan_day\":\"Day 1\",\"state_history\":[{\"name\":\"scheduled\",\"date\":\"2011-11-14\",\"reason\":\"Initialized from template\"}]},{\"id\":\"bfb76131-58cd-4db5-b0df-17b82fd2de17\",\"study\":\"NCS Hi-Lo\",\"study_segment\":\"LO-Intensity: PPG Follow-Up\",\"ideal_date\":\"2011-11-14\",\"labels\":\"event:pregnancy_probability\",\"plan_day\":\"1\",\"current_state\":{\"name\":\"scheduled\",\"date\":\"2011-11-14\",\"reason\":\"Initialized from template\"},\"activity\":{\"name\":\"Pregnancy Probability Group Follow-Up SAQ\",\"type\":\"Instrument\"},\"assignment\":{\"id\":\"42\",\"name\":\"NCS Hi-Lo\",\"subject_coordinator\":{\"username\":\"pfr957\"},\"id\":\"42\",\"privileges\":[\"update\"]},\"subject\":\"ALLY GOODFELLA\",\"formatted_plan_day\":\"Day 1\",\"state_history\":[{\"name\":\"scheduled\",\"date\":\"2011-11-14\",\"reason\":\"Initialized from template\"}]}]}},\"study_segments\":[{\"id\":\"750b1784-72d7-4816-be8e-7c5a9cbee38f\",\"name\":\"LO-Intensity: Pregnancy Screener\",\"assignment\":{\"id\":\"42\",\"name\":\"NCS Hi-Lo\",\"subject_coordinator\":{\"username\":\"pfr957\"},\"id\":\"42\",\"privileges\":[\"update\"]},\"subject\":\"ALLY GOODFELLA\",\"range\":{\"start_date\":\"2011-05-07\",\"stop_date\":\"2011-05-07\"},\"planned\":{\"segment\":{\"id\":\"6caf9143-bfb0-47e4-b1e4-ccc810a4cbc8\",\"name\":\"Pregnancy Screener\"},\"epoch\":{\"id\":\"73f6c858-4069-411a-8d82-c9d558c07d68\",\"name\":\"LO-Intensity\"},\"study\":{\"assigned_identifier\":\"NCS Hi-Lo\"}}},{\"id\":\"616642ce-7497-4c4a-b4cd-f6f6a252b8d2\",\"name\":\"LO-Intensity: PPG Follow-Up\",\"assignment\":{\"id\":\"42\",\"name\":\"NCS Hi-Lo\",\"subject_coordinator\":{\"username\":\"pfr957\"},\"id\":\"42\",\"privileges\":[\"update\"]},\"subject\":\"ALLY GOODFELLA\",\"range\":{\"start_date\":\"2011-11-14\",\"stop_date\":\"2011-11-14\"},\"planned\":{\"segment\":{\"id\":\"6a141368-5229-4262-b3c5-45212520ec76\",\"name\":\"PPG Follow-Up\"},\"epoch\":{\"id\":\"73f6c858-4069-411a-8d82-c9d558c07d68\",\"name\":\"LO-Intensity\"},\"study\":{\"assigned_identifier\":\"NCS Hi-Lo\"}}}]}"
-    http_version: "1.1"
+    body:
+      encoding: UTF-8
+      string: ! '{"subject":{"first_name":"ALLY","last_name":"GOODFELLA","full_name":"ALLY
+        GOODFELLA","last_first":"GOODFELLA, ALLY","birth_date":"1980-10-31","gender":"Female","properties":[]},"assignments":[{"id":"42","name":"NCS
+        Hi-Lo","privileges":["visible","update-schedule","calendar-manager","set-calendar-manager"],"notifications":[],"populations":[],"current_amendment":{"display_name":"12/29/2011
+        (Rev 2)","natural_key":"2011-12-29~Rev 2"},"amendments":[{"display_name":"Initial
+        template","natural_key":"2011-07-07~[Original]","applied":"true","href":"http://localhost:8080/psc/api/v1/studies/NCS+Hi-Lo/template/amendments/2011-07-07%7E%5BOriginal%5D"},{"display_name":"09/16/2011
+        (Rev1)","natural_key":"2011-09-16~Rev1","applied":"true","href":"http://localhost:8080/psc/api/v1/studies/NCS+Hi-Lo/template/amendments/2011-09-16%7ERev1"},{"display_name":"12/29/2011
+        (Rev 2)","natural_key":"2011-12-29~Rev 2","applied":"true","href":"http://localhost:8080/psc/api/v1/studies/NCS+Hi-Lo/template/amendments/2011-12-29%7ERev+2"}]}],"days":{"2011-05-07":{"hidden_activities":"false","activities":[{"id":"12a783b5-4c4f-4127-b0f2-ad795481d635","study":"NCS
+        Hi-Lo","study_segment":"LO-Intensity: Pregnancy Screener","ideal_date":"2011-05-07","plan_day":"1","current_state":{"name":"occurred","date":"2011-05-07","reason":"Import
+        for instrument [2634107340] with status [4] should update activity [Pregnancy
+        Screener Interview (HI,LI)] to [occurred] on [2011-05-07]"},"activity":{"name":"Pregnancy
+        Screener Interview","type":"Instrument"},"assignment":{"id":"42","name":"NCS
+        Hi-Lo","subject_coordinator":{"username":"pfr957"},"id":"42","privileges":["update"]},"subject":"ALLY
+        GOODFELLA","labels":"pregnancy_screener","formatted_plan_day":"Day 1","state_history":[{"name":"scheduled","date":"2011-05-07","reason":"Initialized
+        from template"},{"name":"occurred","date":"2011-05-07","reason":"Import for
+        instrument [2638840640] with status [4] should update activity [Pregnancy
+        Screener Interview (HI,LI)] to [occurred] on [2011-05-07]"},{"name":"occurred","date":"2011-05-07","reason":"Import
+        for instrument [2634107340] with status [4] should update activity [Pregnancy
+        Screener Interview (HI,LI)] to [occurred] on [2011-05-07]"}]}]},"2011-11-14":{"hidden_activities":"false","activities":[{"id":"fb6249e5-2bf6-40cc-81e9-dc30e2012410","study":"NCS
+        Hi-Lo","study_segment":"LO-Intensity: PPG Follow-Up","ideal_date":"2011-11-14","labels":"event:pregnancy_probability","plan_day":"1","current_state":{"name":"scheduled","date":"2011-11-14","reason":"Initialized
+        from template"},"activity":{"name":"Pregnancy Probability Group Follow-Up
+        Interview","type":"Instrument"},"assignment":{"id":"42","name":"NCS Hi-Lo","subject_coordinator":{"username":"pfr957"},"id":"42","privileges":["update"]},"subject":"ALLY
+        GOODFELLA","formatted_plan_day":"Day 1","state_history":[{"name":"scheduled","date":"2011-11-14","reason":"Initialized
+        from template"}]},{"id":"bfb76131-58cd-4db5-b0df-17b82fd2de17","study":"NCS
+        Hi-Lo","study_segment":"LO-Intensity: PPG Follow-Up","ideal_date":"2011-11-14","labels":"event:pregnancy_probability","plan_day":"1","current_state":{"name":"scheduled","date":"2011-11-14","reason":"Initialized
+        from template"},"activity":{"name":"Pregnancy Probability Group Follow-Up
+        SAQ","type":"Instrument"},"assignment":{"id":"42","name":"NCS Hi-Lo","subject_coordinator":{"username":"pfr957"},"id":"42","privileges":["update"]},"subject":"ALLY
+        GOODFELLA","formatted_plan_day":"Day 1","state_history":[{"name":"scheduled","date":"2011-11-14","reason":"Initialized
+        from template"}]}]}},"study_segments":[{"id":"750b1784-72d7-4816-be8e-7c5a9cbee38f","name":"LO-Intensity:
+        Pregnancy Screener","assignment":{"id":"42","name":"NCS Hi-Lo","subject_coordinator":{"username":"pfr957"},"id":"42","privileges":["update"]},"subject":"ALLY
+        GOODFELLA","range":{"start_date":"2011-05-07","stop_date":"2011-05-07"},"planned":{"segment":{"id":"6caf9143-bfb0-47e4-b1e4-ccc810a4cbc8","name":"Pregnancy
+        Screener"},"epoch":{"id":"73f6c858-4069-411a-8d82-c9d558c07d68","name":"LO-Intensity"},"study":{"assigned_identifier":"NCS
+        Hi-Lo"}}},{"id":"616642ce-7497-4c4a-b4cd-f6f6a252b8d2","name":"LO-Intensity:
+        PPG Follow-Up","assignment":{"id":"42","name":"NCS Hi-Lo","subject_coordinator":{"username":"pfr957"},"id":"42","privileges":["update"]},"subject":"ALLY
+        GOODFELLA","range":{"start_date":"2011-11-14","stop_date":"2011-11-14"},"planned":{"segment":{"id":"6a141368-5229-4262-b3c5-45212520ec76","name":"PPG
+        Follow-Up"},"epoch":{"id":"73f6c858-4069-411a-8d82-c9d558c07d68","name":"LO-Intensity"},"study":{"assigned_identifier":"NCS
+        Hi-Lo"}}}]}'
+    http_version: '1.1'
+  recorded_at: Thu, 10 Jan 2013 18:04:42 GMT
+recorded_with: VCR 2.4.0

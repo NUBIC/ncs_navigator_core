@@ -1,426 +1,430 @@
 ---
-- !ruby/struct:VCR::HTTPInteraction
-  request: !ruby/struct:VCR::Request
-    method: :get
+http_interactions:
+- request:
+    method: get
     uri: !ruby/regexp /^https:\/\/ncsn-psc.local\/api\/v1\/subjects\//
     body:
+      encoding: US-ASCII
+      string: ''
     headers:
-      authorization:
+      Authorization:
       - Basic cGZyOTU3OnBzYw==
-  response: !ruby/struct:VCR::Response
-    status: !ruby/struct:VCR::ResponseStatus
+  response:
+    status:
       code: 404
       message: Not Found
     headers:
-      content-type:
+      Content-Type:
       - text/html;charset=utf-8
-      date:
+      Date:
       - Fri, 26 Aug 2011 20:13:02 GMT
-      server:
+      Server:
       - Apache-Coyote/1.1
-      content-length:
-      - "1090"
-    body: "<html><head><title>Apache Tomcat/6.0.32 - Error report</title><style><!--H1 {font-family:Tahoma,Arial,sans-serif;color:white;background-color:#525D76;font-size:22px;} H2 {font-family:Tahoma,Arial,sans-serif;color:white;background-color:#525D76;font-size:16px;} H3 {font-family:Tahoma,Arial,sans-serif;color:white;background-color:#525D76;font-size:14px;} BODY {font-family:Tahoma,Arial,sans-serif;color:black;background-color:white;} B {font-family:Tahoma,Arial,sans-serif;color:white;background-color:#525D76;} P {font-family:Tahoma,Arial,sans-serif;background:white;color:black;font-size:12px;}A {color : black;}A.name {color : black;}HR {color : #525D76;}--></style> </head><body><h1>HTTP Status 404 - /subjects/b9cf6dc0-b24d-012e-8136-58b035fb69ca</h1><HR size=\"1\" noshade=\"noshade\"><p><b>type</b> Status report</p><p><b>message</b> <u>/subjects/b9cf6dc0-b24d-012e-8136-58b035fb69ca</u></p><p><b>description</b> <u>The requested resource (/subjects/b9cf6dc0-b24d-012e-8136-58b035fb69ca) is not available.</u></p><HR size=\"1\" noshade=\"noshade\"><h3>Apache Tomcat/6.0.32</h3></body></html>"
-    http_version: "1.1"
-- !ruby/struct:VCR::HTTPInteraction
-  request: !ruby/struct:VCR::Request
-    method: :get
+      Content-Length:
+      - '1090'
+    body:
+      encoding: UTF-8
+      string: ! '<html><head><title>Apache Tomcat/6.0.32 - Error report</title><style><!--H1
+        {font-family:Tahoma,Arial,sans-serif;color:white;background-color:#525D76;font-size:22px;}
+        H2 {font-family:Tahoma,Arial,sans-serif;color:white;background-color:#525D76;font-size:16px;}
+        H3 {font-family:Tahoma,Arial,sans-serif;color:white;background-color:#525D76;font-size:14px;}
+        BODY {font-family:Tahoma,Arial,sans-serif;color:black;background-color:white;}
+        B {font-family:Tahoma,Arial,sans-serif;color:white;background-color:#525D76;}
+        P {font-family:Tahoma,Arial,sans-serif;background:white;color:black;font-size:12px;}A
+        {color : black;}A.name {color : black;}HR {color : #525D76;}--></style> </head><body><h1>HTTP
+        Status 404 - /subjects/b9cf6dc0-b24d-012e-8136-58b035fb69ca</h1><HR size="1"
+        noshade="noshade"><p><b>type</b> Status report</p><p><b>message</b> <u>/subjects/b9cf6dc0-b24d-012e-8136-58b035fb69ca</u></p><p><b>description</b>
+        <u>The requested resource (/subjects/b9cf6dc0-b24d-012e-8136-58b035fb69ca)
+        is not available.</u></p><HR size="1" noshade="noshade"><h3>Apache Tomcat/6.0.32</h3></body></html>'
+    http_version: '1.1'
+  recorded_at: Thu, 10 Jan 2013 18:04:42 GMT
+- request:
+    method: get
     uri: https://ncsn-psc.local/api/v1/studies/NCS%20Hi-Lo/template/current.xml
     body:
+      encoding: US-ASCII
+      string: ''
     headers:
-      authorization:
+      Authorization:
       - Basic cGZyOTU3OnBzYw==
-  response: !ruby/struct:VCR::Response
-    status: !ruby/struct:VCR::ResponseStatus
+  response:
+    status:
       code: 200
       message: OK
     headers:
-      last-modified:
+      Last-Modified:
       - Thu, 25 Aug 2011 21:04:27 GMT
-      content-type:
+      Content-Type:
       - text/xml;charset=UTF-8
-      server:
+      Server:
       - Restlet-Framework/2.0.3
-      date:
+      Date:
       - Tue, 20 Sep 2011 15:22:17 GMT
-      content-length:
-      - "21647"
-      vary:
+      Content-Length:
+      - '21647'
+      Vary:
       - Accept-Charset, Accept-Encoding, Accept-Language, Accept
-      accept-ranges:
+      Accept-Ranges:
       - bytes
-      cache-control:
+      Cache-Control:
       - no-store, no-cache, must-revalidate, post-check=0, pre-check=0
-      pragma:
+      Pragma:
       - no-cache
-    body: |
-      <?xml version="1.0" encoding="UTF-8"?>
-
-      <study xmlns="http://bioinformatics.northwestern.edu/ns/psc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" assigned-identifier="NCS Hi-Lo" last-modified-date="2011-08-25T16:04:27.214Z" xsi:schemaLocation="http://bioinformatics.northwestern.edu/ns/psc http://bioinformatics.northwestern.edu/ns/psc/psc.xsd">
-        <planned-calendar id="80f00ffd-5454-4193-aca5-23f289a22e9a"/>
-        <amendment name="[Original]" date="2011-07-07" mandatory="true" released-date="2011-08-25T16:04:27.214Z">
-          <planned-calendar-delta id="1d6f50a9-8a4d-46dc-8f89-aebb8c00f2f4" node-id="80f00ffd-5454-4193-aca5-23f289a22e9a">
-            <add id="714bdfea-1c46-4adc-88f3-978f9a37e756" index="0">
-              <epoch id="73f6c858-4069-411a-8d82-c9d558c07d68" name="LO-Intensity">
-                <study-segment id="6caf9143-bfb0-47e4-b1e4-ccc810a4cbc8" name="Pregnancy Screener">
-                  <period id="c791d8a3-e26e-461a-8425-f5acce73ac1b" name="sreener" repetitions="1" start-day="1" duration-quantity="1" duration-unit="day">
-                    <planned-activity id="df1ceee2-0b0d-45ad-9a5d-982c15738817" day="1">
-                      <activity-reference code="PSI" source="NCS"/>
-                    </planned-activity>
-                  </period>
-                </study-segment>
-                <study-segment id="6a141368-5229-4262-b3c5-45212520ec76" name="PPG Follow Up">
-                  <period id="fa423dbe-cccb-4f36-966b-a03988aa88ba" name="Follow Up CATI" repetitions="1" start-day="1" duration-quantity="6" duration-unit="month">
-                    <planned-activity id="b8eb6fcd-6eae-4b61-840f-1c178ce985c6" day="168">
-                      <activity-reference code="FU CATI (lo)" source="NCS"/>
-                    </planned-activity>
-                  </period>
-                </study-segment>
-                <study-segment id="76025607-f7aa-41e1-8ce9-29e0793cd6d4" name="PPG 1 and 2">
-                  <period id="19c0ffb1-78b3-4634-adde-bc32a5cec9dd" name="Consent and Questionnaire" repetitions="1" start-day="1" duration-quantity="1" duration-unit="day">
-                    <planned-activity id="2b68bb5c-edde-4510-81c8-b962704bc968" day="1">
-                      <activity-reference code="LIC" source="NCS"/>
-                    </planned-activity>
-                    <planned-activity id="bbb8de5c-a025-4b4c-b7d2-577a96551263" day="1">
-                      <activity-reference code="LIQ" source="NCS"/>
-                    </planned-activity>
-                  </period>
-                </study-segment>
-                <study-segment id="cbd73e59-700f-4a7a-b437-961f1af9e4b2" name="Questionnaire after 6 months">
-                  <period id="06ca1595-94d2-4a15-b8f6-242e2a45f455" name="Questionnaire after 6 months" repetitions="1" start-day="1" duration-quantity="6" duration-unit="month">
-                    <planned-activity id="86032899-f453-46bf-aa5b-ddf9dc86de91" day="168">
-                      <activity-reference code="LIQ" source="NCS"/>
-                    </planned-activity>
-                  </period>
-                </study-segment>
-                <study-segment id="53318f20-d21f-452e-a8e8-3f2ed6bb6c93" name="Birth Visit Interview">
-                  <period id="3902c526-01ee-4183-a16d-0179b7f43bef" name="Birth Visit" repetitions="1" start-day="1" duration-quantity="1" duration-unit="day">
-                    <planned-activity id="33dbd9b9-7288-4684-97a5-56c9dac5eb22" details="w/in 30 days of birth" day="1">
-                      <activity-reference code="BVI" source="NCS"/>
-                    </planned-activity>
-                  </period>
-                </study-segment>
-              </epoch>
-            </add>
-            <add id="2931a9de-0e22-4b0e-a523-3c9dd328b678" index="1">
-              <epoch id="7955eab9-f505-45d2-9c79-eeaa19cf5382" name="HI-Intensity">
-                <study-segment id="ca65bbbb-7e47-4f71-a4f0-071e7f73f380" name="HI-LO Conversion - Pregnant">
-                  <period id="c849fb47-1917-47d3-aacd-74331aa46ed8" name="HiLo conversion Pregnant" repetitions="1" start-day="1" duration-quantity="1" duration-unit="day">
-                    <planned-activity id="840a0c23-4fa4-4348-b389-6cd6d376b074" day="1">
-                      <activity-reference code="LHCS" source="NCS"/>
-                    </planned-activity>
-                    <planned-activity id="3a9323d6-7435-49ec-9f99-722a3c7b9be4" day="1">
-                      <activity-reference code="IC" source="NCS"/>
-                    </planned-activity>
-                    <planned-activity id="5ea073b8-6c3d-4ad2-acd2-7095cb760bf9" day="1">
-                      <activity-reference code="VI 1" source="NCS"/>
-                    </planned-activity>
-                    <planned-activity id="99aa3b3b-e262-4385-881b-49a23fc47a13" day="1">
-                      <activity-reference code="VIS 1" source="NCS"/>
-                    </planned-activity>
-                    <planned-activity id="de770c10-c50e-43b3-9b3e-53ac12373342" day="1">
-                      <activity-reference code="PR 1" source="NCS"/>
-                    </planned-activity>
-                    <planned-activity id="c2edce44-60d5-4aed-8f6e-b38388fdfc0b" day="1">
-                      <activity-reference code="SAQ 1" source="NCS"/>
-                    </planned-activity>
-                    <planned-activity id="fa8ccc94-9353-4819-ad59-e33301c6062a" day="1">
-                      <activity-reference code="TWS" source="NCS"/>
-                    </planned-activity>
-                    <planned-activity id="81956a56-e5c0-4c15-ba7b-386dec3697e9" day="1">
-                      <activity-reference code="DS" source="NCS"/>
-                    </planned-activity>
-                    <planned-activity id="803eaa20-6a1d-4e39-807d-fa2eba112ba9" day="1">
-                      <activity-reference code="US" source="NCS"/>
-                    </planned-activity>
-                    <planned-activity id="cad092e0-5863-44ee-9439-506bf34c1a97" day="1">
-                      <activity-reference code="BS" source="NCS"/>
-                    </planned-activity>
-                    <planned-activity id="39ba335d-b52e-48e6-8e5c-41768f2e4377" day="1" condition="if this is only visit before birth of baby">
-                      <activity-reference code="BVIS" source="NCS"/>
-                    </planned-activity>
-                    <planned-activity id="aee4d64b-7e08-4ec4-8667-4711c9e48cc7" day="1">
-                      <activity-reference code="PHCL" source="NCS"/>
-                    </planned-activity>
-                  </period>
-                </study-segment>
-                <study-segment id="b95c04d8-daa2-4a43-9a0c-cc42d4f8e624" name="HI-LO Conversion - Non-Pregnant">
-                  <period id="2d298ba8-d832-4414-83bf-a5128eb54d96" name="HiLo conversion Non-Pregnant" repetitions="1" start-day="1" duration-quantity="1" duration-unit="day">
-                    <planned-activity id="0c27ee78-85d3-48d0-afd3-96dc26d36926" day="1">
-                      <activity-reference code="LHCS" source="NCS"/>
-                    </planned-activity>
-                    <planned-activity id="52c7cd03-c066-468f-967c-6022601c608d" day="1">
-                      <activity-reference code="IC (non)" source="NCS"/>
-                    </planned-activity>
-                    <planned-activity id="3300cff6-43d5-42fb-b143-b36d91438a50" day="1">
-                      <activity-reference code="VIS (pre)" source="NCS"/>
-                    </planned-activity>
-                    <planned-activity id="94b28d6d-a769-45dd-a0a3-de5a93bf76f9" day="1">
-                      <activity-reference code="US" source="NCS"/>
-                    </planned-activity>
-                    <planned-activity id="2eab7a03-9e0b-449f-82c4-9087b705ff29" details="non-fasting" day="1">
-                      <activity-reference code="BS" source="NCS"/>
-                    </planned-activity>
-                    <planned-activity id="c767a6de-4bc5-4143-b76d-59439ec82a63" day="1">
-                      <activity-reference code="SAQ (pre)" source="NCS"/>
-                    </planned-activity>
-                    <planned-activity id="0ad94d57-7d79-4a0b-915f-daaf5fae273b" day="1">
-                      <activity-reference code="CATI" source="NCS"/>
-                    </planned-activity>
-                  </period>
-                </study-segment>
-                <study-segment id="cef89a1e-5a08-4d94-811d-1aea62700d61" name="Pregnancy Visit 2 Interview">
-                  <period id="6357145c-4d43-4527-ad9d-f277b353c70c" name="Pregnancy Visit 2 Interview" repetitions="1" start-day="1" duration-quantity="60" duration-unit="day">
-                    <planned-activity id="1d3157ca-b173-4d4c-88a7-60e93257c8f7" day="60">
-                      <activity-reference code="VIS 2" source="NCS"/>
-                    </planned-activity>
-                    <planned-activity id="a8250ae2-245e-4cb3-96b6-a05e0318e9fa" day="60">
-                      <activity-reference code="PR 2" source="NCS"/>
-                    </planned-activity>
-                    <planned-activity id="2c37381c-1433-4e59-bf5f-f3aac17aff9e" day="60">
-                      <activity-reference code="VI 2" source="NCS"/>
-                    </planned-activity>
-                    <planned-activity id="05ccc637-17de-479f-8a0a-e620cee84795" day="60">
-                      <activity-reference code="SAQ 2" source="NCS"/>
-                    </planned-activity>
-                    <planned-activity id="6aae9925-daa6-47f8-b12f-9576a84ea5f1" day="60" condition="if was not collected in PV1">
-                      <activity-reference code="TWS" source="NCS"/>
-                    </planned-activity>
-                    <planned-activity id="4a4b3357-1c98-4b58-9d9b-2444df21ca17" day="60" condition="if was not collected in PV1">
-                      <activity-reference code="DS" source="NCS"/>
-                    </planned-activity>
-                    <planned-activity id="25cf4b4d-c0e8-4240-84cf-f5aa764e3cb2" day="60" condition="if was collected only once before">
-                      <activity-reference code="BS" source="NCS"/>
-                    </planned-activity>
-                    <planned-activity id="e2d20285-f495-4a6b-8856-75120befbe79" day="60" condition="if was collected only once before">
-                      <activity-reference code="US" source="NCS"/>
-                    </planned-activity>
-                    <planned-activity id="f9e60d77-205e-40ff-81d3-63b7d23bf620" day="60">
-                      <activity-reference code="PHCL" source="NCS"/>
-                    </planned-activity>
-                  </period>
-                </study-segment>
-                <study-segment id="645376f4-5ca1-49e8-a31a-8f1030059348" name="Child Consent">
-                  <period id="6e9424b8-461f-48c2-a3f8-b67b164159bc" name="Child Concent" repetitions="1" start-day="1" duration-quantity="168" duration-unit="day">
-                    <planned-activity id="14d6ed35-1104-4da6-9784-9de30c1e8a6b" day="168">
-                      <activity-reference code="CC" source="NCS"/>
-                    </planned-activity>
-                  </period>
-                </study-segment>
-                <study-segment id="a6af42b4-6aec-4c63-a8d3-8b59474da940" name="Father Consent and Interview">
-                  <period id="e526bc74-f474-4544-85d2-ced85b6d16f0" name="Father Consent and Interview" repetitions="1" start-day="1" duration-quantity="1" duration-unit="day">
-                    <planned-activity id="4e33bea0-cefa-4132-bd1b-5179eec993d9" day="1">
-                      <activity-reference code="FC" source="NCS"/>
-                    </planned-activity>
-                    <planned-activity id="a7f71d09-59d1-474a-8414-3fdb6c15eb2c" day="1">
-                      <activity-reference code="VIS (father)" source="NCS"/>
-                    </planned-activity>
-                    <planned-activity id="b1b535d1-6c50-4865-9dda-610f7e5d0261" day="1">
-                      <activity-reference code="PVFI" source="NCS"/>
-                    </planned-activity>
-                  </period>
-                </study-segment>
-                <study-segment id="db7a095e-cff0-4d38-9cc0-81774aad382f" name="PPG Follow Up CATI after 6 months">
-                  <period id="b75c5859-6302-4ac6-85a3-893d3b53ec82" name="PPG Follow Up CATI at 6 months" repetitions="1" start-day="1" duration-quantity="168" duration-unit="day">
-                    <planned-activity id="0fa54f95-bd9d-43ef-8374-722acab023e6" day="168">
-                      <activity-reference code="FU CATI (lo)" source="NCS"/>
-                    </planned-activity>
-                  </period>
-                </study-segment>
-                <study-segment id="a7068506-37db-4fe2-80ca-88f6d518b1e1" name="PPG Follow UP CATI after 3 months">
-                  <period id="d5886fe9-0ddb-4683-9b99-4b01212ce300" name="PPG Follow UP CATI after 3 months" repetitions="1" start-day="1" duration-quantity="84" duration-unit="day">
-                    <planned-activity id="64c499d9-13e9-4fe1-a76c-2dfc8263ca24" day="84">
-                      <activity-reference code="FU CATI (lo)" source="NCS"/>
-                    </planned-activity>
-                  </period>
-                </study-segment>
-              </epoch>
-            </add>
-            <add id="60d1be0d-b3ac-4fe3-a3f9-4f1159612da8" index="2">
-              <epoch id="5eed8d3f-2b03-4bac-9bcd-1420c06f9339" name="Child">
-                <study-segment id="072db970-d32a-4006-83b0-3f0240833894" name="Child">
-                  <period id="85842db8-bec8-4eb8-84ff-fcc40aa30b02" name="Child" repetitions="1" start-day="1" duration-quantity="672" duration-unit="day">
-                    <planned-activity id="39aa9050-31b0-41a3-81cf-a513b57d2fff" day="1">
-                      <activity-reference code="BVIS" source="NCS"/>
-                    </planned-activity>
-                    <planned-activity id="6140789b-b3fe-4276-ac43-38b4d447e6e9" details="w/in 10 days of birth" day="1">
-                      <activity-reference code="BVI" source="NCS"/>
-                    </planned-activity>
-                    <planned-activity id="a9a7f9cd-cf0c-4ff7-8276-f1112f5587bd" day="1">
-                      <activity-reference code="BCBI" source="NCS"/>
-                    </planned-activity>
-                    <planned-activity id="d2419f3b-021b-40a8-b68a-547094382a49" day="1">
-                      <activity-reference code="IHCL" source="NCS"/>
-                    </planned-activity>
-                    <planned-activity id="88d9cdb6-3e22-4b37-8f65-2dcbe11b5f3b" details="2-4 month window" day="84">
-                      <activity-reference code="MPI (3-month)" source="NCS"/>
-                    </planned-activity>
-                    <planned-activity id="2bb166f9-f124-4b23-bdaa-8feb8a2eca1b" details="5-7 month window" day="168">
-                      <activity-reference code="VIS (6-month)" source="NCS"/>
-                    </planned-activity>
-                    <planned-activity id="e2531488-58e7-4721-b5f0-cbf9e8850ffd" details="5-7 month window" day="168">
-                      <activity-reference code="MII (6-month)" source="NCS"/>
-                    </planned-activity>
-                    <planned-activity id="01be00a9-bcf1-4d40-918e-d41d65ccaac6" details="5-7 month window" day="168">
-                      <activity-reference code="SAQ IF (6-month)" source="NCS"/>
-                    </planned-activity>
-                    <planned-activity id="d0e3ac20-b91f-4c2a-8217-a42b114afde6" details="8-10 month window" day="252">
-                      <activity-reference code="MPII (9-month)" source="NCS"/>
-                    </planned-activity>
-                    <planned-activity id="71eff7d1-e4a3-446b-a878-ef835b368181" details="11-15 month window" day="336">
-                      <activity-reference code="VIS (12-month)" source="NCS"/>
-                    </planned-activity>
-                    <planned-activity id="4487f930-29aa-464d-a1d8-0b182cecfd40" details="11-15 month window" day="336">
-                      <activity-reference code="MII (12-month)" source="NCS"/>
-                    </planned-activity>
-                    <planned-activity id="599d1e75-7d6e-4933-a69a-76c83a7b9f80" details="11-15 month window" day="336">
-                      <activity-reference code="SAQ (12-month)" source="NCS"/>
-                    </planned-activity>
-                    <planned-activity id="735de02c-bdc9-44fd-ac59-d901a90e3799" details="16-22 month window" day="504">
-                      <activity-reference code="I (18-month)" source="NCS"/>
-                    </planned-activity>
-                    <planned-activity id="0a0919e3-79c3-435f-b897-9e0c4fa4247f" details="16-22 month window" day="504">
-                      <activity-reference code="SAQ (18-month)" source="NCS"/>
-                    </planned-activity>
-                    <planned-activity id="d3a1f314-a163-4bb3-aa42-ccf639034814" details="23-28 month window" day="672">
-                      <activity-reference code="I (24-month)" source="NCS"/>
-                    </planned-activity>
-                    <planned-activity id="06b1e674-3af9-45e1-ac7e-2c30843fd365" details="23-28 month window" day="672">
-                      <activity-reference code="SAQ (24-month)" source="NCS"/>
-                    </planned-activity>
-                  </period>
-                </study-segment>
-              </epoch>
-            </add>
-          </planned-calendar-delta>
-        </amendment>
-        <sources>
-          <source name="NCS">
-            <activity name="6-month Visit Information Sheet" code="VIS (6-month)" description="6-month Visit Information Sheet" type="Consent"/>
-            <activity name="Low Intensity Questionnaire " code="LIQ" description="Low Intensity Questionnaire " type="Instrument"/>
-            <activity name="Low to High Conversion Script" code="LHCS" description="Low to High Conversion Script" type="Instrument"/>
-            <activity name="Tap Water sample" code="TWS" description="Tap Water sample" type="Environment"/>
-            <activity name="6-month Infant Feeding SAQ Instrument" code="SAQ IF (6-month)" description="6-month Infant Feeding SAQ Instrument" type="Instrument"/>
-            <activity name="Pregnant Woman Informed Consent" code="IC" description="Pregnant Woman Informed Consent" type="Consent"/>
-            <activity name="Pregnancy Health Care Log" code="PHCL" description="Pregnancy Health Care Log" type="Instrument"/>
-            <activity name="18-month SAQ" code="SAQ (18-month)" description="18-month SAQ" type="Instrument"/>
-            <activity name="Dust Sample" code="DS" description="Dust Sample" type="Environment"/>
-            <activity name="Birth VIS" code="BVIS" description="Birth VIS" type="Consent"/>
-            <activity name="PPG Follow Up CATI (LOW)" code="FU CATI (lo)" description="PPG Follow Up CATI (LOW)" type="Instrument"/>
-            <activity name="Blood Sample" code="BS" description="Blood Sample" type="Biospecimen"/>
-            <activity name="Pregnancy 2 Record of VIS" code="PR 2" description="Pregnancy 2 Record of VIS" type="Consent"/>
-            <activity name="Pregnancy 1 Record of VIS" code="PR 1" description="Pregnancy 1 Record of VIS" type="Consent"/>
-            <activity name="Urine Sample" code="US" description="Urine Sample" type="Biospecimen"/>
-            <activity name="Pre-Pregnancy Visit Information Sheet" code="VIS (pre)" description="Pre-Pregnancy Visit Information Sheet" type="Consent"/>
-            <activity name="24-month SAQ" code="SAQ (24-month)" description="24-month SAQ" type="Instrument"/>
-            <activity name="18-month Interview" code="I (18-month)" description="18-month Interview" type="Instrument"/>
-            <activity name="Pregnancy Visit 1 Instrument" code="VI 1" description="Pregnancy Visit 1 Instrument" type="Instrument"/>
-            <activity name="Pregnancy Visit 1 Father Instrument" code="PVFI" description="Pregnancy Visit 1 Father Instrument" type="Instrument"/>
-            <activity name="Pregnancy Visit 2 Instrument" code="VI 2" description="Pregnancy Visit 2 Instrument" type="Instrument"/>
-            <activity name="3-month Mother Phone Interview Instrument" code="MPI (3-month)" description="3-month Mother Phone Interview Instrument" type="Instrument"/>
-            <activity name="Low Intensity Consent" code="LIC" description="Low Intensity Consent" type="Consent"/>
-            <activity name="Father Consent" code="FC" description="Father Consent" type="Consent"/>
-            <activity name="Pregnancy Screener Instrument" code="PSI" description="Pregnancy Screener Instrument" type="Instrument"/>
-            <activity name="Pregnancy Probability Group Instrument CATI" code="CATI" description="Pregnancy Probability Group Instrument CATI" type="Instrument"/>
-            <activity name="Biospecimen Cord Blood Instrument" code="BCBI" description="Biospecimen Cord Blood Instrument" type="Biospecimen"/>
-            <activity name="Child Consent" code="CC" description="Child Consent" type="Consent"/>
-            <activity name="Father Visit Information Sheet" code="VIS (father)" description="Father Visit Information Sheet" type="Consent"/>
-            <activity name="Infant Health Care Log" code="IHCL" description="Infant Health Care Log" type="Instrument"/>
-            <activity name="Pre-Pregnancy SAQ" code="SAQ (pre)" description="Pre-Pregnancy SAQ" type="Instrument"/>
-            <activity name="12-month Mother SAQ Instrument" code="SAQ (12-month)" description="12-month Mother SAQ Instrument" type="Instrument"/>
-            <activity name="24-month Interview" code="I (24-month)" description="24-month Interview" type="Instrument"/>
-            <activity name="Pregnancy Visit 2 Information Sheet" code="VIS 2" description="Pregnancy Visit 2 Information Sheet" type="Consent"/>
-            <activity name="12-month Mother Interview Instrument" code="MII (12-month)" description="12-month Mother Interview Instrument" type="Instrument"/>
-            <activity name="Pregnancy Visit 1 Information Sheet" code="VIS 1" description="Pregnancy Visit 1 Information Sheet" type="Consent"/>
-            <activity name="Birth Visit Instrument" code="BVI" description="Birth Visit Instrument" type="Instrument"/>
-            <activity name="Pregnancy Visit 1 SAQ Instrument" code="SAQ 1" description="Pregnancy Visit 1 SAQ Instrument" type="Instrument"/>
-            <activity name="Pregnancy Visit 2 SAQ Instrument" code="SAQ 2" description="Pregnancy Visit 2 SAQ Instrument" type="Instrument"/>
-            <activity name="6-month Mother Interview Instrument" code="MII (6-month)" description="6-month Mother Interview Instrument" type="Instrument"/>
-            <activity name="12-month Visit Information Sheet" code="VIS (12-month)" description="12-month Visit Information Sheet" type="Consent"/>
-            <activity name="9-month Mother Phone Interview Instrument" code="MPII (9-month)" description="9-month Mother Phone Interview Instrument" type="Instrument"/>
-            <activity name="Non-Pregnant Woman Informed Consent" code="IC (non)" description="Non-Pregnant Woman Informed Consent" type="Consent"/>
-          </source>
-        </sources>
-      </study>
-
-    http_version: "1.1"
-- !ruby/struct:VCR::HTTPInteraction
-  request: !ruby/struct:VCR::Request
-    method: :post
+    body:
+      encoding: UTF-8
+      string: ! "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\n<study xmlns=\"http://bioinformatics.northwestern.edu/ns/psc\"
+        xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" assigned-identifier=\"NCS
+        Hi-Lo\" last-modified-date=\"2011-08-25T16:04:27.214Z\" xsi:schemaLocation=\"http://bioinformatics.northwestern.edu/ns/psc
+        http://bioinformatics.northwestern.edu/ns/psc/psc.xsd\">\n  <planned-calendar
+        id=\"80f00ffd-5454-4193-aca5-23f289a22e9a\"/>\n  <amendment name=\"[Original]\"
+        date=\"2011-07-07\" mandatory=\"true\" released-date=\"2011-08-25T16:04:27.214Z\">\n
+        \   <planned-calendar-delta id=\"1d6f50a9-8a4d-46dc-8f89-aebb8c00f2f4\" node-id=\"80f00ffd-5454-4193-aca5-23f289a22e9a\">\n
+        \     <add id=\"714bdfea-1c46-4adc-88f3-978f9a37e756\" index=\"0\">\n        <epoch
+        id=\"73f6c858-4069-411a-8d82-c9d558c07d68\" name=\"LO-Intensity\">\n          <study-segment
+        id=\"6caf9143-bfb0-47e4-b1e4-ccc810a4cbc8\" name=\"Pregnancy Screener\">\n
+        \           <period id=\"c791d8a3-e26e-461a-8425-f5acce73ac1b\" name=\"sreener\"
+        repetitions=\"1\" start-day=\"1\" duration-quantity=\"1\" duration-unit=\"day\">\n
+        \             <planned-activity id=\"df1ceee2-0b0d-45ad-9a5d-982c15738817\"
+        day=\"1\">\n                <activity-reference code=\"PSI\" source=\"NCS\"/>\n
+        \             </planned-activity>\n            </period>\n          </study-segment>\n
+        \         <study-segment id=\"6a141368-5229-4262-b3c5-45212520ec76\" name=\"PPG
+        Follow Up\">\n            <period id=\"fa423dbe-cccb-4f36-966b-a03988aa88ba\"
+        name=\"Follow Up CATI\" repetitions=\"1\" start-day=\"1\" duration-quantity=\"6\"
+        duration-unit=\"month\">\n              <planned-activity id=\"b8eb6fcd-6eae-4b61-840f-1c178ce985c6\"
+        day=\"168\">\n                <activity-reference code=\"FU CATI (lo)\" source=\"NCS\"/>\n
+        \             </planned-activity>\n            </period>\n          </study-segment>\n
+        \         <study-segment id=\"76025607-f7aa-41e1-8ce9-29e0793cd6d4\" name=\"PPG
+        1 and 2\">\n            <period id=\"19c0ffb1-78b3-4634-adde-bc32a5cec9dd\"
+        name=\"Consent and Questionnaire\" repetitions=\"1\" start-day=\"1\" duration-quantity=\"1\"
+        duration-unit=\"day\">\n              <planned-activity id=\"2b68bb5c-edde-4510-81c8-b962704bc968\"
+        day=\"1\">\n                <activity-reference code=\"LIC\" source=\"NCS\"/>\n
+        \             </planned-activity>\n              <planned-activity id=\"bbb8de5c-a025-4b4c-b7d2-577a96551263\"
+        day=\"1\">\n                <activity-reference code=\"LIQ\" source=\"NCS\"/>\n
+        \             </planned-activity>\n            </period>\n          </study-segment>\n
+        \         <study-segment id=\"cbd73e59-700f-4a7a-b437-961f1af9e4b2\" name=\"Questionnaire
+        after 6 months\">\n            <period id=\"06ca1595-94d2-4a15-b8f6-242e2a45f455\"
+        name=\"Questionnaire after 6 months\" repetitions=\"1\" start-day=\"1\" duration-quantity=\"6\"
+        duration-unit=\"month\">\n              <planned-activity id=\"86032899-f453-46bf-aa5b-ddf9dc86de91\"
+        day=\"168\">\n                <activity-reference code=\"LIQ\" source=\"NCS\"/>\n
+        \             </planned-activity>\n            </period>\n          </study-segment>\n
+        \         <study-segment id=\"53318f20-d21f-452e-a8e8-3f2ed6bb6c93\" name=\"Birth
+        Visit Interview\">\n            <period id=\"3902c526-01ee-4183-a16d-0179b7f43bef\"
+        name=\"Birth Visit\" repetitions=\"1\" start-day=\"1\" duration-quantity=\"1\"
+        duration-unit=\"day\">\n              <planned-activity id=\"33dbd9b9-7288-4684-97a5-56c9dac5eb22\"
+        details=\"w/in 30 days of birth\" day=\"1\">\n                <activity-reference
+        code=\"BVI\" source=\"NCS\"/>\n              </planned-activity>\n            </period>\n
+        \         </study-segment>\n        </epoch>\n      </add>\n      <add id=\"2931a9de-0e22-4b0e-a523-3c9dd328b678\"
+        index=\"1\">\n        <epoch id=\"7955eab9-f505-45d2-9c79-eeaa19cf5382\" name=\"HI-Intensity\">\n
+        \         <study-segment id=\"ca65bbbb-7e47-4f71-a4f0-071e7f73f380\" name=\"HI-LO
+        Conversion - Pregnant\">\n            <period id=\"c849fb47-1917-47d3-aacd-74331aa46ed8\"
+        name=\"HiLo conversion Pregnant\" repetitions=\"1\" start-day=\"1\" duration-quantity=\"1\"
+        duration-unit=\"day\">\n              <planned-activity id=\"840a0c23-4fa4-4348-b389-6cd6d376b074\"
+        day=\"1\">\n                <activity-reference code=\"LHCS\" source=\"NCS\"/>\n
+        \             </planned-activity>\n              <planned-activity id=\"3a9323d6-7435-49ec-9f99-722a3c7b9be4\"
+        day=\"1\">\n                <activity-reference code=\"IC\" source=\"NCS\"/>\n
+        \             </planned-activity>\n              <planned-activity id=\"5ea073b8-6c3d-4ad2-acd2-7095cb760bf9\"
+        day=\"1\">\n                <activity-reference code=\"VI 1\" source=\"NCS\"/>\n
+        \             </planned-activity>\n              <planned-activity id=\"99aa3b3b-e262-4385-881b-49a23fc47a13\"
+        day=\"1\">\n                <activity-reference code=\"VIS 1\" source=\"NCS\"/>\n
+        \             </planned-activity>\n              <planned-activity id=\"de770c10-c50e-43b3-9b3e-53ac12373342\"
+        day=\"1\">\n                <activity-reference code=\"PR 1\" source=\"NCS\"/>\n
+        \             </planned-activity>\n              <planned-activity id=\"c2edce44-60d5-4aed-8f6e-b38388fdfc0b\"
+        day=\"1\">\n                <activity-reference code=\"SAQ 1\" source=\"NCS\"/>\n
+        \             </planned-activity>\n              <planned-activity id=\"fa8ccc94-9353-4819-ad59-e33301c6062a\"
+        day=\"1\">\n                <activity-reference code=\"TWS\" source=\"NCS\"/>\n
+        \             </planned-activity>\n              <planned-activity id=\"81956a56-e5c0-4c15-ba7b-386dec3697e9\"
+        day=\"1\">\n                <activity-reference code=\"DS\" source=\"NCS\"/>\n
+        \             </planned-activity>\n              <planned-activity id=\"803eaa20-6a1d-4e39-807d-fa2eba112ba9\"
+        day=\"1\">\n                <activity-reference code=\"US\" source=\"NCS\"/>\n
+        \             </planned-activity>\n              <planned-activity id=\"cad092e0-5863-44ee-9439-506bf34c1a97\"
+        day=\"1\">\n                <activity-reference code=\"BS\" source=\"NCS\"/>\n
+        \             </planned-activity>\n              <planned-activity id=\"39ba335d-b52e-48e6-8e5c-41768f2e4377\"
+        day=\"1\" condition=\"if this is only visit before birth of baby\">\n                <activity-reference
+        code=\"BVIS\" source=\"NCS\"/>\n              </planned-activity>\n              <planned-activity
+        id=\"aee4d64b-7e08-4ec4-8667-4711c9e48cc7\" day=\"1\">\n                <activity-reference
+        code=\"PHCL\" source=\"NCS\"/>\n              </planned-activity>\n            </period>\n
+        \         </study-segment>\n          <study-segment id=\"b95c04d8-daa2-4a43-9a0c-cc42d4f8e624\"
+        name=\"HI-LO Conversion - Non-Pregnant\">\n            <period id=\"2d298ba8-d832-4414-83bf-a5128eb54d96\"
+        name=\"HiLo conversion Non-Pregnant\" repetitions=\"1\" start-day=\"1\" duration-quantity=\"1\"
+        duration-unit=\"day\">\n              <planned-activity id=\"0c27ee78-85d3-48d0-afd3-96dc26d36926\"
+        day=\"1\">\n                <activity-reference code=\"LHCS\" source=\"NCS\"/>\n
+        \             </planned-activity>\n              <planned-activity id=\"52c7cd03-c066-468f-967c-6022601c608d\"
+        day=\"1\">\n                <activity-reference code=\"IC (non)\" source=\"NCS\"/>\n
+        \             </planned-activity>\n              <planned-activity id=\"3300cff6-43d5-42fb-b143-b36d91438a50\"
+        day=\"1\">\n                <activity-reference code=\"VIS (pre)\" source=\"NCS\"/>\n
+        \             </planned-activity>\n              <planned-activity id=\"94b28d6d-a769-45dd-a0a3-de5a93bf76f9\"
+        day=\"1\">\n                <activity-reference code=\"US\" source=\"NCS\"/>\n
+        \             </planned-activity>\n              <planned-activity id=\"2eab7a03-9e0b-449f-82c4-9087b705ff29\"
+        details=\"non-fasting\" day=\"1\">\n                <activity-reference code=\"BS\"
+        source=\"NCS\"/>\n              </planned-activity>\n              <planned-activity
+        id=\"c767a6de-4bc5-4143-b76d-59439ec82a63\" day=\"1\">\n                <activity-reference
+        code=\"SAQ (pre)\" source=\"NCS\"/>\n              </planned-activity>\n              <planned-activity
+        id=\"0ad94d57-7d79-4a0b-915f-daaf5fae273b\" day=\"1\">\n                <activity-reference
+        code=\"CATI\" source=\"NCS\"/>\n              </planned-activity>\n            </period>\n
+        \         </study-segment>\n          <study-segment id=\"cef89a1e-5a08-4d94-811d-1aea62700d61\"
+        name=\"Pregnancy Visit 2 Interview\">\n            <period id=\"6357145c-4d43-4527-ad9d-f277b353c70c\"
+        name=\"Pregnancy Visit 2 Interview\" repetitions=\"1\" start-day=\"1\" duration-quantity=\"60\"
+        duration-unit=\"day\">\n              <planned-activity id=\"1d3157ca-b173-4d4c-88a7-60e93257c8f7\"
+        day=\"60\">\n                <activity-reference code=\"VIS 2\" source=\"NCS\"/>\n
+        \             </planned-activity>\n              <planned-activity id=\"a8250ae2-245e-4cb3-96b6-a05e0318e9fa\"
+        day=\"60\">\n                <activity-reference code=\"PR 2\" source=\"NCS\"/>\n
+        \             </planned-activity>\n              <planned-activity id=\"2c37381c-1433-4e59-bf5f-f3aac17aff9e\"
+        day=\"60\">\n                <activity-reference code=\"VI 2\" source=\"NCS\"/>\n
+        \             </planned-activity>\n              <planned-activity id=\"05ccc637-17de-479f-8a0a-e620cee84795\"
+        day=\"60\">\n                <activity-reference code=\"SAQ 2\" source=\"NCS\"/>\n
+        \             </planned-activity>\n              <planned-activity id=\"6aae9925-daa6-47f8-b12f-9576a84ea5f1\"
+        day=\"60\" condition=\"if was not collected in PV1\">\n                <activity-reference
+        code=\"TWS\" source=\"NCS\"/>\n              </planned-activity>\n              <planned-activity
+        id=\"4a4b3357-1c98-4b58-9d9b-2444df21ca17\" day=\"60\" condition=\"if was
+        not collected in PV1\">\n                <activity-reference code=\"DS\" source=\"NCS\"/>\n
+        \             </planned-activity>\n              <planned-activity id=\"25cf4b4d-c0e8-4240-84cf-f5aa764e3cb2\"
+        day=\"60\" condition=\"if was collected only once before\">\n                <activity-reference
+        code=\"BS\" source=\"NCS\"/>\n              </planned-activity>\n              <planned-activity
+        id=\"e2d20285-f495-4a6b-8856-75120befbe79\" day=\"60\" condition=\"if was
+        collected only once before\">\n                <activity-reference code=\"US\"
+        source=\"NCS\"/>\n              </planned-activity>\n              <planned-activity
+        id=\"f9e60d77-205e-40ff-81d3-63b7d23bf620\" day=\"60\">\n                <activity-reference
+        code=\"PHCL\" source=\"NCS\"/>\n              </planned-activity>\n            </period>\n
+        \         </study-segment>\n          <study-segment id=\"645376f4-5ca1-49e8-a31a-8f1030059348\"
+        name=\"Child Consent\">\n            <period id=\"6e9424b8-461f-48c2-a3f8-b67b164159bc\"
+        name=\"Child Concent\" repetitions=\"1\" start-day=\"1\" duration-quantity=\"168\"
+        duration-unit=\"day\">\n              <planned-activity id=\"14d6ed35-1104-4da6-9784-9de30c1e8a6b\"
+        day=\"168\">\n                <activity-reference code=\"CC\" source=\"NCS\"/>\n
+        \             </planned-activity>\n            </period>\n          </study-segment>\n
+        \         <study-segment id=\"a6af42b4-6aec-4c63-a8d3-8b59474da940\" name=\"Father
+        Consent and Interview\">\n            <period id=\"e526bc74-f474-4544-85d2-ced85b6d16f0\"
+        name=\"Father Consent and Interview\" repetitions=\"1\" start-day=\"1\" duration-quantity=\"1\"
+        duration-unit=\"day\">\n              <planned-activity id=\"4e33bea0-cefa-4132-bd1b-5179eec993d9\"
+        day=\"1\">\n                <activity-reference code=\"FC\" source=\"NCS\"/>\n
+        \             </planned-activity>\n              <planned-activity id=\"a7f71d09-59d1-474a-8414-3fdb6c15eb2c\"
+        day=\"1\">\n                <activity-reference code=\"VIS (father)\" source=\"NCS\"/>\n
+        \             </planned-activity>\n              <planned-activity id=\"b1b535d1-6c50-4865-9dda-610f7e5d0261\"
+        day=\"1\">\n                <activity-reference code=\"PVFI\" source=\"NCS\"/>\n
+        \             </planned-activity>\n            </period>\n          </study-segment>\n
+        \         <study-segment id=\"db7a095e-cff0-4d38-9cc0-81774aad382f\" name=\"PPG
+        Follow Up CATI after 6 months\">\n            <period id=\"b75c5859-6302-4ac6-85a3-893d3b53ec82\"
+        name=\"PPG Follow Up CATI at 6 months\" repetitions=\"1\" start-day=\"1\"
+        duration-quantity=\"168\" duration-unit=\"day\">\n              <planned-activity
+        id=\"0fa54f95-bd9d-43ef-8374-722acab023e6\" day=\"168\">\n                <activity-reference
+        code=\"FU CATI (lo)\" source=\"NCS\"/>\n              </planned-activity>\n
+        \           </period>\n          </study-segment>\n          <study-segment
+        id=\"a7068506-37db-4fe2-80ca-88f6d518b1e1\" name=\"PPG Follow UP CATI after
+        3 months\">\n            <period id=\"d5886fe9-0ddb-4683-9b99-4b01212ce300\"
+        name=\"PPG Follow UP CATI after 3 months\" repetitions=\"1\" start-day=\"1\"
+        duration-quantity=\"84\" duration-unit=\"day\">\n              <planned-activity
+        id=\"64c499d9-13e9-4fe1-a76c-2dfc8263ca24\" day=\"84\">\n                <activity-reference
+        code=\"FU CATI (lo)\" source=\"NCS\"/>\n              </planned-activity>\n
+        \           </period>\n          </study-segment>\n        </epoch>\n      </add>\n
+        \     <add id=\"60d1be0d-b3ac-4fe3-a3f9-4f1159612da8\" index=\"2\">\n        <epoch
+        id=\"5eed8d3f-2b03-4bac-9bcd-1420c06f9339\" name=\"Child\">\n          <study-segment
+        id=\"072db970-d32a-4006-83b0-3f0240833894\" name=\"Child\">\n            <period
+        id=\"85842db8-bec8-4eb8-84ff-fcc40aa30b02\" name=\"Child\" repetitions=\"1\"
+        start-day=\"1\" duration-quantity=\"672\" duration-unit=\"day\">\n              <planned-activity
+        id=\"39aa9050-31b0-41a3-81cf-a513b57d2fff\" day=\"1\">\n                <activity-reference
+        code=\"BVIS\" source=\"NCS\"/>\n              </planned-activity>\n              <planned-activity
+        id=\"6140789b-b3fe-4276-ac43-38b4d447e6e9\" details=\"w/in 10 days of birth\"
+        day=\"1\">\n                <activity-reference code=\"BVI\" source=\"NCS\"/>\n
+        \             </planned-activity>\n              <planned-activity id=\"a9a7f9cd-cf0c-4ff7-8276-f1112f5587bd\"
+        day=\"1\">\n                <activity-reference code=\"BCBI\" source=\"NCS\"/>\n
+        \             </planned-activity>\n              <planned-activity id=\"d2419f3b-021b-40a8-b68a-547094382a49\"
+        day=\"1\">\n                <activity-reference code=\"IHCL\" source=\"NCS\"/>\n
+        \             </planned-activity>\n              <planned-activity id=\"88d9cdb6-3e22-4b37-8f65-2dcbe11b5f3b\"
+        details=\"2-4 month window\" day=\"84\">\n                <activity-reference
+        code=\"MPI (3-month)\" source=\"NCS\"/>\n              </planned-activity>\n
+        \             <planned-activity id=\"2bb166f9-f124-4b23-bdaa-8feb8a2eca1b\"
+        details=\"5-7 month window\" day=\"168\">\n                <activity-reference
+        code=\"VIS (6-month)\" source=\"NCS\"/>\n              </planned-activity>\n
+        \             <planned-activity id=\"e2531488-58e7-4721-b5f0-cbf9e8850ffd\"
+        details=\"5-7 month window\" day=\"168\">\n                <activity-reference
+        code=\"MII (6-month)\" source=\"NCS\"/>\n              </planned-activity>\n
+        \             <planned-activity id=\"01be00a9-bcf1-4d40-918e-d41d65ccaac6\"
+        details=\"5-7 month window\" day=\"168\">\n                <activity-reference
+        code=\"SAQ IF (6-month)\" source=\"NCS\"/>\n              </planned-activity>\n
+        \             <planned-activity id=\"d0e3ac20-b91f-4c2a-8217-a42b114afde6\"
+        details=\"8-10 month window\" day=\"252\">\n                <activity-reference
+        code=\"MPII (9-month)\" source=\"NCS\"/>\n              </planned-activity>\n
+        \             <planned-activity id=\"71eff7d1-e4a3-446b-a878-ef835b368181\"
+        details=\"11-15 month window\" day=\"336\">\n                <activity-reference
+        code=\"VIS (12-month)\" source=\"NCS\"/>\n              </planned-activity>\n
+        \             <planned-activity id=\"4487f930-29aa-464d-a1d8-0b182cecfd40\"
+        details=\"11-15 month window\" day=\"336\">\n                <activity-reference
+        code=\"MII (12-month)\" source=\"NCS\"/>\n              </planned-activity>\n
+        \             <planned-activity id=\"599d1e75-7d6e-4933-a69a-76c83a7b9f80\"
+        details=\"11-15 month window\" day=\"336\">\n                <activity-reference
+        code=\"SAQ (12-month)\" source=\"NCS\"/>\n              </planned-activity>\n
+        \             <planned-activity id=\"735de02c-bdc9-44fd-ac59-d901a90e3799\"
+        details=\"16-22 month window\" day=\"504\">\n                <activity-reference
+        code=\"I (18-month)\" source=\"NCS\"/>\n              </planned-activity>\n
+        \             <planned-activity id=\"0a0919e3-79c3-435f-b897-9e0c4fa4247f\"
+        details=\"16-22 month window\" day=\"504\">\n                <activity-reference
+        code=\"SAQ (18-month)\" source=\"NCS\"/>\n              </planned-activity>\n
+        \             <planned-activity id=\"d3a1f314-a163-4bb3-aa42-ccf639034814\"
+        details=\"23-28 month window\" day=\"672\">\n                <activity-reference
+        code=\"I (24-month)\" source=\"NCS\"/>\n              </planned-activity>\n
+        \             <planned-activity id=\"06b1e674-3af9-45e1-ac7e-2c30843fd365\"
+        details=\"23-28 month window\" day=\"672\">\n                <activity-reference
+        code=\"SAQ (24-month)\" source=\"NCS\"/>\n              </planned-activity>\n
+        \           </period>\n          </study-segment>\n        </epoch>\n      </add>\n
+        \   </planned-calendar-delta>\n  </amendment>\n  <sources>\n    <source name=\"NCS\">\n
+        \     <activity name=\"6-month Visit Information Sheet\" code=\"VIS (6-month)\"
+        description=\"6-month Visit Information Sheet\" type=\"Consent\"/>\n      <activity
+        name=\"Low Intensity Questionnaire \" code=\"LIQ\" description=\"Low Intensity
+        Questionnaire \" type=\"Instrument\"/>\n      <activity name=\"Low to High
+        Conversion Script\" code=\"LHCS\" description=\"Low to High Conversion Script\"
+        type=\"Instrument\"/>\n      <activity name=\"Tap Water sample\" code=\"TWS\"
+        description=\"Tap Water sample\" type=\"Environment\"/>\n      <activity name=\"6-month
+        Infant Feeding SAQ Instrument\" code=\"SAQ IF (6-month)\" description=\"6-month
+        Infant Feeding SAQ Instrument\" type=\"Instrument\"/>\n      <activity name=\"Pregnant
+        Woman Informed Consent\" code=\"IC\" description=\"Pregnant Woman Informed
+        Consent\" type=\"Consent\"/>\n      <activity name=\"Pregnancy Health Care
+        Log\" code=\"PHCL\" description=\"Pregnancy Health Care Log\" type=\"Instrument\"/>\n
+        \     <activity name=\"18-month SAQ\" code=\"SAQ (18-month)\" description=\"18-month
+        SAQ\" type=\"Instrument\"/>\n      <activity name=\"Dust Sample\" code=\"DS\"
+        description=\"Dust Sample\" type=\"Environment\"/>\n      <activity name=\"Birth
+        VIS\" code=\"BVIS\" description=\"Birth VIS\" type=\"Consent\"/>\n      <activity
+        name=\"PPG Follow Up CATI (LOW)\" code=\"FU CATI (lo)\" description=\"PPG
+        Follow Up CATI (LOW)\" type=\"Instrument\"/>\n      <activity name=\"Blood
+        Sample\" code=\"BS\" description=\"Blood Sample\" type=\"Biospecimen\"/>\n
+        \     <activity name=\"Pregnancy 2 Record of VIS\" code=\"PR 2\" description=\"Pregnancy
+        2 Record of VIS\" type=\"Consent\"/>\n      <activity name=\"Pregnancy 1 Record
+        of VIS\" code=\"PR 1\" description=\"Pregnancy 1 Record of VIS\" type=\"Consent\"/>\n
+        \     <activity name=\"Urine Sample\" code=\"US\" description=\"Urine Sample\"
+        type=\"Biospecimen\"/>\n      <activity name=\"Pre-Pregnancy Visit Information
+        Sheet\" code=\"VIS (pre)\" description=\"Pre-Pregnancy Visit Information Sheet\"
+        type=\"Consent\"/>\n      <activity name=\"24-month SAQ\" code=\"SAQ (24-month)\"
+        description=\"24-month SAQ\" type=\"Instrument\"/>\n      <activity name=\"18-month
+        Interview\" code=\"I (18-month)\" description=\"18-month Interview\" type=\"Instrument\"/>\n
+        \     <activity name=\"Pregnancy Visit 1 Instrument\" code=\"VI 1\" description=\"Pregnancy
+        Visit 1 Instrument\" type=\"Instrument\"/>\n      <activity name=\"Pregnancy
+        Visit 1 Father Instrument\" code=\"PVFI\" description=\"Pregnancy Visit 1
+        Father Instrument\" type=\"Instrument\"/>\n      <activity name=\"Pregnancy
+        Visit 2 Instrument\" code=\"VI 2\" description=\"Pregnancy Visit 2 Instrument\"
+        type=\"Instrument\"/>\n      <activity name=\"3-month Mother Phone Interview
+        Instrument\" code=\"MPI (3-month)\" description=\"3-month Mother Phone Interview
+        Instrument\" type=\"Instrument\"/>\n      <activity name=\"Low Intensity Consent\"
+        code=\"LIC\" description=\"Low Intensity Consent\" type=\"Consent\"/>\n      <activity
+        name=\"Father Consent\" code=\"FC\" description=\"Father Consent\" type=\"Consent\"/>\n
+        \     <activity name=\"Pregnancy Screener Instrument\" code=\"PSI\" description=\"Pregnancy
+        Screener Instrument\" type=\"Instrument\"/>\n      <activity name=\"Pregnancy
+        Probability Group Instrument CATI\" code=\"CATI\" description=\"Pregnancy
+        Probability Group Instrument CATI\" type=\"Instrument\"/>\n      <activity
+        name=\"Biospecimen Cord Blood Instrument\" code=\"BCBI\" description=\"Biospecimen
+        Cord Blood Instrument\" type=\"Biospecimen\"/>\n      <activity name=\"Child
+        Consent\" code=\"CC\" description=\"Child Consent\" type=\"Consent\"/>\n      <activity
+        name=\"Father Visit Information Sheet\" code=\"VIS (father)\" description=\"Father
+        Visit Information Sheet\" type=\"Consent\"/>\n      <activity name=\"Infant
+        Health Care Log\" code=\"IHCL\" description=\"Infant Health Care Log\" type=\"Instrument\"/>\n
+        \     <activity name=\"Pre-Pregnancy SAQ\" code=\"SAQ (pre)\" description=\"Pre-Pregnancy
+        SAQ\" type=\"Instrument\"/>\n      <activity name=\"12-month Mother SAQ Instrument\"
+        code=\"SAQ (12-month)\" description=\"12-month Mother SAQ Instrument\" type=\"Instrument\"/>\n
+        \     <activity name=\"24-month Interview\" code=\"I (24-month)\" description=\"24-month
+        Interview\" type=\"Instrument\"/>\n      <activity name=\"Pregnancy Visit
+        2 Information Sheet\" code=\"VIS 2\" description=\"Pregnancy Visit 2 Information
+        Sheet\" type=\"Consent\"/>\n      <activity name=\"12-month Mother Interview
+        Instrument\" code=\"MII (12-month)\" description=\"12-month Mother Interview
+        Instrument\" type=\"Instrument\"/>\n      <activity name=\"Pregnancy Visit
+        1 Information Sheet\" code=\"VIS 1\" description=\"Pregnancy Visit 1 Information
+        Sheet\" type=\"Consent\"/>\n      <activity name=\"Birth Visit Instrument\"
+        code=\"BVI\" description=\"Birth Visit Instrument\" type=\"Instrument\"/>\n
+        \     <activity name=\"Pregnancy Visit 1 SAQ Instrument\" code=\"SAQ 1\" description=\"Pregnancy
+        Visit 1 SAQ Instrument\" type=\"Instrument\"/>\n      <activity name=\"Pregnancy
+        Visit 2 SAQ Instrument\" code=\"SAQ 2\" description=\"Pregnancy Visit 2 SAQ
+        Instrument\" type=\"Instrument\"/>\n      <activity name=\"6-month Mother
+        Interview Instrument\" code=\"MII (6-month)\" description=\"6-month Mother
+        Interview Instrument\" type=\"Instrument\"/>\n      <activity name=\"12-month
+        Visit Information Sheet\" code=\"VIS (12-month)\" description=\"12-month Visit
+        Information Sheet\" type=\"Consent\"/>\n      <activity name=\"9-month Mother
+        Phone Interview Instrument\" code=\"MPII (9-month)\" description=\"9-month
+        Mother Phone Interview Instrument\" type=\"Instrument\"/>\n      <activity
+        name=\"Non-Pregnant Woman Informed Consent\" code=\"IC (non)\" description=\"Non-Pregnant
+        Woman Informed Consent\" type=\"Consent\"/>\n    </source>\n  </sources>\n</study>\n"
+    http_version: '1.1'
+  recorded_at: Thu, 10 Jan 2013 18:04:42 GMT
+- request:
+    method: post
     uri: https://ncsn-psc.local/api/v1/studies/NCS+Hi-Lo/sites/20000029/subject-assignments
     body:
+      encoding: US-ASCII
+      string: ''
     headers:
-      content-type:
+      Content-Type:
       - text/xml
-      authorization:
+      Authorization:
       - Basic cGZyOTU3OnBzYw==
-      content-length:
-      - "1024"
-  response: !ruby/struct:VCR::Response
-    status: !ruby/struct:VCR::ResponseStatus
+      Content-Length:
+      - '1024'
+  response:
+    status:
       code: 201
       message: Created
     headers:
-      location:
+      Location:
       - https://ncsn-psc.local/api/v1/studies/NCS+Hi-Lo/schedules/angela_davis_public_id
-      server:
+      Server:
       - Restlet-Framework/2.0.3
-      date:
+      Date:
       - Tue, 20 Sep 2011 15:22:17 GMT
-      content-length:
-      - "0"
-      vary:
+      Content-Length:
+      - '0'
+      Vary:
       - Accept-Charset, Accept-Encoding, Accept-Language, Accept
-      accept-ranges:
+      Accept-Ranges:
       - bytes
-      cache-control:
+      Cache-Control:
       - no-store, no-cache, must-revalidate, post-check=0, pre-check=0
-      pragma:
+      Pragma:
       - no-cache
     body:
-    http_version: "1.1"
-- !ruby/struct:VCR::HTTPInteraction
-  request: !ruby/struct:VCR::Request
-    method: :get
+      encoding: US-ASCII
+      string: ''
+    http_version: '1.1'
+  recorded_at: Thu, 10 Jan 2013 18:04:42 GMT
+- request:
+    method: get
     uri: https://ncsn-psc.local/api/v1/studies/NCS+Hi-Lo/sites/20000029/subject-assignments
     body:
+      encoding: US-ASCII
+      string: ''
     headers:
-      authorization:
+      Authorization:
       - Basic cGZyOTU3OnBzYw==
-  response: !ruby/struct:VCR::Response
-    status: !ruby/struct:VCR::ResponseStatus
+  response:
+    status:
       code: 200
       message: OK
     headers:
-      content-type:
+      Content-Type:
       - text/xml;charset=UTF-8
-      server:
+      Server:
       - Restlet-Framework/2.0.3
-      date:
+      Date:
       - Tue, 20 Sep 2011 15:22:17 GMT
-      content-length:
-      - "3095"
-      vary:
+      Content-Length:
+      - '3095'
+      Vary:
       - Accept-Charset, Accept-Encoding, Accept-Language, Accept
-      accept-ranges:
+      Accept-Ranges:
       - bytes
-      cache-control:
+      Cache-Control:
       - no-store, no-cache, must-revalidate, post-check=0, pre-check=0
-      pragma:
+      Pragma:
       - no-cache
-    body: |
-      <?xml version="1.0" encoding="UTF-8"?>
-
-      <subject-assignments xmlns="http://bioinformatics.northwestern.edu/ns/psc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://bioinformatics.northwestern.edu/ns/psc http://bioinformatics.northwestern.edu/ns/psc/psc.xsd">
-        <subject-assignment study-name="NCS Hi-Lo" site-name="Greater Chicago Study Center" start-date="2011-09-20" subject-coordinator-name="pfr957" current-amendment-key="2011-07-07~[Original]" id="angela_davis_public_id">
-          <scheduled-calendar id="2a9f68e0-60fe-4573-90ff-83a48900c778" assignment-id="3fdaf130-c5ca-012e-9d2b-58b035fb69ca">
-            <scheduled-study-segment id="ddc1a682-1df6-4bb2-a6ac-71a9fd26b932" start-date="2011-09-20" start-day="1" study-segment-id="6caf9143-bfb0-47e4-b1e4-ccc810a4cbc8">
-              <scheduled-activity id="500de9ee-32ca-4211-b033-6a89fb4c64e8" ideal-date="2011-09-20" repetition-number="0" planned-activity-id="df1ceee2-0b0d-45ad-9a5d-982c15738817">
-                <current-scheduled-activity-state reason="Initialized from template" date="2011-09-20" state="scheduled"/>
-              </scheduled-activity>
-            </scheduled-study-segment>
-          </scheduled-calendar>
-        </subject-assignment>
-      </subject-assignments>
-
-    http_version: "1.1"
+    body:
+      encoding: UTF-8
+      string: ! "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\n<subject-assignments
+        xmlns=\"http://bioinformatics.northwestern.edu/ns/psc\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"
+        xsi:schemaLocation=\"http://bioinformatics.northwestern.edu/ns/psc http://bioinformatics.northwestern.edu/ns/psc/psc.xsd\">\n
+        \ <subject-assignment study-name=\"NCS Hi-Lo\" site-name=\"Greater Chicago
+        Study Center\" start-date=\"2011-09-20\" subject-coordinator-name=\"pfr957\"
+        current-amendment-key=\"2011-07-07~[Original]\" id=\"angela_davis_public_id\">\n
+        \   <scheduled-calendar id=\"2a9f68e0-60fe-4573-90ff-83a48900c778\" assignment-id=\"3fdaf130-c5ca-012e-9d2b-58b035fb69ca\">\n
+        \     <scheduled-study-segment id=\"ddc1a682-1df6-4bb2-a6ac-71a9fd26b932\"
+        start-date=\"2011-09-20\" start-day=\"1\" study-segment-id=\"6caf9143-bfb0-47e4-b1e4-ccc810a4cbc8\">\n
+        \       <scheduled-activity id=\"500de9ee-32ca-4211-b033-6a89fb4c64e8\" ideal-date=\"2011-09-20\"
+        repetition-number=\"0\" planned-activity-id=\"df1ceee2-0b0d-45ad-9a5d-982c15738817\">\n
+        \         <current-scheduled-activity-state reason=\"Initialized from template\"
+        date=\"2011-09-20\" state=\"scheduled\"/>\n        </scheduled-activity>\n
+        \     </scheduled-study-segment>\n    </scheduled-calendar>\n  </subject-assignment>\n</subject-assignments>\n"
+    http_version: '1.1'
+  recorded_at: Thu, 10 Jan 2013 18:04:42 GMT
+recorded_with: VCR 2.4.0

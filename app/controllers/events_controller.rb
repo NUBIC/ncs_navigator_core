@@ -88,7 +88,7 @@ class EventsController < ApplicationController
       @date = params[:date]
       time = params[:time]
 
-      psc.schedule_pending_event(@event, Psc::ScheduledActivity::SCHEDULED, @date, reason, time)
+      psc.reschedule_pending_event(@event, @date, reason, time)
 
       path = @event.participant.nil? ? events_path : path = participant_path(@event.participant)
 

@@ -26,12 +26,50 @@ describe ScheduledActivity do
     let(:sa) { ScheduledActivity.new(attrs) }
 
     it "should be true if current_state is 'occurred'" do
-      sa.current_state = "occurred"
+      sa.current_state = Psc::ScheduledActivity::OCCURRED
       sa.should be_occurred
     end
 
-    it "should be false if current_state is other than'occurred'" do
+    it "should be false if current_state is other than 'occurred'" do
       sa.should_not be_occurred
+    end
+  end
+
+  describe "#open?" do
+    let(:sa) { ScheduledActivity.new(attrs) }
+
+    it "is true if scheduled" do
+      sa.current_state = Psc::ScheduledActivity::SCHEDULED
+      sa.should be_open
+    end
+
+    it "is true if conditional" do
+      sa.current_state = Psc::ScheduledActivity::CONDITIONAL
+      sa.should be_open
+    end
+
+    it "is false if occurred" do
+      sa.current_state = Psc::ScheduledActivity::OCCURRED
+      sa.should_not be_open
+    end
+  end
+
+  describe "#closed?" do
+    let(:sa) { ScheduledActivity.new(attrs) }
+
+    it "is false if scheduled" do
+      sa.current_state = Psc::ScheduledActivity::SCHEDULED
+      sa.should_not be_closed
+    end
+
+    it "is false if conditional" do
+      sa.current_state = Psc::ScheduledActivity::CONDITIONAL
+      sa.should_not be_closed
+    end
+
+    it "is true if occurred" do
+      sa.current_state = Psc::ScheduledActivity::OCCURRED
+      sa.should be_closed
     end
   end
 
