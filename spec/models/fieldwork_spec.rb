@@ -9,6 +9,7 @@
 #  contacts            :text
 #  created_at          :datetime
 #  end_date            :date
+#  event_templates     :text
 #  events              :text
 #  fieldwork_id        :string(36)
 #  generated_for       :string(255)

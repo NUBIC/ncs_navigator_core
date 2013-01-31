@@ -278,12 +278,13 @@ ActiveRecord::Schema.define(:version => 20130129202515) do
     t.string   "latest_merge_status"
     t.integer  "latest_merge_id"
     t.string   "staff_id"
-    t.string   "generated_for"
     t.text     "contact_links"
     t.text     "contacts"
+    t.text     "event_templates"
     t.text     "events"
-    t.text     "instruments"
+    t.string   "generated_for"
     t.text     "instrument_plans"
+    t.text     "instruments"
     t.text     "people"
     t.text     "surveys"
   end
@@ -322,39 +323,6 @@ ActiveRecord::Schema.define(:version => 20130129202515) do
     t.boolean  "being_processed",                            :default => false
   end
 
-  create_table "incidents", :force => true do |t|
-    t.integer  "psu_code",                                             :null => false
-    t.string   "incident_id",                            :limit => 36, :null => false
-    t.string   "incident_date",                          :limit => 10
-    t.string   "incident_time",                          :limit => 5
-    t.string   "incident_report_date",                   :limit => 10
-    t.string   "incident_report_time",                   :limit => 5
-    t.string   "incident_staff_reporter_id",             :limit => 36
-    t.string   "incident_staff_supervisor_id",           :limit => 36
-    t.integer  "contact_id"
-    t.integer  "incident_recipient_is_participant_id"
-    t.integer  "incident_recipient_is_dwelling_unit_id"
-    t.string   "incident_recipient_is_staff",            :limit => 36
-    t.integer  "incident_recipient_is_family_id"
-    t.integer  "incident_recipient_is_acquaintance_id"
-    t.integer  "incident_recipient_is_other"
-    t.integer  "incident_contact_person_id"
-    t.integer  "incident_type_code",                                   :null => false
-    t.string   "incident_type_other"
-    t.string   "incident_loss_computer_model",           :limit => 16
-    t.string   "incident_loss_computer_serial_number",   :limit => 32
-    t.string   "incident_loss_computer_decal",           :limit => 32
-    t.string   "incident_loss_removable_media",          :limit => 32
-    t.string   "incident_loss_paper",                    :limit => 32
-    t.string   "incident_loss_other"
-    t.text     "incident_description"
-    t.text     "incident_action"
-    t.integer  "incident_reported_code",                               :null => false
-    t.string   "transaction_type",                       :limit => 36
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
   create_table "institution_person_links", :force => true do |t|
     t.string   "psu_code",                 :limit => 36, :null => false
     t.string   "person_institute_id",      :limit => 36, :null => false
@@ -364,8 +332,8 @@ ActiveRecord::Schema.define(:version => 20130129202515) do
     t.integer  "institute_relation_code",                :null => false
     t.string   "institute_relation_other"
     t.string   "transaction_type",         :limit => 36
-    t.datetime "created_at",                             :null => false
-    t.datetime "updated_at",                             :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "institutions", :force => true do |t|
@@ -1200,6 +1168,7 @@ ActiveRecord::Schema.define(:version => 20130129202515) do
     t.datetime "completed_at"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "processed_for_operational_data_extraction"
     t.integer  "instrument_id"
     t.string   "api_id"
     t.integer  "participant_id"
