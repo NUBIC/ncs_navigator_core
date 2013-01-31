@@ -39,7 +39,7 @@ module NcsNavigator::Core
       take_survey(survey, response_set, &block)
     end
 
-    def complete_event(event, event_complete)
+    def complete_event(event)
       event.event_disposition_category_code = 3 # General Study Visit Event Code 
       event.event_disposition = 60 # Completed Consent/Interview in English
       event.save!
@@ -48,7 +48,7 @@ module NcsNavigator::Core
     def make_contact(event_type_code, event_complete = true)
       event = Factory(:event, :event_type_code => event_type_code,
                       :participant => @participant)
-      complete_event(event, event_complete) if event_complete
+      complete_event(event) if event_complete
 
       contact = Factory(:contact)
       contact_link = Factory(:contact_link, :person => @person, 
