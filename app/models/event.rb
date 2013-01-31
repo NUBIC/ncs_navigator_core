@@ -384,6 +384,10 @@ class Event < ActiveRecord::Base
     18
   end
 
+  def self.father_code
+    19
+  end
+
   def self.provider_recruitment_code
     22
   end

@@ -51,7 +51,7 @@ module NcsNavigator::Core::ResponseSetPopulator
                   when "prepopulated_mode_of_contact"
                     prepopulated_mode_of_contact(question)
                   when "prepopulated_is_pv1_or_pv2_or_father_for_participant_verification"
-                    is_pv1_or_pv2_or_father?(question)
+                    is_pv1_or_pv2_or_father_or_informed_consent?(question)
                   when "prepopulated_respondent_name_collected"
                     has_name_been_collected?(question)
                   when "prepopulated_should_show_maiden_name_and_nicknames"
@@ -105,10 +105,16 @@ module NcsNavigator::Core::ResponseSetPopulator
     # PROGRAMMER INSTRUCTIONS:
     # - IF EVENT_TYPE = PREGNANCY VISIT 1, PREGNANCY VISIT 2, OR FATHER, PRELOAD EVENT_TYPE, AND GO TO PV006.
     # - OTHERWISE, GO TO MULT_CHILD.
-    def is_pv1_or_pv2_or_father?(question)
+    def is_pv1_or_pv2_or_father_or_informed_consent?(question)
       event_type_code = event.try(:event_type_code).to_i
-      # If event is PV1, PV2, or Father
-      answer_for(question, [13, 15, 19].include?(event_type_code))
+      # If event is PV1, PV2, Father, or Informed Consent
+      valid_event_type_codes = [
+        Event.pregnancy_visit_1_code,
+        Event.pregnancy_visit_2_code,
+        Event.informed_consent_code,
+        Event.father_code
+      ]
+      answer_for(question, valid_event_type_codes.include?(event_type_code))
     end
 
     # PROGRAMMER INSTRUCTIONS:
