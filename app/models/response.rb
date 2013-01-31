@@ -50,7 +50,7 @@ class Response < ActiveRecord::Base
     when 'answer'
       self.answer.reference_identifier.sub(/neg_/, '-')
     when 'string'
-      self.string_value
+      reportable_string_value
     when 'integer'
       self.integer_value ? self.integer_value.to_s : nil
     when 'datetime'
@@ -65,6 +65,19 @@ class Response < ActiveRecord::Base
       self.text_value
     else
       fail "Unsupported response class in #reportable_value: #{answer.response_class}"
+    end
+  end
+
+  ##
+  # In cases where the response string value needs to be formatted
+  # to the MDES specifications, format the response.
+  # Otherwise (most of the time), simply return the string_value
+  # @return [String]
+  def reportable_string_value
+    if answer.custom_class_present?("phone")
+      self.string_value.scan(/\d/).join unless self.string_value.blank?
+    else
+      self.string_value
     end
   end
 

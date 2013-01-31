@@ -34,4 +34,51 @@ describe Answer do
     let(:o1) { Factory(:answer) }
     let(:o2) { Factory(:answer) }
   end
+
+  describe "#custom_class_present?" do
+    let(:answer) { Factory(:answer, :custom_class => custom_class) }
+
+    describe "when custom class is not set" do
+      let(:custom_class) { nil }
+      it "returns false" do
+        answer.custom_class_present?("asdf").should be_false
+      end
+    end
+
+    describe "when single custom class set" do
+      let(:custom_class) { "asdf" }
+
+      it "returns true when present" do
+        answer.custom_class_present?("asdf").should be_true
+      end
+
+      it "returns false when not present" do
+        answer.custom_class_present?("1234").should be_false
+      end
+
+      it "returns false when inexact match" do
+        answer.custom_class_present?("asd").should be_false
+      end
+
+    end
+
+    describe "when multiple custom class set" do
+      let(:custom_class) { "asdf qwer" }
+
+      it "returns true when present" do
+        answer.custom_class_present?("asdf").should be_true
+        answer.custom_class_present?("qwer").should be_true
+      end
+
+      it "returns false when not present" do
+        %w(asd qwe 1234 qwerty).each do |c|
+          answer.custom_class_present?(c).should be_false
+        end
+      end
+
+    end
+
+
+  end
+
 end
