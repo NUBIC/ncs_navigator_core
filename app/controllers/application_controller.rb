@@ -97,21 +97,14 @@ class ApplicationController < ActionController::Base
     ##
     # Default logic for setting of disposition group
     def set_disposition_group_for_contact_link
-      # First check if the event category was selected
-      if @event.event_disposition_category_code.to_i > 0
-        @disposition_group =
-          DispositionMapper.for_event_disposition_category_code(
-            @event.event_disposition_category_code)
-      # otherwise choose from the contact or instrument
+      instrument = @contact_link.instrument
+      contact    = @contact_link.contact
+      if contact && contact.contact_type_code.to_i > 0
+        @disposition_group = @contact_link.contact.contact_type.to_s
+      elsif instrument && instrument.survey.try(:title)
+        @disposition_group = instrument.survey.title
       else
-        instrument = @contact_link.instrument
-        contact = @contact_link.contact
-        if contact && contact.contact_type
-          @disposition_group = @contact_link.contact.contact_type.to_s
-        end
-        if instrument && instrument.survey
-          @disposition_group = instrument.survey.title
-        end
+        @disposition_group = DispositionMapper::GENERAL_STUDY_VISIT_EVENT
       end
     end
 

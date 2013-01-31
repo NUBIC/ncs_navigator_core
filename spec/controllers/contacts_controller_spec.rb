@@ -40,7 +40,6 @@ describe ContactsController do
       end
 
       describe "GET new" do
-
         before(:each) do
           Contact.stub(:new).and_return(mock_contact)
           params = {:participant => @participant, :event_type => @preg_screen_event,
@@ -64,21 +63,85 @@ describe ContactsController do
       end
 
       describe "GET edit" do
-
         before(:each) do
           @event = Factory(:event, :event_type => @preg_screen_event)
           @contact_link = Factory(:contact_link, :person => @person, :event => @event)
-          Contact.stub(:find).with("37").and_return(mock_contact(:set_default_end_time => nil))
         end
 
-        it "assigns the requested contact as @contact" do
-          get :edit, :id => "37", :contact_link_id => @contact_link.id
-          assigns[:contact].should equal(mock_contact)
+        context "with a mock contact" do
+          before do
+            Contact.stub(:find).with("37").and_return(mock_contact(:set_default_end_time => nil))
+          end
+
+          it "assigns the requested contact as @contact" do
+            get :edit, :id => "37", :contact_link_id => @contact_link.id
+            assigns[:contact].should equal(mock_contact)
+          end
+
+          it "assigns the contact link event as @event" do
+            get :edit, :id => "37", :contact_link_id => @contact_link.id
+            assigns[:event].id.should equal(@event.id)
+          end
         end
 
-        it "assigns the contact link event as @event" do
-          get :edit, :id => "37", :contact_link_id => @contact_link.id
-          assigns[:event].id.should equal(@event.id)
+        describe "disposition_group" do
+          let(:event) { Factory(:event, :event_type_code => Event.pregnancy_visit_1_code) }
+          let(:contact) { Factory(:contact, :contact_type_code => contact_type_code) }
+          let(:contact_link) { Factory(:contact_link, :contact => contact, :event => event) }
+
+          describe "when event determines disposition_group" do
+            let(:contact_type_code) { Contact::MAILING_CONTACT_CODE }
+            it "is Pregnancy Screener Event" do
+              get :edit, :id => contact.id, :contact_link_id => @contact_link.id
+              assigns[:disposition_group].should == "Pregnancy Screener Event"
+            end
+          end
+
+          describe "when contact_type is mail" do
+            let(:contact_type_code) { Contact::MAILING_CONTACT_CODE }
+            it "is Mail" do
+              get :edit, :id => contact.id, :contact_link_id => contact_link.id
+              assigns[:disposition_group].should == "Mail"
+            end
+          end
+
+          describe "when contact_type is telephone" do
+            let(:contact_type_code) { Contact::TELEPHONE_CONTACT_CODE }
+            it "is Telephone" do
+              get :edit, :id => contact.id, :contact_link_id => contact_link.id
+              assigns[:disposition_group].should == "Telephone"
+            end
+          end
+
+          describe "when contact_type is nil" do
+            let(:contact_type_code) { nil }
+            it "is DispositionMapper::GENERAL_STUDY_VISIT_EVENT" do
+              get :edit, :id => contact.id, :contact_link_id => contact_link.id
+              assigns[:disposition_group].should == DispositionMapper::GENERAL_STUDY_VISIT_EVENT
+            end
+
+            describe "and an instrument exists" do
+              let(:instrument) { Factory(:instrument, :survey => survey) }
+              let(:contact_link_w_instrument) { Factory(:contact_link, :contact => contact, :event => event, :instrument => instrument) }
+
+              describe "with a survey" do
+                let(:survey) { Factory(:survey, :title => "survey_title") }
+                it "is the survey title" do
+                  get :edit, :id => contact.id, :contact_link_id => contact_link_w_instrument.id
+                  assigns[:disposition_group].should == "survey_title"
+                end
+              end
+
+              describe "without a survey" do
+                let(:survey) { nil }
+                it "is DispositionMapper::GENERAL_STUDY_VISIT_EVENT" do
+                  get :edit, :id => contact.id, :contact_link_id => contact_link_w_instrument.id
+                  assigns[:disposition_group].should == DispositionMapper::GENERAL_STUDY_VISIT_EVENT
+                end
+              end
+            end
+
+          end
         end
       end
 
@@ -114,11 +177,9 @@ describe ContactsController do
           @person.contact_links.map(&:event).compact.map(&:event_type).uniq.should == [@ppg12_event, @preg_screen_event]
           @person.contact_links.map(&:contact).uniq.should == [@contact]
         end
-
       end
 
       describe "GET edit - contact end time" do
-
         before do
           @contact_link = Factory(:contact_link, :person => @person,
             :contact => Factory(:contact),
@@ -137,11 +198,7 @@ describe ContactsController do
           assigns[:contact].contact_end_time.should be_blank
         end
       end
-
-
     end
-
-
 
     context "for a low_intensity_ppg2_participant" do
       let(:date) { Date.parse("2525-02-01") }
@@ -276,8 +333,6 @@ describe ContactsController do
               e.event_start_time.should == c.contact_start_time
               e.event_disposition.should == c.contact_disposition
             end
-
-
           end
         end
 
@@ -297,7 +352,6 @@ describe ContactsController do
               response.should render_template("provider_recruitment")
             end
           end
-
         end
       end
 
