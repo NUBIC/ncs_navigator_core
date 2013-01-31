@@ -402,6 +402,13 @@ module NcsNavigator::Core::Warehouse::ThreePointZero
       }
     )
 
+    produce_one_for_one(:sampled_persons_ineligibilities, :SampledPersonsIneligibility,
+      :public_ids => [
+        { :table => :people, :join_column => :person_id },
+        { :table => :providers, :public_id => :provider_id }
+      ]
+    )
+
     # TODO: Task #3069
     #       This model has a problem because the alias column is too long for postgres.
     #       cf. http://www.postgresql.org/docs/current/static/sql-syntax-lexical.html#SQL-SYNTAX-IDENTIFIERS
