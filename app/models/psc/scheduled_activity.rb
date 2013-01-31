@@ -144,21 +144,13 @@ module Psc
     alias_method :id, :activity_id
 
     # Activity states.
-
-    CANCELED    = 'canceled'
-    CONDITIONAL = 'conditional'
-    MISSED      = 'missed'
-    NA          = 'NA'
-    OCCURRED    = 'occurred'
-    SCHEDULED   = 'scheduled'
-
-    ACTIVITY_STATES = [
-      CANCELED,
-      CONDITIONAL,
-      MISSED,
-      NA,
-      OCCURRED,
-      SCHEDULED
+    STATES = [
+      CANCELED    = 'canceled',
+      CONDITIONAL = 'conditional',
+      MISSED      = 'missed',
+      NA          = 'NA',
+      OCCURRED    = 'occurred',
+      SCHEDULED   = 'scheduled'
     ]
 
     attr_reader :contact

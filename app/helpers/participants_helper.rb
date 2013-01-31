@@ -137,7 +137,7 @@ module ParticipantsHelper
 
   def psc_activity_options(activity)
     opts = ""
-    Psc::ScheduledActivity::ACTIVITY_STATES.each do |a|
+    Psc::ScheduledActivity::STATES.each do |a|
       opts << "<option value=\"#{a}\""
       opts << " selected=\"selected\"" if activity.current_state == a
       txt = a == Psc::ScheduledActivity::NA ? "N/A" : a.titleize
