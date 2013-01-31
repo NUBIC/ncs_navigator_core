@@ -1,14 +1,15 @@
-require 'celluloid'
-require 'sidekiq/worker'
-
 module NcsNavigator::Core
   ##
-  # The worker watchdog consists of four parts:
+  # The worker watchdog consists of three parts:
   #
   # 1. A timer that issues Sidekiq jobs.
   # 2. A Sidekiq job that, when run, updates a Redis key with the current time.
   # 3. Shared configuration.
-  # 4. The status check.
+  #
+  # This is part 3.
+  #
+  # For part 1, see app/workers/clockwork.rb.  For part 2, see
+  # ::{WorkerWatchdog}.
   module WorkerWatchdog
     ##
     # The key containing last time a watchdog job completed.
@@ -38,37 +39,8 @@ module NcsNavigator::Core
     # (likely, unless Redis is really bogged down), we can be sure that we will
     # always have a valid result in the threshold window iff the workers are
     # alive.
-    def watchdog_periodicity
+    def watchdog_period
       worker_watchdog_threshold / 2
-    end
-
-    ##
-    # Issues watchdog jobs.  Started in an initializer.
-    class Timer
-      include Celluloid
-      include WorkerWatchdog
-
-      def initialize
-        async.issue_checks
-      end
-
-      def issue_checks
-        loop do
-          sleep watchdog_periodicity
-          Worker.perform_async
-        end
-      end
-    end
-
-    ##
-    # Responds to watchdog jobs.
-    class Worker
-      include Sidekiq::Worker
-      include WorkerWatchdog
-
-      def perform
-        Rails.application.redis.set(worker_watchdog_key, Time.now.to_i)
-      end
     end
   end
 end
