@@ -99,12 +99,7 @@ module NcsNavigator::Core::ResponseSetPopulator
     end
 
     def is_event_completed?(code)
-      person.events.each do |e|
-        e.event_type_code == code && 
-                      e.completed? ? (return true) : (return false)
-      end
-      
-      false
+      person.events.any? { |e| e.event_type_code == code && e.completed? }
     end
 
     def prepopulated_is_multiple_child?(question)

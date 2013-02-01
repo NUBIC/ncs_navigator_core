@@ -64,6 +64,88 @@ module NcsNavigator::Core
     end
 
     context "for ad-hoc prepopulators"
+      describe "prepopulated_is_9_months_completed" do
+        before(:each) do
+          init_common_vars(:create_generic_true_false_prepopulator_survey,
+                "INS_QUE_InternetUseContactPref_SUR_EHPBHI_M2.2_V1.1",
+                "prepopulated_is_9_months_completed")
+          # Current father event
+          @event = make_contact(Event::father_visit_code, event_complete = false)
+        end
+
+        it "should be TRUE if 9-month event was completed" do
+          make_contact(Event::nine_month_visit_code)
+          rsp = ResponseSetPopulator::ChildAndAdHoc.new(@person, @instrument,
+                                                        @survey)
+          get_response_as_string(rsp.populate,
+                  "prepopulated_is_9_months_completed").should == "TRUE"
+        end
+
+        it "should be FALSE if 9-month event was started but not completed" do
+          make_contact(Event::nine_month_visit_code, event_complete = false)
+          rsp = ResponseSetPopulator::ChildAndAdHoc.new(@person, @instrument,
+                                                        @survey)
+          get_response_as_string(rsp.populate,
+                  "prepopulated_is_9_months_completed").should == "FALSE"
+        end
+
+        it "should be FALSE if other events but not 9-month were completed" do
+          make_contact(Event::father_visit_saq_code) # Not 9-month
+          rsp = ResponseSetPopulator::ChildAndAdHoc.new(@person, @instrument,
+                                                        @survey)
+          get_response_as_string(rsp.populate,
+                  "prepopulated_is_9_months_completed").should == "FALSE"
+        end
+
+        it "should be FALSE if no events were completed" do
+          rsp = ResponseSetPopulator::ChildAndAdHoc.new(@person, @instrument,
+                                                        @survey)
+          get_response_as_string(rsp.populate,
+                  "prepopulated_is_9_months_completed").should == "FALSE"
+        end
+      end
+
+      describe "prepopulated_is_3_months_completed" do
+        before(:each) do
+          init_common_vars(:create_generic_true_false_prepopulator_survey,
+                "INS_QUE_InternetUseContactPref_SUR_EHPBHI_M2.2_V1.1",
+                "prepopulated_is_3_months_completed")
+          # Current father event
+          @event = make_contact(Event::father_visit_code, event_complete = false)
+        end
+
+        it "should be TRUE if 3-month event was completed" do
+          make_contact(Event::three_month_visit_code)
+          rsp = ResponseSetPopulator::ChildAndAdHoc.new(@person, @instrument,
+                                                        @survey)
+          get_response_as_string(rsp.populate,
+                  "prepopulated_is_3_months_completed").should == "TRUE"
+        end
+
+        it "should be FALSE if 3-month event was started but not completed" do
+          make_contact(Event::three_month_visit_code, event_complete = false)
+          rsp = ResponseSetPopulator::ChildAndAdHoc.new(@person, @instrument,
+                                                        @survey)
+          get_response_as_string(rsp.populate,
+                  "prepopulated_is_3_months_completed").should == "FALSE"
+        end
+
+        it "should be FALSE if other events but not 3-month were completed" do
+          make_contact(Event::father_visit_saq_code) # Not 3-month
+          rsp = ResponseSetPopulator::ChildAndAdHoc.new(@person, @instrument,
+                                                        @survey)
+          get_response_as_string(rsp.populate,
+                  "prepopulated_is_3_months_completed").should == "FALSE"
+        end
+
+        it "should be FALSE if no events were completed" do
+          rsp = ResponseSetPopulator::ChildAndAdHoc.new(@person, @instrument,
+                                                        @survey)
+          get_response_as_string(rsp.populate,
+                  "prepopulated_is_3_months_completed").should == "FALSE"
+        end
+      end
+
       describe "prepopulated_is_subsequent_father_interview" do
         before(:each) do
           init_common_vars(:create_generic_true_false_prepopulator_survey,
@@ -95,7 +177,7 @@ module NcsNavigator::Core
                 ).should == "TRUE"
         end
 
-        it "should be FALSE if father interview never took place before" do
+        it "should be TRUE if father interview never took place before" do
           make_contact(Event::three_month_visit_code) # Not father
           rsp = ResponseSetPopulator::ChildAndAdHoc.new(@person, @instrument,
                                                         @survey,

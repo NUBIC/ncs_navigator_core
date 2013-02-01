@@ -28,6 +28,8 @@ module NcsNavigator::Core::ResponseSetPopulator
     [/_PM_Child/,           ChildAndAdHoc],
     [/_BIO_Child/,          ChildAndAdHoc],
     [/_CON_Reconsideration/,ChildAndAdHoc],
+    [/_Father.*M2.1/,       ChildAndAdHoc],
+    [/_InternetUseContact/, ChildAndAdHoc],
     [/_\d{1,2}MMother/,     Postnatal],
     [/_\d{1,2}Month/,       Postnatal],
   ]
