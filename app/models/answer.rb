@@ -28,4 +28,14 @@
 class Answer < ActiveRecord::Base
   include NcsNavigator::Core::Surveyor::HasPublicId
   include Surveyor::Models::AnswerMethods
+
+  ##
+  # Determines if given class is included in the
+  # custom class attribute
+  # @param cls [String] the class to check
+  # @return [Boolean]
+  def custom_class_present?(cls)
+    custom_class.to_s.split.include?(cls)
+  end
+
 end

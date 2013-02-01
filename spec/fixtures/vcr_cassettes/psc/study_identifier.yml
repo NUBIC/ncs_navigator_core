@@ -1,32 +1,38 @@
 ---
-- !ruby/struct:VCR::HTTPInteraction
-  request: !ruby/struct:VCR::Request
-    method: :get
+http_interactions:
+- request:
+    method: get
     uri: https://ncsn-psc.local/api/v1/studies.json
     body:
+      encoding: US-ASCII
+      string: ''
     headers:
-      authorization:
+      Authorization:
       - Basic cGZyOTU3OnBzYw==
-  response: !ruby/struct:VCR::Response
-    status: !ruby/struct:VCR::ResponseStatus
+  response:
+    status:
       code: 200
       message: OK
     headers:
-      content-type:
+      Content-Type:
       - application/json
-      server:
+      Server:
       - Restlet-Framework/2.0.3
-      date:
+      Date:
       - Fri, 26 Aug 2011 18:54:05 GMT
-      vary:
+      Vary:
       - Accept-Charset, Accept-Encoding, Accept-Language, Accept
-      accept-ranges:
+      Accept-Ranges:
       - bytes
-      cache-control:
+      Cache-Control:
       - no-store, no-cache, must-revalidate, post-check=0, pre-check=0
-      transfer-encoding:
+      Transfer-Encoding:
       - chunked
-      pragma:
+      Pragma:
       - no-cache
-    body: "{\"studies\":[{\"assigned_identifier\":\"NCS Hi-Lo\",\"id\":\"1\",\"privileges\":[\"amend\",\"set-managing-sites\",\"set-participation\",\"register\",\"see-released\",\"purge\"]}]}"
-    http_version: "1.1"
+    body:
+      encoding: UTF-8
+      string: ! '{"studies":[{"assigned_identifier":"NCS Hi-Lo","id":"1","privileges":["amend","set-managing-sites","set-participation","register","see-released","purge"]}]}'
+    http_version: '1.1'
+  recorded_at: Thu, 10 Jan 2013 18:04:42 GMT
+recorded_with: VCR 2.4.0

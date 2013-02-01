@@ -11,12 +11,11 @@
     - activities_for_event = @participant_activity_plan.scheduled_activities_for_event(pending_event.event_type.to_s) if pending_event
     = render "/people/schedule_or_perform_event", :participant => @participant, :person => @person, :pending_event => pending_event, :activities_for_event => activities_for_event
     .schedule
-      - if @participant_activity_plan && !@participant.pending_events.blank?
+      - if @participant_activity_plan && pending_event
         %b
           Activities for Pending Events
         .activities
-          - e = @participant.pending_events.first
-          - @participant_activity_plan.scheduled_activities_for_event(e.to_s).each do |a|
+          - activities_for_event.each do |a|
             .activity
               %span{ :class => "scheduled_date" }
                 = a.date

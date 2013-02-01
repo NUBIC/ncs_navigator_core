@@ -1,38 +1,44 @@
 ---
-- !ruby/struct:VCR::HTTPInteraction
-  request: !ruby/struct:VCR::Request
-    method: :get
+http_interactions:
+- request:
+    method: get
     uri: https://ncsn-psc.local/api/v1/studies/NCS%20Hi-Lo/template/current/schedule-preview.json?segment%5B0%5D=ca65bbbb-7e47-4f71-a4f0-071e7f73f380&segment%5B1%5D=6caf9143-bfb0-47e4-b1e4-ccc810a4cbc8&start_date%5B0%5D=2000-01-01&start_date%5B1%5D=2000-01-01
     body:
+      encoding: US-ASCII
+      string: ''
     headers:
-      accept:
-      - '*/*'
-      accept-encoding:
+      Accept:
+      - ! '*/*'
+      Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
-      authorization:
+      Authorization:
       - psc_token PT-cas-ticket
-      user-agent:
+      User-Agent:
       - Ruby
-  response: !ruby/struct:VCR::Response
-    status: !ruby/struct:VCR::ResponseStatus
+  response:
+    status:
       code: 200
       message: OK
     headers:
-      date:
+      Date:
       - Mon, 19 Nov 2012 06:58:20 GMT
-      server:
+      Server:
       - Restlet-Framework/2.0.3
-      cache-control:
+      Cache-Control:
       - no-store, no-cache, must-revalidate, post-check=0, pre-check=0
-      pragma:
+      Pragma:
       - no-cache
-      accept-ranges:
+      Accept-Ranges:
       - bytes
-      vary:
+      Vary:
       - Accept-Charset,Accept-Encoding,Accept-Language,Accept
-      content-type:
+      Content-Type:
       - application/json
-      transfer-encoding:
+      Transfer-Encoding:
       - chunked
-    body: '<%= File.read(snapshot_file) %>'
+    body:
+      encoding: UTF-8
+      string: '<%= File.read(snapshot_file).gsub("'", "''") %>'
     http_version: '1.1'
+  recorded_at: Thu, 10 Jan 2013 18:04:42 GMT
+recorded_with: VCR 2.4.0

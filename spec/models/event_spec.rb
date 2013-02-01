@@ -615,6 +615,8 @@ describe Event do
         psc.stub!(:template_snapshot).and_return(Nokogiri::XML(File.read(
               File.expand_path('../../fixtures/psc/current_hilo_template_snapshot.xml', __FILE__))))
 
+        PatientStudyCalendar.any_instance.stub!(:should_schedule_segment).and_return(true)
+
         date = Date.today
         part = Factory(:high_intensity_pregnancy_one_participant)
         part.person = Factory(:person)
@@ -642,12 +644,12 @@ describe Event do
           Event.schedule_and_create_placeholder(psc, part, "2012-08-09")
 
           subject_schedule = psc.scheduled_activities(part)
-          subject_schedule.size.should == 4
+          subject_schedule.size.should == 5
 
           subject_schedule.each do |s|
             s.study_segment.should == "HI-Intensity: Pregnancy Visit 1"
             s.ideal_date.should == "2012-08-09"
-            s.current_state.should == Psc::ScheduledActivity::SCHEDULED
+            s.should be_open
           end
 
         end
