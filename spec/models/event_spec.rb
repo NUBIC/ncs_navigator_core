@@ -90,29 +90,6 @@ describe Event do
 
   it_should_behave_like 'a time-bounded task', 'event_end_date', '01/01/2000'
 
-  describe '.chronological' do
-    it 'orders events by their start date' do
-      e1 = Factory(:event, :event_start_date => '01/01/2002')
-      e2 = Factory(:event, :event_start_date => '01/01/2000')
-
-      Event.chronological.should == [e2, e1]
-    end
-
-    describe 'within the same date' do
-      let(:date) { '01/01/2000' }
-
-      before do
-        Event::TYPE_ORDER.shuffle.each do |etc|
-          Event.create!(:event_type_code => etc, :event_start_date => date)
-        end
-      end
-
-      it 'orders events by their type code' do
-        Event.chronological.map(&:event_type_code).should == Event::TYPE_ORDER
-      end
-    end
-  end
-
   describe ".event_start_time" do
 
     it "is set on create if nil" do
@@ -157,6 +134,30 @@ describe Event do
     it "returns the event end date if it exists and is valid" do
       event = Factory(:event, :event_end_date => Date.today)
       event.import_sort_date.should == event.event_end_date
+    end
+  end
+
+  describe "sorting" do
+    it "sorts by Event::TYPE_ORDER" do
+
+      v = Factory(:event, :event_type_code => 21)
+      pv1 = Factory(:event, :event_type_code => 13)
+      ic = Factory(:event, :event_type_code => 10)
+      m3 = Factory(:event, :event_type_code => 23)
+
+      event_array = [pv1, ic, m3, v]
+
+      event_array[0].should == pv1
+      event_array[1].should == ic
+      event_array[2].should == m3
+      event_array[3].should == v
+
+      ordered_event_array =  Event.sort(event_array)
+      ordered_event_array[0].should == ic
+      ordered_event_array[1].should == pv1
+      ordered_event_array[2].should == v
+      ordered_event_array[3].should == m3
+
     end
   end
 
