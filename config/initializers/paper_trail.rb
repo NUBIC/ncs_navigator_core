@@ -8,7 +8,6 @@ ActiveSupport.on_load(:active_record) do
   class << self
     PaperTrailExclusions = %w(
       EventTypeOrder
-      Survey
       Version
     )
 
