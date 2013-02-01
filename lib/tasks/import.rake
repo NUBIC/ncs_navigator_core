@@ -167,7 +167,7 @@ namespace :import do
       $stderr.print("\rAdvancing #{i + 1}/#{ps_to_advance.size} to next state...")
       Rails.logger.info("Advancing imported case #{p.p_id} to next state")
 
-      last_event = Event.sort(p.events).reverse.sort_by { |e| e.event_start_date }.last
+      last_event = Event.chronological.last
 
       Rails.logger.info("- Currently #{p.state.inspect}")
       Rails.logger.info("- Updating based on #{last_event.event_type} on #{last_event.event_start_date}")
