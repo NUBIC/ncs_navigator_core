@@ -64,13 +64,37 @@ module NcsNavigator::Core
     end
 
     context "for ad-hoc prepopulators"
+      describe "prepopulate_is_birth_or_subsequent_event" do
+        before(:each) do
+          init_common_vars(:create_generic_true_false_prepopulator_survey,
+                "INS_QUE_InternetUseContactPref_SUR_EHPBHI_M2.2_V1.1",
+                "prepopulate_is_birth_or_subsequent_event")
+        end
+
+        it "should be TRUE if current event is birth" do
+          event = Factory(:event, :event_type_code => Event::birth_code,
+                          :participant => @participant)
+          rsp = ResponseSetPopulator::ChildAndAdHoc.new(@person, @instrument,
+                                                        @survey, :event => event)
+          get_response_as_string(rsp.populate,
+                  "prepopulate_is_birth_or_subsequent_event").should == "TRUE"
+        end
+
+        it "should be FALSE if current event is not birth" do
+          event = Factory(:event, :event_type_code => Event::father_visit_code,
+                          :participant => @participant)
+          rsp = ResponseSetPopulator::ChildAndAdHoc.new(@person, @instrument,
+                                                        @survey, :event => event)
+          get_response_as_string(rsp.populate,
+                  "prepopulate_is_birth_or_subsequent_event").should == "FALSE"
+        end
+      end
+
       describe "prepopulated_is_9_months_completed" do
         before(:each) do
           init_common_vars(:create_generic_true_false_prepopulator_survey,
                 "INS_QUE_InternetUseContactPref_SUR_EHPBHI_M2.2_V1.1",
                 "prepopulated_is_9_months_completed")
-          # Current father event
-          @event = make_contact(Event::father_visit_code, event_complete = false)
         end
 
         it "should be TRUE if 9-month event was completed" do

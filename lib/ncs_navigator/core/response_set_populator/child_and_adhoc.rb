@@ -12,7 +12,8 @@ module NcsNavigator::Core::ResponseSetPopulator
         "prepopulated_event_type",
         "prepopulated_is_subsequent_father_interview",
         "prepopulated_is_3_months_completed",
-        "prepopulated_is_9_months_completed"
+        "prepopulated_is_9_months_completed",
+        "prepopulate_is_birth_or_subsequent_event"
       ]
     end
 
@@ -51,6 +52,8 @@ module NcsNavigator::Core::ResponseSetPopulator
             when "prepopulated_is_9_months_completed"
               answer_for(question,
                          is_event_completed?(Event::nine_month_visit_code))
+            when "prepopulate_is_birth_or_subsequent_event"
+              answer_for(question, Event::birth_code == event.event_type_code) 
             else
               nil
             end
@@ -78,7 +81,7 @@ module NcsNavigator::Core::ResponseSetPopulator
       true
     end
       
-    def is_arm_circ_given_in_anthropo?(question)
+    def is_arm_circ_given_in_anthropo?(question, response_set)
       valid_response_exists?("CHILD_ANTHRO.AN_MID_UPPER_ARM_CIRC1", :last) ?
           prepopulate_bp_mid_upper_arm_circ(question, response_set) : false
     end
