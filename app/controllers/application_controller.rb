@@ -74,12 +74,7 @@ class ApplicationController < ActionController::Base
       when "Low Intensity Data Collection"
         @disposition_group = disposition_group_for_study_arm(@event)
       when "Low to High Conversion"
-        contact = @contact_link.contact
-        if contact && contact.contact_type
-          @disposition_group = @contact_link.contact.contact_type.to_s
-        else
-          @disposition_group = DispositionMapper::GENERAL_STUDY_VISIT_EVENT
-        end
+        @disposition_group = disposition_group_for_study_arm(@event)
       when "Provider-Based Recruitment"
         @disposition_group = DispositionMapper::PROVIDER_RECRUITMENT_EVENT
       when "PBS Participant Eligibility Screening"
@@ -90,9 +85,10 @@ class ApplicationController < ActionController::Base
     end
 
     def disposition_group_for_study_arm(event)
-      event.try(:participant).low_intensity? ? DispositionMapper::TELEPHONE_INTERVIEW_EVENT : DispositionMapper::GENERAL_STUDY_VISIT_EVENT
+      event.try(:participant).low_intensity? ? DispositionMapper::TELEPHONE_INTERVIEW_EVENT : set_disposition_group_for_contact_link
     end
     private :disposition_group_for_study_arm
+
 
     ##
     # Default logic for setting of disposition group
