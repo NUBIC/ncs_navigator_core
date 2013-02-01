@@ -9,7 +9,8 @@ module NcsNavigator::Core::ResponseSetPopulator
         "prepopulated_should_show_upper_arm_length",
         "prepopulated_is_6_month_event",
         "prepopulated_is_12_month_visit",
-        "prepopulated_event_type"
+        "prepopulated_event_type",
+        "prepopulated_is_subsequent_father_interview"
       ]
     end
 
@@ -43,6 +44,8 @@ module NcsNavigator::Core::ResponseSetPopulator
               answer_for(question, event.twelve_month_visit?)
             when "prepopulated_event_type"
               answer_for(question, check_event_type_for_con_reconsideration)
+            when "prepopulated_is_subsequent_father_interview"
+              answer_for(question, is_this_a_subsequent_father_interview?)
             else
               nil
             end
@@ -70,6 +73,14 @@ module NcsNavigator::Core::ResponseSetPopulator
       valid_response_exists?("CHILD_ANTHRO.AN_MID_UPPER_ARM_CIRC1", :last)
     end
 
+    def is_this_a_subsequent_father_interview?
+      person.events.any? do |e|
+        # Skip current event then try matching
+        e.id != event.id && e.event_type_code == Event::father_visit_code ||
+                            e.event_type_code == Event::father_visit_saq_code
+      end
+    end
+ 
     def check_event_type_for_con_reconsideration
       # List of all pregnancy visit events
       pregnancy_visits = [

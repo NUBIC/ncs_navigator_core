@@ -28,8 +28,15 @@ module NcsNavigator::Core
       end
     end
 
-    def init_common_vars(survey_template)
-      @survey = send(survey_template)
+    def get_response_as_string(response_set, reference_identifier)
+      response = response_set.responses.select { |r|
+        r.question.reference_identifier == reference_identifier
+      }.first
+      response.to_s
+    end
+
+    def init_common_vars(survey_template, *args)
+      @survey = send(survey_template, *args)
       @participant = Factory(:participant)
       @person = Factory(:person)
       @participant.person = @person
@@ -39,7 +46,75 @@ module NcsNavigator::Core
       @response_set.responses.should be_empty
     end
 
+    def complete_event(event, event_complete)
+      event.event_disposition_category_code = 3 # General Study Visit Event Code
+      event.event_disposition = 60 # Completed Consent/Interview in English
+      event.save!
+    end
+
+    def make_contact(event_type_code, event_complete = true)
+      event = Factory(:event, :event_type_code => event_type_code,
+                      :participant => @participant)
+      complete_event(event, event_complete) if event_complete
+
+      contact = Factory(:contact)
+      contact_link = Factory(:contact_link, :person => @person,
+                              :contact => contact, :event => event)
+      event
+    end
+
     context "for ad-hoc prepopulators"
+      describe "prepopulated_is_subsequent_father_interview" do
+        before(:each) do
+          init_common_vars(:create_generic_true_false_prepopulator_survey,
+                "INS_QUE_Father_INT_EHPBHI_M2.1_V2.0",
+                "prepopulated_is_subsequent_father_interview")
+          # Current father event
+          @event = make_contact(Event::father_visit_code, event_complete = false)
+        end
+
+        it "should be TRUE if a completed father interview took place before" do
+          # Previous father event
+          make_contact(Event::father_visit_code)
+          rsp = ResponseSetPopulator::ChildAndAdHoc.new(@person, @instrument,
+                                                        @survey,
+                                                        :event => @event)
+          get_response_as_string(rsp.populate,
+                  "prepopulated_is_subsequent_father_interview"
+                ).should == "TRUE"
+        end
+
+        it "should be TRUE if a incomplete father interview took place before" do
+          # Previous father event
+          make_contact(Event::father_visit_saq_code, event_complete = false)
+          rsp = ResponseSetPopulator::ChildAndAdHoc.new(@person, @instrument,
+                                                        @survey,
+                                                        :event => @event)
+          get_response_as_string(rsp.populate,
+                  "prepopulated_is_subsequent_father_interview"
+                ).should == "TRUE"
+        end
+
+        it "should be FALSE if father interview never took place before" do
+          make_contact(Event::three_month_visit_code) # Not father
+          rsp = ResponseSetPopulator::ChildAndAdHoc.new(@person, @instrument,
+                                                        @survey,
+                                                        :event => @event)
+          get_response_as_string(rsp.populate,
+                  "prepopulated_is_subsequent_father_interview"
+                ).should == "FALSE"
+        end
+
+        it "should be FALSE if no interviews ever took place before" do
+          rsp = ResponseSetPopulator::ChildAndAdHoc.new(@person, @instrument,
+                                                        @survey,
+                                                        :event => @event)
+          get_response_as_string(rsp.populate,
+                  "prepopulated_is_subsequent_father_interview"
+                ).should == "FALSE"
+        end
+      end
+
       describe "prepopulated_event_type" do
         before(:each) do
           init_common_vars(:create_con_reconsideration_for_events)
