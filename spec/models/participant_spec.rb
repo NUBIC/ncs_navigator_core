@@ -860,17 +860,17 @@ describe Participant do
           participant3.pending_events.should be_empty
         end
 
-        it "orders events according to event chronology and event_type" do
+        it "orders events by event start date" do
           @e1_3 = Factory(:event, :participant => participant1, :event_end_date => nil, :event_start_date => 6.months.since(date))
           participant1.pending_events.should == [@e1_2, @e1_3]
         end
 
-        it "orders events according to event chronology and event_type" do
+        it "orders events by event_type then event start date" do
           @e1_3 = Factory(:event, :participant => participant1, :event_type_code => 13,
                           :event_end_date => nil, :event_start_date => 6.months.since(date))
           @e1_4 = Factory(:event, :participant => participant1, :event_type_code => 10,
                           :event_end_date => nil, :event_start_date => 6.months.since(date))
-          participant1.pending_events.should == [@e1_2, @e1_3, @e1_4]
+          participant1.pending_events.should == [@e1_2, @e1_4, @e1_3]
         end
 
       end
