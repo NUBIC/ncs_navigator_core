@@ -424,10 +424,14 @@ module NcsNavigator::Core::Mustache
     end
 
     def age_of_child_in_months(today = Date.today)
-      return "[AGE OF CHILD IN MONTHS]" if about_person.blank?
-      dob = Date.parse(about_person.person_dob)
-      result = (today.year*12 + today.month) - (dob.year*12 + dob.month)
-      dob.day > today.day ? (result-1) : result
+      return "[AGE OF CHILD IN MONTHS]" if about_person.blank? || about_person.person_dob.blank?
+      begin
+        dob = Date.parse(about_person.person_dob)
+        result = (today.year*12 + today.month) - (dob.year*12 + dob.month)
+        dob.day > today.day ? (result-1) : result
+      rescue
+        return "[AGE OF CHILD IN MONTHS]"
+      end
     end
 
     def work_place_name

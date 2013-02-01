@@ -1362,11 +1362,37 @@ module NcsNavigator::Core::Mustache
 
       let(:instrument_context) { InstrumentContext.new }
 
-      it "returns a default message if unable to calculate" do
+      it "returns a default message if person is nil" do
         rs = Factory(:response_set, :person => nil)
         context = InstrumentContext.new(rs)
         context.about_person.should be_nil
         context.age_of_child_in_months.should == "[AGE OF CHILD IN MONTHS]"
+      end
+
+      it "returns a default message if person dob is blank" do
+        today = Date.parse("2012-12-25")
+        person =  Factory(:person, :person_dob => nil)
+        participant = Factory(:participant)
+        participant.person = person
+        person.save!
+
+        rs = Factory(:response_set, :participant => participant)
+        context = InstrumentContext.new(rs)
+        context.about_person.should_not be_nil
+        context.age_of_child_in_months(today).should == "[AGE OF CHILD IN MONTHS]"
+      end
+
+      it "returns a default message if person dob is unparseable" do
+        today = Date.parse("2012-12-25")
+        person =  Factory(:person, :person_dob => "1234567890")
+        participant = Factory(:participant)
+        participant.person = person
+        person.save!
+
+        rs = Factory(:response_set, :participant => participant)
+        context = InstrumentContext.new(rs)
+        context.about_person.should_not be_nil
+        context.age_of_child_in_months(today).should == "[AGE OF CHILD IN MONTHS]"
       end
 
       it "returns the child's age in months" do
