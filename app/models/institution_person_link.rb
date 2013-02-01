@@ -4,7 +4,7 @@
 #
 # Table name: institution_person_links
 #
-#  created_at               :datetime         not null
+#  created_at               :datetime
 #  id                       :integer          not null, primary key
 #  institute_relation_code  :integer          not null
 #  institute_relation_other :string(255)
@@ -14,7 +14,7 @@
 #  person_institute_id      :string(36)       not null
 #  psu_code                 :string(36)       not null
 #  transaction_type         :string(36)
-#  updated_at               :datetime         not null
+#  updated_at               :datetime
 #
 
 
