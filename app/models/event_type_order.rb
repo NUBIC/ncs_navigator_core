@@ -27,12 +27,9 @@ class EventTypeOrder < ActiveRecord::Base
   end
 
   def self.different?
-    result = connection.exec_query(%Q{
-      SELECT string_agg(event_type_code::text, ',' ORDER BY id) AS all
-      FROM #{table_name}
-    })
+    res = select("string_agg(event_type_code::text, ',' ORDER BY id) AS all").first
 
-    result.rows[0].first != Event::TYPE_ORDER.join(',')
+    res.all != Event::TYPE_ORDER.join(',')
   end
 
   def self.persist
