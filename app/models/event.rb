@@ -199,10 +199,23 @@ class Event < ActiveRecord::Base
   end
 
   ##
-  # Sort given array by event_type_code
-  # according to the order in Event::TYPE_ORDER
-  def self.sort(event_array)
-    event_array.sort_by { |e| Event::TYPE_ORDER.index(e.event_type_code.to_i) }
+  # The preferred ordering for events: by date and type order.
+  def self.chronological
+    by_event_start_date.by_type_order
+  end
+
+  def self.by_event_start_date
+    order(:event_start_date)
+  end
+
+  def self.by_type_order
+    joins(%q{
+      LEFT OUTER JOIN event_type_order
+      AS eto
+      ON eto.event_type_code = events.event_type_code
+    }).
+    readonly(false).
+    order('eto.id')
   end
 
   ##

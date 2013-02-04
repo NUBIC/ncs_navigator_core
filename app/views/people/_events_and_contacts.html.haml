@@ -3,11 +3,11 @@
     .participant_events
       - if participant.events.blank?
         %p
-          = "No events exists for #{blank_safe(participant.person.to_s)} at this time."
+          = "No events exist for #{blank_safe(participant.person.to_s)} at this time."
       - else
         %b
           Contact History
-        - participant.events.sort_by{ |e| e.event_start_date.to_s }.reverse.each do |event|
+        - participant.events.chronological.reverse_order.each do |event|
           - event_name = event.to_s
           - person = participant.person
           .event
