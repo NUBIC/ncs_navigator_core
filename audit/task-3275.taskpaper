@@ -132,7 +132,7 @@
 ./app/models/operational_data_extractor/sample.rb:55
 ./app/models/operational_data_extractor/specimen.rb:64
 ./app/models/participant.rb:383
-./app/models/participant.rb:421
+./app/models/participant.rb:421  @fixed:6375d690fc9eaeb073b219720d240f3fe8c4a640 @reason:event order is now explicit
 ./app/models/participant.rb:455
 ./app/models/participant.rb:462
 ./app/models/participant.rb:487
