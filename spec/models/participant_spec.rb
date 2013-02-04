@@ -865,11 +865,11 @@ describe Participant do
           participant1.pending_events.should == [@e1_2, @e1_3]
         end
 
-        it "orders events by event_type then event start date" do
+        it "orders events by_event_start_date and by_type_order" do
           @e1_3 = Factory(:event, :participant => participant1, :event_type_code => 13,
-                          :event_end_date => nil, :event_start_date => 6.months.since(date))
+                          :event_end_date => nil, :event_start_date => 6.months.since(date).to_date)
           @e1_4 = Factory(:event, :participant => participant1, :event_type_code => 10,
-                          :event_end_date => nil, :event_start_date => 6.months.since(date))
+                          :event_end_date => nil, :event_start_date => 6.months.since(date).to_date)
           participant1.pending_events.should == [@e1_2, @e1_4, @e1_3]
         end
 

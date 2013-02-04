@@ -501,7 +501,7 @@ class Participant < ActiveRecord::Base
   # Returns all events where event_end_date is null
   # @return [Array<Event>]
   def pending_events
-    events.select { |e| e.event_end_date.blank? }
+    events.where("event_end_date IS NULL").chronological
   end
 
   ##
