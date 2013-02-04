@@ -130,6 +130,7 @@ class Event < ActiveRecord::Base
     27, # 12 Month
     30, # 18 Month
     31, # 24 Month
+    36, # 30 Month
   ]
 
   ##
