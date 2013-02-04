@@ -709,6 +709,22 @@ module NcsNavigator::Core::Mustache
     def schip_name
       "[STATE CHILD HEALTH INSURANCE PROGRAM NAME]"
     end
+
+    def child_sex
+      response_for("PARTICIPANT_VERIF_CHILD.CHILD_SEX")
+    end
+
+    def boys_girls
+      case child_sex
+      when "MALE"
+        "boys"
+      when "FEMALE"
+        "girls"
+      else
+        "boys/girls"
+      end
+    end
+
   end
 
 end

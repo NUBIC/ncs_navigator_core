@@ -1584,6 +1584,54 @@ module NcsNavigator::Core::Mustache
 
     end
 
+    context "for a 30 month visit" do
+      let(:instrument_context) { InstrumentContext.new(@response_set) }
+
+      before(:each) do
+        setup_survey_instrument(
+                    create_participant_verif_child_sex_survey_for_30m)
+      end
+
+      describe ".boys_girls" do
+        it "returns 'boys' if CHILD_SEX set to MALE (1)" do
+          take_survey(@survey, @response_set) do |a|
+            male = mock(NcsCode, :local_code => 1)
+            a.choice("PARTICIPANT_VERIF_CHILD.CHILD_SEX", male)
+          end
+          instrument_context.boys_girls.should == "boys"
+        end
+
+        it "returns 'girls' if CHILD_SEX set to FEMALE (2)" do
+          take_survey(@survey, @response_set) do |a|
+            female = mock(NcsCode, :local_code => 2)
+            a.choice("PARTICIPANT_VERIF_CHILD.CHILD_SEX", female)
+          end
+          instrument_context.boys_girls.should == "girls"
+        end
+
+        it "returns 'boys/girls' if CHILD_SEX set to REFUSED" do
+          take_survey(@survey, @response_set) do |a|
+            a.refused("PARTICIPANT_VERIF_CHILD.CHILD_SEX")
+          end
+          instrument_context.boys_girls.should == "boys/girls"
+        end
+
+        it "returns 'boys/girls' if CHILD_SEX set to DON'T KNOW" do
+          take_survey(@survey, @response_set) do |a|
+            could_not_obtain= mock(NcsCode, :local_code => "neg_2")
+            a.choice("PARTICIPANT_VERIF_CHILD.CHILD_SEX", could_not_obtain)
+          end
+          instrument_context.boys_girls.should == "boys/girls"
+        end
+
+        it "returns 'boys/girls' if CHILD_SEX is not set" do
+          instrument_context.boys_girls.should == "boys/girls"
+        end
+
+      end
+    end
+
+
     def create_single_birth
       take_survey(@survey, @response_set) do |a|
         a.no multiple

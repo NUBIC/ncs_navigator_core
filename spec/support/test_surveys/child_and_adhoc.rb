@@ -94,4 +94,24 @@ module ChildAndAdHoc
     survey
   end
 
+  def create_participant_verif_child_sex_survey_for_30m
+    survey = Factory(:survey, :title =>
+                "INS_QUE_ParticipantVerif_DCI_EHPBHILIPBS_M3.0_V1.0_PART_TWO",
+                :access_code =>
+                "ins_que_participantverif_dci_ehpbhilipbs_m3_0_v1_0_part_two")
+    survey_section = Factory(:survey_section, :survey_id => survey.id)
+    q = Factory(:question, :reference_identifier => "CHILD_SEX",
+                :data_export_identifier => "PARTICIPANT_VERIF_CHILD.CHILD_SEX",
+                :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "MALE",
+                :response_class => "answer", :reference_identifier => "1")
+    a = Factory(:answer, :question_id => q.id, :text => "FEMALE",
+                :response_class => "answer", :reference_identifier => "2")
+    a = Factory(:answer, :question_id => q.id, :text => "REFUSED",
+                :response_class => "answer", :reference_identifier => "neg_1")
+    a = Factory(:answer, :question_id => q.id, :text => "COULD NOT OBTAIN",
+                :response_class => "answer", :reference_identifier => "neg_2")
+    survey
+  end
+
 end
