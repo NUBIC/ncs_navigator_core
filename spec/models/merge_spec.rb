@@ -62,6 +62,8 @@ describe Merge do
   end
 
   describe '#status' do
+    let(:sometime) { Time.at(1234567890) }
+
     describe 'if started_at is nil' do
       before do
         subject.started_at = nil
@@ -73,14 +75,14 @@ describe Merge do
         end
 
         it 'is "pending"' do
-          subject.status.should == 'pending'
+          subject.status(sometime).should == 'pending'
         end
       end
     end
 
     describe 'if started_at is not nil' do
       before do
-        subject.started_at = Time.now
+        subject.started_at = sometime
       end
 
       describe 'and merged_at is nil' do
@@ -89,7 +91,7 @@ describe Merge do
         end
 
         it 'is "working"' do
-          subject.status.should == 'working'
+          subject.status(sometime).should == 'working'
         end
 
         describe 'and the job has timed out' do
@@ -98,7 +100,7 @@ describe Merge do
           end
 
           it 'is "timeout"' do
-            subject.status.should == 'timeout'
+            subject.status(sometime).should == 'timeout'
           end
         end
       end
@@ -110,34 +112,34 @@ describe Merge do
           end
 
           it 'is "timeout"' do
-            subject.status.should == 'timeout'
+            subject.status(sometime).should == 'timeout'
           end
         end
       end
 
       describe 'and crashed_at is not nil' do
         before do
-          subject.crashed_at = Time.now
+          subject.crashed_at = sometime
         end
 
         it 'is "error"' do
-          subject.status.should == 'error'
+          subject.status(sometime).should == 'error'
         end
       end
     end
 
     describe 'if merged_at is not nil' do
       before do
-        subject.merged_at = Time.now
+        subject.merged_at = sometime
       end
 
       describe 'and there was an exception' do
         before do
-          subject.crashed_at = Time.now
+          subject.crashed_at = sometime
         end
 
         it 'is "error"' do
-          subject.status.should == 'error'
+          subject.status(sometime).should == 'error'
         end
       end
 
@@ -148,11 +150,11 @@ describe Merge do
 
         describe 'and the data is synced' do
           before do
-            subject.synced_at = Time.now
+            subject.synced_at = sometime
           end
 
           it 'is "merged"' do
-            subject.status.should == 'merged'
+            subject.status(sometime).should == 'merged'
           end
 
           describe 'and the data is not synced' do
@@ -161,7 +163,7 @@ describe Merge do
             end
 
             it 'is "syncing"' do
-              subject.status.should == 'syncing'
+              subject.status(sometime).should == 'syncing'
             end
           end
         end
@@ -173,7 +175,7 @@ describe Merge do
         end
 
         it 'is "conflict"' do
-          subject.status.should == 'conflict'
+          subject.status(sometime).should == 'conflict'
         end
       end
     end

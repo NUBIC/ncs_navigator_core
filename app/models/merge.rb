@@ -202,15 +202,15 @@ class Merge < ActiveRecord::Base
   # A "fatal error" is any error that causes a merge process to crash and can
   # be caught by the Ruby runtime.  Such errors will be present in the merge
   # log.
-  def status
-    case S[started_at, merged_at, crashed_at, synced_at,  conflicted?, timed_out?]
-    when S[nil,        nil,       nil,        Case::Any,  Case::Any,   N[true]   ]; 'pending'
-    when S[N[nil],     nil,       nil,        Case::Any,  Case::Any,   N[true]   ]; 'working'
-    when S[Case::Any,  nil,       Case::Any,  Case::Any,  Case::Any,   true      ]; 'timeout'
-    when S[Case::Any,  N[nil],    nil,        nil,        N[true],     Case::Any ]; 'syncing'
-    when S[Case::Any,  N[nil],    nil,        N[nil],     N[true],     Case::Any ]; 'merged'
-    when S[Case::Any,  N[nil],    nil,        Case::Any,  true,        Case::Any ]; 'conflict'
-    when S[Case::Any,  Case::Any, N[nil],     Case::Any,  Case::Any,   Case::Any ]; 'error'
+  def status(as_of = Time.now)
+    case S[started_at, merged_at, crashed_at, synced_at,  conflicted?, timed_out?(as_of)]
+    when S[nil,        nil,       nil,        Case::Any,  Case::Any,   N[true]          ]; 'pending'
+    when S[N[nil],     nil,       nil,        Case::Any,  Case::Any,   N[true]          ]; 'working'
+    when S[Case::Any,  nil,       Case::Any,  Case::Any,  Case::Any,   true             ]; 'timeout'
+    when S[Case::Any,  N[nil],    nil,        nil,        N[true],     Case::Any        ]; 'syncing'
+    when S[Case::Any,  N[nil],    nil,        N[nil],     N[true],     Case::Any        ]; 'merged'
+    when S[Case::Any,  N[nil],    nil,        Case::Any,  true,        Case::Any        ]; 'conflict'
+    when S[Case::Any,  Case::Any, N[nil],     Case::Any,  Case::Any,   Case::Any        ]; 'error'
     end
   end
 
@@ -253,8 +253,8 @@ class Merge < ActiveRecord::Base
 
   ##
   # @private
-  def timed_out?
-    (Time.now - started_at >= TIMEOUT) if started_at
+  def timed_out?(as_of)
+    (as_of - started_at >= TIMEOUT) if started_at
   end
 
   def as_json(options = nil)
