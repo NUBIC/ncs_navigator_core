@@ -53,8 +53,8 @@ describe OperationalDataExtractor::TracingModule do
     response_set.save!
 
     take_survey(survey, response_set) do |a|
-      a.str "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.NEW_ADDRESS_1", '345 Easy St.'
-      a.str "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.NEW_ADDRESS_2", ''
+      a.str "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.NEW_ADDRESS1", '345 Easy St.'
+      a.str "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.NEW_ADDRESS2", ''
       a.str "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.NEW_UNIT", ''
       a.str "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.NEW_CITY", 'Chicago'
       a.choice "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.NEW_STATE", state

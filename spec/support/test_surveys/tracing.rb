@@ -37,10 +37,10 @@ module Tracing
     survey_section = Factory(:survey_section, :survey_id => survey.id)
 
     # Address One
-    q = Factory(:question, :reference_identifier => "NEW_ADDRESS_1", :data_export_identifier => "TRACING_INT.NEW_ADDRESS_1", :survey_section_id => survey_section.id)
+    q = Factory(:question, :reference_identifier => "NEW_ADDRESS1", :data_export_identifier => "TRACING_INT.NEW_ADDRESS1", :survey_section_id => survey_section.id)
     a = Factory(:answer, :question_id => q.id, :text => "Address 1", :response_class => "string")
     # Address Two
-    q = Factory(:question, :reference_identifier => "NEW_ADDRESS_2", :data_export_identifier => "TRACING_INT.NEW_ADDRESS_2", :survey_section_id => survey_section.id)
+    q = Factory(:question, :reference_identifier => "NEW_ADDRESS2", :data_export_identifier => "TRACING_INT.NEW_ADDRESS2", :survey_section_id => survey_section.id)
     a = Factory(:answer, :question_id => q.id, :text => "Address 2", :response_class => "string")
     # Unit
     q = Factory(:question, :reference_identifier => "NEW_UNIT", :data_export_identifier => "TRACING_INT.NEW_UNIT", :survey_section_id => survey_section.id)

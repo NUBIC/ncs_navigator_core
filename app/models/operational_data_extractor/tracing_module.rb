@@ -16,8 +16,8 @@ module OperationalDataExtractor
     }
 
     NEW_ADDRESS_MAP = {
-      "#{TRACING_MODULE_PREFIX}.NEW_ADDRESS_1"  => "address_one",
-      "#{TRACING_MODULE_PREFIX}.NEW_ADDRESS_2"  => "address_two",
+      "#{TRACING_MODULE_PREFIX}.NEW_ADDRESS1"   => "address_one",
+      "#{TRACING_MODULE_PREFIX}.NEW_ADDRESS2"   => "address_two",
       "#{TRACING_MODULE_PREFIX}.NEW_UNIT"       => "unit",
       "#{TRACING_MODULE_PREFIX}.NEW_CITY"       => "city",
       "#{TRACING_MODULE_PREFIX}.NEW_STATE"      => "state_code",
