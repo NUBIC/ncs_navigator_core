@@ -1614,6 +1614,198 @@ module NcsNavigator::Core::Mustache
 
     end
 
+    context "for multi_mode_visit_info approximate_visit_time" do
+      let(:instrument_context) { InstrumentContext.new(@response_set) }
+
+      before(:each) do
+        survey = Factory(:survey, :title => "Stub Survey")
+        setup_survey_instrument(survey)
+      end
+
+      approximate_visit_time_table = {
+        Event::pregnancy_visit_1_code => {
+          :EH  => "1.5 hours",
+          :PB  => "1.5 hours",
+          :HI  => "1.5 hours",
+          :LI  => "1 hour",
+          :PBS => "1 hour"
+        },
+        Event::pregnancy_visit_2_code => {
+          :EH  => "1.5 hours",
+          :PB  => "1.5 hours",
+          :HI  => "1.5 hours",
+          :LI  => "1 hour",
+          :PBS => "1 hour"
+        },
+        Event::father_visit_code => {
+          :EH  => "1.75 hours",
+          :PB  => "1.75 hours",
+          :HI  => "1.75 hours"
+        },
+        Event::birth_code => {
+          :EH  => "45 minutes",
+          :PB  => "45 minutes",
+          :HI  => "45 minutes",
+          :PBS => "45 minutes",
+          :LI  => "30 minutes"
+        },
+        Event::three_month_visit_code => {
+          :EH  => "40 minutes",
+          :PB  => "40 minutes",
+          :HI  => "40 minutes",
+          :PBS => "40 minutes",
+          :LI  => "40 minutes"
+        },
+        Event::six_month_visit_code => {
+          :EH  => "2 hours",
+          :PB  => "2 hours",
+          :HI  => "2 hours",
+          :PBS => "1.5 hours"
+        },
+        Event::nine_month_visit_code => {
+          :EH  => "35 minutes",
+          :PB  => "35 minutes",
+          :HI  => "35 minutes",
+          :PBS => "35 minutes",
+        },
+        Event::twelve_month_visit_code => {
+          :EH  => "2 hours",
+          :PB  => "2 hours",
+          :HI  => "2 hours",
+          :PBS => "1 hour"
+        },
+        Event::eighteen_month_visit_code => {
+          :EH  => "45 minutes",
+          :PB  => "45 minutes",
+          :HI  => "45 minutes",
+          :PBS => "45 minutes",
+          :LI  => "45 minutes"
+        },
+        Event::twenty_four_month_visit_code => {
+          :EH  => "1.5 hours",
+          :PB  => "1.5 hours",
+          :HI  => "1.5 hours",
+          :PBS => "45 minutes",
+          :LI  => "45 minutes"
+        },
+        Event::thirty_six_month_visit_code => {
+          :EH  => "2 hours",
+          :PB  => "2 hours",
+          :HI  => "2 hours",
+          :PBS => "1.5 hours"
+        },
+        Event::nine_month_visit_code => {
+          :EH  => "35 minutes",
+          :PB  => "35 minutes",
+          :HI  => "35 minutes",
+          :PBS => "35 minutes",
+        },
+        Event::twelve_month_visit_code => {
+          :EH  => "2 hours",
+          :PB  => "2 hours",
+          :HI  => "2 hours",
+          :PBS => "1 hour"
+        },
+        Event::eighteen_month_visit_code => {
+          :EH  => "45 minutes",
+          :PB  => "45 minutes",
+          :HI  => "45 minutes",
+          :PBS => "45 minutes",
+          :LI  => "45 minutes"
+        },
+        Event::twenty_four_month_visit_code => {
+          :EH  => "1.5 hours",
+          :PB  => "1.5 hours",
+          :HI  => "1.5 hours",
+          :PBS => "45 minutes",
+          :LI  => "45 minutes"
+        },
+        Event::thirty_six_month_visit_code => {
+          :EH  => "1.75 hours",
+          :PB  => "1.75 hours",
+          :HI  => "1.75 hours",
+          :LI  => "1.75 hour",
+          :PBS => "1.75 hour"
+        }
+      }
+
+      def set_high_intensity()
+        @participant.high_intensity = true
+        @participant.save!
+      end
+
+      def set_low_intensity()
+        @participant.high_intensity = false
+        @participant.save!
+      end
+
+      def add_event(event_type_code)
+        @response_set.instrument.event = Factory(:event,
+                                         :event_type_code => event_type_code, 
+                                         :participant => @participant)
+        @participant.events.reload
+      end
+
+      def set_study_center(center_type)
+        return unless center_type
+        code = NcsCode.for_list_name_and_display_text("RECRUIT_TYPE_CL1",
+                                                      center_type)
+        NcsNavigator.configuration.recruitment_type_id = code.local_code
+        NcsNavigatorCore.recruitment_strategy =
+                            RecruitmentStrategy.for_code(code.local_code)
+      end
+
+      def study_center_name(recruitment_type)
+        case recruitment_type
+        when :EH
+          "Enhanced Household Enumeration"
+        when :PB
+          "Provider-Based Recruitment"
+        when :HI
+          "Two-Tier"
+        when :LI
+          "Two-Tier"
+        when :PBS
+          "Provider Based Subsample"
+        end
+      end
+
+      describe ".approximate_visit_time" do
+        approximate_visit_time_table.each do |event_code, recruitments|
+          recruitments.each do |recruitment_type, time_estimate|
+
+            it "returns '#{time_estimate}' if recruitment type is #{recruitment_type} and event_code is #{event_code}" do
+              set_study_center(study_center_name(recruitment_type))
+              add_event(event_code)
+              set_high_intensity() if recruitment_type == :HI
+              set_low_intensity() if recruitment_type == :LI
+              instrument_context.approximate_visit_time.should ==
+                                                            time_estimate 
+            end
+
+            it "returns 'unknown amount of time' if recruitment type is #{recruitment_type} and event_code is not set" do
+              set_study_center(study_center_name(recruitment_type))
+              set_high_intensity() if recruitment_type == :HI
+              set_low_intensity() if recruitment_type == :LI
+              instrument_context.approximate_visit_time.should ==
+                                                    "unknown amount of time" 
+            end
+
+            it "returns 'unknown amount of time' if recruitment center is set to 'OVC' and event_code is #{recruitment_type}" do
+              set_study_center("Original VC")
+              add_event(event_code)
+              set_high_intensity() if recruitment_type == :HI
+              set_low_intensity() if recruitment_type == :LI
+              instrument_context.approximate_visit_time.should ==
+                                                    "unknown amount of time" 
+            end
+
+          end
+        end
+      end
+
+    end
+
     context "for a 30 month visit" do
       let(:instrument_context) { InstrumentContext.new(@response_set) }
 

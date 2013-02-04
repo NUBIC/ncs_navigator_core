@@ -729,6 +729,122 @@ module NcsNavigator::Core::Mustache
       end
     end
 
+    def approximate_visit_time_table(event_code, recruitment_type)
+      avtt = {
+        Event::pregnancy_visit_1_code => {
+          :EH  => "1.5 hours",
+          :PB  => "1.5 hours",
+          :HI  => "1.5 hours",
+          :LI  => "1 hour",
+          :PBS => "1 hour"
+        },
+        Event::pregnancy_visit_2_code => {
+          :EH  => "1.5 hours",
+          :PB  => "1.5 hours",
+          :HI  => "1.5 hours",
+          :LI  => "1 hour",
+          :PBS => "1 hour"
+        },
+        Event::father_visit_code => {
+          :EH  => "1.75 hours",
+          :PB  => "1.75 hours",
+          :HI  => "1.75 hours"
+        },
+        Event::birth_code => {
+          :EH  => "45 minutes",
+          :PB  => "45 minutes",
+          :HI  => "45 minutes",
+          :PBS => "45 minutes",
+          :LI  => "30 minutes"
+        },
+        Event::three_month_visit_code => {
+          :EH  => "40 minutes",
+          :PB  => "40 minutes",
+          :HI  => "40 minutes",
+          :PBS => "40 minutes",
+          :LI  => "40 minutes"
+        },
+        Event::six_month_visit_code => {
+          :EH  => "2 hours",
+          :PB  => "2 hours",
+          :HI  => "2 hours",
+          :PBS => "1.5 hours"
+        },
+        Event::nine_month_visit_code => {
+          :EH  => "35 minutes",
+          :PB  => "35 minutes",
+          :HI  => "35 minutes",
+          :PBS => "35 minutes",
+        },
+        Event::twelve_month_visit_code => {
+          :EH  => "2 hours",
+          :PB  => "2 hours",
+          :HI  => "2 hours",
+          :PBS => "1 hour"
+        },
+        Event::eighteen_month_visit_code => {
+          :EH  => "45 minutes",
+          :PB  => "45 minutes",
+          :HI  => "45 minutes",
+          :PBS => "45 minutes",
+          :LI  => "45 minutes"
+        },
+        Event::twenty_four_month_visit_code => {
+          :EH  => "1.5 hours",
+          :PB  => "1.5 hours",
+          :HI  => "1.5 hours",
+          :PBS => "45 minutes",
+          :LI  => "45 minutes"
+        },
+        Event::thirty_six_month_visit_code => {
+          :EH  => "1.75 hours",
+          :PB  => "1.75 hours",
+          :HI  => "1.75 hours",
+          :LI  => "1.75 hour",
+          :PBS => "1.75 hour"
+        },
+      }
+
+      if event_code && recruitment_type
+        avtt[event_code][recruitment_type]
+      else
+        "unknown amount of time"
+      end
+    end
+
+    def hi_lo
+      @response_set.participant.high_intensity? ? :HI : :LI
+    end
+
+    def get_recruitment_strategy
+      if study_center_type == :TT
+        hi_lo
+      else
+        study_center_type
+      end
+    end
+
+    def study_center_type
+      case NcsNavigatorCore.recruitment_type_id
+      when 1
+        :EH
+      when 2
+        :PB
+      when 3
+        :TT
+      when 5
+        :PBS
+      else
+        nil
+      end
+    end
+
+    def approximate_visit_time
+      result = approximate_visit_time_table(
+                        @response_set.instrument.event.try(:event_type_code),
+                        get_recruitment_strategy)
+    end
+
   end
 
 end
