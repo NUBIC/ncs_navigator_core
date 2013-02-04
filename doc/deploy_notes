@@ -28,6 +28,8 @@
 
   $ STUDY_CENTER=deploy_site USER=deploy_user cap staging config:parse_surveys
 
+  $ STUDY_CENTER=deploy_site USER=deploy_user cap staging config:seed_database
+
 [PSC]
 
 ** Update the PSC template to latest amended version **

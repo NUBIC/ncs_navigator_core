@@ -151,8 +151,7 @@ namespace :config do
   task :seed_database, :roles => :app do
     run [
       "cd '#{current_release}'",
-      "#{rake} db:seed",
-      "#{rake} pbs:codes"
+      "#{rake} db:seed"
     ].join(' && ')
   end
 
