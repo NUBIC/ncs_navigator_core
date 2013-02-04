@@ -47,6 +47,7 @@
 ./app/models/merge.rb:169 @fixed:661c80d7112cb97f9d73eb19f5e67b2bea8ff711 @reason:Used to log when a PSC sync completes
 ./app/models/merge.rb:179 @fixed:661c80d7112cb97f9d73eb19f5e67b2bea8ff711 @reason:Used to log a crash timestamp
 ./app/models/merge.rb:257 @fixed:661c80d7112cb97f9d73eb19f5e67b2bea8ff711 @reason:Used to calculate whether a merge has timed out; timeout is relative to when the call to #timed_out? is made
+./app/models/merge.rb:205 @fixed:7c6a626462b1dc5637139d11727ada8899d73020 @reason:A convenient default; also eliminates Time.now from Merge#status specs
 ./app/models/operational_data_extractor/base.rb:132
 ./app/models/operational_data_extractor/base.rb:134
 ./app/models/operational_data_extractor/base.rb:138
@@ -170,11 +171,6 @@
 ./spec/models/field/merge_value_generation.rb:10
 ./spec/models/fieldwork_spec.rb:147
 ./spec/models/fieldwork_spec.rb:148
-./spec/models/merge_spec.rb:83 @fixed:7c6a626462b1dc5637139d11727ada8899d73020
-./spec/models/merge_spec.rb:120 @fixed:7c6a626462b1dc5637139d11727ada8899d73020
-./spec/models/merge_spec.rb:131 @fixed:7c6a626462b1dc5637139d11727ada8899d73020
-./spec/models/merge_spec.rb:136 @fixed:7c6a626462b1dc5637139d11727ada8899d73020
-./spec/models/merge_spec.rb:151 @fixed:7c6a626462b1dc5637139d11727ada8899d73020
 ./spec/models/operational_data_extractor/pbs_eligibility_screener_spec.rb:53
 ./spec/models/operational_data_extractor/pbs_eligibility_screener_spec.rb:485
 ./spec/models/operational_data_extractor/pbs_eligibility_screener_spec.rb:512
