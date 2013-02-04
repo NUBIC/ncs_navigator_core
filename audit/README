@@ -6,17 +6,14 @@ context.  Not all uses of Date.today/#first/etc are incorrect.
 
 If you did not write the code under investigation and cannot easily determine
 if it is incorrect, use git blame to find out who wrote it and ask that
-developer about their assumptions.  For code written by developers that are
-no longer present, assume that it's incorrect and proceed to the next steps.
+developer about their assumptions.
 
-For code that is incorrect or looks incorrect, write examples that demonstrate
-violation of incorrect order assumptions.
-
-For code that looks correct, prove that the code functions properly even under
-Date.today/#first/etc edge cases.  Write examples that demonstrate proper
-functioning in the presence of edge cases.  Even if the code is correct,
-investigate how to refactor it so that it does not need to depend on suspect
-patterns.
+In either case, you may need to augment Cases' spec suite with examples that
+demonstrate correct functionality.  You should also investigate whether
+Date.today/#first/etc need to stay around; in many cases, the suspect patterns
+can be factored out.
 
 When you complete an audit, tag the corresponding line with @fixed:commit-ish,
 and commit the changes.
+
+# vim:ts=2:sw=2:et:tw=78
