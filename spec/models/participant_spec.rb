@@ -814,20 +814,22 @@ describe Participant do
           participant.stub!(:eligible?).and_return(true)
 
           Event.schedule_and_create_placeholder(psc, participant, "2012-08-09")
+
           participant.events.reload
           pending_events = participant.pending_events
           pending_events.size.should == 8
-          birth_event_type = pending_events.second.event_type
-          birth_event_type.to_s.should == "Birth"
+          birth_event = pending_events.detect { |e| e.event_type_code == Event.birth_code }
+          birth_event.event_type.to_s.should == "Birth"
 
-          participant.mark_event_out_of_window(psc, pending_events.second)
+          participant.mark_event_out_of_window(psc, birth_event)
+
+          participant.events.reload
           pending_events = participant.pending_events
-
           pending_events.size.should == 7
-          pending_events.second.event_type.to_s.should == "3 Month"
+          pending_events.first.event_type.to_s.should == "3 Month"
 
-          participant.completed_event?(birth_event_type).should be_true
-          ce = participant.completed_events(birth_event_type)
+          participant.completed_event?(birth_event.event_type).should be_true
+          ce = participant.completed_events(birth_event.event_type)
           ce.size.should == 1
           ce.first.event_disposition.should == 48
           ce.first.event_disposition_category.should == general_study_visit
