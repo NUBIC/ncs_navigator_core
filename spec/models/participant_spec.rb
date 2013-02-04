@@ -1694,8 +1694,6 @@ describe Participant do
         end
 
         def latest_event
-          # Participant#events imposes its own ordering, which isn't useful in
-          # this case.
           Event.where(:participant_id => p.id).order(:created_at).last
         end
 
@@ -1766,14 +1764,21 @@ describe Participant do
             ]
           end
 
+          before do
+            # If PV1 is completed, so is the eligibility screener.  They'll be
+            # completed on the same day, too.
+            Factory(:event, :participant => p, :event_type_code => 34, :event_end_date => Date.parse('2000-01-01'))
+            p.completed_pbs_eligibility_screener!
+
+            # We performed PV1, which means that we'll have a contact for it too.
+            ContactLink.create!(:contact => Factory(:contact), :event => e, :staff_id => 'test')
+            psc.stub!(:unique_label_ideal_date_pairs_for_scheduled_segment => pairs)
+          end
+
           describe 'and whose due date is more than 60 days from today' do
             before do
               # Set participant's due date to today + 61 days.
               p.ppg_details.create!(:orig_due_date => Date.today + 61.days)
-
-              # See eligiblity screener setup.
-              ContactLink.create!(:contact => Factory(:contact), :event => e, :staff_id => 'test')
-              psc.stub!(:unique_label_ideal_date_pairs_for_scheduled_segment => pairs)
 
               p.advance(psc)
             end
