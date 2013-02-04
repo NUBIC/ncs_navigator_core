@@ -152,12 +152,6 @@ collection:biological event:pregnancy_visit_2 instrument:2.0:ins_bio_adultblood_
 # Biospecimen Adult Urine Instrument
 collection:biological event:pregnancy_visit_2 instrument:2.0:ins_bio_adulturine_dci_ehpbhi_p2_v1.0 instrument:2.1:ins_bio_adulturine_dci_ehpbhi_m2.1_v1.1 instrument:2.2:ins_bio_adulturine_dci_ehpbhi_m2.1_v1.1 instrument:3.0:ins_bio_adulturine_dci_ehpbhi_m2.1_v1.1 instrument:3.1:ins_bio_adulturine_dci_ehpbhi_m2.1_v1.1 instrument:3.2:ins_bio_adulturine_dci_ehpbhi_m2.1_v1.1 order:11_01 participant_type:mother
 
-# Environmental Tap Water Pesticides (TWQ) Technician Collect Instrument
-collection:environmental event:pregnancy_visit_2 instrument:2.0:ins_env_tapwaterpesttechcollect_dci_ehpbhi_p2_v1.0 instrument:2.1:ins_env_tapwaterpesttechcollect_dci_ehpbhi_m2.1_v1.1 instrument:2.2:ins_env_tapwaterpesttechcollect_dci_ehpbhi_m2.2_v2.0 instrument:3.0:ins_env_tapwaterpesttechcollect_dci_ehpbhi_m2.2_v2.0 instrument:3.1:ins_env_tapwaterpesttechcollect_dci_ehpbhi_m2.2_v2.0 instrument:3.2:ins_env_tapwaterpesttechcollect_dci_ehpbhi_m2.2_v2.0 order:20_01 participant_type:mother
-
-# Environmental Vacuum Bag Dust (VBD) Technician Collect Instrument
-collection:environmental event:pregnancy_visit_2 instrument:2.0:ins_env_vacbagdusttechcollect_dci_ehpbhi_p2_v1.0 instrument:2.1:ins_env_vacbagdusttechcollect_dci_ehpbhi_m2.1_v1.1 instrument:2.2:ins_env_vacbagdusttechcollect_dci_ehpbhi_m2.2_v2.0 instrument:3.0:ins_env_vacbagdusttechcollect_dci_ehpbhi_m2.2_v2.0 instrument:3.1:ins_env_vacbagdusttechcollect_dci_ehpbhi_m2.2_v2.0 instrument:3.2:ins_env_vacbagdusttechcollect_dci_ehpbhi_m2.2_v2.0 order:21_01 participant_type:mother
-
 # Pregnancy Visit 2 Visit Information Sheet
 event:pregnancy_visit_2 order:95_01
 
@@ -296,7 +290,7 @@ event:3_month instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_
 event:3_month instrument:3.0:ins_que_tracing_int_ehpbhilipbs_m3.0_v1.0 instrument:3.1:ins_que_tracing_int_ehpbhilipbs_m3.0_v1.0 instrument:3.2:ins_que_tracing_int_ehpbhilipbs_m3.0_v1.0 order:90_01 participant_type:mother
 
 # Biospecimen Breast Milk Collection SAQ
-collection:biological event:birth instrument:3.1:ins_bio_breastmilkcoll_saqspec_ehpbhi_m3.1_v1.0 instrument:3.2:ins_bio_breastmilkcoll_saqspec_ehpbhi_m3.1_v1.0 order:95_01 participant_type:mother
+collection:biological event:3_month instrument:3.1:ins_bio_breastmilkcoll_saqspec_ehpbhi_m3.1_v1.0 instrument:3.2:ins_bio_breastmilkcoll_saqspec_ehpbhi_m3.1_v1.0 order:95_01 participant_type:mother
 
 
 6 Month - 24
@@ -394,8 +388,7 @@ collection:biological event:12_month instrument:3.1:ins_bio_childblood_int_ehpbh
 collection:biological event:12_month instrument:3.1:ins_bio_childsalivacoll_int_ehpbhi_m3.1_v1.0 instrument:3.2:ins_bio_childsalivacoll_int_ehpbhi_m3.1_v1.0 order:95_03 participant_type:child
 
 # Biospecimen Child Saliva Collection SAQ
-collection:biological event:12_month instrument:3.1:ins_bio_childsalivacoll_saqspec_ehpbhi_m3.1_v1.0
-instrument:3.2:ins_bio_childsalivacoll_saqspec_ehpbhi_m3.1_v1.0 order:95_04 participant_type:mother
+collection:biological event:12_month instrument:3.1:ins_bio_childsalivacoll_saqspec_ehpbhi_m3.1_v1.0 instrument:3.2:ins_bio_childsalivacoll_saqspec_ehpbhi_m3.1_v1.0 order:95_04 participant_type:mother
 
 # Biospecimen Child Urine Collection Instrument
 collection:biological event:12_month instrument:3.1:ins_bio_childurinecoll_int_ehpbhi_m3.1_v1.0 instrument:3.2:ins_bio_childurinecoll_int_ehpbhi_m3.1_v1.0 order:95_05 participant_type:child
