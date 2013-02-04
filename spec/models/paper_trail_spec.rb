@@ -16,9 +16,9 @@ describe 'Auditing' do
       Version.where(:item_type => Question.to_s).should_not be_empty
     end
 
-    it "paper_trail doesn't work with Survey" do
+    it "has an an audit log for Survey" do
       with_versioning { Factory(:survey) }
-      Version.where(:item_type => Survey.to_s).should be_empty
+      Version.where(:item_type => Survey.to_s).should_not be_empty
     end
   end
 end
