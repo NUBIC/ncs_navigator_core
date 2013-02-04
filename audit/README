@@ -1,0 +1,19 @@
+Auditing guidelines
+-------------------
+
+When investigating a line, consider not only its immediate actions but also its
+context.  Not all uses of Date.today/#first/etc are incorrect.
+
+If you did not write the code under investigation and cannot easily determine
+if it is incorrect, use git blame to find out who wrote it and ask that
+developer about their assumptions.
+
+In either case, you may need to augment Cases' spec suite with examples that
+demonstrate correct functionality.  You should also investigate whether
+Date.today/#first/etc need to stay around; in many cases, the suspect patterns
+can be factored out.
+
+When you complete an audit, tag the corresponding line with @fixed:commit-ish,
+and commit the changes.
+
+# vim:ts=2:sw=2:et:tw=78
