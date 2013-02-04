@@ -418,7 +418,7 @@ class Participant < ActiveRecord::Base
     !self.children.blank?
   end
 
-  def advance(psc, event = events.last)
+  def advance(psc, event = events.chronological.last)
     if self.pending_events.blank?
       update_state_to_next_event(event)
       Event.schedule_and_create_placeholder(psc, self)
@@ -543,7 +543,6 @@ class Participant < ActiveRecord::Base
 
   ##
   def update_state_to_next_event(event)
-
     case event.event_type.local_code
     when 4, 5, 6, 9, 29, 34
       # Pregnancy Screener Events or PBS Eligibility Screener
