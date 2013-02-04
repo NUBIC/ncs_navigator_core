@@ -441,6 +441,36 @@ module NcsNavigator::Core::Mustache
 
       end
 
+      describe ".his_her_their_upcase" do
+
+        it "returns 'THEIR' if multiple birth" do
+          create_multiple_birth
+          instrument_context.his_her_their_upcase.should == "THEIR"
+        end
+
+        it "returns 'HIS' if male and single birth" do
+          create_single_birth
+          create_male_response
+          instrument_context.his_her_their_upcase.should == "HIS"
+        end
+
+        it "returns 'HER' if female and single birth" do
+          create_single_birth
+          create_female_response
+          instrument_context.his_her_their_upcase.should == "HER"
+        end
+
+        it "returns 'HIS/HER' if no sex response and single birth" do
+          create_single_birth
+          instrument_context.his_her_their_upcase.should == "HIS/HER"
+        end
+
+        it "returns 'HIS/HER' if no sex response and unknown if single or multiple birth" do
+          instrument_context.his_her_their_upcase.should == "HIS/HER"
+        end
+
+      end
+
       describe ".he_she" do
 
         it "returns 'he' if male" do

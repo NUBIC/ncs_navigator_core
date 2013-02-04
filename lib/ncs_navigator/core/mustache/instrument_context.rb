@@ -289,6 +289,10 @@ module NcsNavigator::Core::Mustache
       single_birth? ? baby_sex_possessive(baby_sex_response) : "their"
     end
 
+    def his_her_their_upcase
+      his_her_their.upcase
+    end
+
     # {he/she}
     def he_she
       baby_sex(baby_sex_response)
