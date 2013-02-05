@@ -12,7 +12,15 @@ describe SpecimenReceiptsController do
 
 
     def valid_attributes
-      {:specimen_receipts_attributes=>{"0"=>{:receipt_datetime=>Time.now, :specimen_id=>@specimen.id, }}, :storage_container_id=>"abc"}
+      {
+        :specimen_receipts_attributes => {
+          "0" => {
+            :receipt_datetime => DateTime.parse('2012-12-25 12:00:00'),
+            :specimen_id => @specimen.id
+          }
+        },
+        :storage_container_id => "abc"
+      }
     end
 
     describe "GET new" do
@@ -21,13 +29,13 @@ describe SpecimenReceiptsController do
         assigns(:specimen_receipt).should be_a_new(SpecimenReceipt)
       end
     end
-    
+
     describe "GET edit" do
       it "assigns the requested specimen_receipt as @specimen_receipt" do
         get :edit, :id => @specimen_receipt
         assigns(:specimen_receipt).should eq(@specimen_receipt)
       end
-    end    
+    end
 
     describe "POST create" do
       describe "with valid params" do
@@ -43,7 +51,7 @@ describe SpecimenReceiptsController do
           assigns(:specimen_receipt).should be_a(SpecimenReceipt)
           assigns(:specimen_receipt).should be_persisted
         end
-        
+
         describe "with json request" do
           describe "with not repeating specimen receipt" do
             it "creates a new SpecimenReceipt" do
@@ -53,8 +61,8 @@ describe SpecimenReceiptsController do
             end
           end
         end
-        
-        describe "forms json" do 
+
+        describe "forms json" do
           it "with newly created @specimen_receipt id" do
             post :create, :specimen_storage_container => valid_attributes, :format => 'json'
             specimen_receipt = SpecimenReceipt.last
@@ -78,9 +86,9 @@ describe SpecimenReceiptsController do
           json = { "specimen_receipts.receipt_datetime" => ["can't be blank"]}
           ActiveSupport::JSON.decode(response.body).should eq json
         end
-      end      
+      end
     end
-    
+
     describe "PUT update" do
       describe "with json request" do
         it "forms json with updated  @specimen_receipt id" do
@@ -88,14 +96,14 @@ describe SpecimenReceiptsController do
           response.body.should eq @specimen_receipt.to_json(:include => :specimen)
         end
       end
-      
+
       describe "with json request and date change" do
         it "forms json with updated @specimen_receipt receipt_datetime" do
-          put :update, :id => @specimen_receipt.id, :specimen_storage_container =>{:specimen_receipts_attributes=>{"0"=>{:receipt_datetime=>Time.now, :specimen_id=>@specimen.id, }}, :storage_container_id=>"abc"}, :format => 'json'
+          put :update, :id => @specimen_receipt.id, :specimen_storage_container => valid_attributes, :format => 'json'
           specimen_receipt = SpecimenReceipt.last
           response.body.should eq specimen_receipt.to_json(:include => :specimen)
         end
-      end  
+      end
     end
   end
 end
