@@ -11,7 +11,17 @@ describe SpecimenStoragesController do
 
 
     def valid_attributes
-      {:specimen_storage=>{:specimen_storage_container_id=>@specimen_storage_container.id, :placed_in_storage_datetime=>Time.now, :storage_comment => "something"}}
+      {
+        :specimen_storage => {
+          :specimen_storage_container_id => @specimen_storage_container.id,
+          :placed_in_storage_datetime => dt,
+          :storage_comment => "something"
+        }
+      }
+    end
+
+    def dt
+      DateTime.parse('2012-12-25 12:00:00')
     end
 
     # TODO - doesn't work in the group of tests, works in the speck itself
@@ -29,8 +39,8 @@ describe SpecimenStoragesController do
         get :edit, :id => @specimen_storage.id
         assigns(:specimen_storage).should eq(@specimen_storage)
       end
-    end    
-    
+    end
+
     describe "POST create" do
       describe "with valid params" do
         it "creates a new specimen_storage object" do
@@ -38,13 +48,13 @@ describe SpecimenStoragesController do
             post :create, valid_attributes
           }.to change(SpecimenStorage, :count).by(1)
         end
-    
+
         it "assigns a newly created specimen_storage as @specimen_storage" do
           post :create, valid_attributes
           assigns(:specimen_storage).should be_a(SpecimenStorage)
           assigns(:specimen_storage).should be_persisted
         end
-        
+
          describe "with json request" do
            describe "with not repeating specimen_storage" do
              it "creates a new SpecimenStorage" do
@@ -54,10 +64,10 @@ describe SpecimenStoragesController do
              end
            end
          end
-         
-        describe "forms json" do 
+
+        describe "forms json" do
           it "with newly created @specimen_storage id" do
-            post :create, :specimen_storage=>{:specimen_storage_container_id=>@specimen_storage_container.id, :placed_in_storage_datetime=>Time.now, :storage_comment => "something"}, :format => 'json'
+            post :create, :specimen_storage=>{:specimen_storage_container_id=>@specimen_storage_container.id, :placed_in_storage_datetime=>dt, :storage_comment => "something"}, :format => 'json'
             specimen_storage = SpecimenStorage.last
             response.body.should eq specimen_storage.to_json
           end
@@ -79,9 +89,9 @@ describe SpecimenStoragesController do
           json = {"placed_in_storage_datetime"=>["can't be blank"], "specimen_storage_container_id"=>["can't be blank"]}
           ActiveSupport::JSON.decode(response.body).should eq json
         end
-      end      
+      end
     end
-    
+
     describe "PUT update" do
       describe "with json request" do
         it "forms json with updated  @specimen_storage id" do
@@ -89,22 +99,22 @@ describe SpecimenStoragesController do
           response.body.should eq @specimen_storage.to_json
         end
       end
-      
+
       describe "with json request and date change" do
         it "forms json with updated @specimen_storage storage_comment" do
           put :update, :id => @specimen_storage.id, :specimen_storage => {:storage_comment => "another comment"}, :format => 'json'
           specimen_storage = SpecimenStorage.last
           response.body.should eq specimen_storage.to_json
         end
-      end  
-      
+      end
+
       describe "with json request" do
         it "forms json with nil for placed_in_storage_datetime in @specimen_storage" do
           put :update, :id => @specimen_storage.id, :specimen_storage => {:placed_in_storage_datetime => ""}, :format => 'json'
           json = { "placed_in_storage_datetime"  => ["can't be blank"]}
           ActiveSupport::JSON.decode(response.body).should eq json
         end
-      end      
+      end
     end
   end
 end
