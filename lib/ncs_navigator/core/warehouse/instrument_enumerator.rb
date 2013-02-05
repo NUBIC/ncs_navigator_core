@@ -31,14 +31,15 @@ module NcsNavigator::Core::Warehouse
     end
 
     def each
-      progress = ProgressTracker.new(@wh_config)
+      progress = ProgressTracker.new(@wh_config, Instrument.count)
       Instrument.find_each do |ins|
+        progress.increment_instruments
+
         unless ins.enumerable_to_warehouse?
           log.info "Skipping ResponseSets for Instrument #{ins.instrument_id.inspect} (#{ins.id})."
           next
         end
 
-        progress.increment_instruments
         progress.increment_response_sets(ins.response_sets.size)
         progress.increment_responses(ins.response_sets.inject(0) { |sum, rs| sum + rs.responses.count })
         log.info "Transforming ResponseSets for Instrument #{ins.instrument_id.inspect} (#{ins.id})"
@@ -61,8 +62,9 @@ module NcsNavigator::Core::Warehouse
 
       def_delegators :@wh_config, :log, :shell
 
-      def initialize(wh_config)
+      def initialize(wh_config, ins_total)
         @wh_config = wh_config
+        @instrument_total = ins_total
         @instrument_count = 0
         @response_set_count = 0
         @response_count = 0
@@ -93,8 +95,8 @@ module NcsNavigator::Core::Warehouse
 
       def say_progress
         shell.clear_line_then_say(
-          "Transforming surveys. %3d instrument(s), %3d set(s), %3d resp => %3d record(s). %.1f/s." % [
-            @instrument_count, @response_set_count, @response_count, @record_count, rate
+          "Transforming surveys. %3d/%3d instrument(s), %3d set(s), %3d resp => %3d record(s). %.1f/s." % [
+            @instrument_count, @instrument_total, @response_set_count, @response_count, @record_count, rate
           ])
       end
 
