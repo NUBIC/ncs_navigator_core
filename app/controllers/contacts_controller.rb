@@ -205,8 +205,8 @@ class ContactsController < ApplicationController
     ##
     # If person.participant exists use that participant's next pending event
     # or schedule that event if that does not exist.
-    # If there is no participant for this person fall back on the
-    # new_event_for_person method.
+    # If we get to this point and there is no participant for this person,
+    # raise an exception.
     def next_event_for_person
       if participant = @person.participant
         if participant.pending_events.blank?
@@ -215,11 +215,8 @@ class ContactsController < ApplicationController
         end
         participant.pending_events.first
       else
-        # TODO: remove call to new_event_for_person
-        #       should use Event.schedule_and_create_placeholder above
-        #       we need to ensure that a participant record exists for
-        #       the person at this point
-        new_event_for_person(@person)
+        # TODO: be able to create a Contact without an Event - Task #3285
+        raise "No Event identifier provided or Participant found for Contact"
       end
     end
 

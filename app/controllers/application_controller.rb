@@ -47,20 +47,6 @@ class ApplicationController < ActionController::Base
       "#{current_user.full_name} (#{current_staff_id})"
     end
 
-    # TODO: delete this method - events should be created as placeholder methods via Event.schedule_and_create_placeholder
-    def new_event_for_person(person, event_type_id = nil)
-      list_name   = NcsCode.attribute_lookup(:event_type_code)
-      if event_type_id
-        event_types = NcsCode.where("list_name = ? AND id in (?)", list_name, event_type_id).all
-      else
-        ets         = person.upcoming_events.collect { |e| PatientStudyCalendar.map_psc_segment_to_mdes_event_type(e) }
-        event_types = NcsCode.where("list_name = ? AND display_text in (?)", list_name, ets).all
-      end
-      now = Time.now
-      Event.new(:participant => person.participant, :event_type => event_types.first, :psu_code => NcsNavigatorCore.psu_code,
-                :event_start_date => now.to_date, :event_start_time => now("%H:%M"))
-    end
-
     # Used by contacts and contact_links controller
 
     ##

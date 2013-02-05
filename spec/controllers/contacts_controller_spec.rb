@@ -40,25 +40,40 @@ describe ContactsController do
       end
 
       describe "GET new" do
-        before(:each) do
-          Contact.stub(:new).and_return(mock_contact)
-          params = {:participant => @participant, :event_type => @preg_screen_event,
-                    :psu_code => NcsNavigatorCore.psu_code, :event_start_date => Date.parse("2525-02-01")}
-          @event = Factory(:event, params)
-          Event.stub(:new).with(params).and_return(@event)
-          Event.stub(:schedule_and_create_placeholder).and_return(nil)
-          @participant.events << @event
+        context "for an Event" do
+
+          before(:each) do
+            Contact.stub(:new).and_return(mock_contact)
+            params = {:participant => @participant, :event_type => @preg_screen_event,
+                      :psu_code => NcsNavigatorCore.psu_code, :event_start_date => Date.parse("2525-02-01")}
+            @event = Factory(:event, params)
+            Event.stub(:new).with(params).and_return(@event)
+            Event.stub(:schedule_and_create_placeholder).and_return(nil)
+            @participant.events << @event
+          end
+
+          it "assigns a new contact as @contact" do
+            get :new, :person_id => @person.id
+            assigns[:contact].should equal(mock_contact)
+          end
+
+          it "assigns a new event as @event" do
+            get :new, :person_id => @person.id
+            assigns[:event].should == @event
+            assigns[:event].event_type.should == @preg_screen_event
+          end
         end
 
-        it "assigns a new contact as @contact" do
-          get :new, :person_id => @person.id
-          assigns[:contact].should equal(mock_contact)
-        end
+        # TODO: be able to create a Contact without an Event - Task #3285
+        context "without an Event or a Participant" do
+          before(:each) do
+            Contact.stub(:new).and_return(mock_contact)
+          end
 
-        it "assigns a new event as @event" do
-          get :new, :person_id => @person.id
-          assigns[:event].should == @event
-          assigns[:event].event_type.should == @preg_screen_event
+          it "raises an exception" do
+            person = Factory(:person)
+            expect { get :new, :person_id => person.id }.to raise_error
+          end
         end
       end
 
