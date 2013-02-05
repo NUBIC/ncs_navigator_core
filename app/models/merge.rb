@@ -242,8 +242,8 @@ class Merge < ActiveRecord::Base
     ok = vs.values.all? { |v| v.empty? }
 
     if !ok
-      vs[:original_data].each { |v| logger.fatal "[original] #{v}" }
-      vs[:proposed_data].each { |v| logger.fatal "[proposed] #{v}" }
+      vs[:original_data].each { |e| logger.fatal "[original] #{e.inspect}" }
+      vs[:proposed_data].each { |e| logger.fatal "[proposed] #{e.inspect}" }
 
       logger.fatal 'Schema violations detected; aborting merge'
     end
@@ -274,11 +274,11 @@ class Merge < ActiveRecord::Base
   # (At present, this will generate schema errors, but that's acceptable: the
   # lack of an object is arguably a violation.)
   def schema_violations
-    validator = NcsNavigator::Core::Field::Validator.new
+    validator = NcsNavigator::Core::Field::JSONValidator.new
 
     {
-      :original_data => validator.fully_validate(JSON.parse(original_data || '{}')),
-      :proposed_data => validator.fully_validate(JSON.parse(proposed_data || '{}'))
+      :original_data => validator.validate(original_data || '{}').errors,
+      :proposed_data => validator.validate(proposed_data || '{}').errors
     }
   end
 end
