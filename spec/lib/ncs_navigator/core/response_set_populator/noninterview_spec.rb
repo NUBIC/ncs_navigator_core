@@ -62,7 +62,7 @@ module NcsNavigator::Core
       end
 
       describe "prepopulated_study_center_type" do
-        def set_study_center(center_type)
+        def set_recruitment_strategy(center_type)
           # center type is in the form of display_text from NcsCode for
           # readability
           code = NcsCode.for_list_name_and_display_text("RECRUIT_TYPE_CL1",
@@ -73,51 +73,51 @@ module NcsNavigator::Core
         end
           
         it "should be 'OVC AND EH STUDY CENTER' if OVC type" do
-          set_study_center("Original VC")
+          set_recruitment_strategy("Original VC")
           assert_match(@rsp.populate,
                                 "prepopulated_study_center_type",
                                 "OVC AND EH STUDY CENTERS")
         end
         it "should be 'OVC AND EH STUDY CENTER' if EH type" do
-          set_study_center("Enhanced Household Enumeration")
+          set_recruitment_strategy("Enhanced Household Enumeration")
           assert_match(@rsp.populate,
                                 "prepopulated_study_center_type",
                                 "OVC AND EH STUDY CENTERS")
         end
         it "should not be 'OVC AND EH STUDY CENTER' if not EH or OVC type" do
-          set_study_center("Two-Tier")
+          set_recruitment_strategy("Two-Tier")
           assert_miss(@rsp.populate,
                                 "prepopulated_study_center_type",
                                 "OVC AND EH STUDY CENTERS")
         end
 
         it "should be 'PB AND PBS STUDY CENTERS' if PB type" do
-          set_study_center("Provider-Based Recruitment")
+          set_recruitment_strategy("Provider-Based Recruitment")
           assert_match(@rsp.populate,
                                 "prepopulated_study_center_type",
                                 "PB AND PBS STUDY CENTERS")
         end
         it "should be 'PB AND PBS STUDY CENTERS' if PBS type" do
-          set_study_center("Provider Based Subsample")
+          set_recruitment_strategy("Provider Based Subsample")
           assert_match(@rsp.populate,
                                 "prepopulated_study_center_type",
                                 "PB AND PBS STUDY CENTERS")
         end
         it "should not be 'PB AND PBS STUDY CENTERS' if not PB or PBS type" do
-          set_study_center("Two-Tier")
+          set_recruitment_strategy("Two-Tier")
           assert_miss(@rsp.populate,
                                 "prepopulated_study_center_type",
                                 "PB AND PBS STUDY CENTERS")
         end
 
         it "should be 'HILI STUDY CENTERS' if HILI type" do
-          set_study_center("Two-Tier")
+          set_recruitment_strategy("Two-Tier")
           assert_match(@rsp.populate,
                                 "prepopulated_study_center_type",
                                 "HILI STUDY CENTERS")
         end
         it "should not be 'HILI STUDY CENTERS' if not HILI type" do
-          set_study_center("Provider Based Subsample")
+          set_recruitment_strategy("Provider Based Subsample")
           assert_miss(@rsp.populate,
                                 "prepopulated_study_center_type",
                                 "HILI STUDY CENTERS")

@@ -1622,113 +1622,6 @@ module NcsNavigator::Core::Mustache
         setup_survey_instrument(survey)
       end
 
-      approximate_visit_time_table = {
-        Event::pregnancy_visit_1_code => {
-          :EH  => "1.5 hours",
-          :PB  => "1.5 hours",
-          :HI  => "1.5 hours",
-          :LI  => "1 hour",
-          :PBS => "1 hour"
-        },
-        Event::pregnancy_visit_2_code => {
-          :EH  => "1.5 hours",
-          :PB  => "1.5 hours",
-          :HI  => "1.5 hours",
-          :LI  => "1 hour",
-          :PBS => "1 hour"
-        },
-        Event::father_visit_code => {
-          :EH  => "1.75 hours",
-          :PB  => "1.75 hours",
-          :HI  => "1.75 hours"
-        },
-        Event::birth_code => {
-          :EH  => "45 minutes",
-          :PB  => "45 minutes",
-          :HI  => "45 minutes",
-          :PBS => "45 minutes",
-          :LI  => "30 minutes"
-        },
-        Event::three_month_visit_code => {
-          :EH  => "40 minutes",
-          :PB  => "40 minutes",
-          :HI  => "40 minutes",
-          :PBS => "40 minutes",
-          :LI  => "40 minutes"
-        },
-        Event::six_month_visit_code => {
-          :EH  => "2 hours",
-          :PB  => "2 hours",
-          :HI  => "2 hours",
-          :PBS => "1.5 hours"
-        },
-        Event::nine_month_visit_code => {
-          :EH  => "35 minutes",
-          :PB  => "35 minutes",
-          :HI  => "35 minutes",
-          :PBS => "35 minutes",
-        },
-        Event::twelve_month_visit_code => {
-          :EH  => "2 hours",
-          :PB  => "2 hours",
-          :HI  => "2 hours",
-          :PBS => "1 hour"
-        },
-        Event::eighteen_month_visit_code => {
-          :EH  => "45 minutes",
-          :PB  => "45 minutes",
-          :HI  => "45 minutes",
-          :PBS => "45 minutes",
-          :LI  => "45 minutes"
-        },
-        Event::twenty_four_month_visit_code => {
-          :EH  => "1.5 hours",
-          :PB  => "1.5 hours",
-          :HI  => "1.5 hours",
-          :PBS => "45 minutes",
-          :LI  => "45 minutes"
-        },
-        Event::thirty_six_month_visit_code => {
-          :EH  => "2 hours",
-          :PB  => "2 hours",
-          :HI  => "2 hours",
-          :PBS => "1.5 hours"
-        },
-        Event::nine_month_visit_code => {
-          :EH  => "35 minutes",
-          :PB  => "35 minutes",
-          :HI  => "35 minutes",
-          :PBS => "35 minutes",
-        },
-        Event::twelve_month_visit_code => {
-          :EH  => "2 hours",
-          :PB  => "2 hours",
-          :HI  => "2 hours",
-          :PBS => "1 hour"
-        },
-        Event::eighteen_month_visit_code => {
-          :EH  => "45 minutes",
-          :PB  => "45 minutes",
-          :HI  => "45 minutes",
-          :PBS => "45 minutes",
-          :LI  => "45 minutes"
-        },
-        Event::twenty_four_month_visit_code => {
-          :EH  => "1.5 hours",
-          :PB  => "1.5 hours",
-          :HI  => "1.5 hours",
-          :PBS => "45 minutes",
-          :LI  => "45 minutes"
-        },
-        Event::thirty_six_month_visit_code => {
-          :EH  => "1.75 hours",
-          :PB  => "1.75 hours",
-          :HI  => "1.75 hours",
-          :LI  => "1.75 hour",
-          :PBS => "1.75 hour"
-        }
-      }
-
       def set_high_intensity()
         @participant.high_intensity = true
         @participant.save!
@@ -1746,7 +1639,7 @@ module NcsNavigator::Core::Mustache
         @participant.events.reload
       end
 
-      def set_study_center(center_type)
+      def set_recruitment_strategy(center_type)
         return unless center_type
         code = NcsCode.for_list_name_and_display_text("RECRUIT_TYPE_CL1",
                                                       center_type)
@@ -1755,52 +1648,51 @@ module NcsNavigator::Core::Mustache
                             RecruitmentStrategy.for_code(code.local_code)
       end
 
-      def study_center_name(recruitment_type)
-        case recruitment_type
-        when :EH
-          "Enhanced Household Enumeration"
-        when :PB
-          "Provider-Based Recruitment"
-        when :HI
-          "Two-Tier"
-        when :LI
-          "Two-Tier"
-        when :PBS
-          "Provider Based Subsample"
-        end
-      end
-
       describe ".approximate_visit_time" do
-        approximate_visit_time_table.each do |event_code, recruitments|
-          recruitments.each do |recruitment_type, time_estimate|
+        it "returns '1.5 hours' for 'Enhanced Household Enumeration', Twenty Four Month Visit" do
+          set_recruitment_strategy("Enhanced Household Enumeration")
+          add_event(Event::twenty_four_month_visit_code)
+          instrument_context.approximate_visit_time.should == "1.5 hours"
+        end
 
-            it "returns '#{time_estimate}' if recruitment type is #{recruitment_type} and event_code is #{event_code}" do
-              set_study_center(study_center_name(recruitment_type))
-              add_event(event_code)
-              set_high_intensity() if recruitment_type == :HI
-              set_low_intensity() if recruitment_type == :LI
-              instrument_context.approximate_visit_time.should ==
-                                                            time_estimate 
-            end
+        it "returns '45 minutes' for 'Provider-Based Recruitment', Eighteen Month Visit" do
+          set_recruitment_strategy("Provider-Based Recruitment")
+          add_event(Event::eighteen_month_visit_code)
+          instrument_context.approximate_visit_time.should == "45 minutes"
+        end
 
-            it "returns 'unknown amount of time' if recruitment type is #{recruitment_type} and event_code is not set" do
-              set_study_center(study_center_name(recruitment_type))
-              set_high_intensity() if recruitment_type == :HI
-              set_low_intensity() if recruitment_type == :LI
-              instrument_context.approximate_visit_time.should ==
+        it "returns '2 hours' for 'High Intensity', Twelve Month Visit" do
+          set_recruitment_strategy("Two-Tier")
+          set_high_intensity
+          add_event(Event::twelve_month_visit_code)
+          instrument_context.approximate_visit_time.should == "2 hours"
+        end
+
+        it "returns '1 hour' for 'Low Intensity', Pregnancy Visit 1" do
+          set_recruitment_strategy("Two-Tier")
+          set_low_intensity
+          add_event(Event::pregnancy_visit_1_code)
+          instrument_context.approximate_visit_time.should == "1 hour"
+        end
+
+        it "returns '1.5 hours' for 'Provider Based Subsample', Six Month Visit" do
+          set_recruitment_strategy("Provider Based Subsample")
+          add_event(Event::six_month_visit_code)
+          instrument_context.approximate_visit_time.should == "1.5 hours"
+        end
+
+        it "returns 'unknown amount of time' if valid recruitment time but event_code is not set" do
+          set_recruitment_strategy("Two-Tier")
+          set_high_intensity
+          instrument_context.approximate_visit_time.should ==
                                                     "unknown amount of time" 
-            end
+        end
 
-            it "returns 'unknown amount of time' if recruitment center is set to 'OVC' and event_code is #{recruitment_type}" do
-              set_study_center("Original VC")
-              add_event(event_code)
-              set_high_intensity() if recruitment_type == :HI
-              set_low_intensity() if recruitment_type == :LI
-              instrument_context.approximate_visit_time.should ==
-                                                    "unknown amount of time" 
-            end
-
-          end
+        it "returns 'unknown amount of time' if recruitment center is set to 'OVC' and event_code is valid" do
+          set_recruitment_strategy("Original VC")
+          add_event(Event::pregnancy_visit_2_code)
+          instrument_context.approximate_visit_time.should ==
+                                                "unknown amount of time" 
         end
       end
 

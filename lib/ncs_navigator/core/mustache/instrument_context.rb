@@ -732,76 +732,76 @@ module NcsNavigator::Core::Mustache
     def approximate_visit_time_table(event_code, recruitment_type)
       avtt = {
         Event::pregnancy_visit_1_code => {
-          :EH  => "1.5 hours",
-          :PB  => "1.5 hours",
-          :HI  => "1.5 hours",
-          :LI  => "1 hour",
-          :PBS => "1 hour"
+          "Enhanced Household Enumeration"  => "1.5 hours",
+          "Provider-Based Recruitment"  => "1.5 hours",
+          "High Intensity"  => "1.5 hours",
+          "Low Intensity"  => "1 hour",
+          "Provider Based Subsample" => "1 hour"
         },
         Event::pregnancy_visit_2_code => {
-          :EH  => "1.5 hours",
-          :PB  => "1.5 hours",
-          :HI  => "1.5 hours",
-          :LI  => "1 hour",
-          :PBS => "1 hour"
+          "Enhanced Household Enumeration"  => "1.5 hours",
+          "Provider-Based Recruitment"  => "1.5 hours",
+          "High Intensity"  => "1.5 hours",
+          "Low Intensity"  => "1 hour",
+          "Provider Based Subsample" => "1 hour"
         },
         Event::father_visit_code => {
-          :EH  => "1.75 hours",
-          :PB  => "1.75 hours",
-          :HI  => "1.75 hours"
+          "Enhanced Household Enumeration"  => "1.75 hours",
+          "Provider-Based Recruitment"  => "1.75 hours",
+          "High Intensity"  => "1.75 hours"
         },
         Event::birth_code => {
-          :EH  => "45 minutes",
-          :PB  => "45 minutes",
-          :HI  => "45 minutes",
-          :PBS => "45 minutes",
-          :LI  => "30 minutes"
+          "Enhanced Household Enumeration"  => "45 minutes",
+          "Provider-Based Recruitment"  => "45 minutes",
+          "High Intensity"  => "45 minutes",
+          "Provider Based Subsample" => "45 minutes",
+          "Low Intensity"  => "30 minutes"
         },
         Event::three_month_visit_code => {
-          :EH  => "40 minutes",
-          :PB  => "40 minutes",
-          :HI  => "40 minutes",
-          :PBS => "40 minutes",
-          :LI  => "40 minutes"
+          "Enhanced Household Enumeration"  => "40 minutes",
+          "Provider-Based Recruitment"  => "40 minutes",
+          "High Intensity"  => "40 minutes",
+          "Provider Based Subsample" => "40 minutes",
+          "Low Intensity"  => "40 minutes"
         },
         Event::six_month_visit_code => {
-          :EH  => "2 hours",
-          :PB  => "2 hours",
-          :HI  => "2 hours",
-          :PBS => "1.5 hours"
+          "Enhanced Household Enumeration"  => "2 hours",
+          "Provider-Based Recruitment"  => "2 hours",
+          "High Intensity"  => "2 hours",
+          "Provider Based Subsample" => "1.5 hours"
         },
         Event::nine_month_visit_code => {
-          :EH  => "35 minutes",
-          :PB  => "35 minutes",
-          :HI  => "35 minutes",
-          :PBS => "35 minutes",
+          "Enhanced Household Enumeration"  => "35 minutes",
+          "Provider-Based Recruitment"  => "35 minutes",
+          "High Intensity"  => "35 minutes",
+          "Provider Based Subsample" => "35 minutes",
         },
         Event::twelve_month_visit_code => {
-          :EH  => "2 hours",
-          :PB  => "2 hours",
-          :HI  => "2 hours",
-          :PBS => "1 hour"
+          "Enhanced Household Enumeration"  => "2 hours",
+          "Provider-Based Recruitment"  => "2 hours",
+          "High Intensity"  => "2 hours",
+          "Provider Based Subsample" => "1 hour"
         },
         Event::eighteen_month_visit_code => {
-          :EH  => "45 minutes",
-          :PB  => "45 minutes",
-          :HI  => "45 minutes",
-          :PBS => "45 minutes",
-          :LI  => "45 minutes"
+          "Enhanced Household Enumeration"  => "45 minutes",
+          "Provider-Based Recruitment"  => "45 minutes",
+          "High Intensity"  => "45 minutes",
+          "Provider Based Subsample" => "45 minutes",
+          "Low Intensity"  => "45 minutes"
         },
         Event::twenty_four_month_visit_code => {
-          :EH  => "1.5 hours",
-          :PB  => "1.5 hours",
-          :HI  => "1.5 hours",
-          :PBS => "45 minutes",
-          :LI  => "45 minutes"
+          "Enhanced Household Enumeration"  => "1.5 hours",
+          "Provider-Based Recruitment"  => "1.5 hours",
+          "High Intensity"  => "1.5 hours",
+          "Provider Based Subsample" => "45 minutes",
+          "Low Intensity"  => "45 minutes"
         },
         Event::thirty_six_month_visit_code => {
-          :EH  => "1.75 hours",
-          :PB  => "1.75 hours",
-          :HI  => "1.75 hours",
-          :LI  => "1.75 hour",
-          :PBS => "1.75 hour"
+          "Enhanced Household Enumeration"  => "1.75 hours",
+          "Provider-Based Recruitment"  => "1.75 hours",
+          "High Intensity"  => "1.75 hours",
+          "Low Intensity"  => "1.75 hour",
+          "Provider Based Subsample" => "1.75 hour"
         },
       }
 
@@ -813,27 +813,18 @@ module NcsNavigator::Core::Mustache
     end
 
     def hi_lo
-      @response_set.participant.high_intensity? ? :HI : :LI
+      @response_set.participant.high_intensity? ? "High Intensity" : "Low Intensity"
     end
 
     def get_recruitment_strategy
-      if study_center_type == :TT
+      recruitment_type = NcsCode.for_list_name_and_local_code("RECRUIT_TYPE_CL1",
+                                  NcsNavigatorCore.recruitment_type_id).display_text
+      case recruitment_type
+      when "Two-Tier"
         hi_lo
-      else
-        study_center_type
-      end
-    end
-
-    def study_center_type
-      case NcsNavigatorCore.recruitment_type_id
-      when 1
-        :EH
-      when 2
-        :PB
-      when 3
-        :TT
-      when 5
-        :PBS
+      when "Enhanced Household Enumeration", "Provider-Based Recruitment",
+           "Provider Based Subsample"
+        recruitment_type  
       else
         nil
       end
