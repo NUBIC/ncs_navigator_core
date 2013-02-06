@@ -1,6 +1,5 @@
-##
 # == Schema Information
-# Schema version: 20130131234657
+# Schema version: 20130206202031
 #
 # Table name: event_type_order
 #
