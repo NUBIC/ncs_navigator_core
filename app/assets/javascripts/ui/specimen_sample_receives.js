@@ -1,10 +1,37 @@
 $(function() {
 
-  $('.specimen_sample_receive').live('click',
+  // overriding from core.js for use with blockUI
+  $(".datetime").live('mouseover',
     function() {
-        specimen_receive_dialog($(this).attr('href') + ' form', 'Biological Specimens / Environmental Samples Receiving Form', $(this).attr('rel'));
-        return false;
-  });
+      $(this).datetimepicker({
+        controlType: 'select',
+        timeFormat: 'hh:mm:ss',
+        dateFormat: 'yy-mm-dd'
+      });
+    }
+  );
+  // overriding from core.js for use with blockUI
+  $('.timepicker').live('mouseover',
+    function() {
+      $(this).timepicker({
+        controlType: 'select'
+      })
+    }
+  );
+  // overriding from core.js for use with blockUI
+  $('.date').live('mouseover',
+    function() {
+    $(this).datepicker(  {
+        controlType: 'select'
+      })
+    }
+  );
+  //possibly left out from old changes. Leaving till know for sure it's not needed
+  // $('.specimen_sample_receive').live('click',
+  //   function() {
+  //       specimen_receive_dialog($(this).attr('href') + ' form', 'Biological Specimens / Environmental Samples Receiving Form', $(this).attr('rel'));
+  //       return false;
+  // });
 
   $(".sample_receipt_edit").live('click',
     function(){
