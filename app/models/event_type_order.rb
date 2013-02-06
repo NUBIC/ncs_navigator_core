@@ -7,7 +7,7 @@
 #  event_type_code :integer          not null
 #  id              :integer          not null, primary key
 #
-#
+
 # This is a helper for {Event.chronological}.  It's used during Cases
 # initialization to get {Event::TYPE_ORDER} in a form that can be used in ORDER
 # BY clauses.
