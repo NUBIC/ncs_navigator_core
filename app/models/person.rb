@@ -470,6 +470,10 @@ class Person < ActiveRecord::Base
     1
   end
 
+  def person_taking_screener_ineligible?(response_set)
+    !response_set.person.eligible? && response_set.survey.title =~ /PBSamplingScreen/
+  end
+
   private
 
     def dob

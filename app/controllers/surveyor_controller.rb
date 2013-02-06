@@ -92,11 +92,10 @@ class SurveyorController < ApplicationController
   # TODO: ensure that the state transitions are based on the responses in the response set
   #       and that the disposition of the instrument was completed
   def update_participant_based_on_survey(response_set)
-    if participant = response_set.participant
-      participant.update_state_after_survey(response_set, psc)
-      if !participant.eligible? && response_set.survey.title =~ /PBSamplingScreen/
-        SampledPersonsIneligibility.create_from_participant!(participant)
-      end
+    if response_set.person.person_taking_screener_ineligible?(response_set)
+      MakeIneligible.run(response_set)
+    else
+      response_set.participant.update_state_after_survey(response_set, psc)
     end
   end
 end
