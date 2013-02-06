@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130131234657) do
+ActiveRecord::Schema.define(:version => 20130206202031) do
 
   create_table "addresses", :force => true do |t|
     t.integer  "psu_code",                                                :null => false
@@ -245,6 +245,8 @@ ActiveRecord::Schema.define(:version => 20130131234657) do
     t.integer "event_type_code", :null => false
   end
 
+  add_index "event_type_order", ["event_type_code"], :name => "index_event_type_order_on_event_type_code", :unique => true
+
   create_table "events", :force => true do |t|
     t.integer  "psu_code",                                                                                       :null => false
     t.string   "event_id",                           :limit => 36,                                               :null => false
@@ -269,6 +271,8 @@ ActiveRecord::Schema.define(:version => 20130131234657) do
     t.string   "scheduled_study_segment_identifier"
     t.integer  "lock_version",                                                                    :default => 0
   end
+
+  add_index "events", ["event_type_code"], :name => "e_event_type_code"
 
   create_table "fieldworks", :force => true do |t|
     t.string   "fieldwork_id",        :limit => 36

@@ -1,5 +1,5 @@
 # == Schema Information
-# Schema version: 20130131234657
+# Schema version: 20130206202031
 #
 # Table name: event_type_order
 #
@@ -7,16 +7,6 @@
 #  id              :integer          not null, primary key
 #
 
-##
-# == Schema Information
-# Schema version: 20130131234657
-#
-# Table name: event_type_order
-#
-#  event_type_code :integer          not null
-#  id              :integer          not null, primary key
-#
-#
 # This is a helper for {Event.chronological}.  It's used during Cases
 # initialization to get {Event::TYPE_ORDER} in a form that can be used in ORDER
 # BY clauses.
