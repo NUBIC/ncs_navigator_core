@@ -93,39 +93,15 @@ class SurveyorController < ApplicationController
   # TODO: ensure that the state transitions are based on the responses in the response set
   #       and that the disposition of the instrument was completed
   def update_participant_based_on_survey(response_set)
-    person = response_set.person
-    participant = response_set.participant
-    if person_taking_screener_ineligible?(participant, response_set)
-      process_ineligible_person(person, participant, response_set)
+    if person_taking_screener_ineligible?(response_set)
+      MakingIneligible.make_ineligible(response_set)
+    else
+      response_set.participant.update_state_after_survey(response_set, psc)
     end
-    participant.update_state_after_survey(response_set, psc)
   end
 
-  def process_ineligible_person(person, response_set)
-    delete_participant_person_links()
-    disassociates_participant_from_all_events(response_set.person, response_set.participant)
-    disassociates_participant_from_response_set(response_set)
-    creates_ineligibility_record(participant)
-  end
-
-  def person_taking_screener_ineligible?(person, response_set)
-    !person.eligible? && response_set.survey.title =~ /PBSamplingScreen/
-  end
-
-  def delete_participant_person_links(person, participant)
-    ParticipantPersonLink.where(:participant_id => participant, :person_id => person).all.each { |e| e.delete}
-  end
-
-  def disassociates_participant_from_all_events(participant)
-    Event.where( :participant_id => participant.id ).all.map { |e| e.update_attribute(:participant_id, nil) }
-  end
-
-  def disassociates_participant_from_response_set(response_set)
-    response_set.participant = nil
-  end
-
-  def creates_ineligibility_record(participant)
-    SampledPersonsIneligibility.create_from_participant!(participant)
+  def person_taking_screener_ineligible?(response_set)
+    !response_set.person.eligible? && response_set.survey.title =~ /PBSamplingScreen/
   end
 
 end
