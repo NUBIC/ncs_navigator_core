@@ -1,3 +1,12 @@
+# == Schema Information
+# Schema version: 20130131234657
+#
+# Table name: event_type_order
+#
+#  event_type_code :integer          not null
+#  id              :integer          not null, primary key
+#
+
 ##
 # == Schema Information
 # Schema version: 20130131234657
