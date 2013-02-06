@@ -66,7 +66,7 @@ describe SurveyorController do
       person_participant_link_for_mother = Factory(:participant_person_link, :participant => mother_participant, :person => mother_person)
       child_participant = Factory(:participant, :p_type_code => 6)
       person_participant_link_for_child = Factory(:participant_person_link, :participant => child_participant, :person => mother_person, :relationship_code => 2)
-      
+
       @response_set.participant = child_participant
       @response_set.save!
 
@@ -151,6 +151,135 @@ describe SurveyorController do
           with(responses_ui_hash).and_raise('Bad news')
 
         lambda { do_put }.should raise_error('Bad news')
+      end
+    end
+  end
+
+  context "Updating after a survey" do
+    before do
+      @survey_controller =  SurveyorController.new
+      @person = Factory(:person)
+      @participant = Factory(:participant)
+      @response_set = Factory(:response_set, :user_id => @person.id, :participant_id => @participant.id)
+    end
+
+    describe "#update_participant_based_on_survey" do
+      before do
+        @ineligible_person = Factory(:person)
+        @eligible_person   = Factory(:person)
+        @participant.stub!(:update_state_after_survey).and_return true
+        ApplicationController.any_instance.stub!(:psc).and_return true
+        @eligible_response_set = Factory(:response_set, :person => @ineligible_person, :participant_id => @participant.id)
+        @ineligible_response_set = Factory(:response_set, :person => @eligible_person, :participant_id => @participant.id)
+      end
+
+      it "calls #update_state_after_survey for eligible people" do
+        @response_set.participant.should_receive(:update_state_after_survey)
+        @survey_controller.send(:update_participant_based_on_survey, @eligible_response_set)
+      end
+
+      it "for ineligible people, disassociates them from the response set" do
+        @survey_controller.send(:update_participant_based_on_survey, @ineligible_response_set)
+        @response_set.participant.should be_nil
+      end
+
+      it "for ineligible people, deletes any events associated with them" do
+        Factory(:event, :participant_id => @participant.id)
+        Factory(:event, :participant_id => @participant.id)
+        @survey_controller.send(:update_participant_based_on_survey, @ineligible_response_set)
+        Event.where(:participant_id => @participant.id).count.should be(0)
+      end
+
+      it "for ineligible people, deletes their participant record and participant person link" do
+        Factory(:participant_person_link, :person_id => @ineligible_person.id, :participant_id => @participant.id)
+        @survey_controller.send(:update_participant_based_on_survey, @ineligible_response_set)
+        @ineligible_person.participant.should be_nil
+      end
+
+      it "for ineligible people, creates an ineligibility record" do
+        provider = Factory(:provider)
+        Factory(:person_provider_link, :person_id => @person.id, :provider_id => provider.id)
+        Factory(:participant_person_link, :person_id => @person.id, :participant_id => @participant.id)
+        @survey_controller.send(:update_participant_based_on_survey, @ineligibile_response_set)
+        SampledPersonsIneligibility.count.should == 1
+      end
+    end
+
+    describe "#person_taking_screener_ineligible?" do
+      before do
+        @screener_survey     = Factory(:survey, :title => "INS_QUE_PBSamplingScreen_INT_PBS_M3.0_V1.0")
+        @non_screener_survey = Factory(:survey, :title => "INS_QUE_Birth_INT_EHPBHIPBS_M3.0_V3.0_PART_TWO")
+        @screener_response_set     = Factory(:response_set, :survey_id => @screener_survey.id)
+        @non_screener_response_set = Factory(:response_set, :survey_id => @non_screener_survey.id)
+        @ineligible_person = double("person", :eligible? => false)
+        @eligible_person   = double("person", :eligible? => true)
+      end
+
+      it "if survey is screener and the person is eligible, returns false" do
+        @survey_controller.send(:person_taking_screener_ineligible?, @eligible_person, @screener_response_set).should be_false
+      end
+
+      it "if survey is screener and the person is not eligible returns true" do
+        @survey_controller.send(:person_taking_screener_ineligible?, @ineligible_person, @screener_response_set).should be_true
+      end
+
+      it "if survey is not screener and the person is eligible, returns false" do
+        @survey_controller.send(:person_taking_screener_ineligible?, @eligible_person, @non_screener_response_set).should be_false
+      end
+
+      it "if survey is not screener and the person is not eligible, returns false" do
+        @survey_controller.send(:person_taking_screener_ineligible?, @ineligible_person, @non_screener_response_set).should be_false
+      end
+    end
+
+    describe "#delete_participant_person_links" do
+      before do
+        @participant_person_link = Factory(:participant_person_link, :person_id => @person.id, :participant_id => @participant.id)
+      end
+
+      it "deletes all participant_person_links for a particular participant person combination" do
+        @survey_controller.send(:delete_participant_person_links, @person, @participant)
+        @person.participant.should be_nil
+      end
+    end
+
+    describe "#disassociates_participant_from_all_events" do
+      before do
+        @event1 = Factory(:event, :participant_id => @participant.id)
+        @event2 = Factory(:event, :participant_id => @participant.id)
+      end
+      it "sets the participant_id to nil for all events associated with the person" do
+        @survey_controller.send(:disassociates_participant_from_all_events, @participant)
+        Event.where(:participant_id => @participant.id).count.should be(0)
+      end
+    end
+
+    describe "#disassociates_participant_from_response_set" do
+      before do
+        @response_set = Factory(:response_set, :participant_id => @participant)
+      end
+
+      it "sets the participant_id to nil for the response set" do
+        @survey_controller.send(:disassociates_participant_from_response_set, @participant)
+        @response_set.participant.should be_nil
+      end
+    end
+
+    describe "#creates_ineligibility_record" do
+      before do
+        provider = Factory(:provider)
+        Factory(:person_provider_link, :person_id => @person.id, :provider_id => provider.id)
+        Factory(:participant_person_link, :person_id => @person.id, :participant_id => @participant.id)
+      end
+
+      it "calls #create_from_particpant! from the SampledPersonsIneligibility class" do
+        SampledPersonsIneligibility.should_receive(:create_from_participant!).with(@participant).and_return(an_instance_of(SampledPersonsIneligibility))
+        @survey_controller.send(:creates_ineligibility_record, @participant)
+      end
+
+      it "creates an ineligibility record" do
+        @survey_controller.send(:creates_ineligibility_record, @participant)
+        SampledPersonsIneligibility.count.should == 1
       end
     end
   end
