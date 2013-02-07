@@ -14,44 +14,45 @@
                 = f.submit switch_arm_message(@participant)
               - else
                 = f.submit switch_arm_message(@participant), :confirm => "Please confirm that participant is eligible for High Intensity - (i.e. in TSU)"
-    - if permit?(Role::SYSTEM_ADMINISTRATOR, Role::USER_ADMINISTRATOR, Role::STAFF_SUPERVISOR)
-      .enrollment
-        - if false
-          %b
-            Enrollment
-          %div
-            - if @participant.enrolled?
-              - path = unenroll_participant_path(@participant, :redirect_to => redirection)
-              - msg = "Un-enroll Participant from Study"
-              - show_enrollment_status_comment = true
-            - else
-              - path = enroll_participant_path(@participant, :redirect_to => redirection)
-              - msg = "Enroll Participant in Study"
-              - show_enrollment_status_comment = false
-            = form_for(@participant, :url => path) do |f|
-              - if show_enrollment_status_comment
-                %p
-                  = label_tag :enrollment_status_comment, "Reason for un-enrolling:"
-                  %br
-                  = text_area_tag :enrollment_status_comment
+- if permit?(Role::SYSTEM_ADMINISTRATOR, Role::USER_ADMINISTRATOR, Role::STAFF_SUPERVISOR)
+  .page_section
+    .enrollment
+      - if false
+        %b
+          Enrollment
+        %div
+          - if @participant.enrolled?
+            - path = unenroll_participant_path(@participant, :redirect_to => redirection)
+            - msg = "Un-enroll Participant from Study"
+            - show_enrollment_status_comment = true
+          - else
+            - path = enroll_participant_path(@participant, :redirect_to => redirection)
+            - msg = "Enroll Participant in Study"
+            - show_enrollment_status_comment = false
+          = form_for(@participant, :url => path) do |f|
+            - if show_enrollment_status_comment
               %p
-                = f.submit msg, :confirm => "Are you certain you would like to #{msg}?"
-        - if @participant.being_followed?
-          %b
-            Remove from active follow-up
-          %div
-            = form_for(@participant, :url => remove_from_active_followup_participant_path(@participant, :redirect_to => redirection)) do |f|
-              %p
-                = label_tag :enrollment_status_comment, "Reason for marking participant as not being actively followed:"
+                = label_tag :enrollment_status_comment, "Reason for un-enrolling:"
                 %br
                 = text_area_tag :enrollment_status_comment
-              %p
-                = f.submit "Mark Participant as not being actively followed", :confirm => "Are you certain?"
-
-      .psc
-        %b
-          Reconcile with PSC
-        %div
-          = form_for(@participant, :url => update_psc_participant_path(@participant)) do |f|
             %p
-              = f.submit "Reconcile with PSC", :confirm => "Are you certain?"
+              = f.submit msg, :confirm => "Are you certain you would like to #{msg}?"
+      - if @participant.being_followed?
+        %b
+          Remove from active follow-up
+        %div
+          = form_for(@participant, :url => remove_from_active_followup_participant_path(@participant, :redirect_to => redirection)) do |f|
+            %p
+              = label_tag :enrollment_status_comment, "Reason for marking Participant as not being actively followed:"
+              %br
+              = text_area_tag :enrollment_status_comment
+            %p
+              = f.submit "Mark Participant as not being actively followed", :confirm => "Are you certain?"
+  .page_section
+    .psc
+      %b
+        Reconcile Participant data with PSC
+      %div
+        = form_for(@participant, :url => update_psc_participant_path(@participant)) do |f|
+          %p
+            = f.submit "Reconcile Participant data with PSC", :confirm => "Are you certain?"

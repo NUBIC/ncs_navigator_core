@@ -11,6 +11,7 @@ describe ParticipantConsentsController do
       :consent_type_code               => 1,
       :consent_form_type_code          => 1,
       :consent_given_code              => 1,
+      :consent_date                    => Date.parse("2525-12-25"),
       :consent_language_code           => 1,
       :who_consented_code              => 2,
       :consent_translate_code          => 1,
@@ -22,7 +23,7 @@ describe ParticipantConsentsController do
   context "with an authenticated user" do
 
     let(:mother_person) { Factory(:person) }
-    let(:mother) { Factory(:participant, :enroll_status_code => nil) }
+    let(:mother) { Factory(:participant, :enroll_status_code => nil, :enroll_date => nil) }
     let(:event) { Factory(:event, :participant => mother) }
     let(:contact) { Factory(:contact) }
     let(:contact_link) { Factory(:contact_link, :event => event,
@@ -86,6 +87,13 @@ describe ParticipantConsentsController do
             post :create, :contact_link_id => contact_link.id,
                  :participant_consent => valid_attributes.merge({:participant_id => mother.id})
             Participant.find(mother.id).should be_enrolled
+          end
+
+          it "sets the enroll date on the participant to the consent date" do
+            mother.should_not be_enrolled
+            post :create, :contact_link_id => contact_link.id,
+                 :participant_consent => valid_attributes.merge({:participant_id => mother.id})
+            Participant.find(mother.id).enroll_date.should == valid_attributes[:consent_date]
           end
 
           describe "Informed Consent event" do
