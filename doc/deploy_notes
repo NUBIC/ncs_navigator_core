@@ -6,6 +6,7 @@
 
 ** Deploy Cases using capistrano **
 
+  $ STUDY_CENTER=deploy_site USER=deploy_user cap staging deploy:block
   $ STUDY_CENTER=deploy_site USER=deploy_user cap staging deploy:migrations
 
 ** You will be prompted for the version to deploy (hitting enter will deploy origin/master) **
@@ -59,6 +60,7 @@
   > Username for PSC: ENTER USERNAME
   > Password for PSC: ENTER PASSWORD
 
+  $ STUDY_CENTER=deploy_site USER=deploy_user cap staging deploy:unblock
   $ exit
 
 [Documentation]
