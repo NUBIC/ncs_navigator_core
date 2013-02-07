@@ -877,14 +877,8 @@ module NcsNavigator::Core::Warehouse
       end
 
       it 'audits the new events as coming from the PSC sync' do
-        participant.events.each do |e|
-          versions = Version.where(
-            :item_type => Event.to_s,
-            :item_id => e.id
-          ).each do |v|
-            v.whodunnit.should == 'operational_importer_psc_sync'
-          end
-        end
+        versions = Version.where(:item_id => participant.event_ids, :item_type => Event.to_s)
+        versions.map(&:whodunnit).uniq.should == ['operational_importer_psc_sync']
       end
     end
   end
