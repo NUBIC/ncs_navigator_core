@@ -21,7 +21,7 @@ class EmailsController < ApplicationController
     @person = Person.find(params[:person_id])
     @email = Email.find(params[:id])
 
-    @email.email_info_date = Date.today
+    @email.email_info_date = @email.created_at.to_date if email_info_date.blank?
     @email.email_info_update = Date.today
 
     respond_to do |format|

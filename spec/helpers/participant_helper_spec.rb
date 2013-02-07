@@ -30,8 +30,9 @@ describe ParticipantsHelper do
         end
 
         it "returns upcoming_events.to_s for a hi I participant" do
+          dt = Date.parse("2012-12-25")
           hi_i_participant.events << Factory(:event, :participant => hi_i_participant,
-                                              :event_start_date => Date.today, :event_end_date => Date.today,
+                                              :event_start_date => dt, :event_end_date => dt,
                                               :event_type => NcsCode.pregnancy_screener)
           expected = hi_i_participant.upcoming_events.first.to_s.gsub!("#{PatientStudyCalendar::HIGH_INTENSITY}: ", '')
           helper.upcoming_events_for(hi_i_participant).should include(expected)

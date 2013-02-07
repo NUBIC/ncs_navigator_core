@@ -456,8 +456,7 @@ class Participant < ActiveRecord::Base
   end
   private :ppg_status_from_ppg_details
 
-  def ppg_status_from_ppg_status_histories(date)
-    date = Date.today if date.blank?
+  def ppg_status_from_ppg_status_histories(date = Date.today)
     psh = ppg_status_histories.where(['ppg_status_date_date <= ?', date]).order("ppg_status_date_date DESC").all
     psh.blank? ? ppg_status_histories.first.ppg_status : psh.first.ppg_status
   end

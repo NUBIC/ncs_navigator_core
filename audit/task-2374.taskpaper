@@ -1,12 +1,12 @@
-./app/controllers/application_controller.rb:59
-./app/controllers/contact_links_controller.rb:216
-./app/controllers/contact_links_controller.rb:221
-./app/controllers/contact_links_controller.rb:229
-./app/controllers/contact_links_controller.rb:233
-./app/controllers/contacts_controller.rb:18
-./app/controllers/contacts_controller.rb:19
-./app/controllers/contacts_controller.rb:119
-./app/controllers/contacts_controller.rb:120
+./app/controllers/application_controller.rb:59 @fixed:cfb74338eb2035d26aae4d72acd9537f5dfe1281 @reason:Removed creation of event for a person during contact where no event was provided and person is not a participant
+./app/controllers/contact_links_controller.rb:216 @reason:Default value for event start date (if date cannot be derived from contact) - shown in UI - can be overridden by users
+./app/controllers/contact_links_controller.rb:221 @reason:Not used - commented
+./app/controllers/contact_links_controller.rb:229 @reason:Default value for instrument dates (if date cannot be derived from contact) - shown in UI - can be overridden by users
+./app/controllers/contact_links_controller.rb:233 @reason:Default value for instrument time - shown in UI - can be overridden by users
+./app/controllers/contacts_controller.rb:18 @reason:Default value for contact date - shown in UI - can be overridden by users
+./app/controllers/contacts_controller.rb:19 @reason:Default value for contact time - shown in UI - can be overridden by users
+./app/controllers/contacts_controller.rb:119 @reason:Default value for contact date - shown in UI - can be overridden by users
+./app/controllers/contacts_controller.rb:120 @reason:Default value for contact time - shown in UI - can be overridden by users
 ./app/controllers/emails_controller.rb:11
 ./app/controllers/emails_controller.rb:12
 ./app/controllers/emails_controller.rb:24
@@ -14,28 +14,28 @@
 ./app/controllers/institutions_controller.rb:25
 ./app/controllers/institutions_controller.rb:26
 ./app/controllers/institutions_controller.rb:41
-./app/controllers/participant_consents_controller.rb:20
-./app/controllers/participant_consents_controller.rb:98
-./app/controllers/participant_consents_controller.rb:206
+./app/controllers/participant_consents_controller.rb:20 @reason:Default value for consent date - shown in UI - can be overridden by users
+./app/controllers/participant_consents_controller.rb:98 @reason:Default value for consent date - shown in UI - can be overridden by users
+./app/controllers/participant_consents_controller.rb:206 @reason:Default value for Informed Consent event date (if date cannot be determined from contact or event)
 ./app/controllers/people_controller.rb:196
 ./app/controllers/people_controller.rb:200
 ./app/controllers/providers_controller.rb:27
 ./app/controllers/providers_controller.rb:28
 ./app/controllers/providers_controller.rb:38
 ./app/controllers/providers_controller.rb:319
-./app/controllers/reports_controller.rb:28
-./app/controllers/reports_controller.rb:35
+./app/controllers/reports_controller.rb:28 @reason:Default value for status report - shown in UI - can be overridden by users
+./app/controllers/reports_controller.rb:35 @reason:Used to create unique filename
 ./app/controllers/telephones_controller.rb:10
 ./app/controllers/telephones_controller.rb:11
 ./app/controllers/telephones_controller.rb:23
 ./app/controllers/telephones_controller.rb:24
-./app/controllers/welcome_controller.rb:17
-./app/controllers/welcome_controller.rb:30
-./app/models/contact.rb:155
-./app/models/contact.rb:156
-./app/models/event.rb:252
-./app/models/event.rb:299
-./app/models/event.rb:307
+./app/controllers/welcome_controller.rb:17 @reason:Used to create unique filename
+./app/controllers/welcome_controller.rb:30 @reason:Used to create unique filename
+./app/models/contact.rb:155 @reason:Default value for contact time - shown in UI - can be overridden by users
+./app/models/contact.rb:156 @reason:Default value for contact time - shown in UI - can be overridden by users
+./app/models/event.rb:252 @reason:Default start time on create if attribute is blank
+./app/models/event.rb:299 @reason:Default parameter on close if none provider
+./app/models/event.rb:307 @reason:Default parameter on close if none provider
 ./app/models/field/psc_sync.rb:74 @fixed:661c80d7112cb97f9d73eb19f5e67b2bea8ff711 @reason:Used as a nonce for storing PSC sync data in Redis
 ./app/models/merge.rb:109  @fixed:661c80d7112cb97f9d73eb19f5e67b2bea8ff711 @reason:Comment text
 ./app/models/merge.rb:114 @fixed:661c80d7112cb97f9d73eb19f5e67b2bea8ff711 @reason:Comment text
@@ -55,96 +55,96 @@
 ./app/models/operational_data_extractor/base.rb:142
 ./app/models/operational_data_extractor/base.rb:144
 ./app/models/operational_data_extractor/base.rb:147
-./app/models/operational_data_extractor/base.rb:303
-./app/models/operational_data_extractor/base.rb:304
-./app/models/operational_data_extractor/base.rb:310
+./app/models/operational_data_extractor/base.rb:303 @reason:Used in log message
+./app/models/operational_data_extractor/base.rb:304 @reason:Used in log message
+./app/models/operational_data_extractor/base.rb:310 @reason:Used to create unique filename
 ./app/models/operational_data_extractor/pbs_eligibility_screener.rb:159
-./app/models/participant.rb:82
-./app/models/participant.rb:450
-./app/models/participant.rb:460
-./app/models/participant.rb:809
-./app/models/participant.rb:815
-./app/models/participant.rb:1168
-./app/models/participant.rb:1263
-./app/models/participant.rb:1267
-./app/models/participant.rb:1271
-./app/models/participant.rb:1275
-./app/models/participant.rb:1353
-./app/models/person.rb:139
+./app/models/participant.rb:82 @reason:Used in query to determine participants whose birth is in the future
+./app/models/participant.rb:450 @reason:Default parameter if none provider
+./app/models/participant.rb:460 @reason:Default parameter if none provider
+./app/models/participant.rb:809 @reason:Default parameter if none provider
+./app/models/participant.rb:815 @reason:Default parameter if none provider
+./app/models/participant.rb:1168 @reason:Default parameter if none provider
+./app/models/participant.rb:1263 @reason:Default parameter if none provider
+./app/models/participant.rb:1267 @reason:Default parameter if none provider
+./app/models/participant.rb:1271 @reason:Default parameter if none provider
+./app/models/participant.rb:1275 @reason:Default parameter if none provider
+./app/models/participant.rb:1353 @reason:Default value on closing pending events if event start date is blank
+./app/models/person.rb:139 @reason:Used to determine person's age
 ./app/models/ppg_status_history.rb:59
 ./app/models/survey_cache.rb:155 @fixed:661c80d7112cb97f9d73eb19f5e67b2bea8ff711 @reason:Used to set a TTL for cached survey data in Redis
 ./app/workers/watchdog_worker.rb:18 @fixed:661c80d7112cb97f9d73eb19f5e67b2bea8ff711 @reason:Used to set a "last fired" time for the watchdog worker
-./config/initializers/000_log_boot.rb:3
-./features/step_definitions/common_steps.rb:37
-./features/step_definitions/common_steps.rb:56
-./features/step_definitions/common_steps.rb:59
-./features/step_definitions/common_steps.rb:81
-./features/step_definitions/common_steps.rb:84
-./features/step_definitions/contact_link_steps.rb:54
-./lib/ncs_navigator/core/mustache/instrument_context.rb:127
-./lib/ncs_navigator/core/mustache/instrument_context.rb:426
-./lib/ncs_navigator/core/pbs/pbs_list_importer.rb:24
-./lib/ncs_navigator/core/pbs/pbs_list_importer.rb:33
-./lib/ncs_navigator/core/pbs/pbs_list_importer.rb:34
+./config/initializers/000_log_boot.rb:3 @reason:Used in log message
+./features/step_definitions/common_steps.rb:37 @fixed:fbd53ee036d5d5748bdf39b7b0963fdfd2ba2dad @reason:Test setup data
+./features/step_definitions/common_steps.rb:56 @fixed:fbd53ee036d5d5748bdf39b7b0963fdfd2ba2dad @reason:Test setup data
+./features/step_definitions/common_steps.rb:59 @fixed:fbd53ee036d5d5748bdf39b7b0963fdfd2ba2dad @reason:Test setup data
+./features/step_definitions/common_steps.rb:81 @fixed:fbd53ee036d5d5748bdf39b7b0963fdfd2ba2dad @reason:Test setup data
+./features/step_definitions/common_steps.rb:84 @fixed:fbd53ee036d5d5748bdf39b7b0963fdfd2ba2dad @reason:Test setup data
+./features/step_definitions/contact_link_steps.rb:54 @reason:Test to select today's date
+./lib/ncs_navigator/core/mustache/instrument_context.rb:127 @reason:Used to determine "last year"
+./lib/ncs_navigator/core/mustache/instrument_context.rb:426 @reason:Default parameter if none provider
+./lib/ncs_navigator/core/pbs/pbs_list_importer.rb:24 @reason:Used in log message
+./lib/ncs_navigator/core/pbs/pbs_list_importer.rb:33 @reason:Used to create unique filename
+./lib/ncs_navigator/core/pbs/pbs_list_importer.rb:34 @reason:Used in log message
 ./lib/ncs_navigator/core/pbs/pbs_list_importer.rb:89
 ./lib/ncs_navigator/core/pbs/pbs_list_importer.rb:90
-./lib/ncs_navigator/core/status_checks.rb:83
-./lib/ncs_navigator/core/warehouse/instrument_enumerator.rb:70
-./lib/ncs_navigator/core/warehouse/instrument_enumerator.rb:116
-./lib/ncs_navigator/core/warehouse/legacy_instrument_importer.rb:214
-./lib/ncs_navigator/core/warehouse/legacy_instrument_importer.rb:276
-./lib/ncs_navigator/core/warehouse/operational_importer.rb:614
-./lib/ncs_navigator/core/warehouse/operational_importer.rb:673
-./lib/ncs_navigator/core/warehouse/unused_passthrough.rb:30
-./lib/patient_study_calendar.rb:477
-./lib/patient_study_calendar.rb:481
-./lib/patient_study_calendar.rb:617
-./lib/patient_study_calendar.rb:731
-./lib/patient_study_calendar.rb:785
-./lib/patient_study_calendar.rb:787
-./lib/patient_study_calendar.rb:791
-./lib/patient_study_calendar.rb:807
-./lib/patient_study_calendar.rb:810
-./lib/patient_study_calendar.rb:815
-./lib/patient_study_calendar.rb:830
-./lib/patient_study_calendar.rb:833
-./lib/patient_study_calendar.rb:838
-./lib/reporting/case_status_report.rb:37
+./lib/ncs_navigator/core/status_checks.rb:83 @reason:Used to check background process task
+./lib/ncs_navigator/core/warehouse/instrument_enumerator.rb:70 @reason:Used for benchmarking
+./lib/ncs_navigator/core/warehouse/instrument_enumerator.rb:116 @reason:Used for benchmarking
+./lib/ncs_navigator/core/warehouse/legacy_instrument_importer.rb:214 @reason:Used for benchmarking
+./lib/ncs_navigator/core/warehouse/legacy_instrument_importer.rb:276 @reason:Used for benchmarking
+./lib/ncs_navigator/core/warehouse/operational_importer.rb:614 @reason:Used for benchmarking
+./lib/ncs_navigator/core/warehouse/operational_importer.rb:673 @reason:Used for benchmarking
+./lib/ncs_navigator/core/warehouse/unused_passthrough.rb:30 @reason:Used to create unique filename
+./lib/patient_study_calendar.rb:477 @reason:Default parameter if none provider
+./lib/patient_study_calendar.rb:481 @reason:Default parameter if none provider
+./lib/patient_study_calendar.rb:617 @reason:Default value if none provider
+./lib/patient_study_calendar.rb:731 @reason:Default value if none provider
+./lib/patient_study_calendar.rb:785 @reason:Used in log message
+./lib/patient_study_calendar.rb:787 @reason:Used in log message
+./lib/patient_study_calendar.rb:791 @reason:Used in log message
+./lib/patient_study_calendar.rb:807 @reason:Used in log message
+./lib/patient_study_calendar.rb:810 @reason:Used in log message
+./lib/patient_study_calendar.rb:815 @reason:Used in log message
+./lib/patient_study_calendar.rb:830 @reason:Used in log message
+./lib/patient_study_calendar.rb:833 @reason:Used in log message
+./lib/patient_study_calendar.rb:838 @reason:Used in log message
+./lib/reporting/case_status_report.rb:37 @reason:Default value if none provider
 ./script/merge_lab.rb:13
 ./script/merge_lab.rb:14
-./spec/active_record_query_profiler.rb:13
-./spec/active_record_query_profiler.rb:16
-./spec/controllers/contacts_controller_spec.rb:190
+./spec/active_record_query_profiler.rb:13 @reason:Used for benchmarking
+./spec/active_record_query_profiler.rb:16 @reason:Used for benchmarking
+./spec/controllers/contacts_controller_spec.rb:190 @fixed:38192fc59dfa47cfa50f5c2f0d2f4b3f50f5b910 @reason:Test setup data
 ./spec/controllers/people_controller_spec.rb:82
 ./spec/controllers/people_controller_spec.rb:87
 ./spec/controllers/people_controller_spec.rb:120
 ./spec/controllers/providers_controller_spec.rb:414
-./spec/controllers/reports_controller_spec.rb:17
-./spec/controllers/sample_receipt_stores_controller_spec.rb:15
-./spec/controllers/sample_receipt_stores_controller_spec.rb:16
-./spec/controllers/specimen_receipts_controller_spec.rb:15
-./spec/controllers/specimen_receipts_controller_spec.rb:94
-./spec/controllers/specimen_storages_controller_spec.rb:14
-./spec/controllers/specimen_storages_controller_spec.rb:60
-./spec/factories/institution.rb:4
-./spec/factories/institution.rb:7
-./spec/factories/participant.rb:14
-./spec/factories/participant.rb:16
-./spec/factories/ppg.rb:18
-./spec/factories/provider.rb:13
-./spec/factories/provider.rb:14
-./spec/factories/provider.rb:72
-./spec/factories/sample.rb:10
-./spec/factories/sample.rb:13
-./spec/factories/sample.rb:16
-./spec/factories/sample.rb:66
-./spec/factories/specimen.rb:15
-./spec/factories/specimen.rb:35
-./spec/factories/specimen.rb:94
-./spec/factories/surveyor.rb:14
-./spec/factories/surveyor.rb:112
-./spec/factories.rb:178
-./spec/factories.rb:179
+./spec/controllers/reports_controller_spec.rb:17 @reason:Default value for status report - shown in UI - can be overridden by users
+./spec/controllers/sample_receipt_stores_controller_spec.rb:15 @fixed:373530d31d7e226fb28c6a4539c48321e67114ef @reason:Test setup data
+./spec/controllers/sample_receipt_stores_controller_spec.rb:16 @fixed:373530d31d7e226fb28c6a4539c48321e67114ef @reason:Test setup data
+./spec/controllers/specimen_receipts_controller_spec.rb:15 @fixed:797012169f31188158b75a6679d5b90554805d84 @reason:Test setup data
+./spec/controllers/specimen_receipts_controller_spec.rb:94 @fixed:797012169f31188158b75a6679d5b90554805d84 @reason:Test setup data
+./spec/controllers/specimen_storages_controller_spec.rb:14 @fixed:5eb35875834132bcdfe6dd20948154ad3e9ca0f7 @reason:Test setup data
+./spec/controllers/specimen_storages_controller_spec.rb:60 @fixed:5eb35875834132bcdfe6dd20948154ad3e9ca0f7 @reason:Test setup data
+./spec/factories/institution.rb:4 @reason:Test setup data
+./spec/factories/institution.rb:7 @reason:Test setup data
+./spec/factories/participant.rb:14 @reason:Test setup data
+./spec/factories/participant.rb:16 @reason:Test setup data
+./spec/factories/ppg.rb:18 @reason:Test setup data
+./spec/factories/provider.rb:13 @reason:Test setup data
+./spec/factories/provider.rb:14 @reason:Test setup data
+./spec/factories/provider.rb:72 @reason:Test setup data
+./spec/factories/sample.rb:10 @reason:Test setup data
+./spec/factories/sample.rb:13 @reason:Test setup data
+./spec/factories/sample.rb:16 @reason:Test setup data
+./spec/factories/sample.rb:66 @reason:Test setup data
+./spec/factories/specimen.rb:15 @reason:Test setup data
+./spec/factories/specimen.rb:35 @reason:Test setup data
+./spec/factories/specimen.rb:94 @reason:Test setup data
+./spec/factories/surveyor.rb:14 @reason:Test setup data
+./spec/factories/surveyor.rb:112 @reason:Test setup data
+./spec/factories.rb:178 @reason:Test setup data
+./spec/factories.rb:179 @reason:Test setup data
 ./spec/helpers/participant_helper_spec.rb:34
 ./spec/lib/ncs_navigator/core/mustache/instrument_context_spec.rb:27
 ./spec/lib/ncs_navigator/core/mustache/instrument_context_spec.rb:813
