@@ -12,7 +12,6 @@ gem 'chronic'
 gem 'clockwork'
 gem 'comma'
 gem 'dante'
-gem 'execjs'
 gem 'fastercsv', :platform => :ruby_18
 gem 'haml', '~> 3.1'
 gem 'jsv.rb'
