@@ -1,26 +1,19 @@
 # -*- coding: utf-8 -*-
 
-
 RSpec::Matchers.define :be_a_fieldwork_set do
   match do |actual|
-    schema_file = "#{Rails.root}/vendor/ncs_navigator_schema/fieldwork_schema.json"
+    validator = NcsNavigator::Core::Field::JSONValidator.new
+    report = validator.validate(actual)
+    @errors = report.errors
 
-    unless File.exists?(schema_file)
-      raise "#{schema_file} not found; did you initialize this project's submodules?"
-    end
-
-    schema = JSON.parse(File.read(schema_file))
-    data = JSON.parse(actual)
-    @errors = JSON::Validator.fully_validate(schema, data)
-
-    @errors.should == []
+    report.should_not have_errors
   end
 
   failure_message_for_should do |actual|
     %Q{
 #{actual} has the following validation errors:
 
-#{@errors.join("\n")}
+#{@errors.map(&:inspect).join("\n")}
     }
   end
 end

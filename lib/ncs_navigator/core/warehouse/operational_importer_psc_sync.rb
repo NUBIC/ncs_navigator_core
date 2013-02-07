@@ -385,24 +385,26 @@ module NcsNavigator::Core::Warehouse
 
       scheduled_events.each do |implied_event|
         event_type = NcsCode.find_event_by_lbl(implied_event[:event_type_label])
-        say_subtask_message(
-          "creating Core #{event_type.display_text} event on #{implied_event[:start_date]} implied by PSC")
+        if event_type
+          say_subtask_message(
+            "creating Core #{event_type.display_text} event on #{implied_event[:start_date]} implied by PSC")
 
-        begin
-          PaperTrail.whodunnit = WHODUNNIT
-          existing_count = psc_participant.participant.events.where(
-            :event_type_code => event_type.local_code, :event_start_date => implied_event[:start_date]).count
+          begin
+            PaperTrail.whodunnit = WHODUNNIT
+            existing_count = psc_participant.participant.events.where(
+              :event_type_code => event_type.local_code, :event_start_date => implied_event[:start_date]).count
 
-          if existing_count == 0
-            Event.create_placeholder_record(
-              psc_participant.participant,
-              implied_event[:start_date],
-              event_type.local_code,
-              nil # skip scheduled segment id because it is no longer used
-              )
+            if existing_count == 0
+              Event.create_placeholder_record(
+                psc_participant.participant,
+                implied_event[:start_date],
+                event_type.local_code,
+                nil # skip scheduled segment id because it is no longer used
+                )
+            end
+          ensure
+            PaperTrail.whodunnit = nil
           end
-        ensure
-          PaperTrail.whodunnit = nil
         end
       end
     end

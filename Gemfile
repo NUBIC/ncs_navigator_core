@@ -8,12 +8,13 @@ gem 'aker', '~> 3.0'
 gem 'aker-rails'
 gem 'case'
 gem 'celluloid', '>= 0.12.0'
-gem 'clockwork'
 gem 'chronic'
+gem 'clockwork'
 gem 'comma'
 gem 'dante'
 gem 'fastercsv', :platform => :ruby_18
 gem 'haml', '~> 3.1'
+gem 'jsv.rb'
 gem 'lograge'
 gem 'pg'
 gem 'ncs_navigator_authority'
@@ -37,7 +38,6 @@ group :assets do
 end
 
 gem 'jquery-rails'
-gem 'json-schema'
 
 gem 'ncs_mdes', '>= 0.11.0'
 # If you change surveyor, change the instruments project also

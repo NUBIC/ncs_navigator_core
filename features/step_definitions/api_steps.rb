@@ -166,13 +166,11 @@ Then /^the response body satisfies the (.+) schema$/ do |schema|
 
   fp = File.expand_path("../../../vendor/ncs_navigator_schema/#{fn}", __FILE__)
 
-  v = NcsNavigator::Core::Field::Validator.new
+  v = NcsNavigator::Core::Field::JSONValidator.new(fp)
+  report = v.validate(last_response.body)
 
-  schema = v.expanded_schema(JSON.parse(File.read(fp)))
-  errors = v.fully_validate(json, schema)
-
-  if !errors.empty?
-    puts errors.inspect
+  if report.has_errors?
+    report.errors.each { |e| puts e.inspect }
     raise "Response body should have conformed to the schema defined by #{fn}"
   end
 end
