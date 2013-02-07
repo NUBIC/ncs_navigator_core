@@ -485,7 +485,6 @@ DEPENDENCIES
   debugger
   dm-ar-finders (~> 1.2.0)
   exception_notification
-  execjs
   facets
   factory_girl (~> 2.6)
   fakeweb
