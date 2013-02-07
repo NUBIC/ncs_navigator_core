@@ -410,6 +410,14 @@ $(function() {
   }
   
   var sample_processes_dialog = function(url) {
-    $(".display").load(url)
+    $(".display").load(url, function(response, status, xhr) {
+      if (status == "error") {
+        blockUnblockProcessingDiv(false, "")
+        var msg = "Sorry but there was an error: ";
+        $("#error").html(msg + xhr.status + " " + xhr.statusText);
+        $(".display").prepend('<div id="errorExplanation" class="errorExplanation"/>')
+        $('#errorExplanation').html(msg + xhr.status + " " + xhr.statusText);
+      }
+    });
   }  
 });
