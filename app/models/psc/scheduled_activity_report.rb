@@ -21,13 +21,14 @@ module Psc
 
     def initialize(logger)
       @logger = logger
+      @activities = []
     end
 
     def initialize_copy(source)
       super
 
       @filters = source.filters.dup if source.filters
-      @activities = source.activities.dup if source.activities
+      @activities = source.activities.dup
     end
 
     ##

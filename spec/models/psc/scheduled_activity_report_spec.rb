@@ -8,6 +8,12 @@ module Psc
 
     let(:report) { ScheduledActivityReport.new(logger) }
 
+    describe '#initialize' do
+      it 'returns a report with zero activities' do
+        ScheduledActivityReport.new(logger).activities.should be_empty
+      end
+    end
+
     describe '#populate_from_psc' do
       let(:psc) { mock }
 

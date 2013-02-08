@@ -29,7 +29,8 @@ module Field
     shared_context 'PSC mock' do
       let(:data) { JSON.parse(File.read(data_file)) }
       let(:data_file) { File.expand_path('../../../fixtures/psc/schedule_preview.json', __FILE__) }
-      let(:psc) { double }
+      let(:user) { double }
+      let(:psc) { PatientStudyCalendar.new(user) }
 
       let(:date) { '2000-01-01' }
       let(:activities) { ['foo'] }
@@ -43,21 +44,25 @@ module Field
     describe '#populate_from_psc' do
       include_context 'PSC mock'
 
-      before do
+      it 'builds a scheduled activity report' do
         etg.populate_from_psc(psc, date, activities)
+
+        etg.scheduled_activity_report.should_not be_nil
       end
 
-      it 'builds a scheduled activity report' do
-        etg.scheduled_activity_report.should_not be_nil
+      describe 'when given zero templates' do
+        before do
+          psc.rspec_reset
+        end
+
+        it 'does not raise ArgumentError' do
+          lambda { etg.populate_from_psc(psc, date, []) }.should_not raise_error(ArgumentError)
+        end
       end
     end
 
     describe '#derive_models' do
       include_context 'PSC mock'
-
-      before do
-        etg.populate_from_psc(psc, date, activities)
-      end
 
       # The PSC template specifies MDES 2.0 and we can't change it without
       # concerted effort, so for now, let's be lazy and just put the app on
@@ -72,9 +77,32 @@ module Field
         end
       end
 
+      describe 'when populated from an empty template set' do
+        before do
+          psc.rspec_reset
+
+          etg.populate_from_psc(psc, date, [])
+
+          etg.derive_models
+        end
+
+        it 'builds zero event templates' do
+          etg.event_templates.should be_empty
+        end
+
+        it 'builds zero instrument plans' do
+          etg.instrument_plans.should be_empty
+        end
+
+        it 'builds zero surveys' do
+          etg.surveys.should be_empty
+        end
+      end
+
       describe 'if Cases is set for specimen collection' do
         before do
           NcsNavigatorCore.configuration.stub!(:with_specimens? => true)
+          etg.populate_from_psc(psc, date, activities)
 
           etg.derive_models
         end
@@ -119,6 +147,7 @@ module Field
       describe 'if Cases is not set for specimen collection' do
         before do
           NcsNavigatorCore.configuration.stub!(:with_specimens? => false)
+          etg.populate_from_psc(psc, date, activities)
 
           etg.derive_models
         end
