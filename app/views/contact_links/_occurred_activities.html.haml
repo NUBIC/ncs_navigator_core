@@ -1,6 +1,0 @@
-
-- unless @occurred_activities.blank?
-  %h3
-    = "Completed for #{@event}"
-  - @occurred_activities.each do |oa|
-    = render "occurred_activity", :activity => oa, :person => @person, :contact_link => @contact_link
