@@ -156,44 +156,21 @@ describe SurveyorController do
   end
 
   context "Updating after a survey" do
-    before do
-      @survey_controller = SurveyorController.new
-      screener_survey     = Factory(:survey, :title => "INS_QUE_PBSamplingScreen_INT_PBS_M3.0_V1.0")
-      non_screener_survey = Factory(:survey, :title => "INS_QUE_Birth_INT_EHPBHIPBS_M3.0_V3.0_PART_TWO")
-      ineligible_person   = Factory(:person)
-      ineligible_person.stub(:eligible?).and_return(false)
-      eligible_person     = Factory(:person)
-      eligible_person.stub(:eligible?).and_return(true)
-      @screener_and_ineligible_person_response_set     = Factory(:response_set, :survey_id => screener_survey.id, :person => ineligible_person)
-      @non_screener_and_ineligible_person_response_set = Factory(:response_set, :survey_id => non_screener_survey.id, :person => ineligible_person)
-      @screener_and_eligible_person_response_set       = Factory(:response_set, :survey_id => screener_survey.id, :person => eligible_person)
-      @non_screener_and_eligible_person_response_set   = Factory(:response_set, :survey_id => non_screener_survey.id, :person => eligible_person)
-    end
 
     describe "#update_participant_based_on_survey" do
+      before do
+        @survey_controller = SurveyorController.new
+        screener_survey     = Factory(:survey, :title => "INS_QUE_PBSamplingScreen_INT_PBS_M3.0_V1.0")
+        ineligible_person   = Factory(:person)
+        ineligible_person.stub(:eligible?).and_return(false)
+        @screener_and_ineligible_person_response_set = Factory(:response_set, :survey_id => screener_survey.id, :person => ineligible_person)
+      end
+
       it "calls MakingIneligible if the person from the response_set is ineligible" do
-        MakingIneligible.should_receive(:make_ineligible)
+        MakeIneligible.should_receive(:run)
         @survey_controller.send(:update_participant_based_on_survey, @screener_and_ineligible_person_response_set)
       end
     end
 
-    describe "#person_taking_screener_ineligible?" do
-
-      it "if survey is screener and the person is eligible, returns false" do
-        @survey_controller.send(:person_taking_screener_ineligible?, @screener_and_eligible_person_response_set).should be_false
-      end
-
-      it "if survey is screener and the person is not eligible returns true" do
-        @survey_controller.send(:person_taking_screener_ineligible?, @screener_and_ineligible_person_response_set).should be_true
-      end
-
-      it "if survey is not screener and the person is eligible, returns false" do
-        @survey_controller.send(:person_taking_screener_ineligible?, @non_screener_and_eligible_person_response_set).should be_false
-      end
-
-      it "if survey is not screener and the person is not eligible, returns false" do
-        @survey_controller.send(:person_taking_screener_ineligible?, @non_screener_and_ineligible_person_response_set).should be_false
-      end
-    end
   end
 end
