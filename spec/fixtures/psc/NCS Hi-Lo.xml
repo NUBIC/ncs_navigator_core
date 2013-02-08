@@ -1,7 +1,53 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<study xmlns="http://bioinformatics.northwestern.edu/ns/psc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" assigned-identifier="NCS Hi-Lo" last-modified-date="2013-02-04T13:57:52.191Z" xsi:schemaLocation="http://bioinformatics.northwestern.edu/ns/psc http://bioinformatics.northwestern.edu/ns/psc/psc.xsd">
+<study xmlns="http://bioinformatics.northwestern.edu/ns/psc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" assigned-identifier="NCS Hi-Lo" last-modified-date="2013-02-08T13:52:41.764Z" xsi:schemaLocation="http://bioinformatics.northwestern.edu/ns/psc http://bioinformatics.northwestern.edu/ns/psc/psc.xsd">
   <planned-calendar id="80f00ffd-5454-4193-aca5-23f289a22e9a"/>
+  <amendment name="Rev 37" date="2013-02-08" mandatory="true" released-date="2013-02-08T13:52:41.764Z" updated-date="2013-02-08T13:45:45.688Z" previous-amendment-key="2013-02-01~Rev 36">
+    <epoch-delta id="65d41f65-8ffb-4c3a-a4d1-4640ec86fe59" node-id="4950389a-cd24-4ae0-8c3f-248732ffa093">
+      <add id="580faeba-6746-4e73-a820-97722c9e9ca1" index="1">
+        <study-segment id="fb403fbc-0ab3-4155-be82-a72d2386e77d" name="Birth Cohort">
+          <period id="7898929b-5e2d-42ce-94db-eb6864330461" name="Birth Cohort Screening" repetitions="1" start-day="1" duration-quantity="1" duration-unit="day">
+            <planned-activity id="632d8af5-1b94-4144-ba73-67fc49df31e0" day="1">
+              <label id="f4acaffc-a582-4a8a-a16f-9a161f2aeab5" name="event:pbs_participant_eligibility_screening"/>
+              <label id="e0b7fca5-5d74-4a1f-bf86-9a45ef65ac8e" name="instrument:3.2:ins_que_pbsampscreenhosp_int_m3.2_v1.0"/>
+              <label id="aacea845-17da-4c7f-862c-5466b4c1b9c1" name="order:10_01"/>
+              <activity-reference code="PBSESI" source="NCS"/>
+            </planned-activity>
+            <planned-activity id="ac18a853-13b2-4735-b6cd-af7cbaaa99c7" day="1">
+              <label id="fbe16556-d0fe-4c86-8e6c-24145d47106e" name="event:pbs_participant_eligibility_screening"/>
+              <label id="f3350709-b5f6-46f2-99b1-bbb8fb10d96c" name="instrument:3.2:ins_que_tracing_int_ehpbhilipbs_m3.0_v1.0"/>
+              <label id="e1ff2221-9371-473f-b2d5-7bd15cb8e8d9" name="order:10_99"/>
+              <activity-reference code="TM" source="NCS"/>
+            </planned-activity>
+            <planned-activity id="f3f6c2a0-1672-47c4-ac9d-09a89f73c93e" day="1">
+              <label id="338312f5-1394-4bd5-8207-ab56e4600ab2" name="event:pbs_participant_eligibility_screening"/>
+              <label id="8c1a37f4-99f1-4267-b3d9-32b2c46b614e" name="order:90_01"/>
+              <label id="477efe31-e9b7-4554-a6e9-177365df7068" name="participant_type:mother"/>
+              <activity-reference code="IC" source="NCS"/>
+            </planned-activity>
+          </period>
+        </study-segment>
+      </add>
+    </epoch-delta>
+    <planned-activity-delta id="7319fcfa-a196-4286-969e-01ff66408ce4" node-id="e8af54c1-56af-4baf-b1f2-2cf9d54b5924">
+      <property-change id="c29d06ac-d5fd-42b5-9c54-4fd8c8cc60d0" property-name="day" old-value="1" new-value="1"/>
+      <remove id="00fcc6c8-a5d9-49df-b2c3-20617708d198" child-id="35ac0958-cf74-41f7-81d3-aebd290ad28b"/>
+      <add id="b3b5461e-e3b2-4c9f-9875-98790ad3935d">
+        <label id="0a09af3f-505c-4fbb-a3a2-9ffa3e972bce" name="instrument:3.2:ins_que_pbspartverbirth_int_m3.2_v1.0_part_one"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="58e1b8ba-ec89-4979-a67a-904f0cd375ee" node-id="4da55c5e-e925-45c1-bf30-75e6a8139acf">
+      <property-change id="c6db7257-6ad0-4ce7-a2f7-81047e727bd6" property-name="day" old-value="1" new-value="1"/>
+      <remove id="d96d5fbe-84b3-4fc7-ab7c-e3cac3a7fd59" child-id="a07c6ffe-765b-41fc-a4e4-485dcdd02471"/>
+      <remove id="cfc14150-730d-4368-b316-537a9ddd33c1" child-id="171c02f3-d600-4155-8f6e-67a1e36f7b0e"/>
+      <add id="fae0a56f-3e3d-484c-b6e6-193dc7d124ed">
+        <label id="47290f80-43a7-42d8-bec5-be13a978b23e" name="instrument:3.2:ins_que_pbspartverbirth_int_m3.2_v1.0_part_two"/>
+      </add>
+      <add id="4ca44bf1-b399-4a41-af5a-6bf75d2c78a1">
+        <label id="58a0a5ee-dd7a-450c-a30d-cb49c086a6dd" name="references:3.2:ins_que_pbspartverbirth_int_m3.2_v1.0_part_one"/>
+      </add>
+    </planned-activity-delta>
+  </amendment>
   <amendment name="Rev 36" date="2013-02-01" mandatory="true" released-date="2013-02-04T13:57:52.191Z" updated-date="2013-02-04T13:34:07.766Z" previous-amendment-key="2013-01-23~Rev 35">
     <planned-activity-delta id="20e8a0e7-6e40-4f4a-a928-031ed722f976" node-id="df1ceee2-0b0d-45ad-9a5d-982c15738817">
       <property-change id="c84caa01-394d-4ad1-ae1c-e506ed5f602b" property-name="day" old-value="1" new-value="1"/>
