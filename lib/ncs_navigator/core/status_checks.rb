@@ -87,15 +87,15 @@ module NcsNavigator::Core
       CHECKS.keys.each { |c| attr_accessor c }
       
       def initialize
-        CHECKS.each { |k, v| self.send("#{k}=", v.new) }
+        CHECKS.each { |k, v| send("#{k}=", v.new) }
       end
 
       def run
-        CHECKS.values.each(&:run)
+        CHECKS.keys.each { |k| send(k).run }
       end
 
       def failed?
-        CHECKS.values.any?(&:failed?)
+        CHECKS.keys.any? { |k| send(k).failed? }
       end
 
       def as_json(*)
