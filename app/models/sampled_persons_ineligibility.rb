@@ -43,4 +43,17 @@ class SampledPersonsIneligibility < ActiveRecord::Base
     spi.save!
   end
 
+  def self.create_from_person!(person)
+    participant = person.participant
+    code = lambda { |value| value ? 1 : 2 }
+    create!({
+      :person => person,
+      :provider => person.provider,
+      :age_eligible_code => code[participant.age_eligible?(person)],
+      :county_of_residence_code => code[participant.psu_county_eligible?(person)],
+      :first_prenatal_visit_code => code[participant.first_visit?(person)],
+      :pregnancy_eligible_code => code[participant.pbs_pregnant?(person)],
+    })
+  end
+
 end
