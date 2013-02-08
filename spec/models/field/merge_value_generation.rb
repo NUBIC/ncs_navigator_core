@@ -8,6 +8,7 @@ require 'set'
 module MergeValueGeneration
   DATES = (Date.today - 100..Date.today).to_a
   TIMES = (Time.now.to_i - 100..Time.now.to_i).map { |x| Time.at(x) }
+  MDES_TIMES = TIMES.map { |t| t.strftime("%H:%M") }
 
   ##
   # Generates random values appropriate for a property's type.
@@ -15,28 +16,27 @@ module MergeValueGeneration
   # Generated values are guaranteed unique across a single invocation of
   # gen_values.
   def gen_values(property, count)
-    type = properties[property]['type']
-    format = properties[property]['format'] || ''
-    pattern = properties[property]['pattern'] || ''
+    eclass = entity.constantize
+    column = eclass.columns.detect { |c| c.name == property }
+    raise "Unknown field #{entity}##{property}" unless column
 
     Set.new.tap do |gen|
       while gen.length < count
-        gen << if type.include?('string')
-                 if pattern == "^(?:\\s*|\\d+|\\d+.\\d+)$"
-                   BigDecimal.new((rand * 100).to_s)
-                 elsif format.include?('date')
-                   DATES.at_rand
-                 # Our datetimes don't follow any predefined JSON Schema format.
-                 elsif format == '\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:Z|[+-]\\d{2}:\\d{2})'
-                   TIMES.at_rand
-                 else
-                   String.random
-                 end
-               elsif type.include?('integer')
-                 rand(100)
-               else
-                 raise "Cannot derive a test value for #{entity}##{property} of type #{type.inspect}"
-               end
+        value = case column.type
+                when :date; DATES.at_rand
+                when :decimal; BigDecimal.new((rand * 100).to_s)
+                when :integer; rand(100)
+                when :string, :text then
+                  if property =~ /time\Z/
+                    MDES_TIMES.at_rand
+                  else
+                    String.random
+                  end
+                when :datetime; TIMES.at_rand
+                else raise "Cannot create a test value for #{entity}##{property} of type #{column.type.inspect}"
+                end
+
+        gen << value
       end
     end.to_a
   end

@@ -118,8 +118,6 @@ shared_examples_for 'an entity merge' do |entity|
 end
 
 shared_examples_for 'a resolver', :fieldwork_merge do |entity, property|
-  include MergeValueGeneration
-
   writer = "#{property}="
 
   let(:values) { gen_values(property, 3) }
@@ -279,8 +277,6 @@ end
 shared_examples_for 'an attribute merge' do |entity, property|
   let(:klass) { entity.constantize }
   describe "for #{entity} O, C, P and property #{property}" do
-    include MergeValueGeneration
-
     include_context 'merge'
 
     describe 'if O = C = nil and P is new' do

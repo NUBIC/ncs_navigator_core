@@ -26,8 +26,6 @@ require 'json'
 
 require File.expand_path('../shared_merge_behaviors', __FILE__)
 
-SCHEMA = NcsNavigator::Core::Field::Validator.new.expanded_schema
-
 module Field
   describe Merge do
     subject do
@@ -38,6 +36,8 @@ module Field
 
     def self.it_merges(property)
       describe "##{property}" do
+        properties << property
+
         it_behaves_like 'an attribute merge', entity, property do
           let(:vessel) { subject }
         end
@@ -46,9 +46,13 @@ module Field
 
     def self.when_merging(entity, &block)
       describe "on #{entity}" do
+        include MergeValueGeneration
+
         cattr_accessor :entity
+        cattr_accessor :properties
 
         self.entity = entity
+        self.properties = []
 
         it_behaves_like 'an entity merge', entity do
           let(:vessel) { subject }
@@ -59,10 +63,6 @@ module Field
     end
 
     when_merging 'Contact' do
-      let(:properties) do
-        SCHEMA['properties']['contacts']['items']['properties']
-      end
-
       it_merges 'contact_date_date'
       it_merges 'contact_disposition'
       it_merges 'contact_distance'
@@ -82,10 +82,6 @@ module Field
     end
 
     when_merging 'Event' do
-      let(:properties) do
-        SCHEMA['properties']['contacts']['items']['properties']['events']['items']['properties']
-      end
-
       it_merges 'event_breakoff_code'
       it_merges 'event_comment'
       it_merges 'event_disposition'
@@ -102,10 +98,6 @@ module Field
     end
 
     when_merging 'Instrument' do
-      let(:properties) do
-        SCHEMA['properties']['contacts']['items']['properties']['events']['items']['properties']['instruments']['items']['properties']
-      end
-
       it_merges 'instrument_breakoff_code'
       it_merges 'instrument_comment'
       it_merges 'data_problem_code'
@@ -125,18 +117,10 @@ module Field
     end
 
     when_merging 'ResponseSet' do
-      let(:properties) do
-        SCHEMA['properties']['contacts']['items']['properties']['events']['items']['properties']['instruments']['items']['properties']['response_sets']['items']['properties']
-      end
-
       it_merges 'completed_at'
     end
 
     when_merging 'Person' do
-      let(:properties) do
-        SCHEMA['properties']['participants']['items']['properties']['persons']['items']['properties']
-      end
-
       it_merges 'first_name'
       it_merges 'last_name'
       it_merges 'middle_name'
