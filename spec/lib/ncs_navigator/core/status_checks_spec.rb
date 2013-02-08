@@ -15,22 +15,26 @@ module NcsNavigator::Core::StatusChecks
         check.should_not be_failed
       end
     end
+
+    describe '#ok?' do
+      it 'returns !failed?' do
+        check.failure = nil
+
+        check.should be_ok
+      end
+    end
   end
 
   describe Report do
     let(:report) { Report.new }
 
     describe '#to_json' do
-      let(:json) { JSON.parse(report.to_json) }
       let(:fn) { Rails.root.join('vendor/ncs_navigator_schema/system_status_schema.json') }
 
       it 'satisfies the system-status schema' do
-        v = NcsNavigator::Core::Field::Validator.new
+        v = NcsNavigator::Core::Field::JSONValidator.new(fn)
 
-        schema = v.expanded_schema(JSON.parse(File.read(fn)))
-        errors = v.fully_validate(json, schema)
-
-        errors.should be_empty
+        v.validate(report.to_json).should_not have_errors
       end
     end
   end
@@ -83,7 +87,7 @@ module NcsNavigator::Core::StatusChecks
 
       check.run
 
-      check.failure.should =~ /BackgroundWorkers check failed: workers have never checked in/
+      check.failure.should include("BackgroundWorkers check failed: workers have never checked in")
     end
 
     it "fails if the workers haven't checked in within the watchdog threshold" do
@@ -93,7 +97,7 @@ module NcsNavigator::Core::StatusChecks
 
       check.run
 
-      check.failure.should =~ /BackgroundWorkers check failed: workers last checked in at #{Time.at(last_checkin)}, which is more than #{worker_watchdog_threshold} seconds ago/
+      check.failure.should include("BackgroundWorkers check failed: workers last checked in at #{Time.at(last_checkin)}, which is more than #{worker_watchdog_threshold} seconds ago")
     end
 
     it 'fails if the Redis client throws an exception' do
@@ -101,7 +105,25 @@ module NcsNavigator::Core::StatusChecks
 
       check.run
 
-      check.failure.should =~ /BackgroundWorkers check failed: Exception \(boom\)/
+      check.failure.should include("BackgroundWorkers check failed: Exception (boom)")
+    end
+  end
+
+  describe 'event type order check' do
+    let(:check) { EventTypeOrder.new }
+
+    it_should_behave_like 'a status check'
+
+    after do
+      ::EventTypeOrder.persist_if_different
+    end
+
+    it 'fails if the event type order does not match Event::TYPE_ORDER' do
+      ::EventTypeOrder.delete_all
+
+      check.run
+
+      check.failure.should include("EventTypeOrder check failed: type order is different")
     end
   end
 end

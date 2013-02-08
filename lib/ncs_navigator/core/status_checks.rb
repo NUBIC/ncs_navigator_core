@@ -2,38 +2,12 @@ module NcsNavigator::Core
   ##
   # Diagnostics.
   module StatusChecks
-    class Report
-      attr_accessor :db
-      attr_accessor :workers
-
-      def initialize
-        self.db = Database.new
-        self.workers = BackgroundWorkers.new
-      end
-
-      def run
-        db.run
-        workers.run
-      end
-
-      def failed?
-        db.failed? || workers.failed?
-      end
-
-      def as_json(*)
-        {
-          'db' => db.failed?,
-          'workers' => workers.failed?,
-          'failures' => {
-            'db' => db.failure,
-            'workers' => workers.failure
-          }
-        }
-      end
-    end
-
     module Check
       attr_accessor :failure
+
+      def ok?
+        !failed?
+      end
 
       def failed?
         !!failure
@@ -88,6 +62,53 @@ module NcsNavigator::Core
         rescue Exception => e
           log_failure("#{e.class} (#{e.message})")
         end
+      end
+    end
+
+    class EventTypeOrder
+      include Check
+
+      def run
+        begin
+          log_failure('type order is different') if ::EventTypeOrder.different?
+        rescue Exception => e
+          log_failure("#{e.class} (#{e.message})")
+        end
+      end
+    end
+
+    class Report
+      CHECKS = {
+        'db'                => Database,
+        'event_type_order'  => EventTypeOrder,
+        'workers'           => BackgroundWorkers
+      }
+
+      CHECKS.keys.each { |c| attr_accessor c }
+      
+      def initialize
+        CHECKS.each { |k, v| self.send("#{k}=", v.new) }
+      end
+
+      def run
+        CHECKS.values.each(&:run)
+      end
+
+      def failed?
+        CHECKS.values.any?(&:failed?)
+      end
+
+      def as_json(*)
+        {
+          'db' => db.ok?,
+          'event_type_order' => event_type_order.ok?,
+          'workers' => workers.ok?,
+          'failures' => {
+            'db' => db.failure,
+            'event_type_order' => event_type_order.failure,
+            'workers' => workers.failure
+          }
+        }
       end
     end
   end

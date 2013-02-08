@@ -11,9 +11,8 @@
 # initialization to get {Event::TYPE_ORDER} in a form that can be used in ORDER
 # BY clauses.
 #
-# You shouldn't be using this for any other purpose.
-#
-# @private
+# This class can also be used to report on the status of the
+# persisted type order.
 class EventTypeOrder < ActiveRecord::Base
   set_table_name 'event_type_order'
 
