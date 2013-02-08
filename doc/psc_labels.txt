@@ -37,6 +37,18 @@ event:pbs_participant_eligibility_screening instrument:3.0:ins_que_tracing_int_e
 event:pbs_participant_eligibility_screening order:90_01 participant_type:mother
 
 
+Birth Cohort Screening - 34
+----------------------------
+# Provider Based Sampling Eligibility Screener-HOSPITAL
+event:pbs_participant_eligibility_screening instrument:3.2:ins_que_pbsampscreenhosp_int_m3.2_v1.0 order:10_01
+
+# Tracing Instrument
+event:pbs_participant_eligibility_screening instrument:3.2:ins_que_tracing_int_ehpbhilipbs_m3.0_v1.0 order:10_99
+
+# Informed Consent
+event:pbs_participant_eligibility_screening order:90_01 participant_type:mother
+
+
 
 Lo Intensity Data Collection - 33
 ---------------------------------
@@ -254,10 +266,10 @@ event:birth instrument:2.0:ins_que_birth_int_ehpbhi_p2_v2.0_birth_visit_baby_nam
 event:birth instrument:2.0:ins_que_birth_int_ehpbhi_p2_v2.0_part_two instrument:2.1:ins_que_birth_int_ehpbhi_p2_v2.0_part_two instrument:2.2:ins_que_birth_int_ehpbhi_p2_v2.0_part_two instrument:3.0:ins_que_birth_int_ehpbhipbs_m3.0_v3.0_part_two instrument:3.1:ins_que_birth_int_ehpbhipbs_m3.0_v3.0_part_two instrument:3.2:ins_que_birth_int_m3.2_v3.1_part_two order:01_03 participant_type:mother references:2.0:ins_que_birth_int_ehpbhi_p2_v2.0_part_one references:2.1:ins_que_birth_int_ehpbhi_p2_v2.0_part_one references:2.2:ins_que_birth_int_ehpbhi_p2_v2.0_part_one references:3.0:ins_que_birth_int_ehpbhipbs_m3.0_v3.0_part_one references:3.1:ins_que_birth_int_ehpbhipbs_m3.0_v3.0_part_one references:3.2:ins_que_birth_int_m3.2_v3.1_part_one
 
 # Participant Verification Questionnaire Part 1
-event:birth instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one instrument:3.1:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one instrument:3.2:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one order:00_01 participant_type:mother
+event:birth instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one instrument:3.1:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one instrument:3.2:ins_que_pbspartverbirth_int_m3.2_v1.0_part_one order:00_01 participant_type:mother
 
 # Participant Verification Questionnaire Part 2
-event:birth instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_two instrument:3.1:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_two instrument:3.2:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_two order:00_02 participant_type:child references:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one references:3.1:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one references:3.2:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one
+event:birth instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_two instrument:3.1:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_two instrument:3.2:ins_que_pbspartverbirth_int_m3.2_v1.0_part_two order:00_02 participant_type:child references:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one references:3.1:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one references:3.2:ins_que_pbspartverbirth_int_m3.2_v1.0_part_one
 
 # Tracing Instrument
 event:birth instrument:3.0:ins_que_tracing_int_ehpbhilipbs_m3.0_v1.0 instrument:3.1:ins_que_tracing_int_ehpbhilipbs_m3.0_v1.0 instrument:3.2:ins_que_tracing_int_ehpbhilipbs_m3.0_v1.0 order:90_01 participant_type:mother
