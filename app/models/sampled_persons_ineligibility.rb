@@ -45,7 +45,7 @@ class SampledPersonsIneligibility < ActiveRecord::Base
 
   def self.create_from_person!(person)
     participant = person.participant
-    code = lambda { |value| value ? 1 : 2 }
+    code = lambda { |value| value ? NcsCode::YES : NcsCode::NO }
     create!({
       :person => person,
       :provider => person.provider,
