@@ -22,6 +22,10 @@
     border: 1px solid whitesmoke;
   }
 
+  .instrument_response_set {
+    margin-left: 2em;
+  }
+
   .activity_link:hover,
   .consent_link:hover,
   .other_activity:hover {
@@ -31,6 +35,9 @@
 
   .child_participation {
     display: inline-block;
+    .child {
+      margin-left: 2em;
+    }
   }
 
   .child_participation,
@@ -39,14 +46,14 @@
   .instrument {
     a {
       display: inline-block;
-      width: 23em;
+      width: 27.5em;
     }
   }
 
   .other_activity {
     span.activity_name {
       display: inline-block;
-      width: 25.25em;
+      width: 29.75em;
       padding: 2px 2px 2px 20px;
     }
   }

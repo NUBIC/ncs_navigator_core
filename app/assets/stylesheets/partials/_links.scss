@@ -62,6 +62,10 @@ a.sort_link:hover, a.icon_link:hover {
   background: url(../../assets/edit.png) 0 2px no-repeat;
 }
 
+.edit_survey_link, .edit_survey_link:hover {
+  background: url(../../assets/script_edit.png) 0 2px no-repeat;
+}
+
 .import_link, .import_link:hover,
 .export_link, .export_link:hover {
   background: url(../../assets/page_white_excel.png) 0 2px no-repeat !important;
@@ -184,6 +188,10 @@ a.sort_link:hover, a.icon_link:hover {
 
 .star_link, .star_link:hover {
   background: url(../../assets/star.png) 0 2px no-repeat !important;
+}
+
+.asterisk_link, .asterisk_link:hover {
+  background: url(../../assets/asterisk_yellow.png) 0 2px no-repeat !important;
 }
 
 .help_link_icon, .help_link_icon:hover,
