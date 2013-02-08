@@ -4,40 +4,43 @@ class MakingIneligible
     MakingIneligible.new(response_set).make_ineligible
   end
 
-  attr_reader :person, :participant, :response_set
-
   def initialize(response_set)
     @person = response_set.person
     @participant = response_set.participant
     @response_set = response_set
-    @ineligibilifier = Ineligibilifier.new.extend Ineligible
   end
 
   def make_ineligible
-    @ineligibilifier.delete_participant_person_links(@person, @participant)
-    @ineligibilifier.disassociates_participant_from_all_events(@participant)
-    @ineligibilifier.disassociates_participant_from_response_set(@response_set)
-    @ineligibilifier.creates_ineligibility_record(@participant)
+    ActiveRecord::Base.transaction do
+      creates_ineligibility_record(@person)
+      delete_participant_person_links(@person, @participant)
+      disassociates_participant_from_all_events(@participant)
+      disassociates_participant_from_response_set(@response_set)
+      remove_participant(@participant)
+    end
   end
 
-  module Ineligible
+  def creates_ineligibility_record(person)
+    SampledPersonsIneligibility.create_from_person!(person)
+  end
 
-    def delete_participant_person_links(person, participant)
-      ParticipantPersonLink.where(:participant_id => participant, :person_id => person).all.each { |e| e.delete}
-    end
+  def delete_participant_person_links(person, participant)
+    person.participant_person_links.destroy_all
+    participant.participant_person_links.destroy_all
+    ParticipantPersonLink.where(:participant_id => participant).all.each { |e| e.delete}
+  end
 
-    def disassociates_participant_from_all_events(participant)
-      Event.where( :participant_id => participant.id ).all.map { |e| e.update_attribute(:participant_id, nil) }
-    end
+  def disassociates_participant_from_all_events(participant)
+    participant.events.destroy_all
+  end
 
-    def disassociates_participant_from_response_set(response_set)
-      response_set.participant = nil
-    end
+  def disassociates_participant_from_response_set(response_set)
+    response_set.participant = nil
+  end
 
-    def creates_ineligibility_record(participant)
-      SampledPersonsIneligibility.create_from_participant!(participant)
-    end
+  def remove_participant(participant)
+    participant.low_intensity_state_transition_audits.destroy_all
+    participant.high_intensity_state_transition_audits.destroy_all
+    participant.destroy
   end
 end
-
-class Ineligibilifier; end
