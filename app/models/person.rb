@@ -471,6 +471,11 @@ class Person < ActiveRecord::Base
   end
   alias :is_first_child? :first_child?
 
+
+  def person_taking_screener_ineligible?(response_set)
+    !response_set.person.eligible? && response_set.survey.title =~ /PBSamplingScreen/
+  end
+
   private
 
     def dob
