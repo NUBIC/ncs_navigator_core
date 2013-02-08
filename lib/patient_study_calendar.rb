@@ -439,7 +439,16 @@ class PatientStudyCalendar
     get(path)
   end
 
+  ##
+  # Returns a preview of the schedule for the given study sgements starting at
+  # the given date.
+  #
+  # The PSC service underlying this method expects at least one study segment,
+  # and as such you must supply at least one study segment.  This method raises
+  # ArgumentError if given zero study segments.
   def schedule_preview(date, study_segments)
+    raise ArgumentError, "Cannot retrieve a schedule preview for zero study segments" if study_segments.empty?
+
     uuids = segment_uuids(study_segments)
 
     q = uuids.values.zip([date].cycle).map.with_index do |(segment_id, date), i|
