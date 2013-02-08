@@ -13,7 +13,7 @@ class MakingIneligible
   def make_ineligible
     ActiveRecord::Base.transaction do
       creates_ineligibility_record(@person)
-      delete_participant_person_links(@person, @participant)
+      delete_participant_person_links(@participant)
       disassociates_participant_from_all_events(@participant)
       disassociates_participant_from_response_set(@response_set)
       remove_participant(@participant)
@@ -24,9 +24,7 @@ class MakingIneligible
     SampledPersonsIneligibility.create_from_person!(person)
   end
 
-  def delete_participant_person_links(person, participant)
-    person.participant_person_links.destroy_all
-    participant.participant_person_links.destroy_all
+  def delete_participant_person_links(participant)
     ParticipantPersonLink.where(:participant_id => participant).all.each { |e| e.delete}
   end
 
