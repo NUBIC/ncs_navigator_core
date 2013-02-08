@@ -1,0 +1,13 @@
+- if initial_instrument_for_contact
+  .instructional_note
+    Choose the Instrument to administer or Activity to perform from the list below.
+
+- if @person.participant.blank?
+  .person_not_participant
+    = "#{blank_safe(@person.to_s)} is not a participant. No instruments exist for non participants."
+- else
+  .activity_list_for_event
+    - if !@activities_for_event.blank?
+      = render "activity_list_for_event", :activities_for_event => activities_for_event
+    - else
+      = render "no_activities_for_event", :contact_link => @contact_link

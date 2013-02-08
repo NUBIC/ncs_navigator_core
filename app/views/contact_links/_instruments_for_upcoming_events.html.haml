@@ -8,25 +8,4 @@
     Child participation is required in order to continue.
   = render "parental_permission_for_child_participation", :event => @event, :contact_link => @contact_link
 - else
-  - if initial_instrument_for_contact
-    .instructional_note
-      Choose the Instrument to administer or Activity to perform from the list below.
-
-  - if @person.participant.blank?
-    .person_not_participant
-      = blank_safe(@person.to_s)
-      is not a participant. No instruments exist for non participants.
-  - else
-    .activity_list_for_event
-      - if !@activities_for_event.blank?
-        - @activities_for_event.each do |sa|
-          - next unless sa.scheduled? or sa.occurred? or sa.conditional?
-          = render "instrument_for_activity", :activity => sa, :person => @person, :contact_link => @contact_link
-      - else
-        .no_activities_for_event
-          No instruments or activities are associated with
-          = @contact_link.event.to_s
-          .instructional_note
-            Most likely all activities associated with this event have been completed or
-            %br
-            there is a disconnect between this Event and the scheduled activities for this Participant in PSC.
+  = render "activity_list", :initial_instrument_for_contact => initial_instrument_for_contact

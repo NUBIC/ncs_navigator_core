@@ -1,0 +1,5 @@
+-# activities that are 'to be done'
+%div{ :class => "instrument", :title => survey.title}
+  %a{ :href => "javascript:alert('Please choose instruments in order')", :class => "add_link icon_link"}
+    = activity.activity_name
+  = render "activity_psc_action", :activity => activity

@@ -2,7 +2,7 @@
   - if @scheduled_activities_grouped_by_date
     - @scheduled_activities_grouped_by_date.keys.sort.each do |date|
       .day
-        .date
+        .ideal_date
           = date
         .activities
           - @scheduled_activities_grouped_by_date[date].each do |activity|

@@ -1,0 +1,13 @@
+-# activities associated with a previously completed instrument via survey title
+- instruments = contact_link.event.instruments.select { |i| i.survey.try(:title) == survey.title }
+- instruments.each do |instr|
+  %div{ :class => "known_instrument", :title => survey.description}
+    - cls = @current_activity == activity ? "star_link icon_link" : "edit_link icon_link"
+    = link_to "Edit #{activity_name(activity)}", edit_instrument_path(instr), :class => cls
+    = render "activity_psc_action", :activity => activity
+    - instr.response_sets.each do |rs|
+      .instrument_response_set
+        - title = "Edit Participant Responses for the #{rs.survey.title} Survey"
+        = link_to "Edit Instrument Responses",
+          edit_my_survey_path(:survey_code => rs.survey.access_code, :response_set_code => rs.access_code),
+          :class => "edit_survey_link icon_link", :title => title

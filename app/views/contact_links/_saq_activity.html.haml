@@ -1,0 +1,5 @@
+%div{ :class => "instrument saq_instrument", :title => survey.try(:title) }
+  = link_to activity.activity_name,
+    saq_instrument_contact_link_path,
+    :class => "asterisk_link icon_link",
+    :confirm => saq_confirmation_message(event)

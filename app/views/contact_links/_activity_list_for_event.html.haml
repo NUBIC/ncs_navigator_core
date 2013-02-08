@@ -1,0 +1,3 @@
+- activities_for_event.each do |sa|
+  - next unless sa.scheduled? or sa.occurred? or sa.conditional?
+  = render "instrument_for_activity", :activity => sa, :person => @person, :contact_link => @contact_link

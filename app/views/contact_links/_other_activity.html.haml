@@ -1,0 +1,5 @@
+- cls = (@current_activity == activity) ? "star_link icon_link" : "other_activity"
+%div{ :id => "activity_#{activity.activity_id}", :class => cls }
+  %span{ :class => "activity_name", :title => "There is no data to input for this activity." }
+    = activity.activity_name
+  = render "activity_psc_action", :activity => activity

@@ -2,8 +2,7 @@
   = render "activity", :contact_link => contact_link, :survey => survey, :activity => activity, :person => person
 - elsif activity.consent_activity?
   = render "consents", :current_activity => @current_activity, :activity => activity
+- elsif activity.saq_activity?
+  = render "activity", :contact_link => contact_link, :survey => nil, :activity => activity, :person => person
 - else
-  %div{ :id => "activity_#{activity.activity_id}", :class => "other_activity" }
-    %span{ :class => "activity_name" }
-      = activity.activity_name
-    = render "activity_psc_action", :activity => activity
+  = render "other_activity", :current_activity => @current_activity, :activity => activity

@@ -1,24 +1,9 @@
 %div{ :id => "activity_#{activity.activity_id}", :class => "activity_link" }
-  - if contact_link.contact.instrument_survey_titles.include?(survey.title)
-    -# activities associated with a previously completed instrument via survey title
-    - instruments = contact_link.contact.instruments.select { |i| i.survey.try(:title) == survey.title }
-    - instruments.each do |instr|
-      %div{ :class => "known_instrument", :title => survey.title}
-        = link_to "Edit #{activity.activity_name}", edit_instrument_path(instr), :class => "edit_link icon_link"
-        = render "activity_psc_action", :activity => activity
+  - if contact_link.event.instrument_survey_titles.try(:include?, survey.try(:title) )
+    = render "previous_activity", :activity => activity, :survey => survey, :contact_link => contact_link
+  - elsif @saq_activities.try(:include?, activity)
+    = render "saq_activity", :activity => activity, :survey => survey, :event => @event
   - elsif @current_activity == activity
-    -# the current activity
-    %div{ :class => "instrument", :title => survey.title}
-      = link_to activity.activity_name,
-          start_instrument_person_path(person, :participant_id => activity.participant.id,
-                                               :references_survey_access_code => activity.references.to_s,
-                                               :survey_access_code => survey.access_code,
-                                               :contact_link_id => contact_link.id),
-          :class => "star_link icon_link"
-      = render "activity_psc_action", :activity => activity
+    = render "current_activity", :activity => activity, :survey => survey, :contact_link => contact_link, :person => person
   - else
-    -# activities that are 'to be done'
-    %div{ :class => "instrument", :title => survey.title}
-      %a{ :href => "javascript:alert('Please choose instruments in order')", :class => "add_link icon_link"}
-        = activity.activity_name
-      = render "activity_psc_action", :activity => activity
+    = render "future_activity", :activity => activity, :survey => survey
