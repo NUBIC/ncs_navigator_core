@@ -1357,7 +1357,39 @@ module NcsNavigator::Core::Mustache
       end
     end
 
+    describe "c_full_name" do
+      it "returns a default message if person is nil" do
+        rs = Factory(:response_set, :person => nil)
+        context = InstrumentContext.new(rs)
+        context.about_person.should be_nil
+        context.c_full_name.should == "[CHILD'S FULL NAME]"
+      end
 
+      it "returns a default message if full_name is nil" do
+        person =  Factory(:person, :first_name => nil, :last_name => nil)
+        participant = Factory(:participant)
+        participant.person = person
+        person.save!
+ 
+        rs = Factory(:response_set, :participant => participant)
+        context = InstrumentContext.new(rs)
+        context.about_person.should_not be_nil
+        context.about_person.full_name.should be_blank
+        context.c_full_name.should == "[CHILD'S FULL NAME]"
+      end
+
+      it "returns the c_full_name if the full_name exists" do
+        person =  Factory(:person, :first_name => "The", :last_name => "King")
+        participant = Factory(:participant)
+        participant.person = person
+        person.save!
+ 
+        rs = Factory(:response_set, :participant => participant)
+        context = InstrumentContext.new(rs)
+        context.c_full_name.should == "The King"
+      end
+    end
+    
     describe "age_of_child_in_months" do
 
       let(:instrument_context) { InstrumentContext.new }
