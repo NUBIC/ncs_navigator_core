@@ -701,14 +701,11 @@ module OperationalDataExtractor
     end
 
     def finalize_institution(institute)
-      ActiveRecord::Base.transaction do
-        unless institute.blank?
-          ipl = InstitutionPersonLink.new
-          ipl.person = participant.person
-          ipl.institution = institute
-          ipl.save!
-          institute.save!
-        end
+      begin
+        institute.save!
+        InstitutionPersonLink.find_or_create_by_institution_id_and_person_id(institute.id, person.id)
+      rescue ActiveRecord::RecordNotUnique
+        log.warn("IPL with person_id of #{person.id} and institution_id of #{institute.id} already exists, not creating")
       end
     end
 
