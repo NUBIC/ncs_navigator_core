@@ -671,20 +671,24 @@ describe Person do
       @non_screener_and_eligible_person_response_set   = Factory(:response_set, :survey_id => non_screener_survey.id, :person => eligible_person)
     end
 
-    it "if survey is screener and the person is eligible, returns false" do
-      @person.person_taking_screener_ineligible?(@screener_and_eligible_person_response_set).should be_false
+    describe "survey is screener" do
+      it "returns false when person is eligible" do
+        @person.person_taking_screener_ineligible?(@screener_and_eligible_person_response_set).should be_false
+      end
+
+      it "returns true when person is not eligible" do
+        @person.person_taking_screener_ineligible?(@screener_and_ineligible_person_response_set).should be_true
+      end
     end
 
-    it "if survey is screener and the person is not eligible returns true" do
-      @person.person_taking_screener_ineligible?(@screener_and_ineligible_person_response_set).should be_true
-    end
+    describe "survey is not screener" do
+      it "returns false when person is eligible" do
+        @person.person_taking_screener_ineligible?(@non_screener_and_eligible_person_response_set).should be_false
+      end
 
-    it "if survey is not screener and the person is eligible, returns false" do
-      @person.person_taking_screener_ineligible?(@non_screener_and_eligible_person_response_set).should be_false
-    end
-
-    it "if survey is not screener and the person is not eligible, returns false" do
-      @person.person_taking_screener_ineligible?(@non_screener_and_ineligible_person_response_set).should be_false
+      it "returns false when person is not eligible" do
+        @person.person_taking_screener_ineligible?(@non_screener_and_ineligible_person_response_set).should be_false
+      end
     end
   end
 
