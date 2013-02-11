@@ -8,6 +8,6 @@
 - else
   .activity_list_for_event
     - if !@activities_for_event.blank?
-      = render "activity_list_for_event", :activities_for_event => activities_for_event
+      = render "activity_list_for_event", :activities_for_event => @activities_for_event
     - else
       = render "no_activities_for_event", :contact_link => @contact_link
