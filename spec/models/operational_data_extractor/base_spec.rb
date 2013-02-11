@@ -553,17 +553,26 @@ describe OperationalDataExtractor::Base do
     end
 
     describe "#finalize_institution" do
+      before do
+        @institution = @pregnancy_visit_extractor.process_institution(@institution_map, @response_set, @hospital)
+      end
+
       it "links the person to the institution" do
-        institution = @pregnancy_visit_extractor.process_institution(@institution_map, @response_set, @hospital)
-        @pregnancy_visit_extractor.finalize_institution(institution)
-        @participant.person.institutions.first.should eq(institution)
+        @pregnancy_visit_extractor.finalize_institution(@institution)
+        @participant.person.institutions.first.should eq(@institution)
       end
 
       it "saves the institution record" do
-        institution = @pregnancy_visit_extractor.process_institution(@institution_map, @response_set, @hospital)
-        @pregnancy_visit_extractor.finalize_institution(institution)
+        @pregnancy_visit_extractor.finalize_institution(@institution)
         Institution.count.should == 1
-        Institution.first.should eq(institution)
+        Institution.first.should eq(@institution)
+      end
+
+      it "does not create a duplicate institution-person link if one already exists" do
+        (2).times do
+          @pregnancy_visit_extractor.finalize_institution(@institution)
+        end
+        InstitutionPersonLink.where(:person_id => @person.id, :institution_id => @institution.id).size.should == 1
       end
 
     end
