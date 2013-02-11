@@ -1639,60 +1639,59 @@ module NcsNavigator::Core::Mustache
         @participant.events.reload
       end
 
-      def set_recruitment_strategy(center_type)
-        return unless center_type
-        code = NcsCode.for_list_name_and_display_text("RECRUIT_TYPE_CL1",
-                                                      center_type)
-        NcsNavigator.configuration.recruitment_type_id = code.local_code
+      def set_recruitment_strategy(strategy)
+        return unless strategy
+        code = RecruitmentStrategy.for_class_name(strategy)
+        NcsNavigator.configuration.recruitment_type_id = code
         NcsNavigatorCore.recruitment_strategy =
-                            RecruitmentStrategy.for_code(code.local_code)
+                                          RecruitmentStrategy.for_code(code)
       end
 
       describe ".approximate_visit_time" do
         it "returns '1.5 hours' for 'Enhanced Household Enumeration', Twenty Four Month Visit" do
-          set_recruitment_strategy("Enhanced Household Enumeration")
+          set_recruitment_strategy("EnhancedHousehold")
           add_event(Event::twenty_four_month_visit_code)
           instrument_context.approximate_visit_time.should == "1.5 hours"
         end
 
         it "returns '45 minutes' for 'Provider-Based Recruitment', Eighteen Month Visit" do
-          set_recruitment_strategy("Provider-Based Recruitment")
+          set_recruitment_strategy("ProviderBased")
           add_event(Event::eighteen_month_visit_code)
           instrument_context.approximate_visit_time.should == "45 minutes"
         end
 
         it "returns '2 hours' for 'High Intensity', Twelve Month Visit" do
-          set_recruitment_strategy("Two-Tier")
+          set_recruitment_strategy("TwoTier")
           set_high_intensity
           add_event(Event::twelve_month_visit_code)
           instrument_context.approximate_visit_time.should == "2 hours"
         end
 
         it "returns '1 hour' for 'Low Intensity', Pregnancy Visit 1" do
-          set_recruitment_strategy("Two-Tier")
+          set_recruitment_strategy("TwoTier")
           set_low_intensity
           add_event(Event::pregnancy_visit_1_code)
           instrument_context.approximate_visit_time.should == "1 hour"
         end
 
         it "returns '1.5 hours' for 'Provider Based Subsample', Six Month Visit" do
-          set_recruitment_strategy("Provider Based Subsample")
+          set_recruitment_strategy("ProviderBasedSubsample")
           add_event(Event::six_month_visit_code)
           instrument_context.approximate_visit_time.should == "1.5 hours"
         end
 
         it "returns 'unknown amount of time' if valid recruitment time but event_code is not set" do
-          set_recruitment_strategy("Two-Tier")
+          set_recruitment_strategy("TwoTier")
           set_high_intensity
           instrument_context.approximate_visit_time.should ==
-                                                    "unknown amount of time" 
+                                                    "unknown amount of time"
         end
 
         it "returns 'unknown amount of time' if recruitment center is set to 'OVC' and event_code is valid" do
-          set_recruitment_strategy("Original VC")
+          set_recruitment_strategy("OriginalVanguard")
           add_event(Event::pregnancy_visit_2_code)
           instrument_context.approximate_visit_time.should ==
-                                                "unknown amount of time" 
+                                                  "unknown amount of time"
         end
       end
 
