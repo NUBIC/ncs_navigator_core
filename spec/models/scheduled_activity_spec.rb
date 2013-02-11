@@ -35,6 +35,18 @@ describe ScheduledActivity do
     end
   end
 
+  describe "#saq_activity?" do
+
+    it "returns true if activity_name ends with SAQ" do
+      ScheduledActivity.new(:activity_name => "asdf SAQ").should be_saq_activity
+    end
+
+    it "returns false if activity_name does not end with SAQ" do
+      ScheduledActivity.new(:activity_name => "asdf").should_not be_saq_activity
+    end
+  end
+
+
   describe "#open?" do
     let(:sa) { ScheduledActivity.new(attrs) }
 

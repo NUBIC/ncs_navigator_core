@@ -91,6 +91,13 @@ class ScheduledActivity
   end
 
   ##
+  # True if activity_name ends with SAQ
+  # @return [Boolean]
+  def saq_activity?
+    @activity_name =~ /SAQ$/
+  end
+
+  ##
   # True if activity_type includes 'Consent'
   # @return [Boolean]
   def consent_activity?

@@ -64,6 +64,27 @@ module ParticipantsHelper
   private :remove_two_tier
 
   ##
+  # Remove the 'Part One' or 'Part Two' (etc.) from the
+  # activity name
+  # @param activity [ScheduledActivity]
+  # @return [String]
+  def activity_name(activity)
+    ret = activity.activity_name.to_s
+    marker = "Part "
+    if ret.include?(marker)
+      ret = ret[0, ret.index(marker)]
+    end
+    ret.strip
+  end
+
+  def saq_confirmation_message(event)
+    msg = event.closed? ? "This event is already closed.\n\n" : ""
+    msg << "Would you like to record or add more information to the Self-Administered Questionnaire (SAQ)\n"
+    msg << "for the #{event.event_type.to_s} Event?"
+    msg
+  end
+
+  ##
   # "Originating Staff"
   # The name of the user that initiated the participant in the system
   # (e.g. the person who administered the eligibility screener).

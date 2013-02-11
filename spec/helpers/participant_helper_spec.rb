@@ -107,4 +107,71 @@ describe ParticipantsHelper do
 
   end
 
+  describe "#activity_name" do
+
+    let(:activity) { mock(ScheduledActivity, :activity_name => name) }
+
+    describe "with a nil activity_name" do
+      let(:name) { nil }
+      it "returns an empty string" do
+        helper.activity_name(activity).should == ""
+      end
+    end
+
+    describe "with a simple name" do
+      let(:name) { "Thing" }
+      it "returns the activity_name" do
+        helper.activity_name(activity).should == name
+      end
+    end
+
+    describe "with an activity name that includes a 'Part One'" do
+      let(:name) { "Thing Part One" }
+      it "returns the activity_name minus the 'Part One'" do
+        helper.activity_name(activity).should == 'Thing'
+      end
+    end
+
+    describe "with an activity name that includes 'Participant'" do
+      let(:name) { "Participant Thing" }
+      it "returns the activity_name" do
+        helper.activity_name(activity).should == name
+      end
+    end
+
+    describe "with an activity name that includes both 'Participant' and a 'Part'" do
+      let(:name) { "Participant Thing Part One" }
+      it "returns the activity_name minus the 'Part One'" do
+        helper.activity_name(activity).should == "Participant Thing"
+      end
+    end
+
+  end
+
+  describe "#saq_confirmation_message" do
+    let(:event_type) { NcsCode.for_list_name_and_local_code('EVENT_TYPE_CL1', Event.birth_code) }
+    let(:saq_confirmation_message) {
+      "Would you like to record or add more information to the Self-Administered Questionnaire (SAQ)\nfor the #{event_type.to_s} Event?"
+    }
+
+    describe "with a closed event" do
+      let(:event) { Factory(:event, :event_end_date => Date.parse("2525-12-25"), :event_type => event_type) }
+
+      it "returns the confirmation message with a note that the event is closed" do
+        msg = "This event is already closed.\n\n" + saq_confirmation_message
+        helper.saq_confirmation_message(event).should == msg
+      end
+
+    end
+
+    describe "with an open event" do
+      let(:event) { Factory(:event, :event_end_date => nil, :event_type => event_type) }
+
+      it "returns the confirmation message" do
+        helper.saq_confirmation_message(event).should == saq_confirmation_message
+      end
+    end
+
+  end
+
 end

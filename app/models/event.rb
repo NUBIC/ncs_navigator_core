@@ -35,6 +35,7 @@
 # All activities in an Event have the same subject.
 class Event < ActiveRecord::Base
   include NcsNavigator::Core::Mdes::MdesRecord
+  include NcsNavigator::Core::Mdes::InstrumentOwner
   acts_as_mdes_record :public_id_field => :event_id
 
   belongs_to :participant

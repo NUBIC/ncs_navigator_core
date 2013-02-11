@@ -150,23 +150,24 @@ describe Contact do
       c.contact_links.should include(l2)
     end
 
-    it "knows all instruments associated with this contact" do
-      c  = Factory(:contact)
+    it "knows all instruments associated with it" do
+      c = Factory(:contact)
+      e = Factory(:event)
       pers = Factory(:person)
       part = Factory(:participant)
       rs, i1 = prepare_instrument(pers, part,
           create_li_pregnancy_screener_survey_with_ppg_status_history_operational_data)
-      l1 = Factory(:contact_link, :contact => c, :instrument => i1, :person => pers)
+      l1 = Factory(:contact_link, :event => e, :contact => c, :instrument => i1, :person => pers)
 
-      c.contact_links.should == [l1]
-      c.instruments.should == [i1]
+      e.contact_links.should == [l1]
+      e.instruments.should == [i1]
 
       rs, i2 = prepare_instrument(pers, part,
           create_pre_pregnancy_survey_with_email_operational_data)
-      l2 = Factory(:contact_link, :contact => c, :instrument => i2, :person => pers)
+      l2 = Factory(:contact_link, :event => e, :contact => c, :instrument => i2, :person => pers)
 
       i3 = Factory(:instrument)
-      l3 = Factory(:contact_link, :contact => c, :instrument => i3, :person => pers)
+      l3 = Factory(:contact_link, :event => e, :contact => c, :instrument => i3, :person => pers)
 
       c.contact_links.reload
       c.instruments.reload

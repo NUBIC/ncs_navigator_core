@@ -41,6 +41,7 @@
 # Instruments in an Event and one or more Specimens that some Instruments collect.
 class Contact < ActiveRecord::Base
   include NcsNavigator::Core::Mdes::MdesRecord
+  include NcsNavigator::Core::Mdes::InstrumentOwner
   acts_as_mdes_record :public_id_field => :contact_id, :date_fields => [:contact_date]
 
   IN_PERSON_CONTACT_CODE = 1
@@ -126,20 +127,6 @@ class Contact < ActiveRecord::Base
     else
       # NOOP
     end
-  end
-
-  ##
-  # @return [Array<Instrument>] where the instrument has an associated Survey
-  def instruments_with_surveys
-    instruments.select { |i| !i.survey.nil? }
-  end
-
-  ##
-  # @return [Array<String>] Instrument Survey titles
-  def instrument_survey_titles
-    # TODO: update Contact object to use this:
-    instruments.collect{|i| i.response_sets}.flatten.compact.collect{|rs| rs.survey.title}.uniq
-    # instruments_with_surveys.collect {|i| i.survey.title}
   end
 
   ##

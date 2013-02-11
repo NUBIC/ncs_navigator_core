@@ -80,7 +80,7 @@ describe ContactLinksController do
       	end
       end
 
-      describe "for not null participant and event" do
+      describe "for a participant with a new schedule" do
       	before(:each) do
       		@plan = InstrumentPlan.from_schedule(participant_schedule)
 		      PatientStudyCalendar.any_instance.stub(:build_activity_plan).and_return(@plan)
@@ -95,7 +95,7 @@ describe ContactLinksController do
           assigns(:activities_for_event).size.should == 4
         end
 
-      	it "@current_activity should be first schedule activity for contact_link.event" do
+      	it "@current_activity should be first scheduled activity for contact_link.event" do
       		assigns(:current_activity).activity_name.should == "Pregnancy Visit 1 Interview"
       	end
 
@@ -103,36 +103,42 @@ describe ContactLinksController do
           assigns(:scheduled_activities).size.should == 3
         end
 
-      	it "@occurred_activities should be all occurred activities for contact_link.event" do
-      		assigns(:occurred_activities).size.should == 1
-      	end
-
       	it "@saq_activity should be the SAQ from occurred activities for contact_link.event" do
-      		assigns(:saq_activity).activity_name.should == "Pregnancy Visit 1 SAQ"
+      		assigns(:saq_activities).size.should == 1
+          assigns(:saq_activities).first.activity_name.should == "Pregnancy Visit 1 SAQ"
       	end
 
-      	context do
-      		before(:each) do
-      			contact_link = Factory(:contact_link, :person => @person, :event => Factory(:event, :event_type => NcsCode.find_event_by_lbl("birth")))
-						get :select_instrument, :id => contact_link.id
-      		end
+        context "with an empty schedule" do
+          before(:each) do
+            contact_link = Factory(:contact_link, :person => @person, :event => Factory(:event, :event_type => NcsCode.find_event_by_lbl("birth")))
+            get :select_instrument, :id => contact_link.id
+          end
 
-      		it "@activities_for_event should be empty if no schedule activities for contact_link.event" do
-						assigns(:activities_for_event).size.should == 0
-      		end
+          it "@activities_for_event should be empty if no schedule activities for contact_link.event" do
+            assigns(:activities_for_event).size.should == 0
+          end
 
-      		it "@current_activity should be null if no schedule activities for contact_link.event" do
-						assigns(:current_activity).should be_nil
-      		end
+          it "@current_activity should be null if no schedule activities for contact_link.event" do
+            assigns(:current_activity).should be_nil
+          end
 
-      		it "@occurred_activities should be empty if no occurred activities for contact_link.event" do
-						assigns(:occurred_activities).size.should == 0
-      		end
+          it "@saq_activity should be null if no occurred activities for contact_link.event" do
+            assigns(:saq_activities).should be_empty
+          end
+        end
 
-      		it "@saq_activity should be null if no occurred activities for contact_link.event" do
-						assigns(:saq_activity).should be_nil
-      		end
-      	end
+      end
+
+      describe "for a participant with a mostly completed schedule" do
+        before(:each) do
+          plan = InstrumentPlan.from_schedule(mostly_complete_participant_schedule)
+          PatientStudyCalendar.any_instance.stub(:build_activity_plan).and_return(plan)
+          get :select_instrument, :id => @contact_link.id
+        end
+
+        it "@current_activity should be first scheduled activity for contact_link.event" do
+          assigns(:current_activity).activity_name.should == "Pregnancy Health Care Log"
+        end
       end
 
     end
@@ -170,6 +176,33 @@ describe ContactLinksController do
 		    get :saq_instrument, :id => @contact_link.id
         response.should redirect_to(decision_page_contact_link_path(@contact_link))
       end
+    end
+
+    def mostly_complete_participant_schedule
+      schedule = {
+        'days' => {
+          '2010-12-01' => {
+            'activities' => [
+              {
+                'id' => '8',
+                'activity' => { 'name' => 'Pregnancy Visit 1 Information Sheet' },
+                'ideal_date' => '2010-12-01',
+                'assignment' => { 'id' => @contact_link.person.participant.p_id },
+                'current_state' => { 'name' => 'occurred' },
+                'labels' => 'event:pregnancy_visit_1 '
+              },
+              {
+                'id' => '9',
+                'activity' => { 'name' => 'Pregnancy Health Care Log' },
+                'ideal_date' => '2010-12-01',
+                'assignment' => { 'id' => @contact_link.person.participant.p_id },
+                'current_state' => { 'name' => 'scheduled' },
+                'labels' => 'event:pregnancy_visit_1 '
+              }
+            ]
+          }
+        }
+      }
     end
 
     def participant_schedule
