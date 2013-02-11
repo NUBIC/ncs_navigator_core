@@ -141,6 +141,10 @@ describe PatientStudyCalendar do
       end
     end
 
+    it 'raises ArgumentError if given zero study segments' do
+      lambda { subject.schedule_preview(date, []) }.should raise_error(ArgumentError)
+    end
+
     it 'retrieves a preview for the given start date and study segments' do
       study_segments = [
         PatientStudyCalendar::HIGH_INTENSITY_PREGNANCY_VISIT_1,

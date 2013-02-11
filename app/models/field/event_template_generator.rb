@@ -43,6 +43,7 @@ module Field
 
     def initialize(logger)
       @logger = logger
+      @scheduled_activity_report = Field::ScheduledActivityReport.new(logger)
     end
 
     ##
@@ -64,9 +65,9 @@ module Field
     # @param [Array<String>] templates Desired templates: usually the output
     #   of {#templates}, but can be varied if required.
     def populate_from_psc(psc, date, templates)
-      data = psc.schedule_preview(date, templates)
+      return if templates.empty?
 
-      @scheduled_activity_report = Field::ScheduledActivityReport.new(logger)
+      data = psc.schedule_preview(date, templates)
       @scheduled_activity_report.populate_from_schedule(data)
     end
 
