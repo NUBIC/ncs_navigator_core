@@ -7,7 +7,7 @@ require 'set'
 
 module MergeValueGeneration
   DATES = (Date.today - 100..Date.today).to_a
-  TIMES = (Time.now.to_i - 100..Time.now.to_i).map { |x| Time.at(x) }
+  TIMES = (Time.now.to_i - 100.minutes..Time.now.to_i).step(1.minute).map { |x| Time.at(x) }
   MDES_TIMES = TIMES.map { |t| t.strftime("%H:%M") }
 
   ##
