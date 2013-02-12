@@ -26,6 +26,7 @@ describe ResponseSet do
   it { should belong_to(:person) }
   it { should belong_to(:instrument) }
   it { should belong_to(:participant) }
+  it { should have_one(:instrument_context) }
 
   it_should_behave_like 'a publicly identified record' do
     let(:o1) { Factory(:response_set) }

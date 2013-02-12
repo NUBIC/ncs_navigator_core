@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130206202031) do
+ActiveRecord::Schema.define(:version => 20130212215454) do
 
   create_table "addresses", :force => true do |t|
     t.integer  "psu_code",                                                :null => false
@@ -272,8 +272,6 @@ ActiveRecord::Schema.define(:version => 20130206202031) do
     t.integer  "lock_version",                                                                    :default => 0
   end
 
-  add_index "events", ["event_type_code"], :name => "e_event_type_code"
-
   create_table "fieldworks", :force => true do |t|
     t.string   "fieldwork_id",        :limit => 36
     t.datetime "created_at"
@@ -344,6 +342,8 @@ ActiveRecord::Schema.define(:version => 20130206202031) do
     t.datetime "updated_at"
   end
 
+  add_index "institution_person_links", ["institution_id", "person_id"], :name => "index_institution_person_links_on_institution_id_and_person_id", :unique => true
+
   create_table "institutions", :force => true do |t|
     t.string   "psu_code",                    :limit => 36, :null => false
     t.string   "institute_id",                              :null => false
@@ -366,6 +366,20 @@ ActiveRecord::Schema.define(:version => 20130206202031) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "response_set_id"
+  end
+
+  create_table "instrument_context_elements", :force => true do |t|
+    t.integer  "instrument_context_id", :null => false
+    t.string   "key"
+    t.text     "value"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "instrument_contexts", :force => true do |t|
+    t.integer  "response_set_id", :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "instruments", :force => true do |t|
@@ -1610,6 +1624,10 @@ ActiveRecord::Schema.define(:version => 20130206202031) do
 
   add_foreign_key "household_person_links", "household_units", :name => "household_person_links_household_units_fk"
   add_foreign_key "household_person_links", "people", :name => "household_person_links_people_fk"
+
+  add_foreign_key "instrument_context_elements", "instrument_contexts", :name => "instrument_context_elements_instrument_context_id_fk"
+
+  add_foreign_key "instrument_contexts", "response_sets", :name => "instrument_contexts_response_set_id_fk"
 
   add_foreign_key "instruments", "events", :name => "instruments_events_fk"
   add_foreign_key "instruments", "people", :name => "instruments_people_fk"
