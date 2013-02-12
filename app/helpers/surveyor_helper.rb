@@ -20,7 +20,7 @@ module SurveyorHelper
     # use copy in memory instead of making extra db calls
     if @sections.last == @section
       txt = t('surveyor.next_section').html_safe
-      if @activity_plan.final_survey_part?(@response_set, @event.event_type.to_s)
+      if @activity_plan.final_survey_part?(@response_set, @event)
         txt = t('surveyor.click_here_to_finish').html_safe
       end
       submit_tag(txt, :name => "finish")

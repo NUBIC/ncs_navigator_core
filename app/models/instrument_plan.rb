@@ -110,7 +110,7 @@ class InstrumentPlan
   end
 
   ##
-  # Returns the unique events from the
+  # Returns the unique event labels from the
   # @scheduled_activities attribute ordered by ideal_date
   #
   # @return [Array<String>]
@@ -122,9 +122,10 @@ class InstrumentPlan
   # Returns all the instruments from the
   # @scheduled_activities attribute
   #
+  # @param event [String] - the event name
   # @return [Array<String>]
   def instruments(event = nil)
-    scheduled_activities_for_event(event).sort_by do |a|
+    scheduled_activities_for_event_name(event).sort_by do |a|
       [a.ideal_date, a.order.to_s]
     end.map(&:instrument).compact
   end
@@ -132,9 +133,19 @@ class InstrumentPlan
   ##
   # Returns all ScheduledActivities for the given event
   #
-  # @param [String] - the event
+  # @param [Event] - the event
   # @return [Array<ScheduledActivity>]
   def scheduled_activities_for_event(event = nil)
+    event.nil? ? @scheduled_activities : @scheduled_activities.select{ |sa| event.matches_activity(sa) }
+  end
+
+  ##
+  # Returns all ScheduledActivities matching the given event
+  # name
+  #
+  # @param [String] - the event name
+  # @return [Array<ScheduledActivity>]
+  def scheduled_activities_for_event_name(event = nil)
     event = event.downcase.gsub(" ", "_") if event
     event.nil? ? @scheduled_activities : @scheduled_activities.select{ |sa| sa.event == event }
   end
@@ -142,9 +153,18 @@ class InstrumentPlan
   ##
   # Returns all Activities for the given event
   #
-  # @param [String] - the event
+  # @param [Event] - the event
   # @return [Array<ScheduledActivity>]
   def activities_for_event(event = nil)
+    event.nil? ? @all_activities : @all_activities.select{ |sa| event.matches_activity(sa) }
+  end
+
+  ##
+  # Returns all Activities for the given event
+  #
+  # @param [String] - the event
+  # @return [Array<ScheduledActivity>]
+  def activities_for_event_name(event = nil)
     event = event.downcase.gsub(" ", "_") if event
     event.nil? ? @all_activities : @all_activities.select{ |sa| sa.event == event }
   end
@@ -166,7 +186,7 @@ class InstrumentPlan
   # for this survey as there are scheduled survey parts.
   #
   # @param[ResponseSet]
-  # @param[String] - event type text (to match against ScheduledActivity event label)
+  # @param [Event]
   # @return Boolean
   def final_survey_part?(response_set, event)
     expected = scheduled_activities_for_survey(response_set.survey.title, event).size
@@ -190,15 +210,15 @@ class InstrumentPlan
   # should be acted upon. The current activity would be the next scheduled activity
   # for the event that has not been touched.
   #
-  # @param String - event name
-  # @param ResponseSet
+  # @param [String] - event name
+  # @param [ResponseSet]
   # @return ScheduledActivity
-  def current_scheduled_activity(event, response_set = nil)
-    remaining_activities(event, response_set).first
+  def current_scheduled_activity(event_name, response_set = nil)
+    remaining_activities(event_name, response_set).first
   end
 
-  def remaining_activities(event, response_set)
-    sas = scheduled_activities_for_event(event)
+  def remaining_activities(event_name, response_set)
+    sas = scheduled_activities_for_event_name(event_name)
     result = []
     if response_set.blank?
       result = sas
@@ -249,7 +269,8 @@ class InstrumentPlan
   # scheduled activity.
   # If there are no matching activities an empty array is returned.
   #
-  # @param String - survey_title
+  # @param survey_title [String]
+  # @param [Event] - the event, defaults to nil
   # @return [Array<ScheduledActivities>]
   def scheduled_activities_for_survey(survey_title, event = nil)
     result = []
@@ -265,7 +286,8 @@ class InstrumentPlan
   # Find the scheduled_activity for the given survey_title
   # The survey title should uniquely identify a scheduled activity in the instrument plan
   #
-  # @param [String] - survey title
+  # @param survey_title [String]
+  # @param [Event] - the event, defaults to nil
   # @return [ScheduledActivity]
   def scheduled_activity_for_survey(survey_title, event = nil)
     survey_title = survey_title.to_s.downcase

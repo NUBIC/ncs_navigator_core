@@ -8,7 +8,7 @@
   - else
     - pending_event = @participant.pending_events.first
     - activities_for_event = []
-    - activities_for_event = @participant_activity_plan.scheduled_activities_for_event(pending_event.event_type.to_s) if pending_event
+    - activities_for_event = @participant_activity_plan.scheduled_activities_for_event(pending_event) if pending_event
     = render "/people/schedule_or_perform_event", :participant => @participant, :person => @person, :pending_event => pending_event, :activities_for_event => activities_for_event
     .schedule
       - if @participant_activity_plan && pending_event
