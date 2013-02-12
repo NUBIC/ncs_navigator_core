@@ -75,7 +75,6 @@ class ParticipantConsentsController < ApplicationController
       if @participant_consent.update_attributes(params[:participant_consent])
 
         update_enrollment_status
-        mark_activity_occurred
 
         format.html { redirect_to redirect_action, :notice => 'Participant consent was successfully updated.' }
         format.json { head :ok }
