@@ -1799,4 +1799,68 @@ describe Participant do
       end
     end
   end
+
+  describe "determining if participants are from a hospital" do
+    before do
+
+    end
+
+    describe ".in_hospital" do
+      before do
+        @participant1 = Factory(:participant)
+        @participant2 = Factory(:participant)
+        @participant3 = Factory(:participant)
+        @person1      = Factory(:person)
+        @person2      = Factory(:person)
+        @person3      = Factory(:person)
+        Factory(:participant_person_link, :person => @person1, :participant => @participant1, :relationship_code => 1)
+        Factory(:participant_person_link, :person => @person2, :participant => @participant2, :relationship_code => 1)
+        Factory(:participant_person_link, :person => @person3, :participant => @participant3, :relationship_code => 1)
+        provider1    = Factory(:provider)
+        provider2    = Factory(:provider)
+        provider3    = Factory(:provider)
+        @person1.providers << provider1
+        @person2.providers << provider2
+        @person3.providers << provider3
+        pbs_list1   = Factory(:pbs_list, :in_out_frame_code => 4)
+        pbs_list2   = Factory(:pbs_list, :in_out_frame_code => 4)
+        pbs_list3   = Factory(:pbs_list, :in_out_frame_code => 1)
+        provider1.pbs_list = pbs_list1
+        provider2.pbs_list = pbs_list2
+        provider3.pbs_list = pbs_list3
+      end
+
+      it "returns set of participants that are from a hospital" do
+        Participant.from_hospital_type_provider.should == [@participant1, @participant2]
+
+      end
+
+      it "does not include in a returned set participants that are not from a hospital" do
+        Participant.from_hospital_type_provider.should_not include(@participant3)
+      end
+    end
+
+    describe "#hospital?" do
+      before do
+        @participant = Factory(:participant)
+        person      = Factory(:person)
+        Factory(:participant_person_link, :person => person, :participant => @participant, :relationship_code => 1)
+        @provider    = Factory(:provider)
+        person.providers << @provider
+      end
+
+      it "returns true for participants that are from a hospital" do
+        hospital_pbs_list       = Factory(:pbs_list, :in_out_frame_code => 4)
+        @provider.pbs_list = hospital_pbs_list
+        @participant.should be_hospital
+      end
+
+      it "returns false for participants that are not from a hospital" do
+        not_hospital_pbs_list   = Factory(:pbs_list, :in_out_frame_code => 1)
+        @provider.pbs_list = not_hospital_pbs_list
+        @participant.should_not be_hospital
+      end
+    end
+
+  end
 end
