@@ -107,39 +107,42 @@ describe ParticipantsHelper do
 
   end
 
-  describe "#strip_part" do
+  describe "#activity_name" do
+
+    let(:activity) { mock(ScheduledActivity, :activity_name => name) }
+
     describe "with a nil activity_name" do
       let(:name) { nil }
       it "returns an empty string" do
-        helper.strip_part(name).should == ""
+        helper.activity_name(activity).should == ""
       end
     end
 
     describe "with a simple name" do
       let(:name) { "Thing" }
       it "returns the activity_name" do
-        helper.strip_part(name).should == name
+        helper.activity_name(activity).should == name
       end
     end
 
     describe "with an activity name that includes a 'Part One'" do
       let(:name) { "Thing Part One" }
       it "returns the activity_name minus the 'Part One'" do
-        helper.strip_part(name).should == 'Thing'
+        helper.activity_name(activity).should == 'Thing'
       end
     end
 
     describe "with an activity name that includes 'Participant'" do
       let(:name) { "Participant Thing" }
       it "returns the activity_name" do
-        helper.strip_part(name).should == name
+        helper.activity_name(activity).should == name
       end
     end
 
     describe "with an activity name that includes both 'Participant' and a 'Part'" do
       let(:name) { "Participant Thing Part One" }
       it "returns the activity_name minus the 'Part One'" do
-        helper.strip_part(name).should == "Participant Thing"
+        helper.activity_name(activity).should == "Participant Thing"
       end
     end
 

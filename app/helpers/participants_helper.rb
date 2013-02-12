@@ -66,11 +66,15 @@ module ParticipantsHelper
   ##
   # Remove the 'Part One' or 'Part Two' (etc.) from the
   # activity name
-  # @param name [String]
+  # @param activity [ScheduledActivity]
   # @return [String]
-  def strip_part(name)
-    return "" if name.nil?
-    name.sub(/(.*?)\s*Part\s.*\Z/i) { $1 }
+  def activity_name(activity)
+    ret = activity.activity_name.to_s
+    marker = "Part "
+    if ret.include?(marker)
+      ret = ret[0, ret.index(marker)]
+    end
+    ret.strip
   end
 
   def saq_confirmation_message(event)
