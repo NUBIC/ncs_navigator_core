@@ -167,8 +167,8 @@
 ./spec/models/event_spec.rb:153
 ./spec/models/event_spec.rb:174
 ./spec/models/event_spec.rb:635
-./spec/models/field/merge_value_generation.rb:9
-./spec/models/field/merge_value_generation.rb:10
+./spec/models/field/merge_value_generation.rb:9   @fixed:4ec8a9f68891792085b02da5a91124fd569016de
+./spec/models/field/merge_value_generation.rb:10  @fixed:4ec8a9f68891792085b02da5a91124fd569016de
 ./spec/models/fieldwork_spec.rb:147
 ./spec/models/fieldwork_spec.rb:148
 ./spec/models/operational_data_extractor/pbs_eligibility_screener_spec.rb:53
