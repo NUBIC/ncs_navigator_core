@@ -3,7 +3,7 @@
 - instruments.each do |instr|
   %div{ :class => "known_instrument", :title => survey.description}
     - cls = @current_activity == activity ? "star_link icon_link" : "edit_link icon_link"
-    = link_to "Edit #{activity_name(activity)}", edit_instrument_path(instr), :class => cls
+    = link_to "Edit #{strip_part(activity.activity_name)}", edit_instrument_path(instr), :class => cls
     = render "activity_psc_action", :activity => activity
     - instr.response_sets.each do |rs|
       .instrument_response_set
