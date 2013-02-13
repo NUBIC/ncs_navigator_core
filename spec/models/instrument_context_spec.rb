@@ -12,5 +12,28 @@
 require 'spec_helper'
 
 describe InstrumentContext do
-  pending "add some examples to (or delete) #{__FILE__}"
+  let(:ctx) { InstrumentContext.new }
+
+  def render(ctx, template)
+    v = ctx.to_mustache.tap { |v| v.template = template }
+    v.render
+  end
+
+  describe '#set' do
+    it 'sets a key to a value' do
+      ctx.set 'foo', 'bar'
+
+      render(ctx, '{{foo}}').should == 'bar'
+    end
+  end
+
+  describe '#save' do
+    it 'saves set context elements' do
+      ctx.set 'foo', 'bar'
+      ctx.response_set = Factory(:response_set)
+      ctx.save!
+
+      render(InstrumentContext.find(ctx.id), '{{foo}}').should == 'bar'
+    end
+  end
 end

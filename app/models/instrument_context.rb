@@ -16,4 +16,18 @@ class InstrumentContext < ActiveRecord::Base
   default_scope includes(:elements)
 
   validates_presence_of :response_set_id
+
+  def set(key, value)
+    elements.build(:key => key, :value => value)
+  end
+
+  def to_mustache
+    FakeMustache.new(self)
+  end
+
+  class FakeMustache < ::Mustache
+    def initialize(ctx)
+      ctx.elements.each { |e| self[e.key] = e.value }
+    end
+  end
 end

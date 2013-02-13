@@ -123,6 +123,10 @@ class Person < ActiveRecord::Base
     self.age = self.computed_age if self.age.blank?
   end
 
+  def self.with_contact_data
+    includes(:addresses, :emails, :telephones)
+  end
+
   ##
   # How to format the date_move attribute
   # cf. MdesRecord
