@@ -463,12 +463,6 @@ class Person < ActiveRecord::Base
   end
   alias :is_first_child? :first_child?
 
-  ##
-  # From INFORMATION_SOURCE_CL4, the code for Person/Self
-  # @return[Integer]
-  def self.person_self_code
-    1
-  end
 
   def person_taking_screener_ineligible?(response_set)
     !response_set.person.eligible? && response_set.survey.title =~ /PBSamplingScreen/
