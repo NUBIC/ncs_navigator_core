@@ -760,14 +760,17 @@ class Participant < ActiveRecord::Base
   ##
   # Sets the enroll status to Yes (i.e. local_code = 1)
   # and the enroll_date to the given date
-  # @param enroll_date [Date] - defaults to today
-  def enroll(enroll_date = Date.today)
+  # @param enroll_date [Date]
+  def enroll(enroll_date)
     self.enroll_status = NcsCode.for_attribute_name_and_local_code(:enroll_status_code, NcsCode::YES)
     self.enroll_date = enroll_date
     self.being_followed = true
   end
 
-  def enroll!(enroll_date = Date.today)
+  ##
+  # Enroll and save!
+  # @param enroll_date [Date]
+  def enroll!(enroll_date)
     self.enroll(enroll_date)
     self.save!
   end
