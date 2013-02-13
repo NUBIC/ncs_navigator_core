@@ -384,7 +384,8 @@ module NcsNavigator::Core::Warehouse
         reject { |psc_event| psc_event[:event_type_label] == 'informed_consent' }
 
       scheduled_events.each do |implied_event|
-        event_type = NcsCode.find_event_by_lbl(implied_event[:event_type_label])
+        event_type_label = implied_event[:event_type_label]
+        event_type = NcsCode.find_event_by_lbl(event_type_label)
         if event_type
           say_subtask_message(
             "creating Core #{event_type.display_text} event on #{implied_event[:start_date]} implied by PSC")
@@ -405,6 +406,8 @@ module NcsNavigator::Core::Warehouse
           ensure
             PaperTrail.whodunnit = nil
           end
+        else
+          log.warn("Cannot find event in deployed MDES codes for psc activity label '#{event_type_label}'")
         end
       end
     end

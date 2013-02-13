@@ -759,7 +759,11 @@ class Event < ActiveRecord::Base
       study_segment_identifier = PatientStudyCalendar.extract_scheduled_study_segment_identifier(resp.body)
       psc.unique_label_ideal_date_pairs_for_scheduled_segment(participant, study_segment_identifier).each do |lbl, dt|
         code = NcsCode.find_event_by_lbl(lbl)
-        Event.create_placeholder_record(participant, dt, code.local_code, study_segment_identifier) if code
+        if code
+          Event.create_placeholder_record(participant, dt, code.local_code, study_segment_identifier)
+        else
+          log.warn("Cannot find event in deployed MDES codes for psc activity label '#{lbl}'")
+        end
       end
       unless NcsNavigatorCore.expanded_phase_two?
         psc.cancel_collection_instruments(participant, study_segment_identifier, date,
