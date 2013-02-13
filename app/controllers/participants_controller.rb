@@ -259,28 +259,6 @@ class ParticipantsController < ApplicationController
     redirect_to participant_path(@participant)
   end
 
-  ##
-  # @deprecated Action is not currently available to users in UI
-  def enroll
-    @participant.enroll!
-
-    url = participant_path(@participant)
-    url = params[:redirect_to] unless params[:redirect_to].blank?
-
-    redirect_to(url, :notice => "Participant was successfully enrolled into the study.")
-  end
-
-  ##
-  # @deprecated Action is not currently available to users in UI
-  def unenroll
-    @participant.unenroll!(psc, params[:enrollment_status_comment])
-
-    url = participant_path(@participant)
-    url = params[:redirect_to] unless params[:redirect_to].blank?
-
-    redirect_to(url, :notice => "Participant was successfully un-enrolled from the study.")
-  end
-
   def remove_from_active_followup
     @participant.unenroll!(psc, params[:enrollment_status_comment])
 

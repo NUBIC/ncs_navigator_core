@@ -17,26 +17,6 @@
 - if permit?(Role::SYSTEM_ADMINISTRATOR, Role::USER_ADMINISTRATOR, Role::STAFF_SUPERVISOR)
   .page_section
     .enrollment
-      - if false
-        %b
-          Enrollment
-        %div
-          - if @participant.enrolled?
-            - path = unenroll_participant_path(@participant, :redirect_to => redirection)
-            - msg = "Un-enroll Participant from Study"
-            - show_enrollment_status_comment = true
-          - else
-            - path = enroll_participant_path(@participant, :redirect_to => redirection)
-            - msg = "Enroll Participant in Study"
-            - show_enrollment_status_comment = false
-          = form_for(@participant, :url => path) do |f|
-            - if show_enrollment_status_comment
-              %p
-                = label_tag :enrollment_status_comment, "Reason for un-enrolling:"
-                %br
-                = text_area_tag :enrollment_status_comment
-            %p
-              = f.submit msg, :confirm => "Are you certain you would like to #{msg}?"
       - if @participant.being_followed?
         %b
           Remove from active follow-up
