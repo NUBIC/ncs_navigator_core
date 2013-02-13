@@ -57,6 +57,8 @@ class Event < ActiveRecord::Base
   validates_format_of :event_start_time, :with => mdes_time_pattern, :allow_blank => true
   validates_format_of :event_end_time,   :with => mdes_time_pattern, :allow_blank => true
 
+  validate :disposition_code_is_in_disposition_category
+
   before_validation :strip_time_whitespace
   before_create :set_start_time
 
@@ -832,6 +834,19 @@ class Event < ActiveRecord::Base
           readonly(false).first
   end
   private :associated_informed_consent_event
+
+  ##
+  # Validates that the event_disposition value exists in the
+  # event_disposition_category_code.
+  def disposition_code_is_in_disposition_category
+    if self.event_disposition && self.event_disposition_category_code
+      category = DispositionMapper.for_event_disposition_category_code(self.event_disposition_category_code)
+      code = NcsNavigatorCore.mdes.disposition_codes.detect { |code| code.event == category && code.interim_code.to_i == self.event_disposition }
+      if code.nil?
+        errors.add(:event_disposition, "does not exist in the #{category} Disposition Category.")
+      end
+    end
+  end
 
   comma do
 
