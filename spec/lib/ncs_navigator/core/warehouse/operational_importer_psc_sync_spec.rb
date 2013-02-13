@@ -832,6 +832,12 @@ module NcsNavigator::Core::Warehouse
             :event_type_label => 'informed_consent',
             :start_date => '2011-06-11',
             :scheduled_activities => %w(sa7)
+          },
+          {
+            # can't find way to load different mdes version until #2496 is done
+            :event_type_label => 'non_mdes_event',
+            :start_date => '2013-03-16',
+            :scheduled_activities => %w(sa8)
           }
         ]
       }
@@ -847,7 +853,6 @@ module NcsNavigator::Core::Warehouse
         # 6 month already exists
         Factory(:event, :participant => participant,
           :event_type_code => 24, :event_start_date => Date.new(2011, 3, 16))
-
         with_versioning { importer.create_placeholders_for_implied_events(psc_participant) }
       end
 
@@ -874,6 +879,11 @@ module NcsNavigator::Core::Warehouse
       it 'does not create placeholders for PSC events that already exist in Cases' do
         # 6 month
         participant.events.where(:event_type_code => 24).count.should == 1
+      end
+
+      it 'does not create placeholders for PSC events that do not exist in the particular MDES version in Cases' do
+        # does not create any event for non-matching mdes version
+        participant.events.count.should == 2
       end
 
       it 'audits the new events as coming from the PSC sync' do
