@@ -162,7 +162,7 @@ class ContactLinksController < ApplicationController
     event        = @contact_link.event
     if event && participant
       activity_plan        = psc.build_activity_plan(participant)
-      occurred_activities  = activity_plan.occurred_activities_for_event(event.to_s)
+      occurred_activities  = activity_plan.occurred_activities_for_event(event)
       saq_activity         = occurred_activities.find_all{|activity| activity.activity_name =~ /SAQ$/}.first
       if saq_activity
         survey = Survey.most_recent_for_access_code(Survey.to_normalized_string(saq_activity.instrument))

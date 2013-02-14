@@ -29,49 +29,19 @@ describe InstrumentPlan do
       end
 
       describe ".occurred_activities_for_event" do
+        let(:event) { Factory(:event, :event_type_code => Event.pregnancy_visit_1_code, :event_start_date => Date.parse('2010-12-01'))}
         it "returns all the occurred_activities for the particular event if event is specified" do
-          occurred_activities = InstrumentPlan.from_schedule(participant_plan).occurred_activities_for_event("pregnancy_visit_1")
+          occurred_activities = InstrumentPlan.from_schedule(participant_plan).occurred_activities_for_event(event)
           occurred_activities.size.should  == 2
         end
-
-        it "returns all the occurred_activities for the participant schedule if event is not specified" do
-          occurred_activities = InstrumentPlan.from_schedule(participant_plan).occurred_activities_for_event()
-          occurred_activities.size.should  == 3
-        end
-      end
-
-      describe ".instruments" do
-
-        let(:plan) { InstrumentPlan.from_schedule(participant_plan) }
-
-        it "knows all of the instruments for the participant" do
-          plan.instruments.size.should == 5
-        end
-
-        it "orders the instruments by event and order label" do
-          [
-            'ins_que_birth_int_ehpbhi_p2_v2.0',
-            'ins_que_birth_int_ehpbhi_p2_v2.0_baby_name',
-            'ins_que_3mmother_int_ehpbhi_p2_v1.1',
-            'ins_que_6mmother_int_ehpbhi_p2_v1.1'
-          ].each_with_index do |instrument, index|
-            plan.instruments[index].should == instrument
-          end
-        end
-
-        it "takes a String representing event as an optional parameter" do
-          plan.instruments('birth').size.should == 2
-          plan.instruments('3m').size.should == 1
-        end
-
       end
 
       describe ".scheduled_activities_for_survey" do
-
+        let(:event) { Factory(:event, :event_type_code => Event.birth_code, :event_start_date => Date.parse('2011-01-01'))}
         let(:plan) { InstrumentPlan.from_schedule(participant_plan) }
 
         it "returns all scheduled_activity parts for a given survey" do
-          parts = plan.scheduled_activities_for_survey('ins_que_birth_int_ehpbhi_p2_v2.0_baby_name')
+          parts = plan.scheduled_activities_for_survey('ins_que_birth_int_ehpbhi_p2_v2.0_baby_name', event)
           parts.size.should == 2
           parts.first.instrument.should == 'ins_que_birth_int_ehpbhi_p2_v2.0'
           parts.last.instrument.should == 'ins_que_birth_int_ehpbhi_p2_v2.0_baby_name'
@@ -102,10 +72,6 @@ describe InstrumentPlan do
 
         let(:plan) { InstrumentPlan.from_schedule(participant_plan) }
         let(:birth_event_start_date) { Date.parse('2011-01-01') }
-
-        it "knows all the instruments for the mother and child" do
-          plan.instruments('6m').size.should == 2
-        end
 
         it "knows all the scheduled activities for the mother and child" do
           plan.activities_for_event_name('6m').size.should == 2
@@ -213,10 +179,6 @@ describe InstrumentPlan do
 
         let(:plan) { InstrumentPlan.from_schedule(participant_plan) }
         let(:birth_event_start_date) { Date.parse('2011-01-01') }
-
-        it "knows all the instruments for the mother and child" do
-          plan.instruments('6m').size.should == 3
-        end
 
         it "knows all the scheduled activities for the mother and child" do
           plan.scheduled_activities_for_event_name('6m').size.should == 3
@@ -389,10 +351,6 @@ describe InstrumentPlan do
 
         let(:plan) { InstrumentPlan.from_schedule(participant_plan_xp2) }
 
-        it "knows all the instruments for the mother and child" do
-          plan.instruments('birth').size.should == 3
-        end
-
         it "knows all the scheduled activities for the mother and child" do
           plan.scheduled_activities_for_event_name('birth').size.should == 4
         end
@@ -439,10 +397,6 @@ describe InstrumentPlan do
         end
 
         let(:plan) { InstrumentPlan.from_schedule(participant_plan_xp2) }
-
-        it "knows all the instruments for the mother and child" do
-          plan.instruments('birth').size.should == 5
-        end
 
         it "knows all the scheduled activities for the mother and child" do
           plan.activities_for_event_name('birth').size.should == 6
@@ -499,27 +453,33 @@ describe InstrumentPlan do
     end
 
     describe "#scheduled_activity_for_survey" do
-
-      it "returns first scheduled activity matching title if called without a scoping parameter" do
-        activity = plan.scheduled_activity_for_survey(@survey_title)
-        activity.event.should == "informed_consent"
+      describe "for the informed consent event" do
+        it "returns first scheduled activity matching title" do
+          activity = plan.scheduled_activity_for_survey(@survey_title, informed_consent_event)
+          activity.event.should == "informed_consent"
+        end
       end
 
-      it "returns first scheduled activity associated with a particular event if called with a scoping parameter" do
-        activity = plan.scheduled_activity_for_survey(@survey_title, birth_event)
-        activity.event.should == "birth"
+      describe "for the birth event" do
+        it "returns first scheduled activity matching title" do
+          activity = plan.scheduled_activity_for_survey(@survey_title, birth_event)
+          activity.event.should == "birth"
+        end
       end
     end
 
     describe "#scheduled_activities_for_survey" do
 
-      it "returns all scheduled_activities without event scoping parameter" do
-        plan.scheduled_activities_for_survey('ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one').count.should == 4
+      describe "for the informed consent event" do
+        it "returns all scheduled_activities for the given survey title and event" do
+          plan.scheduled_activities_for_survey('ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one', informed_consent_event).count.should == 2
+        end
       end
 
-      it "returns only those activites associated with their respective events if a scoping parameter is given" do
-        plan.scheduled_activities_for_survey('ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one', informed_consent_event).count.should == 2
-        plan.scheduled_activities_for_survey('ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one', birth_event).count.should == 2
+      describe "for the birth event" do
+        it "returns all scheduled_activities for the given survey title and event" do
+          plan.scheduled_activities_for_survey('ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one', birth_event).count.should == 2
+        end
       end
     end
 
