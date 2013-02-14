@@ -65,12 +65,12 @@ module ParticipantsHelper
 
   ##
   # Remove the 'Part One' or 'Part Two' (etc.) from the
-  # activity name
+  # given activity name. If the name parameter is nil,
+  # this method will return an empty string.
   # @param name [String]
   # @return [String]
-  def strip_part(name)
-    return "" if name.nil?
-    name.sub(/(.*?)\s*Part\b.*\Z/i) { $1 }
+  def strip_part_from_activity_name(name)
+    name.to_s.sub(/(.*?)\s*Part\b.*\Z/i) { $1 }
   end
 
   def saq_confirmation_message(event)

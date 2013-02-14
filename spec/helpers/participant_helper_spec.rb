@@ -107,39 +107,39 @@ describe ParticipantsHelper do
 
   end
 
-  describe "#strip_part" do
+  describe "#strip_part_from_activity_name" do
     describe "with a nil activity_name" do
       let(:name) { nil }
       it "returns an empty string" do
-        helper.strip_part(name).should == ""
+        helper.strip_part_from_activity_name(name).should == ""
       end
     end
 
     describe "with a simple name" do
       let(:name) { "Thing" }
       it "returns the activity_name" do
-        helper.strip_part(name).should == name
+        helper.strip_part_from_activity_name(name).should == name
       end
     end
 
     describe "with an activity name that includes a 'Part One'" do
       let(:name) { "Thing Part One" }
       it "returns the activity_name minus the 'Part One'" do
-        helper.strip_part(name).should == 'Thing'
+        helper.strip_part_from_activity_name(name).should == 'Thing'
       end
     end
 
     describe "with an activity name that includes 'Participant'" do
       let(:name) { "Participant Thing" }
       it "returns the activity_name" do
-        helper.strip_part(name).should == name
+        helper.strip_part_from_activity_name(name).should == name
       end
     end
 
     describe "with an activity name that includes both 'Participant' and a 'Part'" do
       let(:name) { "Participant Thing Part One" }
       it "returns the activity_name minus the 'Part One'" do
-        helper.strip_part(name).should == "Participant Thing"
+        helper.strip_part_from_activity_name(name).should == "Participant Thing"
       end
     end
 
