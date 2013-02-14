@@ -836,15 +836,12 @@ class Event < ActiveRecord::Base
   private :associated_informed_consent_event
 
   ##
-  # Validates that the event_disposition value exists in the
-  # event_disposition_category_code.
+  # If the event_disposition and event_disposition_category_code attributes
+  # are set we validate that event_disposition value exists for that category
+  # using the disposition_code composition.
   def disposition_code_is_in_disposition_category
-    if self.event_disposition && self.event_disposition_category_code
-      category = DispositionMapper.for_event_disposition_category_code(self.event_disposition_category_code)
-      code = NcsNavigatorCore.mdes.disposition_codes.detect { |code| code.event == category && code.interim_code.to_i == self.event_disposition }
-      if code.nil?
-        errors.add(:event_disposition, "does not exist in the #{category} Disposition Category.")
-      end
+    if self.event_disposition && self.event_disposition_category_code && !self.disposition_code
+      errors.add(:event_disposition, "does not exist in the disposition category.")
     end
   end
 

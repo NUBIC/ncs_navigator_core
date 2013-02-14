@@ -1019,7 +1019,7 @@ describe Event do
       expect do
         invalid.save!
       end.to raise_error(ActiveRecord::RecordInvalid,
-        "Validation failed: Event disposition does not exist in the General Study Visit Event Disposition Category.")
+        "Validation failed: Event disposition does not exist in the disposition category.")
     end
 
   end
