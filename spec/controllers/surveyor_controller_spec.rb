@@ -13,7 +13,7 @@ describe SurveyorController do
   describe "GET show" do
 
     before(:each) do
-      @instrument  = Factory(:instrument, :event => Factory(:event))
+      @instrument  = Factory(:instrument, :event => Factory(:event, :event_start_date => Date.parse('2011-01-01')))
       @survey = Factory(:survey,
         :title => "xyz", :access_code => "xyz", :sections => [Factory(:survey_section)])
       @response_set = Factory(:response_set, :access_code => "pdq",
@@ -66,7 +66,7 @@ describe SurveyorController do
       person_participant_link_for_mother = Factory(:participant_person_link, :participant => mother_participant, :person => mother_person)
       child_participant = Factory(:participant, :p_type_code => 6)
       person_participant_link_for_child = Factory(:participant_person_link, :participant => child_participant, :person => mother_person, :relationship_code => 2)
-      
+
       @response_set.participant = child_participant
       @response_set.save!
 

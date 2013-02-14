@@ -52,18 +52,18 @@ class ApplicationController < ActionController::Base
     ##
     # Disposition group based on specific events
     def set_disposition_group_for_event
-      case @event.event_type.to_s
-      when "Pregnancy Screener"
+      case @event.event_type_code
+      when Event.pregnancy_screener_code
         @disposition_group = DispositionMapper::PREGNANCY_SCREENER_EVENT
-      when "Informed Consent"
+      when Event.informed_consent_code
         @disposition_group = disposition_group_for_study_arm(@event)
-      when "Low Intensity Data Collection"
+      when Event.low_intensity_data_collection_code
         @disposition_group = disposition_group_for_study_arm(@event)
-      when "Low to High Conversion"
+      when Event.low_to_high_conversion_code
         @disposition_group = disposition_group_for_study_arm(@event)
-      when "Provider-Based Recruitment"
+      when Event.provider_recruitment_code
         @disposition_group = DispositionMapper::PROVIDER_RECRUITMENT_EVENT
-      when "PBS Participant Eligibility Screening"
+      when Event.pbs_eligibility_screener_code
         @disposition_group = DispositionMapper::PBS_ELIGIBILITY_EVENT
       else
         set_disposition_group_for_contact_link
