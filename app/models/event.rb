@@ -762,7 +762,7 @@ class Event < ActiveRecord::Base
         if code
           Event.create_placeholder_record(participant, dt, code.local_code, study_segment_identifier)
         else
-          log.warn("Cannot find event in deployed MDES codes for psc activity label '#{lbl}'")
+          Rails.logger.warn("Cannot find event for MDES version '#{NcsNavigatorCore.mdes.version}' for psc activity label '#{lbl}'")
         end
       end
       unless NcsNavigatorCore.expanded_phase_two?
