@@ -407,7 +407,7 @@ module NcsNavigator::Core::Warehouse
             PaperTrail.whodunnit = nil
           end
         else
-          log.warn("Cannot find event for MDES version '#{NcsNavigatorCore.mdes.version}' for psc activity label '#{lbl}'")
+          log.warn("Cannot find event for MDES version '#{NcsNavigatorCore.mdes.version}' for psc activity label '#{event_type_label}'")
         end
       end
     end
