@@ -1001,4 +1001,26 @@ describe Event do
       updated_ic_event.event_end_time.should == midnight
     end
   end
+
+  describe "#disposition_code_is_in_disposition_category" do
+
+    let(:valid)   { Factory.build(:event, :event_disposition_category_code => 3, :event_disposition => 60) }
+    let(:invalid) { Factory.build(:event, :event_disposition_category_code => 3, :event_disposition => 65) }
+
+    it "determines if a record is invalid" do
+      valid.should be_valid
+    end
+
+    it "determines if a record is valid" do
+      invalid.should_not be_valid
+    end
+
+    it "creates a descriptive error" do
+      expect do
+        invalid.save!
+      end.to raise_error(ActiveRecord::RecordInvalid,
+        "Validation failed: Event disposition does not exist in the disposition category.")
+    end
+
+  end
 end

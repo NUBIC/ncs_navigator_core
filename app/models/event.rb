@@ -57,6 +57,8 @@ class Event < ActiveRecord::Base
   validates_format_of :event_start_time, :with => mdes_time_pattern, :allow_blank => true
   validates_format_of :event_end_time,   :with => mdes_time_pattern, :allow_blank => true
 
+  validate :disposition_code_is_in_disposition_category
+
   before_validation :strip_time_whitespace
   before_create :set_start_time
 
@@ -832,6 +834,16 @@ class Event < ActiveRecord::Base
           readonly(false).first
   end
   private :associated_informed_consent_event
+
+  ##
+  # If the event_disposition and event_disposition_category_code attributes
+  # are set we validate that event_disposition value exists for that category
+  # using the disposition_code composition.
+  def disposition_code_is_in_disposition_category
+    if self.event_disposition && self.event_disposition_category_code && !self.disposition_code
+      errors.add(:event_disposition, "does not exist in the disposition category.")
+    end
+  end
 
   comma do
 
