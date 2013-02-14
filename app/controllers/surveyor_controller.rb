@@ -15,11 +15,10 @@ class SurveyorController < ApplicationController
 
     contact_link = @response_set.instrument.contact_link
     activity = @activity_plan.current_scheduled_activity(contact_link.event.to_s, @response_set)
-    event_type = @event.event_type.to_s
 
-    if @activity_plan.final_survey_part?(@response_set, event_type) || params[:breakoff] || activity.instruments.empty?
+    if @activity_plan.final_survey_part?(@response_set, @event) || params[:breakoff] || activity.instruments.empty?
       # mark all scheduled activities associated with survey as occurred
-      @activity_plan.scheduled_activities_for_survey(@response_set.survey.title, event_type).each do |a|
+      @activity_plan.scheduled_activities_for_survey(@response_set.survey.title, @event).each do |a|
         psc.update_activity_state(a.activity_id, @participant, Psc::ScheduledActivity::OCCURRED)
       end
 
@@ -61,7 +60,7 @@ class SurveyorController < ApplicationController
     @activities_for_event = []
     if @participant
       @activity_plan        = psc.build_activity_plan(@participant)
-      @activities_for_event = @activity_plan.scheduled_activities_for_event(@event.to_s)
+      @activities_for_event = @activity_plan.scheduled_activities_for_event(@event)
     end
   end
 

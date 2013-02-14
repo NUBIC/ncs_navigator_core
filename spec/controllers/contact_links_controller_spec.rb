@@ -9,7 +9,7 @@ describe ContactLinksController do
       @participant = Factory(:participant)
       @person = Factory(:person)
       @person_participant_link = Factory(:participant_person_link, :person => @person, :participant => @participant)
-      @event = Factory(:event, :participant => @participant,
+      @event = Factory(:event, :participant => @participant, :event_start_date => Date.parse('2010-12-01'),
                        :event_end_date => nil, :event_end_time => nil,
                        :event_type => NcsCode.find_event_by_lbl("pregnancy_visit_1"))
       @contact_link = Factory(:contact_link, :person => @person, :event => @event)

@@ -86,9 +86,9 @@ class ContactLinksController < ApplicationController
     @event        = @contact_link.event
     if @participant && @event
       @activity_plan        = psc.build_activity_plan(@participant)
-      @activities_for_event = @activity_plan.activities_for_event(@event.to_s)
+      @activities_for_event = @activity_plan.activities_for_event(@event)
       @current_activity     = @activities_for_event.detect { |a| a.scheduled? }
-      @scheduled_activities = @activity_plan.scheduled_activities_for_event(@event.to_s)
+      @scheduled_activities = @activity_plan.scheduled_activities_for_event(@event)
       @saq_activities       = @activities_for_event.find_all { |activity| activity.activity_name =~ /SAQ$/ }
     end
   end
@@ -106,8 +106,8 @@ class ContactLinksController < ApplicationController
     @activity_plan = psc.build_activity_plan(@participant)
 
     if @participant && @event
-      @activities_for_event = @activity_plan.activities_for_event(@event.to_s)
-      @scheduled_activities = @activity_plan.scheduled_activities_for_event(@event.to_s)
+      @activities_for_event = @activity_plan.activities_for_event(@event)
+      @scheduled_activities = @activity_plan.scheduled_activities_for_event(@event)
     end
     @current_activity = @activity_plan.current_scheduled_activity(@event.to_s, @response_set)
   end
@@ -162,7 +162,7 @@ class ContactLinksController < ApplicationController
     event        = @contact_link.event
     if event && participant
       activity_plan        = psc.build_activity_plan(participant)
-      occurred_activities  = activity_plan.occurred_activities_for_event(event.to_s)
+      occurred_activities  = activity_plan.occurred_activities_for_event(event)
       saq_activity         = occurred_activities.find_all{|activity| activity.activity_name =~ /SAQ$/}.first
       if saq_activity
         survey = Survey.most_recent_for_access_code(Survey.to_normalized_string(saq_activity.instrument))
