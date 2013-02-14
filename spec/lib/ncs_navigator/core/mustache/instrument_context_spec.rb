@@ -759,128 +759,6 @@ module NcsNavigator::Core::Mustache
 
       end
 
-      describe ".choose_date_range_for_birth_instrument_variation_1" do
-        it "returns the proper range if PV1 have been administered" do
-          date = Date.new(2012, 11, 13)
-          @participant  = @response_set.participant
-          @person = @participant.person
-          @person.person_dob = Date.new(date.year-1, date.month, date.day)
-          @response_set.instrument.event = Factory(:event, :event_type_code => 13, :event_end_date => date, :participant => @participant)
-          @participant.events.reload
-
-          instrument_context.choose_date_range_for_birth_instrument_variation_1.should == 'At this visit or at any time between ' + date.to_s + ' and ' + instrument_context.c_dob.to_s
-
-        end
-        it "returns the proper range if PV2 have been administered" do
-          date = Date.new(2012, 11, 13)
-          @participant  = @response_set.participant
-          @person = @participant.person
-          @person.person_dob = Date.new(date.year-1, date.month, date.day)
-          @response_set.instrument.event = Factory(:event, :event_type_code => 15, :event_end_date => date, :participant => @participant)
-          @participant.events.reload
-
-          instrument_context.choose_date_range_for_birth_instrument_variation_1.should == 'At this visit or at any time between ' + date.to_s + ' and ' + instrument_context.c_dob.to_s
-
-        end
-        it "returns the PV2 date if both PV1 and PV2 were administered" do
-          date = Date.new(2012, 11, 13)
-          date_pv1 = Date.new(date.year, date.month-1, date.day)
-          date_pv2 = date
-          @participant  = @response_set.participant
-          @person = @participant.person
-          @person.person_dob = Date.new(date.year-1, date.month, date.day)
-
-          @response_set.instrument.event = Factory(:event, :event_type_code => 13, :event_end_date => date_pv1, :participant => @participant)
-          @response_set.instrument.event = Factory(:event, :event_type_code => 15, :event_end_date => date_pv2, :participant => @participant)
-
-          @participant.events.reload
-
-          instrument_context.choose_date_range_for_birth_instrument_variation_1.should == 'At this visit or at any time between ' + date_pv2.to_s + ' and ' + instrument_context.c_dob.to_s
-
-        end
-
-        it "returns 'At any time in your pregnancy' if no PV1 or PV2 have been administered" do
-          instrument_context.choose_date_range_for_birth_instrument_variation_1.should == 'At any time in your pregnancy'
-
-        end
-
-
-      end
-
-      describe ".choose_date_range_for_birth_instrument" do
-
-        it "returns proper range if PregVisit1 have been administered" do
-          date = Date.today
-          @participant  = @response_set.participant
-          @person = @participant.person
-          @person.person_dob = 1.years.ago
-          @response_set.instrument.event = Factory(:event, :event_type_code => 13, :event_end_date => date, :participant => @participant)
-          @participant.events.reload
-
-          instrument_context.choose_date_range_for_birth_instrument.should == 'between ' + date.to_s + ' and ' + instrument_context.c_dob.to_s
-        end
-
-        it "returns proper range if PregVisit2 have been administered" do
-          date = Date.today
-          @participant  = @response_set.participant
-          @person = @participant.person
-          @person.person_dob = 1.years.ago
-          @response_set.instrument.event = Factory(:event, :event_type_code => 15, :event_end_date => date, :participant => @participant)
-          @participant.events.reload
-
-          instrument_context.choose_date_range_for_birth_instrument.should == 'between ' + date.to_s + ' and ' + instrument_context.c_dob.to_s
-        end
-
-        it "returns the PV2 date if both PV1 and PV2 were administered" do
-          date_pv1 = 1.months.ago
-          date_pv2 = Date.today
-          @participant  = @response_set.participant
-          @person = @participant.person
-          @person.person_dob = 1.years.ago
-
-          @response_set.instrument.event = Factory(:event, :event_type_code => 15, :event_end_date => date_pv2, :participant => @participant)
-          @response_set.instrument.event = Factory(:event, :event_type_code => 13, :event_end_date => date_pv1, :participant => @participant)
-          @participant.events.reload
-
-          instrument_context.choose_date_range_for_birth_instrument.should == 'between ' + date_pv2.to_s + ' and ' + instrument_context.c_dob.to_s
-
-        end
-
-        it "returns 'before' dob if no PV1 or PV2 have been administered" do
-          @participant  = @response_set.participant
-          @person = @participant.person
-          @person.person_dob = 1.years.ago
-          instrument_context.choose_date_range_for_birth_instrument.should == 'before ' + instrument_context.c_dob.to_s
-
-        end
-
-      end
-
-      describe ".date_of_last_interview" do
-
-        # TODO: cf. INS_QUE_6Month_INT_EHPBHIPBS_M3.1_V2.0 for logic
-        it "returns the date of the last interview"
-
-      end
-
-      describe ".date_of_preg_visit_1" do
-
-        it "returns the most recent event end date for pv1" do
-          date = Date.today
-          @participant  = @response_set.participant
-          @person = @participant.person
-          @response_set.instrument.event = Factory(:event, :event_type_code => 13, :event_end_date => date, :participant => @participant)
-          @participant.events.reload
-          instrument_context.date_of_preg_visit_1.should == date
-
-        end
-
-        it "returns nil if there are no completed pv1 events" do
-          instrument_context.date_of_preg_visit_1.should be_nil
-        end
-
-      end
-
       describe ".date_of_preg_visit_2" do
 
         it "returns the most recent event end date for pv2" do
@@ -1446,6 +1324,33 @@ module NcsNavigator::Core::Mustache
 
     end
 
+    describe ".c_dob" do
+      before(:each) do
+        setup_survey_instrument(create_participant_verification_survey)
+      end
+      let(:instrument_context) { InstrumentContext.new(@response_set) }
+
+      it "returns a default message if person is nil" do
+        @response_set.participant.person = nil
+        instrument_context.c_dob.should == "[CHILD'S DATE OF BIRTH]"
+      end
+
+      it "returns a default message if child's dob is blank" do
+        today = Date.parse("2012-12-25")
+        @response_set.participant.person.person_dob = nil
+        instrument_context.c_dob.should == "[CHILD'S DATE OF BIRTH]"
+      end
+
+      it "returns 2012-12-25 if child's dob is set through instrument" do
+        dob = Date.parse("2012-12-25")
+        take_survey(@survey, @response_set) do |a|
+          a.date('PARTICIPANT_VERIF.CHILD_DOB', "2012-12-25")
+        end
+        @response_set.completed_at = "2013-01-25"
+        @response_set.save!
+        instrument_context.c_dob.should == "2012-12-25"
+      end
+    end
 
     describe ".was_were" do
 
