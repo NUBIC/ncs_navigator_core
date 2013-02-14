@@ -25,6 +25,8 @@ class ResponseSet < ActiveRecord::Base
   belongs_to :instrument, :inverse_of => :response_sets
   belongs_to :participant, :inverse_of => :response_sets
 
+  has_one :instrument_context, :inverse_of => :response_set
+
   after_save :extract_operational_data
 
   attr_accessible :participant_id
