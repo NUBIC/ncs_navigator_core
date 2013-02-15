@@ -268,7 +268,6 @@ class Person < ActiveRecord::Base
 
     instrument = build_instrument(survey, mode) if instrument.nil?
     instrument.tap do |instr|
-
       rs = instr.response_sets.build(:survey => survey, :user_id => self.id)
       rs.participant = participant
     end
