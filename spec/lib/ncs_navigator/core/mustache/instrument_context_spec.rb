@@ -662,6 +662,45 @@ module NcsNavigator::Core::Mustache
 
       end
 
+      describe ".child_first_name through the .child_first_name_the_child method" do
+        it "returns default ('the child') if participant is mother and no children" do
+          instrument_context.child_first_name_the_child.should == "the child"
+        end
+        it "returns child's name if participant is child" do
+          mom = @response_set.person
+          child = @response_set.participant
+
+          mom.participant.p_type_code = 1 # 1 age eligilble woman
+          mom.participant.save!
+
+          person_child = child.person
+          child.p_type_code = 6
+          child.save!
+
+          Factory(:participant_person_link, :person => person_child, :participant => mom.participant, :relationship_code => 8) # 8 Child
+          Factory(:participant_person_link, :person => mom, :participant => child, :relationship_code => 2)
+          mom.participant_person_links.reload
+          child.participant_person_links.reload
+
+          instrument_context.child_first_name_the_child.should == child.first_name
+        end
+        it "returns the child's name through the mother's name" do
+          mom = @response_set.person
+
+          mom.first_name = "Mommy's Name"
+          mom.participant.p_type_code = 1 # 1 age eligilble woman
+          mom.participant.save!
+
+          person_child = Factory(:person, :first_name => "Child's Name")
+          person_child.save!
+
+          Factory(:participant_person_link, :person => person_child, :participant => mom.participant, :relationship_code => 8) # 8 Child
+
+          mom.participant_person_links.reload
+          instrument_context.child_first_name_the_child.should == "Child's Name"
+        end
+      end
+
       describe ".lets_talk_about_baby" do
         it "returns 'Let’s talk about your baby.' if single birth" do
           create_single_birth

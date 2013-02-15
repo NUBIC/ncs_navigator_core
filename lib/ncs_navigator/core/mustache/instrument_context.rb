@@ -384,7 +384,13 @@ module NcsNavigator::Core::Mustache
     end
 
     def child_first_name(txt)
-      about_person.blank? ? txt : about_person.first_name
+      return txt if participant.blank? 
+      if participant.child_participant?
+        result = participant.person.first_name unless participant.person.try(:first_name).blank?
+      else
+        result = participant.children.first.first_name unless participant.children.blank?
+      end
+      result.blank? ? txt : result
     end
 
     def child_first_name_through_participant(txt)
