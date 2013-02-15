@@ -14,7 +14,7 @@ class SurveyorController < ApplicationController
     set_activity_plan_for_participant
 
     contact_link = @response_set.instrument.contact_link
-    activity = @activity_plan.current_scheduled_activity(contact_link.event.to_s, @response_set)
+    activity = @activity_plan.current_scheduled_activity(contact_link.event, @response_set)
 
     if @activity_plan.final_survey_part?(@response_set, @event) || params[:breakoff] || activity.instruments.empty?
       # mark all scheduled activities associated with survey as occurred

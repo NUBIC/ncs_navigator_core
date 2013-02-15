@@ -182,50 +182,47 @@ class InstrumentPlan
   end
 
   ##
-  # Returns the next survey_title for the event based on the
-  # given response_set.
-  #
-  # @param [String] - the event context
-  # @param [ResponseSet]
-  # @return [String] - the instrument following the given current_instrument
-  def current_survey_title(event, response_set = nil)
-    current_scheduled_activity(event, response_set).instrument
-  end
-
-  ##
   # Given an event and a response set, return the current scheduled activity that
   # should be acted upon. The current activity would be the next scheduled activity
   # for the event that has not been touched.
   #
-  # @param [String] - event name
+  # @param [Event]
   # @param [ResponseSet]
   # @return ScheduledActivity
-  def current_scheduled_activity(event_name, response_set = nil)
-    remaining_activities(event_name, response_set).first
+  def current_scheduled_activity(event, response_set)
+    remaining_activities(event, response_set).first
   end
 
-  def remaining_activities(event_name, response_set)
-    sas = scheduled_activities_for_event_name(event_name)
-    result = []
-    if response_set.blank?
-      result = sas
-    else
-      already_touched_survey_titles = get_already_touched_survey_titles(response_set)
-      sas_hsh = keyed_scheduled_activities(sas)
+  ##
+  # This method determines the remaining activities
+  # given an event and response_set. The response set
+  # comes from an associated instrument which may or
+  # may not exist, thus the response set parameter here
+  # could be nil, in which case we return all scheduled
+  # activities for the event.
+  # If the response set exists, this method filters
+  # the activities already associated with the surveys
+  # for the response set's instrument.
+  #
+  # @param [Event]
+  # @param [ResponseSet]
+  # @return Array<ScheduledActivity>
+  def remaining_activities(event, response_set)
+    sas = scheduled_activities_for_event(event)
+    return sas if response_set.blank?
 
-      # determine if a scheduled activity survey has occurred
-      # and remove it from the list of scheduled activities
-      # this convoluted approach is used in order to handle
-      # multiple births
-      already_touched_survey_titles.each do |t|
-        val = sas_hsh[t]
-        val.delete_at(0) if val
-        sas_hsh[t] = val
-      end
-
-      result = sas_hsh.values.flatten.compact.sort
+    sas_hsh = keyed_scheduled_activities(sas)
+    # determine if a scheduled activity survey has occurred
+    # and remove it from the list of scheduled activities
+    # this convoluted approach is used in order to handle
+    # multiple births
+    already_touched_survey_titles(response_set).each do |t|
+      val = sas_hsh[t]
+      val.delete_at(0) if val
+      sas_hsh[t] = val
     end
-    result
+
+    sas_hsh.values.flatten.compact.sort
   end
   private :remaining_activities
 
@@ -245,10 +242,10 @@ class InstrumentPlan
   ##
   # All the survey titles for the response_set.instrument
   # @return [Array<String>]
-  def get_already_touched_survey_titles(response_set)
+  def already_touched_survey_titles(response_set)
     response_set.instrument.response_sets.collect { |rs| rs.survey.title.downcase }
   end
-  private :get_already_touched_survey_titles
+  private :already_touched_survey_titles
 
   ##
   # Finds the scheduled activity for the given title and matches it to

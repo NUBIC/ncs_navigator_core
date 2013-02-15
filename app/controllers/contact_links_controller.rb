@@ -109,7 +109,7 @@ class ContactLinksController < ApplicationController
       @activities_for_event = @activity_plan.activities_for_event(@event)
       @scheduled_activities = @activity_plan.scheduled_activities_for_event(@event)
     end
-    @current_activity = @activity_plan.current_scheduled_activity(@event.to_s, @response_set)
+    @current_activity = @activity_plan.current_scheduled_activity(@event, @response_set)
   end
 
   ##

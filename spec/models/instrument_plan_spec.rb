@@ -122,23 +122,18 @@ describe InstrumentPlan do
           let(:survey2) { Factory(:survey, :title => 'ins_que_birth_int_ehpbhi_p2_v2.0_baby_name') }
 
           it "returns the first scheduled_activity if the response_set is null" do
-            csa = plan.current_scheduled_activity('6m')
-            csa.survey_title.should == 'ins_que_6mmother_int_ehpbhi_p2_v1.1'
+            csa = plan.current_scheduled_activity(event)
+            csa.survey_title.should == 'ins_que_birth_int_ehpbhi_p2_v2.0'
           end
 
           it "returns the first scheduled_activity that does not have a
               response_set associated with an instrument in the instrument_plan" do
-            csa = plan.current_scheduled_activity('birth')
-            csa.survey_title.should == 'ins_que_birth_int_ehpbhi_p2_v2.0'
-
             rs = Factory(:response_set, :survey => survey1, :instrument => instrument,
                                         :person => mp, :participant => mother)
 
-
             instrument.response_sets.size.should == 1
-            plan.current_survey_title('birth', rs).should == 'ins_que_birth_int_ehpbhi_p2_v2.0_baby_name'
 
-            csa = plan.current_scheduled_activity('birth', rs)
+            csa = plan.current_scheduled_activity(event, rs)
             csa.survey_title.should == 'ins_que_birth_int_ehpbhi_p2_v2.0_baby_name'
 
             rs = Factory(:response_set, :survey => survey2, :instrument => instrument,
@@ -147,9 +142,7 @@ describe InstrumentPlan do
             instrument.response_sets.reload
             instrument.response_sets.size.should == 2
 
-            plan.current_survey_title('birth', rs).should be_nil
-
-            csa = plan.current_scheduled_activity('birth', rs)
+            csa = plan.current_scheduled_activity(event, rs)
             csa.instrument.should be_nil
             csa.activity_name.should == "Birth Visit Information Sheet"
           end
@@ -242,8 +235,8 @@ describe InstrumentPlan do
           let(:survey2) { Factory(:survey, :title => 'ins_que_birth_int_ehpbhi_p2_v2.0_baby_name') }
 
           it "returns the first scheduled_activity if the response_set is null" do
-            csa = plan.current_scheduled_activity('6m')
-            csa.survey_title.should == 'ins_que_6mmother_int_ehpbhi_p2_v1.1'
+            csa = plan.current_scheduled_activity(event)
+            csa.survey_title.should == 'ins_que_birth_int_ehpbhi_p2_v2.0'
           end
 
           it "returns the first scheduled_activity that does not have a
@@ -251,36 +244,29 @@ describe InstrumentPlan do
 
             plan.scheduled_activities_for_event(event).size.should == 4
 
-            csa = plan.current_scheduled_activity('birth')
-            csa.survey_title.should == 'ins_que_birth_int_ehpbhi_p2_v2.0'
-
             rs = Factory(:response_set, :survey => survey1, :instrument => instrument,
                                         :person => mp, :participant => mother)
-            plan.current_survey_title('birth', rs).should == 'ins_que_birth_int_ehpbhi_p2_v2.0_baby_name'
 
             instrument.response_sets.size.should == 1
 
-            csa = plan.current_scheduled_activity('birth', rs)
+            csa = plan.current_scheduled_activity(event, rs)
             csa.survey_title.should == 'ins_que_birth_int_ehpbhi_p2_v2.0_baby_name'
 
             rs = Factory(:response_set, :survey => survey2, :instrument => instrument,
                                         :person => mp, :participant => child1)
-            plan.current_survey_title('birth', rs).should == 'ins_que_birth_int_ehpbhi_p2_v2.0_baby_name'
             instrument.response_sets.reload
             instrument.response_sets.size.should == 2
 
-            csa = plan.current_scheduled_activity('birth', rs)
+            csa = plan.current_scheduled_activity(event, rs)
             csa.survey_title.should == 'ins_que_birth_int_ehpbhi_p2_v2.0_baby_name'
 
             rs = Factory(:response_set, :survey => survey2, :instrument => instrument,
                                         :person => mp, :participant => child2)
 
-            # FIXME: current_survey_title should handle multiple occurrances of a survey part
-            # plan.current_survey_title('birth', rs).should be_nil
             instrument.response_sets.reload
             instrument.response_sets.size.should == 3
 
-            csa = plan.current_scheduled_activity('birth', rs)
+            csa = plan.current_scheduled_activity(event, rs)
             csa.instrument.should be_nil
             csa.activity_name.should == "Birth Visit Information Sheet"
           end
@@ -297,39 +283,8 @@ describe InstrumentPlan do
 
       end
 
-
     end
-
   end
-
-  context "moving through the plan" do
-
-    let(:plan) { InstrumentPlan.from_schedule(participant_plan) }
-
-    describe ".current_survey_title" do
-      it "returns the first instrument if no response_set given" do
-        plan.current_survey_title('6m').should == 'ins_que_6mmother_int_ehpbhi_p2_v1.1'
-      end
-
-      it "returns the next instrument after the current instrument" do
-        instrument = Factory(:instrument)
-        survey     = Factory(:survey, :title => 'ins_que_6mmother_int_ehpbhi_p2_v1.1')
-        rs         = Factory(:response_set, :survey => survey, :instrument => instrument)
-        plan.current_survey_title('6m', rs).should == 'ins_que_6minfantfeed_saq_ehpbhi_p2_v20'
-      end
-
-      context "with multiple children" do
-
-        it "returns the first child instrument if no child instruments have been taken"
-
-        it "returns the next child instrument after the current child instruments having been taken"
-
-      end
-
-    end
-
-  end
-
 
   context "specimen collection" do
     describe ".new" do
