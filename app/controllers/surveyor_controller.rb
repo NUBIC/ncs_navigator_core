@@ -56,7 +56,7 @@ class SurveyorController < ApplicationController
       end
     end
     @instrument           = @response_set.instrument
-    @event                = @instrument.event
+    @event                = @instrument.contact_link.event
     @activities_for_event = []
     if @participant
       @activity_plan        = psc.build_activity_plan(@participant)
