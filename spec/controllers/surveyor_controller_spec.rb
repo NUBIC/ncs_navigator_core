@@ -13,7 +13,9 @@ describe SurveyorController do
   describe "GET show" do
 
     before(:each) do
-      @instrument  = Factory(:instrument, :event => Factory(:event, :event_start_date => Date.parse('2011-01-01')))
+      event = Factory(:event, :event_start_date => Date.parse('2011-01-01'))
+      @instrument  = Factory(:instrument, :event => event)
+      contact_link = Factory(:contact_link, :event => event, :instrument => @instrument)
       @survey = Factory(:survey,
         :title => "xyz", :access_code => "xyz", :sections => [Factory(:survey_section)])
       @response_set = Factory(:response_set, :access_code => "pdq",
