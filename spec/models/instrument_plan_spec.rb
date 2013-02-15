@@ -24,7 +24,7 @@ describe InstrumentPlan do
 
           plan.events.size.should  == 3
           plan.events.first.should == 'birth'
-          plan.events.last.should  == '6m'
+          plan.events.last.should  == '6_month'
         end
       end
 
@@ -73,21 +73,6 @@ describe InstrumentPlan do
         let(:plan) { InstrumentPlan.from_schedule(participant_plan) }
         let(:birth_event_start_date) { Date.parse('2011-01-01') }
 
-        it "knows all the scheduled activities for the mother and child" do
-          plan.activities_for_event_name('6m').size.should == 2
-        end
-
-        it "knows the participant associated with the appropriate instrument" do
-          activities = plan.activities_for_event_name('6m')
-          mother_activity = activities.first
-          mother_activity.instrument.should == 'ins_que_6mmother_int_ehpbhi_p2_v1.1'
-          mother_activity.participant.should == mother
-
-          child_activity = activities.last
-          child_activity.instrument.should == 'ins_que_6minfantfeed_saq_ehpbhi_p2_v20'
-          child_activity.participant.should == child
-        end
-
         describe ".final_survey_part?" do
 
           let(:birth_event) { NcsCode.find_event_by_lbl('birth') }
@@ -122,7 +107,7 @@ describe InstrumentPlan do
           let(:survey2) { Factory(:survey, :title => 'ins_que_birth_int_ehpbhi_p2_v2.0_baby_name') }
 
           it "returns the first scheduled_activity if the response_set is null" do
-            csa = plan.current_scheduled_activity(event)
+            csa = plan.current_scheduled_activity(event, nil)
             csa.survey_title.should == 'ins_que_birth_int_ehpbhi_p2_v2.0'
           end
 
@@ -159,6 +144,8 @@ describe InstrumentPlan do
         let(:child2) { Factory(:participant, :p_id => "child2") }
         let(:cp2) { Factory(:person, :person_id => "child2") }
 
+        let(:event6m) { Factory(:event, :event_type_code => 24, :event_start_date => Date.parse('2011-07-01')) }
+
         before(:each) do
           mother.person = mp
           child1.person = cp1
@@ -174,11 +161,11 @@ describe InstrumentPlan do
         let(:birth_event_start_date) { Date.parse('2011-01-01') }
 
         it "knows all the scheduled activities for the mother and child" do
-          plan.scheduled_activities_for_event_name('6m').size.should == 3
+          plan.scheduled_activities_for_event(event6m).size.should == 3
         end
 
         it "knows the participant associated with the appropriate instrument" do
-          activities = plan.scheduled_activities_for_event_name('6m')
+          activities = plan.scheduled_activities_for_event(event6m)
           mother_activity = activities[0]
           mother_activity.instrument.should == 'ins_que_6mmother_int_ehpbhi_p2_v1.1'
           mother_activity.participant.should == mother
@@ -235,7 +222,7 @@ describe InstrumentPlan do
           let(:survey2) { Factory(:survey, :title => 'ins_que_birth_int_ehpbhi_p2_v2.0_baby_name') }
 
           it "returns the first scheduled_activity if the response_set is null" do
-            csa = plan.current_scheduled_activity(event)
+            csa = plan.current_scheduled_activity(event, nil)
             csa.survey_title.should == 'ins_que_birth_int_ehpbhi_p2_v2.0'
           end
 
@@ -296,6 +283,9 @@ describe InstrumentPlan do
         let(:child) { Factory(:participant) }
         let(:cp) { Factory(:person, :person_id => "child") }
 
+        let(:event_type) { NcsCode.find_event_by_lbl('birth') }
+        let(:birth_event) { Factory(:event, :event_type => event_type, :event_start_date => Date.parse('2011-01-01')) }
+
         before(:each) do
           mother.person = mp
           child.person = cp
@@ -307,11 +297,11 @@ describe InstrumentPlan do
         let(:plan) { InstrumentPlan.from_schedule(participant_plan_xp2) }
 
         it "knows all the scheduled activities for the mother and child" do
-          plan.scheduled_activities_for_event_name('birth').size.should == 4
+          plan.scheduled_activities_for_event(birth_event).size.should == 4
         end
 
         it "knows the participant associated with the appropriate instrument" do
-          activities = plan.scheduled_activities_for_event_name('birth')
+          activities = plan.scheduled_activities_for_event(birth_event)
 
           mother_activity = activities[0]
           mother_activity.instrument.should == 'ins_que_birth_int_ehpbhi_p2_v2.0'
@@ -340,6 +330,9 @@ describe InstrumentPlan do
         let(:child2) { Factory(:participant, :p_id => "child2") }
         let(:cp2) { Factory(:person, :person_id => "child2") }
 
+        let(:event_type) { NcsCode.find_event_by_lbl('birth') }
+        let(:birth_event) { Factory(:event, :event_type => event_type, :event_start_date => Date.parse('2011-01-01')) }
+
         before(:each) do
           mother.person = mp
           child1.person = cp1
@@ -353,12 +346,8 @@ describe InstrumentPlan do
 
         let(:plan) { InstrumentPlan.from_schedule(participant_plan_xp2) }
 
-        it "knows all the scheduled activities for the mother and child" do
-          plan.activities_for_event_name('birth').size.should == 6
-        end
-
         it "knows the participant associated with the appropriate instrument" do
-          activities = plan.activities_for_event_name('birth')
+          activities = plan.scheduled_activities_for_event(birth_event)
 
           mother_activity = activities[0]
           mother_activity.instrument.should == 'ins_que_birth_int_ehpbhi_p2_v2.0'
@@ -531,7 +520,7 @@ describe InstrumentPlan do
               'ideal_date' => '2011-04-01',
               'assignment' => { 'id' => 'mother'},
               'current_state' => { 'name' => 'scheduled' },
-              'labels' => 'event:3m instrument:2.0:ins_que_3mmother_int_ehpbhi_p2_v1.1 participant_type:mother'
+              'labels' => 'event:3_month instrument:2.0:ins_que_3mmother_int_ehpbhi_p2_v1.1 participant_type:mother'
             }
           ]
         },
@@ -543,7 +532,7 @@ describe InstrumentPlan do
               'ideal_date' => '2011-07-01',
               'assignment' => { 'id' => 'mother'},
               'current_state' => { 'name' => 'scheduled' },
-              'labels' => 'event:6m instrument:2.0:ins_que_6mmother_int_ehpbhi_p2_v1.1 order:01_01 participant_type:mother'
+              'labels' => 'event:6_month instrument:2.0:ins_que_6mmother_int_ehpbhi_p2_v1.1 order:01_01 participant_type:mother'
             },
             {
               'id' => '5',
@@ -551,7 +540,7 @@ describe InstrumentPlan do
               'ideal_date' => '2011-07-01',
               'assignment' => { 'id' => 'mother'},
               'current_state' => { 'name' => 'scheduled' },
-              'labels' => 'event:6m instrument:2.0:ins_que_6minfantfeed_saq_ehpbhi_p2_v20 order:01_02 participant_type:child'
+              'labels' => 'event:6_month instrument:2.0:ins_que_6minfantfeed_saq_ehpbhi_p2_v20 order:01_02 participant_type:child'
             }
 
           ]
@@ -608,7 +597,7 @@ describe InstrumentPlan do
               'ideal_date' => '2011-04-01',
               'assignment' => { 'id' => 'mother'},
               'current_state' => { 'name' => 'scheduled' },
-              'labels' => 'event:3m instrument:2.0:ins_que_3mmother_int_ehpbhi_p2_v1.1'
+              'labels' => 'event:3_month instrument:2.0:ins_que_3mmother_int_ehpbhi_p2_v1.1'
             }
           ]
         },
@@ -620,7 +609,7 @@ describe InstrumentPlan do
               'ideal_date' => '2011-07-01',
               'assignment' => { 'id' => 'mother'},
               'current_state' => { 'name' => 'scheduled' },
-              'labels' => 'event:6m instrument:2.0:ins_que_6mmother_int_ehpbhi_p2_v1.1 order:01_01 participant_type:mother'
+              'labels' => 'event:6_month instrument:2.0:ins_que_6mmother_int_ehpbhi_p2_v1.1 order:01_01 participant_type:mother'
             },
             {
               'id' => '32',
@@ -628,7 +617,7 @@ describe InstrumentPlan do
               'ideal_date' => '2011-07-01',
               'assignment' => { 'id' => 'mother'},
               'current_state' => { 'name' => 'scheduled' },
-              'labels' => 'event:6m instrument:2.0:ins_que_6minfantfeed_saq_ehpbhi_p2_v20 order:01_02 participant_type:child'
+              'labels' => 'event:6_month instrument:2.0:ins_que_6minfantfeed_saq_ehpbhi_p2_v20 order:01_02 participant_type:child'
             }
 
           ]
@@ -685,7 +674,7 @@ describe InstrumentPlan do
               'ideal_date' => '2011-04-01',
               'assignment' => { 'id' => 'mother'},
               'current_state' => { 'name' => 'scheduled' },
-              'labels' => 'event:3m instrument:2.0:ins_que_3mmother_int_ehpbhi_p2_v1.1 participant_type:mother'
+              'labels' => 'event:3_month instrument:2.0:ins_que_3mmother_int_ehpbhi_p2_v1.1 participant_type:mother'
             }
           ]
         },

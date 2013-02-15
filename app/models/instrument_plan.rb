@@ -121,48 +121,36 @@ class InstrumentPlan
   ##
   # Returns all ScheduledActivities for the given event
   #
+  # TODO: revert check for nil after #3341 is complete
+  #
   # @param [Event] - the event
   # @return [Array<ScheduledActivity>]
   def scheduled_activities_for_event(event)
+    return @scheduled_activities if event.nil?
     @scheduled_activities.select{ |sa| event.matches_activity(sa) }
   end
 
   ##
-  # Returns all ScheduledActivities matching the given event
-  # name
-  #
-  # @param [String] - the event name
-  # @return [Array<ScheduledActivity>]
-  def scheduled_activities_for_event_name(event)
-    event = event.to_s.downcase.gsub(" ", "_")
-    @scheduled_activities.select{ |sa| sa.event == event }
-  end
-
-  ##
   # Returns all Activities for the given event
   #
-  # @param [Event] - the event
+  # TODO: revert check for nil after #3341 is complete
+  #
+  # @param [Event]
   # @return [Array<ScheduledActivity>]
   def activities_for_event(event)
-    event.nil? ? @all_activities : @all_activities.select{ |sa| event.matches_activity(sa) }
-  end
-
-  ##
-  # Returns all Activities for the given event
-  #
-  # @param [String] - the event
-  # @return [Array<ScheduledActivity>]
-  def activities_for_event_name(event)
-    event = event.to_s.downcase.gsub(" ", "_")
-    @all_activities.select{ |sa| sa.event == event }
+    return @all_activities if event.nil?
+    @all_activities.select{ |sa| event.matches_activity(sa) }
   end
 
   ##
   # Returns all OccurredActivities for the given event
   #
+  # TODO: revert check for nil after #3341 is complete
+  #
   # @param [Event]
   # @return [Array<ScheduledActivity>]
   def occurred_activities_for_event(event)
+    return @occurred_activities if event.nil?
     @occurred_activities.select{ |oa| event.matches_activity(oa) }
   end
 
