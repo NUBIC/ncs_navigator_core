@@ -24,7 +24,7 @@ describe SurveyorController do
 
       participant = Factory(:participant)
 
-      event = @instrument.event.to_s
+      event = @instrument.event.event_type.to_s
 
       schedule = {
         'days' => {

@@ -607,7 +607,7 @@ module NcsNavigator::Core::Mustache
 
     # IF EVENT_TYPE = PREGNANCY VISIT 1, PREGNANCY VISIT 2, OR FATHER, PRELOAD EVENT_TYPE
     def event_type
-      event_type = @response_set.instrument.event.to_s
+      event_type = @response_set.instrument.event.event_type.to_s
       event_type = "[EVENT_TYPE]" if event_type.blank?
       event_type
     end
