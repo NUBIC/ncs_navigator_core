@@ -1,13 +1,18 @@
 class MakeIneligible
 
-  def self.run(response_set)
-    MakeIneligible.new(response_set).make_ineligible
-  end
-
   def initialize(response_set)
     @person = response_set.person
     @participant = response_set.participant
     @response_set = response_set
+  end
+
+  def person_taking_screener_ineligible?
+    !@participant.eligible? && @response_set.survey.title =~ /PBSamplingScreen/
+  end
+
+  def self.run(response_set)
+    me = MakeIneligible.new(response_set)
+    me.make_ineligible if me.person_taking_screener_ineligible?
   end
 
   def make_ineligible
@@ -25,7 +30,7 @@ class MakeIneligible
   end
 
   def delete_participant_person_links(participant)
-    ParticipantPersonLink.where(:participant_id => participant.id).destroy_all
+    ParticipantPersonLink.where(:participant_id => participant).destroy_all
   end
 
   def disassociates_participant_from_all_events(participant)
