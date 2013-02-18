@@ -1002,21 +1002,21 @@ describe Event do
     end
   end
 
-  describe "#disposition_code_is_in_disposition_category" do
+  describe "#valid?" do
 
     let(:valid)   { Factory.build(:event, :event_disposition_category_code => 3, :event_disposition => 60) }
     let(:invalid) { Factory.build(:event, :event_disposition_category_code => 3, :event_disposition => 65) }
     let(:missing) { Factory.build(:event, :event_disposition_category_code => -4, :event_disposition => 65) }
 
-    it "determines if a record is valid" do
+    it "returns true if the event_disposition is within the event_disposition_category_code" do
       valid.should be_valid
     end
 
-    it "skips records where disposition is 'missing in error'" do
-      valid.should be_valid
+    it "sreturns true if event_disposition_category_code is 'missing in error'" do
+      missing.should be_valid
     end
 
-    it "determines if a record is invalid" do
+    it "returns false if the event_disposition does not match the event_disposition_category_code" do
       invalid.should_not be_valid
     end
 
