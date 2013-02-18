@@ -120,7 +120,6 @@ describe Instrument do
         end
 
         context 'calling Instrument.start' do
-
           let(:instrument) { Instrument.start(person, mother, nil, survey, event) }
 
           it "sets the instrument's event to event" do
@@ -172,29 +171,22 @@ describe Instrument do
           it "has one response set" do
             i.response_sets.size.should == 1
           end
-
         end
 
         describe 'for a different event with the same survey' do
-
           let(:i) { Instrument.start(person, mother, nil, survey, Factory(:event, :event_type_code => 10)) }
 
           it "does NOT return the response set's instrument" do
             i.should_not == inst
           end
-
         end
       end
     end
 
     context 'a survey with more than one part' do
-
       context 'with an Instrument record created for the first part' do
-
         let!(:instrument) do
-          i = Instrument.start(person, mother, nil, survey, event)
-          i.save!
-          i
+          Instrument.start(person, mother, nil, survey, event).tap(&:save!)
         end
 
         describe 'the second survey part' do
@@ -216,7 +208,6 @@ describe Instrument do
             i.response_sets.last.person.should == person
             i.response_sets.last.participant.should == child
           end
-
         end
       end
     end
@@ -446,7 +437,6 @@ describe Instrument do
       end
 
     end
-
 
     context 'with label instrument:2.0:ins_que_24mmother_int_ehpbhi_p2_v1.0' do
 
