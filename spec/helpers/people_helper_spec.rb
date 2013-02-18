@@ -105,6 +105,32 @@ describe PeopleHelper do
 
     end
 
+
+    describe "#sort_contact_mode_entries" do 
+      it "returns an empty set if contact entries is nil" do
+        helper.sort_contact_mode_entries(nil).should == []
+      end
+      
+      it "returns an empty set if contact entries is a set of nils" do
+        helper.sort_contact_mode_entries([nil, nil, nil]).should == []
+      end
+
+      it "sorts address types correctly and ranks correcty" do
+        helper.sort_contact_mode_entries(@uniquified_addresses).should == 
+          {1=>[@address_a,@secondary_home_type_address],2=>[@address_b,@secondary_business_type_address]}
+        
+        helper.sort_contact_mode_entries(@addresses).should == 
+          {1=>[@address_a,@duplicate_1_address_a,
+               @duplicate_2_address_a,@secondary_home_type_address],
+          2=>[@address_b,@duplicate_1_address_b,
+              @duplicate_2_address_b,@secondary_business_type_address]}
+      end
+
+
+      
+    end
+
+
   end
 
   context "filtering email addresses based on uniqueness and rank" do
