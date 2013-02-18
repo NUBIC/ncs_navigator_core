@@ -271,6 +271,7 @@ class Person < ActiveRecord::Base
 
       rs = instr.response_sets.build(:survey => survey, :user_id => self.id)
       rs.participant = participant
+      rs.prepopulate
     end
   end
 

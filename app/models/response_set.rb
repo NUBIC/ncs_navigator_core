@@ -21,7 +21,9 @@
 
 class ResponseSet < ActiveRecord::Base
   include NcsNavigator::Core::Surveyor::HasPublicId
+  include ResponseSetPrepopulation
   include Surveyor::Models::ResponseSetMethods
+
   belongs_to :person, :foreign_key => :user_id, :class_name => 'Person', :primary_key => :id
   belongs_to :instrument, :inverse_of => :response_sets
   belongs_to :participant, :inverse_of => :response_sets
@@ -33,6 +35,14 @@ class ResponseSet < ActiveRecord::Base
 
   def extract_operational_data
     OperationalDataExtractor::Base.process(self) if complete?
+  end
+
+  ##
+  # Prepopulates this response set.
+  #
+  # This method does not save generated responses.  Use {#save} for that.
+  def prepopulate
+    populators_for(self).each(&:run)
   end
 
   def has_responses_in_each_section_with_questions?
