@@ -640,40 +640,4 @@ describe Person do
     end
   end
 
-  describe "#person_taking_screener_ineligible?" do
-    before do
-      @person = Factory(:person)
-      screener_survey     = Factory(:survey, :title => "INS_QUE_PBSamplingScreen_INT_PBS_M3.0_V1.0")
-      non_screener_survey = Factory(:survey, :title => "INS_QUE_Birth_INT_EHPBHIPBS_M3.0_V3.0_PART_TWO")
-      ineligible_person   = Factory(:person)
-      ineligible_person.stub(:eligible?).and_return(false)
-      eligible_person     = Factory(:person)
-      eligible_person.stub(:eligible?).and_return(true)
-      @screener_and_ineligible_person_response_set     = Factory(:response_set, :survey_id => screener_survey.id, :person => ineligible_person)
-      @non_screener_and_ineligible_person_response_set = Factory(:response_set, :survey_id => non_screener_survey.id, :person => ineligible_person)
-      @screener_and_eligible_person_response_set       = Factory(:response_set, :survey_id => screener_survey.id, :person => eligible_person)
-      @non_screener_and_eligible_person_response_set   = Factory(:response_set, :survey_id => non_screener_survey.id, :person => eligible_person)
-    end
-
-    describe "survey is screener" do
-      it "returns false when person is eligible" do
-        @person.person_taking_screener_ineligible?(@screener_and_eligible_person_response_set).should be_false
-      end
-
-      it "returns true when person is not eligible" do
-        @person.person_taking_screener_ineligible?(@screener_and_ineligible_person_response_set).should be_true
-      end
-    end
-
-    describe "survey is not screener" do
-      it "returns false when person is eligible" do
-        @person.person_taking_screener_ineligible?(@non_screener_and_eligible_person_response_set).should be_false
-      end
-
-      it "returns false when person is not eligible" do
-        @person.person_taking_screener_ineligible?(@non_screener_and_ineligible_person_response_set).should be_false
-      end
-    end
-  end
-
 end

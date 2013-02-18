@@ -155,22 +155,4 @@ describe SurveyorController do
     end
   end
 
-  context "Updating after a survey" do
-
-    describe "#update_participant_based_on_survey" do
-      before do
-        @survey_controller = SurveyorController.new
-        screener_survey     = Factory(:survey, :title => "INS_QUE_PBSamplingScreen_INT_PBS_M3.0_V1.0")
-        ineligible_person   = Factory(:person)
-        ineligible_person.stub!(:eligible? => false)
-        @screener_and_ineligible_person_response_set = Factory(:response_set, :survey_id => screener_survey.id, :person => ineligible_person)
-      end
-
-      it "calls MakeIneligible if the person from the response_set is ineligible" do
-        MakeIneligible.should_receive(:run)
-        @survey_controller.send(:update_participant_based_on_survey, @screener_and_ineligible_person_response_set)
-      end
-    end
-
-  end
 end
