@@ -112,13 +112,16 @@ describe Instrument do
     let(:survey_part) { Factory(:survey, :title => 'INS_QUE_BIRTH_INT_EHPBHI_P2_V2.0_BABY_NAME') }
     let(:inst) { Factory(:instrument, :survey => survey, :event => event) }
 
+    it "defaults a new instrument's mode to CAPI" do
+      Instrument.start(person, mother, nil, survey, event).instrument_mode_code.should == Instrument.capi
+    end
+
+    it "permits instrument mode override" do
+      Instrument.start(person, mother, nil, survey, event, Instrument.cati).instrument_mode_code.should == Instrument.cati
+    end
+
     context 'a survey with one part' do
       describe 'if there is no response set for the (person, survey) pair' do
-        it 'returns the result of Person#start_instrument' do
-          person.should_receive(:start_instrument).with(survey, mother).and_return(inst)
-          Instrument.start(person, mother, nil, survey, event).should == inst
-        end
-
         context 'calling Instrument.start' do
           let(:instrument) { Instrument.start(person, mother, nil, survey, event) }
 
@@ -144,11 +147,6 @@ describe Instrument do
         describe 'if the event is closed' do
           before do
             event.stub(:closed? => true)
-          end
-
-          it 'returns the result of Person#start_instrument' do
-            person.should_receive(:start_instrument).with(survey, mother).and_return(inst)
-            Instrument.start(person, mother, nil, survey, event).should == inst
           end
 
           it "sets the instrument's event to event" do

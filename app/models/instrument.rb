@@ -108,7 +108,7 @@ class Instrument < ActiveRecord::Base
   # @return[Instrument]
   def self.build_instrument_from_survey(person, participant, instrument_survey, current_survey, event, mode)
     if (instrument_survey.blank? || instrument_survey == current_survey)
-      start_initial_instrument(person, participant, current_survey, event)
+      start_initial_instrument(person, participant, current_survey, event, mode)
     else
       continue_instrument_associated_with_survey(person, participant, instrument_survey, current_survey, event, mode)
     end
@@ -120,12 +120,12 @@ class Instrument < ActiveRecord::Base
   # cf. Person.start_instrument
   #
   # @return[Instrument]
-  def self.start_initial_instrument(person, participant, survey, event)
+  def self.start_initial_instrument(person, participant, survey, event, mode)
     where_clause = "response_sets.survey_id = ? AND response_sets.user_id = ? AND instruments.event_id = ?"
     rs = ResponseSet.includes(:instrument).where(where_clause, survey.id, person.id, event.id).first
 
     if !rs || event.closed?
-      person.start_instrument(survey, participant)
+      person.start_instrument(survey, participant, mode)
     else
       rs.instrument
     end.tap { |i| i.event = event }
@@ -141,9 +141,8 @@ class Instrument < ActiveRecord::Base
     ins = Instrument.where(:person_id => person.id,
                            :survey_id => instrument_survey.id,
                            :event_id => event.id).order("created_at DESC").first
-    person.start_instrument(current_survey, participant, ins)
-    ins.instrument_mode_code = mode
-    ins
+
+    person.start_instrument(current_survey, participant, mode, ins)
   end
 
   ##
