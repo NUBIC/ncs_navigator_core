@@ -91,9 +91,7 @@ class Instrument < ActiveRecord::Base
   #                  - defaults to CAPI
   # @return[Instrument]
   def self.start(person, participant, instrument_survey, current_survey, event, mode = Instrument.capi)
-    ins = build_instrument_from_survey(person, participant, instrument_survey, current_survey, event, mode)
-    ins.prepopulate_response_set(person, current_survey, event, mode)
-    ins
+    build_instrument_from_survey(person, participant, instrument_survey, current_survey, event, mode)
   end
 
   ##
@@ -143,13 +141,6 @@ class Instrument < ActiveRecord::Base
                            :event_id => event.id).order("created_at DESC").first
 
     person.start_instrument(current_survey, participant, mode, ins)
-  end
-
-  ##
-  # Run the Instrument and ResponseSet through the ResponseSetPopulator process
-  def prepopulate_response_set(person, current_survey, event, mode)
-    NcsNavigator::Core::ResponseSetPopulator::Base.new(
-      person, self, current_survey, { :event => event, :mode => mode }).process
   end
 
   ##
