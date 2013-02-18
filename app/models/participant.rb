@@ -67,6 +67,23 @@ class Participant < ActiveRecord::Base
   has_many :events
   has_many :response_sets, :inverse_of => :participant
 
+  has_many :providers, :through => :people
+  has_many :pbs_lists, :through => :providers
+
+  def self.has_self_link
+    where('participant_person_links.relationship_code' => 1)
+  end
+
+  def self.from_hospital_type_provider
+    hospitals = PbsList.is_hospital_type
+
+    has_self_link.joins(:pbs_lists).merge(PbsList.is_hospital_type)
+  end
+
+  def hospital?
+    self.class.from_hospital_type_provider.exists?(self)
+  end
+
   # validates_presence_of :person
 
   accepts_nested_attributes_for :ppg_details, :allow_destroy => true

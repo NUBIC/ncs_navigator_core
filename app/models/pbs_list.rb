@@ -61,13 +61,10 @@ class PbsList < ActiveRecord::Base
   # -4 (Missing in Error)
 
   SEARCH_LOCATIONS = ["Original location", "Substitute location"]
+  HOSPITAL_VALUES = [4,5]
 
-  ##
-  # Returns true if the in_out_frame_code is one of the following:
-  # * 4 Hospital in final sampling frame; out of scope for screening
-  # * 5 Hospital not in final sampling frame; out of scope for screening
-  def hospital?
-    [4,5].include?(in_out_frame_code)
+  def self.is_hospital_type
+    where(:in_out_frame_code => HOSPITAL_VALUES)
   end
 
   def recruitment_started?
@@ -138,8 +135,8 @@ class PbsList < ActiveRecord::Base
   end
 
   ##
-  # Marks recruited if logistics are completed and 
-  # update the provider recruitment event 
+  # Marks recruited if logistics are completed and
+  # update the provider recruitment event
   # date with latest logistic completion date
   def update_recruitment_status!
     self.mark_in_progress! if provider.has_no_provider_recruited_contacts?
@@ -179,7 +176,7 @@ class PbsList < ActiveRecord::Base
   end
 
   ##
-  # Called at create/update/delete of contact 
+  # Called at create/update/delete of contact
   # or create/update/delete of logistics
   # updates the pbs_list dates appropriately
   # and opens recruitment on provider if necessary
