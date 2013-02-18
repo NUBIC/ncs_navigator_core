@@ -1006,12 +1006,17 @@ describe Event do
 
     let(:valid)   { Factory.build(:event, :event_disposition_category_code => 3, :event_disposition => 60) }
     let(:invalid) { Factory.build(:event, :event_disposition_category_code => 3, :event_disposition => 65) }
+    let(:missing) { Factory.build(:event, :event_disposition_category_code => -4, :event_disposition => 65) }
 
-    it "determines if a record is invalid" do
+    it "determines if a record is valid" do
       valid.should be_valid
     end
 
-    it "determines if a record is valid" do
+    it "skips records where disposition is 'missing in error'" do
+      valid.should be_valid
+    end
+
+    it "determines if a record is invalid" do
       invalid.should_not be_valid
     end
 

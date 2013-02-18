@@ -840,7 +840,7 @@ class Event < ActiveRecord::Base
   # are set we validate that event_disposition value exists for that category
   # using the disposition_code composition.
   def disposition_code_is_in_disposition_category
-    if self.event_disposition && self.event_disposition_category_code && !self.disposition_code
+    if self.event_disposition && (self.event_disposition_category_code.to_i > 0) && !self.disposition_code
       errors.add(:event_disposition, "does not exist in the disposition category.")
     end
   end
