@@ -157,7 +157,7 @@ describe PbsList do
     end
 
     it "returns last contact date from the provider recruitment contacts" do
-      Factory(:contact_link, :event => Factory(:event, :event_type_code => 22), :person => Factory(:person), 
+      Factory(:contact_link, :event => Factory(:event, :event_type_code => 22), :person => Factory(:person),
         :contact => Factory(:contact, :contact_date_date => Date.new(2012, 05, 11)), :provider => @provider)
       @pbs_list.earliest_provider_recruitment_contact_date.should == Date.new(2012, 05, 11)
     end
@@ -190,7 +190,7 @@ describe PbsList do
 
       it "lastest provider contact date" do
         @pbs_list.pr_recruitment_start_date.should be_nil
-        Factory(:contact_link, :event => Factory(:event, :event_type_code => 22), :person => Factory(:person), 
+        Factory(:contact_link, :event => Factory(:event, :event_type_code => 22), :person => Factory(:person),
                 :contact => Factory(:contact, :contact_date_date => Date.new(2012, 05, 11)), :provider => @provider)
         @pbs_list.update_recruitment_dates!
         @pbs_list.pr_recruitment_start_date.should == Date.new(2012, 05, 11)
@@ -206,7 +206,7 @@ describe PbsList do
 
       it "earliest successful provider recruitment contact date" do
         @pbs_list.pr_recruitment_start_date.should be_nil
-        Factory(:contact_link, :event => Factory(:event, :event_type_code => 22), :person => Factory(:person), 
+        Factory(:contact_link, :event => Factory(:event, :event_type_code => 22), :person => Factory(:person),
                 :contact => Factory(:contact, :contact_disposition => 70, :contact_date_date => Date.new(2012, 05, 12)), :provider => @provider)
         @pbs_list.update_recruitment_dates!
         @pbs_list.pr_cooperation_date.should == Date.new(2012, 05, 12)
@@ -254,11 +254,27 @@ describe PbsList do
     end
 
     it "updates the provider event end date to the latest provider logistic completion date if such event exist" do
-      Factory(:contact_link, :event => Factory(:event, :event_type_code => 22), :person => Factory(:person), 
+      Factory(:contact_link, :event => Factory(:event, :event_type_code => 22), :person => Factory(:person),
         :contact => Factory(:contact, :contact_disposition => 70, :contact_date_date => Date.new(2012, 05, 12)), :provider => @provider)
       Factory(:provider_logistic, :completion_date => Date.new(2012, 05, 17), :provider => @provider)
       @pbs_list.update_recruitment_status!
       @pbs_list.provider.provider_recruitment_event.event_end_date.should == Date.new(2012, 05, 17);
+    end
+  end
+
+  describe ".is_hospital_type" do
+    before do
+      @hospital_pbs_list1 = Factory(:pbs_list, :in_out_frame_code => 4)
+      @hospital_pbs_list2 = Factory(:pbs_list, :in_out_frame_code => 4)
+      @non_hospital_pbs_list = Factory(:pbs_list, :in_out_frame_code => 1)
+    end
+
+    it "returns pbs_lists that have hospital sources" do
+      PbsList.is_hospital_type.should == [@hospital_pbs_list1, @hospital_pbs_list2]
+    end
+
+    it "does not return pbs_lists that do not have hospital sources" do
+      PbsList.is_hospital_type.should_not include(@non_hospital_pbs_list1)
     end
   end
 
