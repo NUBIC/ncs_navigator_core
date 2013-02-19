@@ -75,7 +75,7 @@ gem 'dm-ar-finders', '~> 1.2.0'
 
 group :development, :test, :ci do
   gem 'annotate', '~> 2.5.0'
-  gem 'rspec-rails', '2.6.1'
+  gem 'rspec-rails', '~> 2.12.0'
 
   gem 'guard'
   gem 'guard-cucumber'
