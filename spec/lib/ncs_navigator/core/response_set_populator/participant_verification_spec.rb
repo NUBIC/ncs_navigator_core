@@ -241,8 +241,8 @@ module NcsNavigator::Core
           Person.any_instance.stub(:last_name).and_return(nil)
 
           take_survey(survey_pt2, @response_set_pt2) do |a|
-            a.str "PARTICIPANT_VERIF.C_FNAME", "cfname"
-            a.str "PARTICIPANT_VERIF.C_LNAME", "clname"
+            a.str "PARTICIPANT_VERIF_CHILD.C_FNAME", "cfname"
+            a.str "PARTICIPANT_VERIF_CHILD.C_LNAME", "clname"
           end
 
           rsp = ResponseSetPopulator::ParticipantVerification.new(person, @instrument_pt2, survey_pt2)
@@ -255,8 +255,8 @@ module NcsNavigator::Core
           Person.any_instance.stub(:last_name).and_return(nil)
 
           take_survey(survey_pt2, @response_set_pt2) do |a|
-            a.refused "PARTICIPANT_VERIF.C_FNAME"
-            a.refused "PARTICIPANT_VERIF.C_LNAME"
+            a.refused "PARTICIPANT_VERIF_CHILD.C_FNAME"
+            a.refused "PARTICIPANT_VERIF_CHILD.C_LNAME"
           end
 
           rsp = ResponseSetPopulator::ParticipantVerification.new(person, @instrument_pt2, survey_pt2)
@@ -268,8 +268,8 @@ module NcsNavigator::Core
           Person.any_instance.stub(:last_name).and_return(nil)
 
           take_survey(survey_pt2, @response_set_pt2) do |a|
-            a.dont_know "PARTICIPANT_VERIF.C_FNAME"
-            a.dont_know "PARTICIPANT_VERIF.C_LNAME"
+            a.dont_know "PARTICIPANT_VERIF_CHILD.C_FNAME"
+            a.dont_know "PARTICIPANT_VERIF_CHILD.C_LNAME"
           end
 
           rsp = ResponseSetPopulator::ParticipantVerification.new(person, @instrument_pt2, survey_pt2)
@@ -300,7 +300,7 @@ module NcsNavigator::Core
           Person.any_instance.stub(:last_name).and_return(nil)
 
           take_survey(survey_pt2, @response_set_pt2) do |a|
-            a.date "PARTICIPANT_VERIF.CHILD_DOB", Date.new(2001,1,1)
+            a.date "PARTICIPANT_VERIF_CHILD.CHILD_DOB", Date.new(2001,1,1)
           end
 
           rsp = ResponseSetPopulator::ParticipantVerification.new(person, @instrument_pt2, survey_pt2)
@@ -310,7 +310,7 @@ module NcsNavigator::Core
 
         it "is TRUE if the person has responded refused previously" do
           take_survey(survey_pt2, @response_set_pt2) do |a|
-            a.refused "PARTICIPANT_VERIF.CHILD_DOB"
+            a.refused "PARTICIPANT_VERIF_CHILD.CHILD_DOB"
           end
 
           rsp = ResponseSetPopulator::ParticipantVerification.new(person, @instrument_pt2, survey_pt2)
@@ -319,7 +319,7 @@ module NcsNavigator::Core
 
         it "is TRUE if the person has responded don't know previously" do
           take_survey(survey_pt2, @response_set_pt2) do |a|
-            a.dont_know "PARTICIPANT_VERIF.CHILD_DOB"
+            a.dont_know "PARTICIPANT_VERIF_CHILD.CHILD_DOB"
           end
 
           rsp = ResponseSetPopulator::ParticipantVerification.new(person, @instrument_pt2, survey_pt2)
@@ -348,7 +348,7 @@ module NcsNavigator::Core
           Person.any_instance.stub(:sex_code).and_return(-4)
 
           take_survey(survey_pt2, @response_set_pt2) do |a|
-            a.choice "PARTICIPANT_VERIF.CHILD_SEX", mock(NcsCode, :local_code => 1)
+            a.choice "PARTICIPANT_VERIF_CHILD.CHILD_SEX", mock(NcsCode, :local_code => 1)
           end
 
           rsp = ResponseSetPopulator::ParticipantVerification.new(person, @instrument_pt2, survey_pt2)
@@ -359,7 +359,7 @@ module NcsNavigator::Core
           Person.any_instance.stub(:sex_code).and_return(-4)
 
           take_survey(survey_pt2, @response_set_pt2) do |a|
-            a.refused "PARTICIPANT_VERIF.CHILD_SEX"
+            a.refused "PARTICIPANT_VERIF_CHILD.CHILD_SEX"
           end
 
           rsp = ResponseSetPopulator::ParticipantVerification.new(person, @instrument_pt2, survey_pt2)
@@ -370,7 +370,7 @@ module NcsNavigator::Core
           Person.any_instance.stub(:sex_code).and_return(-4)
 
           take_survey(survey_pt2, @response_set_pt2) do |a|
-            a.dont_know "PARTICIPANT_VERIF.CHILD_SEX"
+            a.dont_know "PARTICIPANT_VERIF_CHILD.CHILD_SEX"
           end
 
           rsp = ResponseSetPopulator::ParticipantVerification.new(person, @instrument_pt2, survey_pt2)

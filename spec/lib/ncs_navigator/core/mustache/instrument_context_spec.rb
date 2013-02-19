@@ -1344,7 +1344,7 @@ module NcsNavigator::Core::Mustache
       it "returns 2012-12-25 if child's dob is set through instrument" do
         dob = Date.parse("2012-12-25")
         take_survey(@survey, @response_set) do |a|
-          a.date('PARTICIPANT_VERIF.CHILD_DOB', "2012-12-25")
+          a.date('PARTICIPANT_VERIF_CHILD.CHILD_DOB', "2012-12-25")
         end
         @response_set.completed_at = "2013-01-25"
         @response_set.save!

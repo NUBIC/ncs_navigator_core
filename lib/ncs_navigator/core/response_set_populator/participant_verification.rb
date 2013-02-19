@@ -193,11 +193,11 @@ module NcsNavigator::Core::ResponseSetPopulator
     end
 
     def child_first_name_response_exists?
-      valid_response_exists?("PARTICIPANT_VERIF.C_FNAME")
+      valid_response_exists?("PARTICIPANT_VERIF_CHILD.C_FNAME")
     end
 
     def child_last_name_response_exists?
-      valid_response_exists?("PARTICIPANT_VERIF.C_LNAME")
+      valid_response_exists?("PARTICIPANT_VERIF_CHILD.C_LNAME")
     end
 
     # PROGRAMMER INSTRUCTIONS:
@@ -209,13 +209,13 @@ module NcsNavigator::Core::ResponseSetPopulator
       ri = true
       if participant.person.try(:person_dob_date)
         ri = "false"
-      elsif valid_response_exists?("PARTICIPANT_VERIF.CHILD_DOB")
+      elsif valid_response_exists?("PARTICIPANT_VERIF_CHILD.CHILD_DOB")
         ri = "false"
       end
       question.answers.select { |a| a.reference_identifier == ri }.first
 
       ri = (participant.person.try(:person_dob_date) ||
-            valid_response_exists?("PARTICIPANT_VERIF.CHILD_DOB")) ? false : true
+            valid_response_exists?("PARTICIPANT_VERIF_CHILD.CHILD_DOB")) ? false : true
       answer_for(question, ri)
     end
 
@@ -224,7 +224,7 @@ module NcsNavigator::Core::ResponseSetPopulator
     #  - OTHERWISE, GO TO CHILD_SEX.
     def should_show_child_sex?(question)
       ri = (participant.person.try(:sex_code).to_i > 0 ||
-            valid_response_exists?("PARTICIPANT_VERIF.CHILD_SEX")) ? false : true
+            valid_response_exists?("PARTICIPANT_VERIF_CHILD.CHILD_SEX")) ? false : true
       answer_for(question, ri)
     end
 
