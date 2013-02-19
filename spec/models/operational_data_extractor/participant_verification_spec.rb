@@ -204,7 +204,7 @@ describe OperationalDataExtractor::ParticipantVerification do
       @participant.person = person
       @participant.save!
 
-      @response_set, @instrument = prepare_instrument(person, @participant, survey)
+      @response_set, @instrument = prepare_instrument(person, @participant, survey, Instrument.cati)
     end
 
     it "sets the mode to CAPI" do
@@ -219,11 +219,6 @@ describe OperationalDataExtractor::ParticipantVerification do
       take_survey(survey, @response_set) do |a|
         a.choice "prepopulated_mode_of_contact", mock(NcsCode, :local_code => "cati")
       end
-      OperationalDataExtractor::ParticipantVerification.new(@response_set).extract_data
-      Instrument.find(@instrument.id).instrument_mode_code.should == Instrument.cati
-    end
-
-    it "defaults to CATI" do
       OperationalDataExtractor::ParticipantVerification.new(@response_set).extract_data
       Instrument.find(@instrument.id).instrument_mode_code.should == Instrument.cati
     end
