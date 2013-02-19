@@ -2,8 +2,9 @@
 %br
 .contact_info
   %a{:href => edit_address_path(a)}
-    = a.address_one
-    %br
+    - unless a.address_one.blank?
+      = a.address_one
+      %br
     - unless a.address_two.blank?
       = a.address_two
       %br
@@ -11,6 +12,6 @@
       = a.unit
       %br
     = a.city + "," unless a.city.blank?
-    = a.state
+    = blank_safe(a.state)
     %br
     = a.zip_code

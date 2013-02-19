@@ -69,42 +69,9 @@ describe PeopleHelper do
                     @duplicate_2_address_b,
                     @secondary_home_type_address,
                     @secondary_business_type_address]
-
-      @uniquified_addresses = helper.unique_contact_mode_entries(@addresses)
+      
     end
-
-    describe "#unique_contact_mode_entries" do
-
-      it "returns a set of unique addresses" do
-        helper.unique_contact_mode_entries(@addresses).should == [@address_a, @address_b, @secondary_home_type_address, @secondary_business_type_address]
-      end
-
-      it "returns an empty set if contact entries is nil" do
-        helper.unique_contact_mode_entries(nil).should == []
-      end
-
-      it "returns an empty set if contact entries is a set of nils" do
-        helper.unique_contact_mode_entries([nil, nil, nil]).should == []
-      end
-
-    end
-
-    describe "#highest_ranking_contact_mode_entry" do
-
-      it "returns single entries of highest rank(primary, secondary, duplicate, other) for a given type" do
-        helper.highest_ranking_contact_mode_entry(@uniquified_addresses).should == [@address_a, @address_b]
-      end
-
-      it "returns an empty set if contact entries is nil" do
-        helper.highest_ranking_contact_mode_entry(nil).should == []
-      end
-
-      it "returns an empty set if contact entries is a set of nils" do
-        helper.highest_ranking_contact_mode_entry([nil, nil, nil]).should == []
-      end
-
-    end
-
+        
 
     describe "#sort_contact_mode_entries" do 
       it "returns an empty set if contact entries is nil" do
@@ -115,10 +82,7 @@ describe PeopleHelper do
         helper.sort_contact_mode_entries([nil, nil, nil]).should == {}
       end
 
-      it "sorts address types correctly and ranks correcty" do
-        helper.sort_contact_mode_entries(@uniquified_addresses).should == 
-          {1=>[@address_a,@secondary_home_type_address],2=>[@address_b,@secondary_business_type_address]}
-        
+      it "sorts address types and ranks correcty" do                
         helper.sort_contact_mode_entries(@addresses).should == 
           {1=>[@address_a,@duplicate_1_address_a,
                @duplicate_2_address_a,@secondary_home_type_address],
@@ -185,22 +149,16 @@ describe PeopleHelper do
                           @secondary_personal_type_email_address,
                           @secondary_work_type_email_address]
 
-      @uniquified_email_addresses = helper.unique_contact_mode_entries(@email_addresses)
     end
 
-    describe "#unique_contact_mode_entries" do
-      it "returns a set of unique email addresses" do
-        helper.unique_contact_mode_entries(@email_addresses).should == [@email_address_a, @email_address_b, @secondary_personal_type_email_address, @secondary_work_type_email_address]
+    it "sorts email types and ranks correcty" do                
+        helper.sort_contact_mode_entries(@email_addresses).should == 
+          {1=>[@email_address_a,@email_duplicate_1_address_a,
+               @email_duplicate_2_address_a,@secondary_personal_type_email_address],
+          2=>[@email_address_b,@email_duplicate_1_address_b,
+              @email_duplicate_2_address_b,@secondary_work_type_email_address]}
       end
-    end
-
-    describe "#highest_ranking_contact_mode_entry" do
-
-      it "returns single entries of highest rank(primary, secondary, duplicate, other) for a given type" do
-        helper.highest_ranking_contact_mode_entry(@uniquified_email_addresses).should == [@email_address_a, @email_address_b]
-      end
-    end
-
+     
   end
 
   context "filtering phone numbers based on uniqueness and rank" do
@@ -254,23 +212,17 @@ describe PeopleHelper do
                   @phone_duplicate_2_b,
                   @secondary_home_phone,
                   @secondary_work_phone]
-
-      @uniquified_phones = helper.unique_contact_mode_entries(@phones)
     end
 
-    describe "#unique_contact_mode_entries" do
-      it "returns a set of unique phones" do
-        helper.unique_contact_mode_entries(@phones).should == [@phone_a, @phone_b, @secondary_home_phone, @secondary_work_phone]
-      end
+    it "sorts email types and ranks correcty" do                
+        helper.sort_contact_mode_entries(@phones).should == 
+          {1=>[@phone_a,@phone_duplicate_1_a,
+               @phone_duplicate_2_a,@secondary_home_phone,@secondary_work_phone],
+          2=>[@phone_b,
+              @phone_duplicate_1_b,
+              @phone_duplicate_2_b]}
     end
-
-    describe "#highest_ranking_contact_mode_entry" do
-
-      it "returns single entries of highest rank(primary, secondary, duplicate, other) for a given type" do
-        helper.highest_ranking_contact_mode_entry(@uniquified_phones).should == [@phone_a, @phone_b]
-      end
-    end
-
+        
   end
 
 end
