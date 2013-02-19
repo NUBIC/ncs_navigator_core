@@ -108,11 +108,11 @@ describe PeopleHelper do
 
     describe "#sort_contact_mode_entries" do 
       it "returns an empty set if contact entries is nil" do
-        helper.sort_contact_mode_entries(nil).should == []
+        helper.sort_contact_mode_entries(nil).should == {}
       end
       
       it "returns an empty set if contact entries is a set of nils" do
-        helper.sort_contact_mode_entries([nil, nil, nil]).should == []
+        helper.sort_contact_mode_entries([nil, nil, nil]).should == {}
       end
 
       it "sorts address types correctly and ranks correcty" do

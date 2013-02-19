@@ -8,6 +8,9 @@
         %dd
           = t.phone_type
           = link_to phone_number_formatter(t.phone_nbr), edit_person_telephone_path(@person, t)
+
+
+
   .emails
     %dt
       Email
@@ -17,6 +20,8 @@
         %dd
           = e.email_type
           = link_to e.email, edit_person_email_path(@person, e)
+
+
   .addresses
     %dt
       Address
@@ -25,22 +30,13 @@
         More ...
       %a{ :class => "toggle_link", :id => "swap_2" }
         Less ...
-    
-    .swap_1
-      - highest_ranking_contact_mode_entry(unique_contact_mode_entries(@person.addresses)).each do |a|
-        .contact_info
-          %dd
-            #address_title
-              = a.address_type
+    - sort_contact_mode_entries(@person.addresses).each_value do |type|
+      .contact_info
+        %dd
+          #address_title
+            = type.first.address_type
+        - type.each_with_index do |a,i| 
+          %dd{:class => (i==0?"":"swap_2")}
             = render :partial => '/people/address', :locals => { :a => a }
-
-    .swap_2
-      - sort_contact_mode_entries(@person.addresses).each_value do |type|      
-        .contact_info
-          %dd
-            #address_title
-              = type.first.address_type
-            - type.each do |a|
-              #address_title 
-                = a.address_rank
-              = render :partial => '/people/address', :locals => { :a => a }
+          - if i==type.size-1
+            %br
