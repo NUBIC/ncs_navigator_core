@@ -381,6 +381,10 @@ class Event < ActiveRecord::Base
     1
   end
 
+  def self.pregnancy_probability_code
+    7
+  end
+
   def self.informed_consent_code
     10
   end
@@ -483,7 +487,8 @@ class Event < ActiveRecord::Base
       Event.pregnancy_visit_1_code,
       Event.pregnancy_visit_2_code,
       Event.birth_code,
-      Event.pre_pregnancy_code
+      Event.pre_pregnancy_code,
+      Event.pregnancy_probability_code
     ]
   end
 
