@@ -3,10 +3,9 @@
 module TestSurveys
 
   ##
-  # Starts an Instrument for a {Person} p and {Survey} s, saves it, and
-  # returns the created ResponseSet along with the Instrument.
-  def prepare_instrument(person, participant, survey)
-    mode = 1 # INSTRUMENT_ADMIN_MODE_CL1 - In-person
+  # Starts an Instrument for a {Person} person, {Participant} participant and {Survey} survey,
+  # saves it, and returns the created ResponseSet along with the Instrument.
+  def prepare_instrument(person, participant, survey, mode = Instrument.capi)
     instr = person.start_instrument(survey, participant, mode)
     instr.save!
 

@@ -438,8 +438,8 @@ describe Person do
       end
 
       it "should set the instrument_mode_code" do
-        telephone_computer_administered = NcsCode.for_list_name_and_local_code('INSTRUMENT_ADMIN_MODE_CL1', 2)
-        response_set, instrument = prepare_instrument(@person, @participant, @survey)
+        telephone_computer_administered = NcsCode.for_list_name_and_local_code('INSTRUMENT_ADMIN_MODE_CL1', Instrument.cati)
+        response_set, instrument = prepare_instrument(@person, @participant, @survey, Instrument.cati)
         instrument.instrument_mode.should == telephone_computer_administered
       end
 
