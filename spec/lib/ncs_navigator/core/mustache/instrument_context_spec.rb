@@ -1341,7 +1341,7 @@ module NcsNavigator::Core::Mustache
         instrument_context.c_dob.should == "[CHILD'S DATE OF BIRTH]"
       end
 
-      it "returns 2012-12-25 if child's dob is set through instrument" do
+      it "returns if child's date of birth" do
         dob = Date.parse("2012-12-25")
         take_survey(@survey, @response_set) do |a|
           a.date('PARTICIPANT_VERIF_CHILD.CHILD_DOB', "2012-12-25")
