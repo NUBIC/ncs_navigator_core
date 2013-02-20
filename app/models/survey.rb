@@ -31,6 +31,9 @@ class Survey < ActiveRecord::Base
 
   attr_accessible :instrument_version, :instrument_type
 
+  has_many :questions, :through => :sections
+  has_many :answers, :through => :questions
+
   def self.most_recent
     maximums = unscoped.select(['title AS t', 'MAX(survey_version) AS ver']).
       group('t')
