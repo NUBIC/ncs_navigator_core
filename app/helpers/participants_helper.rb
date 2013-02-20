@@ -14,29 +14,89 @@ module ParticipantsHelper
     "#{NcsNavigator.configuration.psc_uri}pages/subject?assignment=#{assignment_id}"
   end
 
+  ##
+  # @param [Participant]
+  # @return [NcsCode]
   def consent_type_for(participant)
     participant.low_intensity? ? ParticipantConsent.low_intensity_consent_type_code : ParticipantConsent.general_consent_type_code
   end
 
+  ##
+  # Determine the path for the Participant's ParticipantConsent
+  # record. Basically this determines if this is an edit or a new
+  # action on the ParticipantConsent and build the url link accordingly.
+  #
+  # @param participant [Participant]
+  # @param contact_link [ContactLink]
+  # @param current_activity [Boolean]
+  # @return [String] link tag
   def determine_participant_consent_path(participant, contact_link, current_activity = false)
     consent = consent_type_for(participant)
-    return nil if should_hide_consent?(consent.to_s)
+    return nil if should_hide_consent?(consent.display_text)
 
-    consent_type = NcsCode.for_attribute_name_and_local_code(:consent_type_code, consent.local_code)
+    consent_type_code = consent.local_code
+    consent_type = NcsCode.for_attribute_name_and_local_code(:consent_type_code, consent_type_code)
     if participant.consented?(consent_type)
-      cls = current_activity ? "star_link icon_link" : "edit_link icon_link"
 
-      path = edit_participant_participant_consent_path(participant,
-               participant.consent_for_type(consent_type),
-               {:contact_link_id => contact_link.id})
+      participant_consent = participant.consent_for_type(consent_type)
+
+      if participant_consent.consent_event == contact_link.event
+        build_edit_participant_consent_path(participant, participant_consent, contact_link, current_activity)
+      else
+        build_new_participant_consent_path(participant, consent_type_code, contact_link, current_activity)
+      end
     else
-      cls = current_activity ? "star_link icon_link" : "add_link icon_link"
-
-      path = new_participant_participant_consent_path(participant,
-               {:contact_link_id => contact_link.id, :consent_type_code => consent.local_code})
+      build_new_participant_consent_path(participant, consent_type_code, contact_link, current_activity)
     end
-    link_to "Informed Consent", path, :class => cls
   end
+
+  ##
+  # Build the url path for the new participant consent action
+  # @param participant [Participant]
+  # @param consent_type_code [NcsCode]
+  # @param contact_link [ContactLink]
+  # @param current_activity [Boolean]
+  # @return [String] link tag
+  def build_new_participant_consent_path(participant, consent_type_code, contact_link, current_activity)
+    path = new_participant_participant_consent_path(participant,
+             {:contact_link_id => contact_link.id, :consent_type_code => consent_type_code})
+    informed_consent_link("New", path, current_activity)
+  end
+  private :build_new_participant_consent_path
+
+  ##
+  # Build the url path for the edit participant consent action
+  # @param participant [Participant]
+  # @param participant_consent [ParticipantConsent]
+  # @param contact_link [ContactLink]
+  # @param current_activity [Boolean]
+  # @return [String] link tag
+  def build_edit_participant_consent_path(participant, participant_consent, contact_link, current_activity)
+    path = edit_participant_participant_consent_path(participant, participant_consent,
+             {:contact_link_id => contact_link.id})
+    informed_consent_link("Edit", path, current_activity)
+  end
+  private :build_edit_participant_consent_path
+
+  ##
+  # If this is the current activity use the star_link css style
+  # otherwise use the new_link or edit_link css style as determined
+  # by the action parameter
+  # @param current_activity [Boolean]
+  # @param action [String] 'new' or 'edit'
+  # @return [String]
+  def css_link_class(current_activity, action)
+    current_activity ? "star_link icon_link" : "#{action}_link icon_link"
+  end
+  private :css_link_class
+
+  ##
+  # @see ActionView::Helpers::UrlHelper#link_to
+  # @return [String] link tag
+  def informed_consent_link(action, path, current_activity)
+    link_to "#{action} Informed Consent", path, :class => css_link_class(current_activity, action.downcase)
+  end
+  private :informed_consent_link
 
   def should_hide_consent?(consent_type_text)
     consent_type_text.include?("collect") && !NcsNavigatorCore.expanded_phase_two?
