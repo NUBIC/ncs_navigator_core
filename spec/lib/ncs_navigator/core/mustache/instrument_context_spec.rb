@@ -593,71 +593,223 @@ module NcsNavigator::Core::Mustache
 
       end
       describe ".do_when_will_live_with_you" do
-
-        before(:each) do
-          setup_survey_instrument(create_birth_3_0_with_release_and_birth_deliver_and_mulitiple)
-          NcsNavigatorCore.mdes_version.stub(:number).and_return("3.0")
-        end
-
-        let(:birth_deliver) { "BIRTH_VISIT_3.BIRTH_DELIVER" }
-        let(:release) { "BIRTH_VISIT_3.RELEASE" }
-        let(:multiple) {"BIRTH_VISIT_3.MULTIPLE"}
-
-        it "returns generic sentence when no conditions met" do
-          instrument_context.do_when_will_live_with_you == "[Does [C_FNAME/your baby]]/[Do your babies]/[When [C_FNAME/your babies] leave the]/[When your baby leaves the] [hospital/ birthing center/ other place] will [he/she/they] live with you?"
-        end
-
-        it "returns 'Does' and name or baby if single birth, released is 'yes' and delivered 'at home'"  do
-          take_survey(@survey, @response_set) do |a|
-            a.yes release
-            at_home = mock(NcsCode, :local_code => 3)
-            a.choice birth_deliver, at_home
+        describe "with INS_QUE_Birth_INT_LI_M3.1_V2.0_PART_TWO survey" do
+          before(:each) do
+            setup_survey_instrument(create_birth_3_0_with_release_and_birth_deliver_and_mulitiple)
+            NcsNavigatorCore.mdes_version.stub(:number).and_return("3.0")
+            @survey.title = 'INS_QUE_Birth_INT_EHPBHIPBS_M3.0_V3.0'
+            @survey.save!
           end
-          mom = @response_set.person
-          mom.participant.p_type_code = 1 # 1 age eligilble woman
-          mom.participant.save!
+          let(:birth_deliver) { "BIRTH_VISIT_3.BIRTH_DELIVER" }
+          let(:release) { "BIRTH_VISIT_3.RELEASE" }
+          let(:multiple) {"BIRTH_VISIT_3.MULTIPLE"}
 
-          person_child = Factory(:person)
-          person_child.save!
-
-          Factory(:participant_person_link, :person => person_child, :participant => mom.participant, :relationship_code => 8) # 8 Child
-
-          mom.participant_person_links.reload
-          instrument_context.do_when_will_live_with_you.should == "Does " + instrument_context.child_first_name_your_baby + " live with you?"
-        end
-        it "returns 'When' and 'name or baby' if single birth, released is 'no'"  do
-          take_survey(@survey, @response_set) do |a|
-            a.no release
+          it "returns generic sentence when no conditions met" do
+            instrument_context.do_when_will_live_with_you == "[Does [C_FNAME/your baby]]/[Do your babies]/[When [C_FNAME/your babies] leave the]/[When your baby leaves the] [hospital/ birthing center/ other place] will [he/she/they] live with you?"
           end
-          mom = @response_set.person
 
-          mom.person_dob = "05/06/1980"
-          mom.participant.p_type_code = 1 # 1 age eligilble woman
-          mom.participant.save!
+          it "returns 'Does' and name or baby if single birth, released is 'yes' and delivered 'at home'"  do
+            take_survey(@survey, @response_set) do |a|
+              a.yes release
+              at_home = mock(NcsCode, :local_code => 3)
+              a.choice birth_deliver, at_home
+            end
+            mom = @response_set.person
+            mom.participant.p_type_code = 1 # 1 age eligilble woman
+            mom.participant.save!
 
-          person_child = Factory(:person, :person_dob => "09/15/2012")
-          person_child.save!
+            person_child = Factory(:person)
+            person_child.save!
 
-          Factory(:participant_person_link, :person => person_child, :participant => mom.participant, :relationship_code => 8) # 8 Child
+            Factory(:participant_person_link, :person => person_child, :participant => mom.participant, :relationship_code => 8) # 8 Child
 
-          mom.participant_person_links.reload
-          instrument_context.do_when_will_live_with_you.should == "When " + instrument_context.child_first_name_your_baby + " leaves the " + instrument_context.birthing_place + " will " + instrument_context.he_she_they + " live with you?"
-        end
-        it "returns 'Do your babies' if multiple birth, released is 'yes' and delivered 'at home'"  do
-          take_survey(@survey, @response_set) do |a|
-            a.yes release
-            at_home = mock(NcsCode, :local_code => 3)
-            a.choice birth_deliver, at_home
+            mom.participant_person_links.reload
+            instrument_context.do_when_will_live_with_you.should == "Does " + instrument_context.child_first_name_your_baby + " live with you?"
           end
-          create_multiple_birth
-          instrument_context.do_when_will_live_with_you.should == "Do your babies live with you?"
-        end
-        it "returns 'When your babies leave the' if multiple birth, and released is 'no'"  do
-          take_survey(@survey, @response_set) do |a|
-            a.no release
+
+          it "returns 'When' and 'name or baby' if single birth, released is 'no'"  do
+            take_survey(@survey, @response_set) do |a|
+              a.no release
+            end
+            mom = @response_set.person
+
+            mom.person_dob = "05/06/1980"
+            mom.participant.p_type_code = 1 # 1 age eligilble woman
+            mom.participant.save!
+
+            person_child = Factory(:person, :person_dob => "09/15/2012")
+            person_child.save!
+
+            Factory(:participant_person_link, :person => person_child, :participant => mom.participant, :relationship_code => 8) # 8 Child
+
+            mom.participant_person_links.reload
+            instrument_context.do_when_will_live_with_you.should == "When " + instrument_context.child_first_name_your_baby + " leaves the " + instrument_context.birthing_place + " will " + instrument_context.he_she_they + " live with you?"
           end
-          create_multiple_birth
-          instrument_context.do_when_will_live_with_you.should == "When your babies leave the "+ instrument_context.birthing_place + " will " + instrument_context.he_she_they + " live with you?"
+
+          it "returns 'Do your babies' if multiple birth, released is 'yes' and delivered 'at home'"  do
+            take_survey(@survey, @response_set) do |a|
+              a.yes release
+              at_home = mock(NcsCode, :local_code => 3)
+              a.choice birth_deliver, at_home
+            end
+            create_multiple_birth
+            instrument_context.do_when_will_live_with_you.should == "Do your babies live with you?"
+          end
+
+          it "returns 'When your babies leave the' if multiple birth, and released is 'no'"  do
+            take_survey(@survey, @response_set) do |a|
+              a.no release
+            end
+            create_multiple_birth
+            instrument_context.do_when_will_live_with_you.should == "When your babies leave the "+ instrument_context.birthing_place + " will " + instrument_context.he_she_they + " live with you?"
+          end
+
+        end
+
+        describe "with INS_QUE_Birth_INT_M3.2_V3.1_PART_TWO survey" do
+          before(:each) do
+            setup_survey_instrument(create_birth_3_0_with_release_and_birth_deliver_and_mulitiple('BIRTH_VISIT_4'))
+            NcsNavigatorCore.mdes_version.stub(:number).and_return("3.0")
+            @survey.title = 'INS_QUE_Birth_INT_M3.2_V3.1_PART_TWO'
+            @survey.save!
+          end
+          let(:birth_deliver) { "BIRTH_VISIT_4.BIRTH_DELIVER" }
+          let(:release) { "BIRTH_VISIT_4.RELEASE" }
+          let(:multiple) {"BIRTH_VISIT_4.MULTIPLE"}
+
+          it "returns generic sentence when no conditions met" do
+            instrument_context.do_when_will_live_with_you == "[Does [C_FNAME/your baby]]/[Do your babies]/[When [C_FNAME/your babies] leave the]/[When your baby leaves the] [hospital/ birthing center/ other place] will [he/she/they] live with you?"
+          end
+
+          it "returns 'Does' and name or baby if single birth, released is 'yes' and delivered 'at home'"  do
+            take_survey(@survey, @response_set) do |a|
+              a.yes release
+              at_home = mock(NcsCode, :local_code => 3)
+              a.choice birth_deliver, at_home
+            end
+            mom = @response_set.person
+            mom.participant.p_type_code = 1 # 1 age eligilble woman
+            mom.participant.save!
+
+            person_child = Factory(:person)
+            person_child.save!
+
+            Factory(:participant_person_link, :person => person_child, :participant => mom.participant, :relationship_code => 8) # 8 Child
+
+            mom.participant_person_links.reload
+            instrument_context.do_when_will_live_with_you.should == "Does " + instrument_context.child_first_name_your_baby + " live with you?"
+          end
+
+          it "returns 'When' and 'name or baby' if single birth, released is 'no'"  do
+            take_survey(@survey, @response_set) do |a|
+              a.no release
+            end
+            mom = @response_set.person
+
+            mom.person_dob = "05/06/1980"
+            mom.participant.p_type_code = 1 # 1 age eligilble woman
+            mom.participant.save!
+
+            person_child = Factory(:person, :person_dob => "09/15/2012")
+            person_child.save!
+
+            Factory(:participant_person_link, :person => person_child, :participant => mom.participant, :relationship_code => 8) # 8 Child
+
+            mom.participant_person_links.reload
+            instrument_context.do_when_will_live_with_you.should == "When " + instrument_context.child_first_name_your_baby + " leaves the " + instrument_context.birthing_place + " will " + instrument_context.he_she_they + " live with you?"
+          end
+
+          it "returns 'Do your babies' if multiple birth, released is 'yes' and delivered 'at home'"  do
+            take_survey(@survey, @response_set) do |a|
+              a.yes release
+              at_home = mock(NcsCode, :local_code => 3)
+              a.choice birth_deliver, at_home
+            end
+            create_multiple_birth
+            instrument_context.do_when_will_live_with_you.should == "Do your babies live with you?"
+          end
+
+          it "returns 'When your babies leave the' if multiple birth, and released is 'no'"  do
+            take_survey(@survey, @response_set) do |a|
+              a.no release
+            end
+            create_multiple_birth
+            instrument_context.do_when_will_live_with_you.should == "When your babies leave the "+ instrument_context.birthing_place + " will " + instrument_context.he_she_they + " live with you?"
+          end
+
+        end
+
+        describe "with INS_QUE_Birth_INT_LI_M3.1_V2.0_PART_TWO survey" do
+          before(:each) do
+            setup_survey_instrument(create_birth_3_0_with_release_and_birth_deliver_and_mulitiple('BIRTH_VISIT_LI_2'))
+            NcsNavigatorCore.mdes_version.stub(:number).and_return("3.0")
+            @survey.title = "INS_QUE_Birth_INT_LI_M3.1_V2.0_PART_TWO"
+            @survey.save!
+          end
+          let(:birth_deliver) { "BIRTH_VISIT_LI_2.BIRTH_DELIVER" }
+          let(:release) { "BIRTH_VISIT_LI_2.RELEASE" }
+          let(:multiple) {"BIRTH_VISIT_LI_2.MULTIPLE"}
+
+          it "returns generic sentence when no conditions met" do
+            instrument_context.do_when_will_live_with_you == "[Does [C_FNAME/your baby]]/[Do your babies]/[When [C_FNAME/your babies] leave the]/[When your baby leaves the] [hospital/ birthing center/ other place] will [he/she/they] live with you?"
+          end
+
+          it "returns 'Does' and name or baby if single birth, released is 'yes' and delivered 'at home'"  do
+            take_survey(@survey, @response_set) do |a|
+              a.yes release
+              at_home = mock(NcsCode, :local_code => 3)
+              a.choice birth_deliver, at_home
+            end
+            mom = @response_set.person
+            mom.participant.p_type_code = 1 # 1 age eligilble woman
+            mom.participant.save!
+
+            person_child = Factory(:person)
+            person_child.save!
+
+            Factory(:participant_person_link, :person => person_child, :participant => mom.participant, :relationship_code => 8) # 8 Child
+
+            mom.participant_person_links.reload
+            instrument_context.do_when_will_live_with_you.should == "Does " + instrument_context.child_first_name_your_baby + " live with you?"
+          end
+
+          it "returns 'When' and 'name or baby' if single birth, released is 'no'"  do
+            take_survey(@survey, @response_set) do |a|
+              a.no release
+            end
+            mom = @response_set.person
+
+            mom.person_dob = "05/06/1980"
+            mom.participant.p_type_code = 1 # 1 age eligilble woman
+            mom.participant.save!
+
+            person_child = Factory(:person, :person_dob => "09/15/2012")
+            person_child.save!
+
+            Factory(:participant_person_link, :person => person_child, :participant => mom.participant, :relationship_code => 8) # 8 Child
+
+            mom.participant_person_links.reload
+            instrument_context.do_when_will_live_with_you.should == "When " + instrument_context.child_first_name_your_baby + " leaves the " + instrument_context.birthing_place + " will " + instrument_context.he_she_they + " live with you?"
+          end
+
+          it "returns 'Do your babies' if multiple birth, released is 'yes' and delivered 'at home'"  do
+            take_survey(@survey, @response_set) do |a|
+              a.yes release
+              at_home = mock(NcsCode, :local_code => 3)
+              a.choice birth_deliver, at_home
+            end
+            create_multiple_birth
+            instrument_context.do_when_will_live_with_you.should == "Do your babies live with you?"
+          end
+
+          it "returns 'When your babies leave the' if multiple birth, and released is 'no'"  do
+            take_survey(@survey, @response_set) do |a|
+              a.no release
+            end
+            create_multiple_birth
+            instrument_context.do_when_will_live_with_you.should == "When your babies leave the "+ instrument_context.birthing_place + " will " + instrument_context.he_she_they + " live with you?"
+          end
+
         end
 
       end
