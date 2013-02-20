@@ -198,7 +198,6 @@ describe ParticipantConsent do
       ParticipantConsent.low_intensity_consent_type_code.should ==
         NcsCode.for_list_name_and_local_code("CONSENT_TYPE_CL1", 7)
     end
-
   end
 
   context "phase 1 versus phase 2 consents" do
@@ -241,6 +240,68 @@ describe ParticipantConsent do
       end
 
     end
+  end
+
+  describe "#consent_event" do
+    let(:participant_consent) { Factory(:participant_consent, :contact => contact) }
+
+    context "without a contact" do
+      let(:contact) { nil }
+      it "returns nil" do
+        participant_consent.consent_event.should be_nil
+      end
+    end
+
+    context "with a contact" do
+      let(:contact) { Factory(:contact) }
+
+      context "not associated with an Event" do
+        let!(:contact_link) { Factory(:contact_link, :event => nil, :contact => contact) }
+        it "returns nil" do
+          participant_consent.consent_event.should be_nil
+        end
+      end
+
+      context "associated with Events through ContactLink" do
+        describe "with only one event" do
+          let(:event) { Factory(:event, :event_type_code => Event.pregnancy_screener_code) }
+          let!(:contact_link) { Factory(:contact_link, :event => event, :contact => contact) }
+
+          it "returns that event" do
+            participant_consent.consent_event.should == event
+          end
+        end
+
+        describe "with more than one event" do
+          let(:ic_event) { Factory(:event, :event_type_code => Event.informed_consent_code) }
+          let(:ps_event) { Factory(:event, :event_type_code => Event.pregnancy_screener_code) }
+          before do
+            Factory(:contact_link, :event => ic_event, :contact => contact)
+            Factory(:contact_link, :event => ps_event, :contact => contact)
+          end
+
+          it "returns the InformedConsent event" do
+            participant_consent.consent_event.should == ic_event
+          end
+        end
+
+        describe "with more than one InformedConsent event" do
+          # This should not happen but is being seen in some SC data
+          # There is one contact for two IC events that happen on different dates
+          let(:event1) { Factory(:event, :event_type_code => Event.informed_consent_code, :event_start_date => Date.parse("2012-01-01")) }
+          let(:event2) { Factory(:event, :event_type_code => Event.informed_consent_code, :event_start_date => Date.parse("2012-10-10")) }
+          before do
+            Factory(:contact_link, :event => event1, :contact => contact)
+            Factory(:contact_link, :event => event2, :contact => contact)
+          end
+
+          it "returns the first chronological event" do
+            participant_consent.consent_event.should == event1
+          end
+        end
+      end
+    end
+
   end
 
 end

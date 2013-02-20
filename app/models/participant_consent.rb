@@ -145,5 +145,23 @@ class ParticipantConsent < ActiveRecord::Base
     !phase_one?
   end
 
+  ##
+  # Finds the first associated Informed Consent Event
+  # through the ParticipantConsent.contact
+  # @return [Event]
+  def consent_event
+    return nil unless contact
+
+    events = contact.contact_links.map(&:event).sort_by do |e|
+      e.try(:event_start_date)
+    end
+
+    return events.first if events.size == 1
+
+    events.detect do |e|
+      e.event_type_code == Event.informed_consent_code
+    end
+  end
+
 end
 
