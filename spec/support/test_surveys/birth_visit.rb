@@ -289,10 +289,11 @@ module BirthVisit
     QUESTIONS
   end
 
-  def create_birth_3_0_with_release_and_birth_deliver_and_mulitiple
+  def create_birth_3_0_with_release_and_birth_deliver_and_mulitiple(
+                                                  surveyid = 'BIRTH_VISIT_3')
     load_survey_questions_string(<<-QUESTIONS)
       q_BIRTH_DELIVER 'text',
-      :data_export_identifier => "BIRTH_VISIT_3.BIRTH_DELIVER",
+      :data_export_identifier => "#{surveyid}.BIRTH_DELIVER",
       :pick => :one
       a_1 "HOSPITAL"
       a_2 "BIRTHING CENTER"
@@ -300,13 +301,13 @@ module BirthVisit
       a_neg_5 "SOME OTHER PLACE"
 
       q_RELEASE 'text',
-      :data_export_identifier => "BIRTH_VISIT_3.RELEASE",
+      :data_export_identifier => "#{surveyid}.RELEASE",
       :pick => :one
       a_1 "YES"
       a_2 "NO"
 
       q_MULTIPLE 'text',
-      :data_export_identifier => "BIRTH_VISIT_3.MULTIPLE",
+      :data_export_identifier => "#{surveyid}.MULTIPLE",
       :pick => :one
       a_1 "YES"
       a_2 "NO"

@@ -172,8 +172,12 @@ module NcsNavigator::Core::Mustache
         OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_2_INTERVIEW_PREFIX
       when /_PregVisit1_(.)*3/
         OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX
+      when /Birth_INT_LI_M3\.1_V2\.0_/
+        OperationalDataExtractor::Birth::BIRTH_LI_2_PREFIX
       when /_Birth_INT_LI_/
         OperationalDataExtractor::Birth::BIRTH_LI_PREFIX
+      when /_Birth_INT_M3.2_/
+        OperationalDataExtractor::Birth::BIRTH_VISIT_4_PREFIX
       else
         if NcsNavigatorCore.mdes_version.number == "3.0"
           OperationalDataExtractor::Birth::BIRTH_VISIT_3_PREFIX
@@ -534,8 +538,21 @@ module NcsNavigator::Core::Mustache
     # • IF MULTIPLE = 1, DISPLAY “they”.
     def do_when_will_live_with_you
       result = "[Does [C_FNAME/your baby]]/[Do your babies]/[When [C_FNAME/your babies] leave the]/[When your baby leaves the] [hospital/ birthing center/ other place] will [he/she/they] live with you?",
-      released = response_for("BIRTH_VISIT_3.RELEASE") #a_1 "YES" a_2 "NO"
-      birth_deliver = response_for("BIRTH_VISIT_3.BIRTH_DELIVER") #a_1 "HOSPITAL" a_2 "BIRTHING CENTER" a_3 "AT HOME" a_neg_5 "SOME OTHER PLACE"
+
+      surveyid = case @response_set.survey.title
+                 when "INS_QUE_Birth_INT_LI_M3.1_V2.0_PART_TWO"
+                   "BIRTH_VISIT_LI_2"
+                 when "INS_QUE_Birth_INT_M3.2_V3.1_PART_TWO"
+                   "BIRTH_VISIT_4"
+                 when "INS_QUE_Birth_INT_EHPBHIPBS_M3.0_V3.0"
+                   "BIRTH_VISIT_3"
+                 else
+                   nil
+                 end
+      return result unless surveyid
+
+      released = response_for("#{surveyid}.RELEASE") #a_1 "YES" a_2 "NO"
+      birth_deliver = response_for("#{surveyid}.BIRTH_DELIVER") #a_1 "HOSPITAL" a_2 "BIRTHING CENTER" a_3 "AT HOME" a_neg_5 "SOME OTHER PLACE"
       if single_birth? #MULTIPLE = 2
         if ((released.upcase.eql? "YES") || (birth_deliver.upcase.eql? "AT HOME"))
           result = "Does " + child_first_name_through_participant("your baby") + " live with you?"
