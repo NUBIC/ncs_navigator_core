@@ -73,29 +73,36 @@ describe PeopleHelper do
     end
         
 
-    describe "#group_and_sort_contact_mode_entries" do 
+    describe "#group_cme" do 
       it "returns an empty set if contact entries is nil" do
-        helper.group_and_sort_contact_mode_entries(nil).should == {}
+        helper.group_cme(nil).should == {}
       end
       
       it "returns an empty set if contact entries is a set of nils" do
-        helper.group_and_sort_contact_mode_entries([nil, nil, nil]).should == {}
+        helper.group_cme([nil, nil, nil]).should == {}
       end
 
-      it "groups and sorts address types and ranks according to the order defined in the PeopleHelper module" do                
-        helper.group_and_sort_contact_mode_entries(@addresses).should == 
+      it "groups address types according to the order defined in the PeopleHelper module" do                
+        helper.group_cme(@addresses).should == 
+          {1=>[@address_a,@duplicate_1_address_a,
+               @duplicate_2_address_a,@secondary_home_type_address],
+          2=>[@address_b,@duplicate_1_address_b,
+              @duplicate_2_address_b,@secondary_business_type_address]}
+      end      
+    end
+    
+    describe "#sort_cme" do
+      it "sorts address groups by rank according to the order defined in the PeopleHelper module" do 
+        helper.sort_cme(helper.group_cme(@addresses)).should == 
           {1=>[@address_a,@duplicate_1_address_a,
                @duplicate_2_address_a,@secondary_home_type_address],
           2=>[@address_b,@duplicate_1_address_b,
               @duplicate_2_address_b,@secondary_business_type_address]}
       end
-
-
-      
     end
+    
 
-
-  end
+end
 
   context "grouping emails by type and sorting by rank" do
 
@@ -151,14 +158,26 @@ describe PeopleHelper do
 
     end
 
-    it "groups and sorts email types and ranks according to the order defined in the PeopleHelper module" do                
-        helper.group_and_sort_contact_mode_entries(@email_addresses).should == 
+
+    describe "#group_cme" do     
+      it "groups email types according to the order defined in the PeopleHelper module" do                
+        helper.group_cme(@email_addresses).should == 
+          {1=>[@email_address_a,@email_duplicate_1_address_a,
+               @email_duplicate_2_address_a,@secondary_personal_type_email_address],
+          2=>[@email_address_b,@email_duplicate_1_address_b,
+              @email_duplicate_2_address_b,@secondary_work_type_email_address]}
+      end      
+    end
+    
+    describe "#sort_cme" do
+      it "sorts email groups by rank according to the order defined in the PeopleHelper module" do 
+        helper.sort_cme(helper.group_cme(@email_addresses)).should == 
           {1=>[@email_address_a,@email_duplicate_1_address_a,
                @email_duplicate_2_address_a,@secondary_personal_type_email_address],
           2=>[@email_address_b,@email_duplicate_1_address_b,
               @email_duplicate_2_address_b,@secondary_work_type_email_address]}
       end
-     
+    end
   end
 
   context "grouping phone numbers by type and sorting by rank" do
@@ -214,14 +233,29 @@ describe PeopleHelper do
                   @secondary_work_phone]
     end
 
-    it "groups and sorts phone types and ranks according to the order defined in the PeopleHelper module" do                
-        helper.group_and_sort_contact_mode_entries(@phones).should == 
+    describe "#group_cme" do     
+      it "groups phone types according to the order defined in the PeopleHelper module" do                
+        helper.group_cme(@email_addresses).should == 
           {1=>[@phone_a,@phone_duplicate_1_a,
                @phone_duplicate_2_a,@secondary_home_phone,@secondary_work_phone],
           2=>[@phone_b,
               @phone_duplicate_1_b,
               @phone_duplicate_2_b]}
+      end      
     end
+    
+    describe "#sort_cme" do
+      it "sorts phone groups by rank according to the order defined in the PeopleHelper module" do 
+        helper.sort_cme(helper.group_cme(@email_addresses)).should == 
+          {1=>[@phone_a,@phone_duplicate_1_a,
+               @phone_duplicate_2_a,@secondary_home_phone,@secondary_work_phone],
+          2=>[@phone_b,
+              @phone_duplicate_1_b,
+              @phone_duplicate_2_b]}
+      end
+    end
+
+    
         
   end
 

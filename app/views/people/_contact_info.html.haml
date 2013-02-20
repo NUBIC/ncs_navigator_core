@@ -5,7 +5,7 @@
     %dt
       Telephone
       = link_to 'Add', new_person_telephone_path(@person), :class => "add_link icon_link"
-    - (cme = group_and_sort_contact_mode_entries(@person.telephones)).each_with_index do |type,i|
+    - (cme = sort_cme(group_cme(@person.telephones))).each_with_index do |type,i|
       .contact_info
         %dd
           #address_title
@@ -23,7 +23,7 @@
     %dt
       Email
       = link_to 'Add', new_person_email_path(@person), :class => "add_link icon_link"
-    - (cme = group_and_sort_contact_mode_entries(@person.emails)).each_with_index do |type,i|
+    - (cme = sort_cme(group_cme(@person.emails))).each_with_index do |type,i|
       .contact_info
         %dd
           #address_title
@@ -41,7 +41,7 @@
     %dt
       Address
       = link_to 'Add', new_address_path(:person_id => @person.id), :class => "add_link icon_link"    
-    - (cme = group_and_sort_contact_mode_entries(@person.addresses)).each_with_index do |type,i|
+    - (cme = sort_cme(group_cme(@person.addresses))).each_with_index do |type,i|
       .contact_info
         %dd
           #address_title
