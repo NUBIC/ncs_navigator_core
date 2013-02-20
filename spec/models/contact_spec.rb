@@ -56,6 +56,7 @@ describe Contact do
   it { should belong_to(:who_contacted) }
 
   it { should have_many(:contact_links) }
+  it { should have_many(:events).through(:contact_links) }
   it { should have_many(:instruments).through(:contact_links) }
   it { should have_one(:non_interview_provider) }
   it { should have_many(:non_interview_reports) }
