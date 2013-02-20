@@ -1,16 +1,6 @@
-$(document).ready ->
-  $('.swap_2').hide();
-  $('#swap_2').hide();
-  $('#swap_1').click ->
-    $('.swap_1').hide();
-    $('#swap_1').hide();    
-    $('.swap_2').show();
-    $('#swap_2').show();
-
-  $('#swap_2').click ->
-    $('.swap_2').hide();
-    $('#swap_2').hide();    
-    $('.swap_1').show();
-    $('#swap_1').show();
-
-
+$ -> 
+  $('#contact_information_tab .extended_contacts').hide()
+  $('#contact_information_tab a#toggle_contacts').click ->
+    txt = $.trim($('#contact_information_tab a#toggle_contacts').text())
+    $('#contact_information_tab a#toggle_contacts').text(if txt == "Show All" then "Show Highest Ranked" else "Show All")
+    $('#contact_information_tab .extended_contacts').toggle()
