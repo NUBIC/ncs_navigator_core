@@ -426,7 +426,8 @@ module NcsNavigator::Core::Mustache
     end
 
     def c_dob
-      about_person.blank? ? "[CHILD'S DATE OF BIRTH]" : about_person.person_dob
+      return about_person.person_dob if about_person.present? && about_person.person_dob
+      "[CHILD'S DATE OF BIRTH]"
     end
 
     def c_dob_through_participant
@@ -677,30 +678,6 @@ module NcsNavigator::Core::Mustache
       end
 
       result
-    end
-
-    #Nataliya's comment - this method should be eliminated. date_of_last_pv_visit should be used
-    #The rest should be done with dependencies in the instruments, like in Birth
-    def choose_date_range_for_birth_instrument
-      if date_of_preg_visit_2
-        return "between #{date_of_preg_visit_2} and #{c_dob}"
-      elsif date_of_preg_visit_1
-        return "between #{date_of_preg_visit_1} and #{c_dob}"
-      else
-        return "before #{c_dob}"
-      end
-    end
-
-    #Nataliya's comment - this method should be eliminated. date_of_last_pv_visit should be used
-    #The rest should be done with dependencies in the instruments, like in Birth
-    def choose_date_range_for_birth_instrument_variation_1
-      if date_of_preg_visit_2
-        return "At this visit or at any time between #{date_of_preg_visit_2} and #{c_dob}"
-      elsif date_of_preg_visit_1
-        return "At this visit or at any time between #{date_of_preg_visit_1} and #{c_dob}"
-      else
-        return "At any time in your pregnancy"
-      end
     end
 
     def himself_herself

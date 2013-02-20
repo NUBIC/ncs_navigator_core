@@ -31,9 +31,9 @@ describe OperationalDataExtractor::ParticipantVerification do
       response_set, instrument = prepare_instrument(@person, @child_participant, survey)
 
       take_survey(survey, response_set) do |a|
-        a.str "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_PREFIX}.C_FNAME", 'Baby'
-        a.str "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_PREFIX}.C_LNAME", 'James'
-        a.date "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_PREFIX}.CHILD_DOB", '01/01/2013'
+        a.str "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_CHILD_PREFIX}.C_FNAME", 'Baby'
+        a.str "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_CHILD_PREFIX}.C_LNAME", 'James'
+        a.date "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_CHILD_PREFIX}.CHILD_DOB", '01/01/2013'
       end
 
       response_set.responses.reload
@@ -65,8 +65,8 @@ describe OperationalDataExtractor::ParticipantVerification do
       response_set, instrument = prepare_instrument(@person, @child_participant, survey)
 
       take_survey(survey, response_set) do |a|
-        a.str "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_PREFIX}.C_FNAME", 'Baby'
-        a.str "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_PREFIX}.C_LNAME", 'James'
+        a.str "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_CHILD_PREFIX}.C_FNAME", 'Baby'
+        a.str "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_CHILD_PREFIX}.C_LNAME", 'James'
         a.str "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_PREFIX}.C_ADDRESS_1", '123 Easy St.'
         a.str "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_PREFIX}.C_ADDRESS_2", ''
         a.str "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_PREFIX}.C_CITY", 'Chicago'
@@ -94,8 +94,8 @@ describe OperationalDataExtractor::ParticipantVerification do
       response_set, instrument = prepare_instrument(@person, @child_participant, survey)
 
       take_survey(survey, response_set) do |a|
-        a.str "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_PREFIX}.C_FNAME", 'Baby'
-        a.str "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_PREFIX}.C_LNAME", 'James'
+        a.str "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_CHILD_PREFIX}.C_FNAME", 'Baby'
+        a.str "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_CHILD_PREFIX}.C_LNAME", 'James'
         a.str "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_PREFIX}.S_ADDRESS_1", '444 Easy St.'
         a.str "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_PREFIX}.S_ADDRESS_2", 'Apt 2D'
         a.str "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_PREFIX}.S_CITY", 'Chicago'
@@ -124,8 +124,8 @@ describe OperationalDataExtractor::ParticipantVerification do
       response_set, instrument = prepare_instrument(@person, @child_participant, survey)
 
       take_survey(survey, response_set) do |a|
-        a.str "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_PREFIX}.C_FNAME", 'Baby'
-        a.str "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_PREFIX}.C_LNAME", 'James'
+        a.str "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_CHILD_PREFIX}.C_FNAME", 'Baby'
+        a.str "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_CHILD_PREFIX}.C_LNAME", 'James'
         a.str "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_PREFIX}.PA_PHONE", '312-555-1212'
       end
 
@@ -143,8 +143,8 @@ describe OperationalDataExtractor::ParticipantVerification do
       response_set, instrument = prepare_instrument(@person, @child_participant, survey)
 
       take_survey(survey, response_set) do |a|
-        a.str "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_PREFIX}.C_FNAME", 'Baby'
-        a.str "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_PREFIX}.C_LNAME", 'James'
+        a.str "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_CHILD_PREFIX}.C_FNAME", 'Baby'
+        a.str "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_CHILD_PREFIX}.C_LNAME", 'James'
         a.str "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_PREFIX}.SA_PHONE", '312-555-4444'
       end
 
