@@ -5,13 +5,13 @@
     %dt
       Telephone
       = link_to 'Add', new_person_telephone_path(@person), :class => "add_link icon_link"
-    - (cme = sort_contact_mode_entries(@person.telephones)).each_with_index do |type,i|
+    - (cme = group_and_sort_contact_mode_entries(@person.telephones)).each_with_index do |type,i|
       .contact_info
         %dd
           #address_title
             = type[1].first.phone_type
         - type[1].each_with_index do |t,ii| 
-          %dd{:class => (ii==0?nil:"extended_contacts")}
+          %dd{:class => (ii==0?nil:"toggle_contacts")}
             = t.phone_rank
             = link_to blank_safe(phone_number_formatter(t.phone_nbr)), edit_person_telephone_path(@person, t)
       - if i!=cme.size-1
@@ -23,13 +23,13 @@
     %dt
       Email
       = link_to 'Add', new_person_email_path(@person), :class => "add_link icon_link"
-    - (cme = sort_contact_mode_entries(@person.emails)).each_with_index do |type,i|
+    - (cme = group_and_sort_contact_mode_entries(@person.emails)).each_with_index do |type,i|
       .contact_info
         %dd
           #address_title
             = type[1].first.email_type
         - type[1].each_with_index do |e,ii| 
-          %dd{:class => (ii==0?nil:"extended_contacts")}
+          %dd{:class => (ii==0?nil:"toggle_contacts")}
             = e.email_rank
             = link_to blank_safe(e.email), edit_person_email_path(@person, e)
       - if i!=cme.size-1
@@ -41,13 +41,13 @@
     %dt
       Address
       = link_to 'Add', new_address_path(:person_id => @person.id), :class => "add_link icon_link"    
-    - (cme = sort_contact_mode_entries(@person.addresses)).each_with_index do |type,i|
+    - (cme = group_and_sort_contact_mode_entries(@person.addresses)).each_with_index do |type,i|
       .contact_info
         %dd
           #address_title
             = type[1].first.address_type
         - type[1].each_with_index do |a,ii| 
-          %dd{:class => (ii==0?nil:"extended_contacts")}
+          %dd{:class => (ii==0?nil:"toggle_contacts")}
             = render :partial => '/people/address', :locals => { :a => a }
       - if i!=cme.size-1
         %br

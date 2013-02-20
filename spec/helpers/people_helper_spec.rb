@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 describe PeopleHelper do
-  context "filtering addresses based on uniqueness and rank" do
+  context "grouping addresses by type and sorting by rank" do
     before do
       @person = Factory(:person)
 
@@ -73,17 +73,17 @@ describe PeopleHelper do
     end
         
 
-    describe "#sort_contact_mode_entries" do 
+    describe "#group_and_sort_contact_mode_entries" do 
       it "returns an empty set if contact entries is nil" do
-        helper.sort_contact_mode_entries(nil).should == {}
+        helper.group_and_sort_contact_mode_entries(nil).should == {}
       end
       
       it "returns an empty set if contact entries is a set of nils" do
-        helper.sort_contact_mode_entries([nil, nil, nil]).should == {}
+        helper.group_and_sort_contact_mode_entries([nil, nil, nil]).should == {}
       end
 
-      it "sorts address types and ranks correcty" do                
-        helper.sort_contact_mode_entries(@addresses).should == 
+      it "groups and sorts address types and ranks according to the order defined in the PeopleHelper module" do                
+        helper.group_and_sort_contact_mode_entries(@addresses).should == 
           {1=>[@address_a,@duplicate_1_address_a,
                @duplicate_2_address_a,@secondary_home_type_address],
           2=>[@address_b,@duplicate_1_address_b,
@@ -97,7 +97,7 @@ describe PeopleHelper do
 
   end
 
-  context "filtering email addresses based on uniqueness and rank" do
+  context "grouping emails by type and sorting by rank" do
 
     before do
       @person = Factory(:person)
@@ -151,8 +151,8 @@ describe PeopleHelper do
 
     end
 
-    it "sorts email types and ranks correcty" do                
-        helper.sort_contact_mode_entries(@email_addresses).should == 
+    it "groups and sorts email types and ranks according to the order defined in the PeopleHelper module" do                
+        helper.group_and_sort_contact_mode_entries(@email_addresses).should == 
           {1=>[@email_address_a,@email_duplicate_1_address_a,
                @email_duplicate_2_address_a,@secondary_personal_type_email_address],
           2=>[@email_address_b,@email_duplicate_1_address_b,
@@ -161,7 +161,7 @@ describe PeopleHelper do
      
   end
 
-  context "filtering phone numbers based on uniqueness and rank" do
+  context "grouping phone numbers by type and sorting by rank" do
 
     before do
       @person = Factory(:person)
@@ -214,8 +214,8 @@ describe PeopleHelper do
                   @secondary_work_phone]
     end
 
-    it "sorts email types and ranks correcty" do                
-        helper.sort_contact_mode_entries(@phones).should == 
+    it "groups and sorts phone types and ranks according to the order defined in the PeopleHelper module" do                
+        helper.group_and_sort_contact_mode_entries(@phones).should == 
           {1=>[@phone_a,@phone_duplicate_1_a,
                @phone_duplicate_2_a,@secondary_home_phone,@secondary_work_phone],
           2=>[@phone_b,
