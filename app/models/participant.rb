@@ -706,15 +706,25 @@ class Participant < ActiveRecord::Base
       consent_type = low_intensity? ? ParticipantConsent.low_intensity_consent_type_code : ParticipantConsent.general_consent_type_code
     end
     consents = consents_for_type(consent_type)
-    consents.select { |c| c.consent_given_code == 1 }.size > 0 && !withdrawn?
+    consents.select { |c| c.consent_given_code == 1 }.size > 0 && !withdrawn?(consent_type)
   end
 
+  ##
+  # Gets all ParticipantConsent records matching the given consent type
+  # ordered by consent date
+  # @param consent_type [NcsCode] The CONSENT_TYPE_CL* from the MDES Code List
+  # @return [Array<ParticipantConsent>]
   def consents_for_type(consent_type)
     participant_consents.where(
       "consent_type_code = ? OR consent_form_type_code = ?",
-        consent_type.local_code, consent_type.local_code).all
+        consent_type.local_code, consent_type.local_code).order("consent_date").all
   end
 
+  ##
+  # Gets the most recent ParticipantConsent record that matches
+  # the given consent type
+  # @param consent_type [NcsCode] The CONSENT_TYPE_CL* from the MDES Code List
+  # @return [ParticipantConsent]
   def consent_for_type(consent_type)
     current_consent = nil
     cs = consents_for_type(consent_type)
