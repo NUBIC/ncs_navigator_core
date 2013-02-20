@@ -4,6 +4,7 @@ module OperationalDataExtractor
   class ParticipantVerification < Base
 
     INTERVIEW_PREFIX = "PARTICIPANT_VERIF"
+    INTERVIEW_CHILD_PREFIX = "PARTICIPANT_VERIF_CHILD"
 
     # TODO: determine how to handle these operational data items
     #
@@ -37,9 +38,9 @@ module OperationalDataExtractor
     }
 
     CHILD_PERSON_MAP = {
-      "#{INTERVIEW_PREFIX}.C_FNAME"         => "first_name",
-      "#{INTERVIEW_PREFIX}.C_LNAME"         => "last_name",
-      "#{INTERVIEW_PREFIX}.CHILD_DOB"       => "person_dob",
+      "#{INTERVIEW_CHILD_PREFIX}.C_FNAME"         => "first_name",
+      "#{INTERVIEW_CHILD_PREFIX}.C_LNAME"         => "last_name",
+      "#{INTERVIEW_CHILD_PREFIX}.CHILD_DOB"       => "person_dob",
     }
 
     CHILD_ADDRESS_MAP = {
