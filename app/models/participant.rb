@@ -62,7 +62,7 @@ class Participant < ActiveRecord::Base
   has_many :participant_person_links, :order => 'participant_person_links.created_at'
   has_many :people, :through => :participant_person_links
   has_many :participant_staff_relationships
-  has_many :participant_consents
+  has_many :participant_consents, :order => "consent_date DESC"
   has_many :participant_consent_samples
   has_many :events
   has_many :response_sets, :inverse_of => :participant
