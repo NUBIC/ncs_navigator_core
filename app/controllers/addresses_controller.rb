@@ -71,8 +71,12 @@ class AddressesController < ApplicationController
 
     respond_to do |format|
       if @address.update_attributes(params[:address])
+        path = edit_address_path(@address)
+        if @address.person
+          path = @address.person.participant? ? participant_path(@address.person.participant) : person_path(@address.person)
+        end
         flash[:notice] = 'Address was successfully updated.'
-        format.html { redirect_to(edit_address_path(@address)) }
+        format.html { redirect_to(path) }
         format.json  { render :json => @address }
       else
         format.html { render :action => "edit" }
