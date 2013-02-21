@@ -1960,6 +1960,155 @@ describe Participant do
     end
   end
 
+  describe '#set_state_for_event_type' do
+    describe 'for informed consent' do
+      let(:participant) { Factory(:participant) }
+
+      let(:event) {
+        Factory(:event, :event_type_code => 10, :event_start_date => Date.new(2010, 4, 1), :participant => participant)
+      }
+
+      let(:out_of_event_date) { event.event_start_date - 7 }
+      let(:in_event_date) { event.event_start_date + 7 }
+
+      let(:consent_type) { -4 }
+      let(:consent_form_type) { -4 }
+      let(:consent_date) { in_event_date }
+
+      let(:a_consent) {
+        Factory(:participant_consent, :participant => participant,
+          :consent_given_code => 1, :consent_type_code => consent_type, :consent_form_type_code => consent_form_type,
+          :consent_date => consent_date)
+      }
+
+      before do
+        participant.participant_consents = [a_consent]
+      end
+
+      shared_context 'set_state_for_event_type leaving hi' do
+        it 'leaves the participant on hi' do
+          participant.set_state_for_event_type(event)
+          participant.should be_high_intensity
+        end
+      end
+
+      shared_context 'set_state_for_event_type leaving lo' do
+        it 'leaves the participant on lo' do
+          participant.set_state_for_event_type(event)
+          participant.should_not be_high_intensity
+        end
+      end
+
+      shared_context 'set_state_for_event_type converting hi' do
+        it 'converts the participant to hi' do
+          participant.set_state_for_event_type(event)
+          participant.should be_high_intensity
+        end
+      end
+
+      describe 'when the participant is on hi' do
+        before do
+          participant.high_intensity = true
+        end
+
+        describe 'and the event has no consents' do
+          let(:consent_date) { out_of_event_date }
+
+          include_context 'set_state_for_event_type leaving hi'
+        end
+
+        describe 'and the event has an old lo consent (7)' do
+          let(:consent_type) { 7 }
+
+          include_examples 'set_state_for_event_type leaving hi'
+        end
+
+        describe 'and the event has a new lo consent (7)' do
+          let(:consent_form_type) { 7 }
+
+          include_context 'set_state_for_event_type leaving hi'
+        end
+
+        describe 'and the event has an old hi consent (1)' do
+          let(:consent_type) { 1 }
+
+          include_context 'set_state_for_event_type leaving hi'
+        end
+
+        [1, 2, 6].each do |form_type|
+          describe "and the event has a new hi consent (#{form_type})" do
+            let(:consent_form_type) { form_type }
+
+            include_context 'set_state_for_event_type leaving hi'
+          end
+        end
+      end
+
+      describe 'when the participant is in lo' do
+        before do
+          participant.high_intensity = false
+        end
+
+        describe 'and the event has no consents' do
+          let(:consent_date) { out_of_event_date }
+
+          include_context 'set_state_for_event_type leaving lo'
+        end
+
+        describe 'and the event has an old lo consent (7)' do
+          let(:consent_type) { 7 }
+
+          include_context 'set_state_for_event_type leaving lo'
+        end
+
+        describe 'and the event has a new lo consent (7)' do
+          let(:consent_form_type) { 7 }
+
+          include_context 'set_state_for_event_type leaving lo'
+        end
+
+        describe 'and the event has an old hi consent (1)' do
+          let(:consent_type) { 1 }
+
+          include_context 'set_state_for_event_type converting hi'
+        end
+
+        [1, 2, 6].each do |form_type|
+          describe "and the event has a new hi consent (#{form_type})" do
+            let(:consent_form_type) { form_type }
+
+            include_context 'set_state_for_event_type converting hi'
+          end
+        end
+
+        describe 'when the event has both a hi and a lo consent' do
+          let(:another_consent) {
+            Factory(:participant_consent, :participant => participant,
+              :consent_given_code => 1, :consent_type_code => 1, :consent_form_type_code => -7,
+              :consent_date => in_event_date)
+          }
+
+          let(:consent_type) { 7 }
+
+          before do
+            participant.participant_consents << another_consent
+          end
+
+          include_context 'set_state_for_event_type converting hi'
+        end
+
+        describe 'when consent is not given' do
+          before do
+            a_consent.consent_form_type_code = 1
+            a_consent.consent_given_code = 2
+          end
+
+          include_context 'set_state_for_event_type leaving lo'
+        end
+      end
+    end
+  end
+
   context "hospital (Birth Cohort) participant completing screener" do
 
     describe "#update_state_after_survey" do
