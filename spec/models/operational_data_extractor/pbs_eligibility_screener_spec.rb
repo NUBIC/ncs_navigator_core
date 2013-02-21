@@ -28,15 +28,15 @@ describe OperationalDataExtractor::PbsEligibilityScreener do
       response_set, instrument = prepare_instrument(@person, @participant, @survey)
       response_set.save!
 
-      take_survey(@survey, response_set) do |a|
-        a.str "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.R_FNAME", 'Jo'
-        a.str "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.R_MNAME", 'Anna'
-        a.str "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.R_LNAME", 'Stafford'
-        a.date "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.PERSON_DOB", '01/01/1981'
-        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.AGE_RANGE_PBS", age_range
-        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ETHNIC_ORIGIN", ethnic_group
-        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.PERSON_LANG_NEW", language
-        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.AGE_ELIG", age_eligible
+      take_survey(@survey, response_set) do |r|
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.R_FNAME", 'Jo'
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.R_MNAME", 'Anna'
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.R_LNAME", 'Stafford'
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.PERSON_DOB", '01/01/1981'
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.AGE_RANGE_PBS", age_range
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ETHNIC_ORIGIN", ethnic_group
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.PERSON_LANG_NEW", language
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.AGE_ELIG", age_eligible
       end
 
       response_set.responses.reload
@@ -65,15 +65,15 @@ describe OperationalDataExtractor::PbsEligibilityScreener do
       response_set, instrument = prepare_instrument(@person, @participant, @survey)
       response_set.save!
 
-      take_survey(@survey, response_set) do |a|
+      take_survey(@survey, response_set) do |r|
         a.refused "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.R_FNAME"
         a.refused "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.R_MNAME"
         a.refused "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.R_LNAME"
         a.dont_know "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.PERSON_DOB"
-        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.AGE_RANGE_PBS", age_range_refused
-        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ETHNIC_ORIGIN", ethnic_group_refused
-        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.PERSON_LANG_NEW", language
-        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.AGE_ELIG", age_eligible
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.AGE_RANGE_PBS", age_range_refused
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ETHNIC_ORIGIN", ethnic_group_refused
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.PERSON_LANG_NEW", language
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.AGE_ELIG", age_eligible
       end
 
       response_set.responses.reload
@@ -104,14 +104,14 @@ describe OperationalDataExtractor::PbsEligibilityScreener do
       response_set, instrument = prepare_instrument(person, participant, survey)
       response_set.save!
 
-      take_survey(survey, response_set) do |a|
-        a.str "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ADDRESS_1", '123 Easy St.'
-        a.str "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ADDRESS_2", ''
-        a.str "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.UNIT", ''
-        a.str "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.CITY", 'Chicago'
-        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.STATE", state
-        a.str "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ZIP", '65432'
-        a.str "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ZIP4", '1234'
+      take_survey(survey, response_set) do |r|
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ADDRESS_1", '123 Easy St.'
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ADDRESS_2", ''
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.UNIT", ''
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.CITY", 'Chicago'
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.STATE", state
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ZIP", '65432'
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ZIP4", '1234'
       end
 
       response_set.responses.reload
@@ -135,14 +135,14 @@ describe OperationalDataExtractor::PbsEligibilityScreener do
       response_set, instrument = prepare_instrument(person, participant, survey)
       response_set.save!
 
-      take_survey(survey, response_set) do |a|
-        a.str "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ADDRESS_1", '123 Easy St.'
-        a.refused "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ADDRESS_2"
-        a.dont_know "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.UNIT"
-        a.str "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.CITY", 'Chicago'
-        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.STATE", state
-        a.refused "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ZIP"
-        a.dont_know "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ZIP4"
+      take_survey(survey, response_set) do |r|
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ADDRESS_1", '123 Easy St.'
+        r.refused "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ADDRESS_2"
+        r.dont_know "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.UNIT"
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.CITY", 'Chicago'
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.STATE", state
+        r.refused "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ZIP"
+        r.dont_know "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ZIP4"
       end
 
       response_set.responses.reload
@@ -166,12 +166,12 @@ describe OperationalDataExtractor::PbsEligibilityScreener do
       response_set, instrument = prepare_instrument(person, participant, survey)
       response_set.save!
 
-      take_survey(survey, response_set) do |a|
-        a.str "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ADDRESS_1", '123 Easy St.'
+      take_survey(survey, response_set) do |r|
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ADDRESS_1", '123 Easy St.'
         a.refused "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ADDRESS_2"
-        a.str "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.UNIT", "123456789987654321"
-        a.str "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.CITY", 'Chicago'
-        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.STATE", state
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.UNIT", "123456789987654321"
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.CITY", 'Chicago'
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.STATE", state
         a.refused "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ZIP"
         a.dont_know "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ZIP4"
       end
@@ -208,13 +208,13 @@ describe OperationalDataExtractor::PbsEligibilityScreener do
       response_set, instrument = prepare_instrument(@person, @participant, @survey)
       response_set.save!
 
-      take_survey(@survey, response_set) do |a|
-        a.str "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.R_PHONE_1", '3125551234'
-        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.R_PHONE_TYPE1", home
-        a.str "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.R_PHONE_TYPE1_OTH", ''
-        a.str "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.R_PHONE_2", '3125554321'
-        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.R_PHONE_TYPE2", cell
-        a.str "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.R_PHONE_TYPE2_OTH", ''
+      take_survey(@survey, response_set) do |r|
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.R_PHONE_1", '3125551234'
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.R_PHONE_TYPE1", home
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.R_PHONE_TYPE1_OTH", ''
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.R_PHONE_2", '3125554321'
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.R_PHONE_TYPE2", cell
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.R_PHONE_TYPE2_OTH", ''
       end
 
       response_set.responses.reload
@@ -244,8 +244,8 @@ describe OperationalDataExtractor::PbsEligibilityScreener do
     response_set, instrument = prepare_instrument(person, participant, survey)
     response_set.save!
 
-    take_survey(survey, response_set) do |a|
-      a.str "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.R_EMAIL", 'email@dev.null'
+    take_survey(survey, response_set) do |r|
+      r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.R_EMAIL", 'email@dev.null'
     end
 
     response_set.responses.reload
@@ -274,8 +274,8 @@ describe OperationalDataExtractor::PbsEligibilityScreener do
     response_set, instrument = prepare_instrument(person, participant, survey)
     response_set.save!
 
-    take_survey(survey, response_set) do |a|
-      a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.PREGNANT", ppg1
+    take_survey(survey, response_set) do |r|
+      r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.PREGNANT", ppg1
     end
 
     response_set.responses.reload
@@ -306,8 +306,8 @@ describe OperationalDataExtractor::PbsEligibilityScreener do
     response_set, instrument = prepare_instrument(person, participant, survey)
     response_set.save!
 
-    take_survey(survey, response_set) do |a|
-      a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.PREGNANT", ppg2
+    take_survey(survey, response_set) do |r|
+      r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.PREGNANT", ppg2
     end
 
     response_set.responses.reload
@@ -337,8 +337,8 @@ describe OperationalDataExtractor::PbsEligibilityScreener do
     response_set, instrument = prepare_instrument(person, participant, survey)
     response_set.save!
 
-    take_survey(survey, response_set) do |a|
-      a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.PREGNANT", ppg5
+    take_survey(survey, response_set) do |r|
+      r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.PREGNANT", ppg5
     end
 
     response_set.responses.reload
@@ -353,7 +353,6 @@ describe OperationalDataExtractor::PbsEligibilityScreener do
     participant.ppg_status.local_code.should == 5
     participant.due_date.should be_nil
   end
-
 
   context "determining the due date of a pregnant woman" do
 
@@ -378,11 +377,11 @@ describe OperationalDataExtractor::PbsEligibilityScreener do
 
     it "sets the due date to the date provided by the participant" do
       due_date = Date.parse("2012-02-29")
-      take_survey(@survey, @response_set) do |a|
-        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.PREGNANT", ppg1
-        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE_MM", mock_model(NcsCode, :local_code => due_date.month)
-        a.str "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE_DD", due_date.day
-        a.str "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE_YY", due_date.year
+      take_survey(@survey, @response_set) do |r|
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.PREGNANT", ppg1
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE_MM", mock_model(NcsCode, :local_code => due_date.month)
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE_DD", due_date.day
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE_YY", due_date.year
       end
 
       @response_set.responses.reload
@@ -396,11 +395,11 @@ describe OperationalDataExtractor::PbsEligibilityScreener do
     end
 
     it "does not set the due date if the format of the day is not two digits" do
-      take_survey(@survey, @response_set) do |a|
-        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.PREGNANT", ppg1
-        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE_MM", mock_model(NcsCode, :local_code => 2)
-        a.str "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE_DD", "First"
-        a.str "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE_YY", "2525"
+      take_survey(@survey, @response_set) do |r|
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.PREGNANT", ppg1
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE_MM", mock_model(NcsCode, :local_code => 2)
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE_DD", "First"
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE_YY", "2525"
       end
 
       @response_set.responses.reload
@@ -414,11 +413,11 @@ describe OperationalDataExtractor::PbsEligibilityScreener do
     end
 
     it "does not set the due date if the format of the year is not four digits" do
-      take_survey(@survey, @response_set) do |a|
-        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.PREGNANT", ppg1
-        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE_MM", mock_model(NcsCode, :local_code => 2)
-        a.str "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE_DD", "02"
-        a.str "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE_YY", "2525 CE"
+      take_survey(@survey, @response_set) do |r|
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.PREGNANT", ppg1
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE_MM", mock_model(NcsCode, :local_code => 2)
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE_DD", "02"
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE_YY", "2525 CE"
       end
 
       @response_set.responses.reload
@@ -436,15 +435,15 @@ describe OperationalDataExtractor::PbsEligibilityScreener do
 
       last_period = 20.weeks.ago
 
-      take_survey(@survey, @response_set) do |a|
-        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.PREGNANT", ppg1
-        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE_MM", neg_2
-        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE_DD", neg_2
-        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE_YY", neg_2
+      take_survey(@survey, @response_set) do |r|
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.PREGNANT", ppg1
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE_MM", neg_2
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE_DD", neg_2
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE_YY", neg_2
 
-        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.DATE_PERIOD_MM", mock(NcsCode, :local_code => last_period.month)
-        a.str "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.DATE_PERIOD_DD", last_period.day
-        a.str "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.DATE_PERIOD_YY", last_period.year
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.DATE_PERIOD_MM", mock(NcsCode, :local_code => last_period.month)
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.DATE_PERIOD_DD", last_period.day
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.DATE_PERIOD_YY", last_period.year
       end
 
       @response_set.responses.reload
@@ -463,14 +462,14 @@ describe OperationalDataExtractor::PbsEligibilityScreener do
 
       weeks_pregnant = 8
 
-      take_survey(@survey, @response_set) do |a|
-        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.PREGNANT", ppg1
-        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE_MM", neg_2
-        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE_DD", neg_2
-        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE_YY", neg_2
-        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.DATE_PERIOD_MM", neg_1
-        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.DATE_PERIOD_DD", neg_1
-        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.DATE_PERIOD_YY", neg_1
+      take_survey(@survey, @response_set) do |r|
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.PREGNANT", ppg1
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE_MM", neg_2
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE_DD", neg_2
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE_YY", neg_2
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.DATE_PERIOD_MM", neg_1
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.DATE_PERIOD_DD", neg_1
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.DATE_PERIOD_YY", neg_1
 
         a.int "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.WEEKS_PREG", weeks_pregnant
       end
@@ -490,15 +489,15 @@ describe OperationalDataExtractor::PbsEligibilityScreener do
     it "calculates the due date based on the number of months pregnant" do
       months_pregnant = 4
 
-      take_survey(@survey, @response_set) do |a|
-        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.PREGNANT", ppg1
-        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE_MM", neg_2
-        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE_DD", neg_2
-        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE_YY", neg_2
-        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.DATE_PERIOD_MM", neg_1
-        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.DATE_PERIOD_DD", neg_1
-        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.DATE_PERIOD_YY", neg_1
-        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.WEEKS_PREG", neg_2
+      take_survey(@survey, @response_set) do |r|
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.PREGNANT", ppg1
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE_MM", neg_2
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE_DD", neg_2
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE_YY", neg_2
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.DATE_PERIOD_MM", neg_1
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.DATE_PERIOD_DD", neg_1
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.DATE_PERIOD_YY", neg_1
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.WEEKS_PREG", neg_2
         a.int "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.MONTH_PREG", months_pregnant
       end
 
@@ -518,17 +517,17 @@ describe OperationalDataExtractor::PbsEligibilityScreener do
     # 3RD TRIMESTER:      ORIG_DUE_DATE = TODAY’S DATE + (280 DAYS – 235 DAYS).
     # DON’T KNOW/REFUSED: ORIG_DUE_DATE = TODAY’S DATE + (280 DAYS – 140 DAYS)
     it "calculates the due date based on the 1st trimester" do
-      take_survey(@survey, @response_set) do |a|
-        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.PREGNANT", ppg1
-        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE_MM", neg_2
-        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE_DD", neg_2
-        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE_YY", neg_2
-        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.DATE_PERIOD_MM", neg_1
-        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.DATE_PERIOD_DD", neg_1
-        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.DATE_PERIOD_YY", neg_1
-        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.WEEKS_PREG", neg_2
-        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.MONTH_PREG", neg_2
-        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.TRIMESTER", tri1
+      take_survey(@survey, @response_set) do |r|
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.PREGNANT", ppg1
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE_MM", neg_2
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE_DD", neg_2
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE_YY", neg_2
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.DATE_PERIOD_MM", neg_1
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.DATE_PERIOD_DD", neg_1
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.DATE_PERIOD_YY", neg_1
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.WEEKS_PREG", neg_2
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.MONTH_PREG", neg_2
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.TRIMESTER", tri1
       end
 
       @response_set.responses.reload
@@ -543,17 +542,17 @@ describe OperationalDataExtractor::PbsEligibilityScreener do
     end
 
     it "calculates the due date based on the 2nd trimester" do
-      take_survey(@survey, @response_set) do |a|
-        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.PREGNANT", ppg1
-        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE_MM", neg_2
-        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE_DD", neg_2
-        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE_YY", neg_2
-        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.DATE_PERIOD_MM", neg_1
-        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.DATE_PERIOD_DD", neg_1
-        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.DATE_PERIOD_YY", neg_1
-        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.WEEKS_PREG", neg_2
-        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.MONTH_PREG", neg_2
-        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.TRIMESTER", tri2
+      take_survey(@survey, @response_set) do |r|
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.PREGNANT", ppg1
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE_MM", neg_2
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE_DD", neg_2
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE_YY", neg_2
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.DATE_PERIOD_MM", neg_1
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.DATE_PERIOD_DD", neg_1
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.DATE_PERIOD_YY", neg_1
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.WEEKS_PREG", neg_2
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.MONTH_PREG", neg_2
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.TRIMESTER", tri2
       end
 
       @response_set.responses.reload
@@ -567,17 +566,17 @@ describe OperationalDataExtractor::PbsEligibilityScreener do
     end
 
     it "calculates the due date based on the 3rd trimester" do
-      take_survey(@survey, @response_set) do |a|
-        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.PREGNANT", ppg1
-        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE_MM", neg_2
-        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE_DD", neg_2
-        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE_YY", neg_2
-        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.DATE_PERIOD_MM", neg_1
-        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.DATE_PERIOD_DD", neg_1
-        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.DATE_PERIOD_YY", neg_1
-        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.WEEKS_PREG", neg_2
-        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.MONTH_PREG", neg_2
-        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.TRIMESTER", tri3
+      take_survey(@survey, @response_set) do |r|
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.PREGNANT", ppg1
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE_MM", neg_2
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE_DD", neg_2
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE_YY", neg_2
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.DATE_PERIOD_MM", neg_1
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.DATE_PERIOD_DD", neg_1
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.DATE_PERIOD_YY", neg_1
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.WEEKS_PREG", neg_2
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.MONTH_PREG", neg_2
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.TRIMESTER", tri3
       end
 
       @response_set.responses.reload
@@ -591,17 +590,17 @@ describe OperationalDataExtractor::PbsEligibilityScreener do
     end
 
     it "calculates the due date when refused" do
-      take_survey(@survey, @response_set) do |a|
-        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.PREGNANT", ppg1
-        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE_MM", neg_2
-        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE_DD", neg_2
-        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE_YY", neg_2
-        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.DATE_PERIOD_MM", neg_1
-        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.DATE_PERIOD_DD", neg_1
-        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.DATE_PERIOD_YY", neg_1
-        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.WEEKS_PREG", neg_2
-        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.MONTH_PREG", neg_2
-        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.TRIMESTER", neg_2
+      take_survey(@survey, @response_set) do |r|
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.PREGNANT", ppg1
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE_MM", neg_2
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE_DD", neg_2
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE_YY", neg_2
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.DATE_PERIOD_MM", neg_1
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.DATE_PERIOD_DD", neg_1
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.DATE_PERIOD_YY", neg_1
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.WEEKS_PREG", neg_2
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.MONTH_PREG", neg_2
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.TRIMESTER", neg_2
       end
 
       @response_set.responses.reload
@@ -615,17 +614,17 @@ describe OperationalDataExtractor::PbsEligibilityScreener do
     end
 
     it "calculates the due date when don't know" do
-      take_survey(@survey, @response_set) do |a|
-        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.PREGNANT", ppg1
-        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE_MM", neg_2
-        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE_DD", neg_2
-        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE_YY", neg_2
-        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.DATE_PERIOD_MM", neg_1
-        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.DATE_PERIOD_DD", neg_1
-        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.DATE_PERIOD_YY", neg_1
-        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.WEEKS_PREG", neg_2
-        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.MONTH_PREG", neg_2
-        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.TRIMESTER", neg_1
+      take_survey(@survey, @response_set) do |r|
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.PREGNANT", ppg1
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE_MM", neg_2
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE_DD", neg_2
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE_YY", neg_2
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.DATE_PERIOD_MM", neg_1
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.DATE_PERIOD_DD", neg_1
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.DATE_PERIOD_YY", neg_1
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.WEEKS_PREG", neg_2
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.MONTH_PREG", neg_2
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.TRIMESTER", neg_1
       end
 
       @response_set.responses.reload
@@ -672,19 +671,17 @@ describe OperationalDataExtractor::PbsEligibilityScreener do
       it "collects all the responses and maps them to their associated data_export_identifier" do
         last_period = 2.weeks.ago
 
-        take_survey(@survey, @response_set) do |a|
-          a.str "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.DATE_PERIOD_YY", last_period.year
-          a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.DATE_PERIOD_MM", mock(NcsCode, :local_code => last_period.month)
-          a.str "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.DATE_PERIOD_DD", last_period.day
+        take_survey(@survey, @response_set) do |r|
+          r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.DATE_PERIOD_YY", last_period.year
+          r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.DATE_PERIOD_MM", mock(NcsCode, :local_code => last_period.month)
+          r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.DATE_PERIOD_DD", last_period.day
 
-          a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.PREGNANT", ppg1
+          r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.PREGNANT", ppg1
 
-          a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE_DD", neg_2
-          a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE_MM", neg_2
-          a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE_YY", neg_2
+          r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE_DD", neg_2
+          r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE_MM", neg_2
+          r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE_YY", neg_2
         end
-
-
 
         @response_set.responses.reload
 
@@ -701,16 +698,16 @@ describe OperationalDataExtractor::PbsEligibilityScreener do
 
       last_period = 20.weeks.ago
 
-      take_survey(@survey, @response_set) do |a|
-        a.str "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.DATE_PERIOD_YY", last_period.year
-        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.DATE_PERIOD_MM", mock(NcsCode, :local_code => last_period.month)
-        a.str "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.DATE_PERIOD_DD", last_period.day
+      take_survey(@survey, @response_set) do |r|
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.DATE_PERIOD_YY", last_period.year
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.DATE_PERIOD_MM", mock(NcsCode, :local_code => last_period.month)
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.DATE_PERIOD_DD", last_period.day
 
-        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.PREGNANT", ppg1
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.PREGNANT", ppg1
 
-        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE_DD", neg_2
-        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE_MM", neg_2
-        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE_YY", neg_2
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE_DD", neg_2
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE_MM", neg_2
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE_YY", neg_2
       end
 
       @response_set.responses.reload
@@ -740,24 +737,24 @@ describe OperationalDataExtractor::PbsEligibilityScreener do
     end
 
     it "sets the mode to CAPI" do
-      take_survey(survey, @response_set) do |a|
-        a.choice "prepopulated_mode_of_contact", mock(NcsCode, :local_code => "capi")
+      take_survey(survey, @response_set) do |r|
+        r.a "prepopulated_mode_of_contact", mock(NcsCode, :local_code => "capi")
       end
       OperationalDataExtractor::PbsEligibilityScreener.new(@response_set).extract_data
       Instrument.find(@instrument.id).instrument_mode_code.should == Instrument.capi
     end
 
     it "sets the mode to CATI" do
-      take_survey(survey, @response_set) do |a|
-        a.choice "prepopulated_mode_of_contact", mock(NcsCode, :local_code => "cati")
+      take_survey(survey, @response_set) do |r|
+        r.a "prepopulated_mode_of_contact", mock(NcsCode, :local_code => "cati")
       end
       OperationalDataExtractor::PbsEligibilityScreener.new(@response_set).extract_data
       Instrument.find(@instrument.id).instrument_mode_code.should == Instrument.cati
     end
 
     it "sets the mode to PAPI" do
-      take_survey(survey, @response_set) do |a|
-        a.choice "prepopulated_mode_of_contact", mock(NcsCode, :local_code => "papi")
+      take_survey(survey, @response_set) do |r|
+        r.a "prepopulated_mode_of_contact", mock(NcsCode, :local_code => "papi")
       end
       OperationalDataExtractor::PbsEligibilityScreener.new(@response_set).extract_data
       Instrument.find(@instrument.id).instrument_mode_code.should == Instrument.papi
@@ -782,10 +779,10 @@ describe OperationalDataExtractor::PbsEligibilityScreener do
 
     describe "processing standard racial data" do
       before do
-        take_survey(@survey, @response_set) do |a|
-          a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::PBS_ELIG_SCREENER_RACE_1_PREFIX}.RACE_1", black_race
-          a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::PBS_ELIG_SCREENER_RACE_1_PREFIX}.RACE_1", other_race
-          a.str "#{OperationalDataExtractor::PbsEligibilityScreener::PBS_ELIG_SCREENER_RACE_1_PREFIX}.RACE_1_OTH", "Aborigine"
+        take_survey(@survey, @response_set) do |r|
+          r.a "#{OperationalDataExtractor::PbsEligibilityScreener::PBS_ELIG_SCREENER_RACE_1_PREFIX}.RACE_1", black_race
+          r.a "#{OperationalDataExtractor::PbsEligibilityScreener::PBS_ELIG_SCREENER_RACE_1_PREFIX}.RACE_1", other_race
+          r.a "#{OperationalDataExtractor::PbsEligibilityScreener::PBS_ELIG_SCREENER_RACE_1_PREFIX}.RACE_1_OTH", "Aborigine"
         end
 
         OperationalDataExtractor::PbsEligibilityScreener.new(@response_set).extract_data
@@ -810,9 +807,9 @@ describe OperationalDataExtractor::PbsEligibilityScreener do
 
     describe "processing new type racial data" do
       before do
-        take_survey(@survey, @response_set) do |a|
-          a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::PBS_ELIG_SCREENER_RACE_NEW_PREFIX}.RACE_NEW", white_race
-          a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::PBS_ELIG_SCREENER_RACE_NEW_PREFIX}.RACE_NEW", vietnamese_race
+        take_survey(@survey, @response_set) do |r|
+          r.a "#{OperationalDataExtractor::PbsEligibilityScreener::PBS_ELIG_SCREENER_RACE_NEW_PREFIX}.RACE_NEW", white_race
+          r.a "#{OperationalDataExtractor::PbsEligibilityScreener::PBS_ELIG_SCREENER_RACE_NEW_PREFIX}.RACE_NEW", vietnamese_race
         end
 
         OperationalDataExtractor::PbsEligibilityScreener.new(@response_set).extract_data
@@ -822,7 +819,7 @@ describe OperationalDataExtractor::PbsEligibilityScreener do
         @person.races.should have(2).races
       end
 
-      it "the record with a choice that is on the standard race code list is represented as a simple code" do
+      it "the record with r.a that is on the standard race code list is represented as a simple code" do
         @person.races.map(&:race_code).should include(white_race.local_code)
       end
 

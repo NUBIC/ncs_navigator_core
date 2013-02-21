@@ -80,8 +80,7 @@ module PbsEligibilityScreener
 
     # Race One Other
     q = Factory(:question, :reference_identifier => "RACE_1_OTH", :data_export_identifier => "PBS_ELIG_SCREENER_RACE_1.RACE_1_OTH", :survey_section_id => survey_section.id)
-    a = Factory(:answer, :question_id => q.id, :text => "Korean", :response_class => "string")
-    a = Factory(:answer, :question_id => q.id, :text => "Aborigine", :response_class => "string")
+    a = Factory(:answer, :question_id => q.id, :response_class => 'string', :text => 'SPECIFY')
 
     survey
   end
@@ -215,7 +214,6 @@ module PbsEligibilityScreener
     a = Factory(:answer, :question_id => q.id, :text => "Due Date YY", :response_class => "string")
     a = Factory(:answer, :question_id => q.id, :text => "Refused", :response_class => "answer", :reference_identifier => "neg_1")
     a = Factory(:answer, :question_id => q.id, :text => "Don't know", :response_class => "answer", :reference_identifier => "neg_2")
-
 
     # Date Last Period
     q = Factory(:question, :reference_identifier => "DATE_PERIOD_MM", :data_export_identifier => "PBS_ELIG_SCREENER.DATE_PERIOD_MM", :survey_section_id => survey_section.id)

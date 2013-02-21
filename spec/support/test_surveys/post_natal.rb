@@ -32,8 +32,7 @@ module PostNatal
 
     # Race One Other
     q = Factory(:question, :reference_identifier => "RACE_OTH", :data_export_identifier => "THREE_MTH_MOTHER_RACE.RACE_OTH", :survey_section_id => survey_section.id)
-    a = Factory(:answer, :question_id => q.id, :text => "Korean", :response_class => "string")
-    a = Factory(:answer, :question_id => q.id, :text => "Aborigine", :response_class => "string")
+    a = Factory(:answer, :question_id => q.id, :response_class => 'string', :text => 'SPECIFY')
 
     survey
   end
@@ -444,7 +443,7 @@ module PostNatal
     pairs.each do |args|
       q = create_survey_section_question(*args)
       a = Factory(:answer, :question_id => q.id,
-                  :reference_identifier => "number",
+                  :reference_identifier => "work_name",
                   :text => "WORK NAME:", :response_class => "string")
       a = Factory(:answer, :question_id => q.id,
                   :reference_identifier => "neg_1",

@@ -183,8 +183,7 @@ module BirthVisit
 
     # Race One Other
     q = Factory(:question, :reference_identifier => "BABY_RACE_1_OTH", :data_export_identifier => "BIRTH_VISIT_BABY_RACE_1_3.BABY_RACE_1_OTH", :survey_section_id => survey_section.id)
-    a = Factory(:answer, :question_id => q.id, :text => "Korean", :response_class => "string")
-    a = Factory(:answer, :question_id => q.id, :text => "Aborigine", :response_class => "string")
+    a = Factory(:answer, :question_id => q.id, :response_class => 'string', :text => 'SPECIFY')
 
     survey
   end
@@ -202,17 +201,16 @@ module BirthVisit
 
     # RELEASE
     q = Factory(:question, :reference_identifier => "RELEASE", :data_export_identifier => "BIRTH_VISIT_3.RELEASE", :survey_section_id => survey_section.id)
-    a = Factory(:answer, :question_id => q.id, :text => "YES", :response_class => "answer", :reference_identifier => "yes")
-    a = Factory(:answer, :question_id => q.id, :text => "NO", :response_class => "answer", :reference_identifier => "no")
+    a = Factory(:answer, :question_id => q.id, :text => "YES", :response_class => "answer", :reference_identifier => "1")
+    a = Factory(:answer, :question_id => q.id, :text => "NO", :response_class => "answer", :reference_identifier => "2")
 
     # MULTIPLE
     q = Factory(:question, :reference_identifier => "MULTIPLE", :data_export_identifier => "BIRTH_VISIT_3.MULTIPLE", :survey_section_id => survey_section.id)
-    a = Factory(:answer, :question_id => q.id, :text => "YES", :response_class => "answer", :reference_identifier => "yes")
-    a = Factory(:answer, :question_id => q.id, :text => "NO", :response_class => "answer", :reference_identifier => "no")
+    a = Factory(:answer, :question_id => q.id, :text => "YES", :response_class => "answer", :reference_identifier => "1")
+    a = Factory(:answer, :question_id => q.id, :text => "NO", :response_class => "answer", :reference_identifier => "2")
 
     survey
   end
-
 
   def create_pv1_with_fields_for_birth_prepopulation
     survey = Factory(:survey, :title => "INS_QUE_PregVisit1_INT_EHPBHI_M3.0_V3.0", :access_code => "ins-que-pregvisit1-int-ehpbhi-m3-0-v3-0")
@@ -246,13 +244,13 @@ module BirthVisit
 
     # prepopulated_release_from_birth_visit_part_one
     q = Factory(:question, :reference_identifier => "prepopulated_release_from_birth_visit_part_one", :survey_section_id => survey_section.id)
-    a = Factory(:answer, :question_id => q.id, :text => "YES", :response_class => "answer", :reference_identifier => "yes")
-    a = Factory(:answer, :question_id => q.id, :text => "NO", :response_class => "answer", :reference_identifier => "no")
+    a = Factory(:answer, :question_id => q.id, :text => "YES", :response_class => "answer", :reference_identifier => "1")
+    a = Factory(:answer, :question_id => q.id, :text => "NO", :response_class => "answer", :reference_identifier => "2")
 
     # prepopulated_multiple_from_birth_visit_part_one
     q = Factory(:question, :reference_identifier => "prepopulated_multiple_from_birth_visit_part_one", :survey_section_id => survey_section.id)
-    a = Factory(:answer, :question_id => q.id, :text => "YES", :response_class => "answer", :reference_identifier => "yes")
-    a = Factory(:answer, :question_id => q.id, :text => "NO", :response_class => "answer", :reference_identifier => "no")
+    a = Factory(:answer, :question_id => q.id, :text => "YES", :response_class => "answer", :reference_identifier => "1")
+    a = Factory(:answer, :question_id => q.id, :text => "NO", :response_class => "answer", :reference_identifier => "2")
 
     # prepopulated_is_valid_work_name_provided
     q = Factory(:question, :reference_identifier => "prepopulated_is_valid_work_name_provided", :survey_section_id => survey_section.id)

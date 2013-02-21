@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-
 require 'spec_helper'
 
 describe OperationalDataExtractor::PrePregnancy do
@@ -23,11 +22,11 @@ describe OperationalDataExtractor::PrePregnancy do
     response_set.save!
     response_set.responses.size.should == 0
 
-    take_survey(survey, response_set) do |a|
-      a.str "#{OperationalDataExtractor::PrePregnancy::INTERVIEW_PREFIX}.R_FNAME", 'Jo'
-      a.str "#{OperationalDataExtractor::PrePregnancy::INTERVIEW_PREFIX}.R_LNAME", 'Stafford'
-      a.date "#{OperationalDataExtractor::PrePregnancy::INTERVIEW_PREFIX}.PERSON_DOB", '01/01/1981'
-      a.choice "#{OperationalDataExtractor::PrePregnancy::INTERVIEW_PREFIX}.MARISTAT", married
+    take_survey(survey, response_set) do |r|
+      r.a "#{OperationalDataExtractor::PrePregnancy::INTERVIEW_PREFIX}.R_FNAME", 'Jo'
+      r.a "#{OperationalDataExtractor::PrePregnancy::INTERVIEW_PREFIX}.R_LNAME", 'Stafford'
+      r.a "#{OperationalDataExtractor::PrePregnancy::INTERVIEW_PREFIX}.PERSON_DOB", '1981-01-01'
+      r.a "#{OperationalDataExtractor::PrePregnancy::INTERVIEW_PREFIX}.MARISTAT", married
     end
 
     response_set.responses.reload
@@ -59,10 +58,10 @@ describe OperationalDataExtractor::PrePregnancy do
     response_set.save!
     response_set.responses.size.should == 0
 
-    take_survey(survey, response_set) do |a|
-      a.yes "#{OperationalDataExtractor::PrePregnancy::INTERVIEW_PREFIX}.CELL_PHONE_2"
-      a.yes "#{OperationalDataExtractor::PrePregnancy::INTERVIEW_PREFIX}.CELL_PHONE_4"
-      a.str "#{OperationalDataExtractor::PrePregnancy::INTERVIEW_PREFIX}.CELL_PHONE", '3125557890'
+    take_survey(survey, response_set) do |r|
+      r.yes "#{OperationalDataExtractor::PrePregnancy::INTERVIEW_PREFIX}.CELL_PHONE_2"
+      r.yes "#{OperationalDataExtractor::PrePregnancy::INTERVIEW_PREFIX}.CELL_PHONE_4"
+      r.a "#{OperationalDataExtractor::PrePregnancy::INTERVIEW_PREFIX}.CELL_PHONE", '3125557890'
     end
 
     response_set.responses.reload
@@ -92,8 +91,8 @@ describe OperationalDataExtractor::PrePregnancy do
     response_set.save!
     response_set.responses.size.should == 0
 
-    take_survey(survey, response_set) do |a|
-      a.str "#{OperationalDataExtractor::PrePregnancy::INTERVIEW_PREFIX}.EMAIL", 'email@dev.null'
+    take_survey(survey, response_set) do |r|
+      r.a "#{OperationalDataExtractor::PrePregnancy::INTERVIEW_PREFIX}.EMAIL", 'email@dev.null'
     end
 
     response_set.responses.reload
@@ -154,18 +153,18 @@ describe OperationalDataExtractor::PrePregnancy do
     it "creates a new person record and associates it with the particpant" do
       state = NcsCode.for_list_name_and_local_code("STATE_CL1", 14)
 
-      take_survey(@survey, @response_set) do |a|
-        a.str "#{OperationalDataExtractor::PrePregnancy::INTERVIEW_PREFIX}.CONTACT_FNAME_1", 'Donna'
-        a.str "#{OperationalDataExtractor::PrePregnancy::INTERVIEW_PREFIX}.CONTACT_LNAME_1", 'Noble'
-        a.choice "#{OperationalDataExtractor::PrePregnancy::INTERVIEW_PREFIX}.CONTACT_RELATE_1", @contact_friend
-        a.str "#{OperationalDataExtractor::PrePregnancy::INTERVIEW_PREFIX}.C_ADDR_1_1", '123 Easy St.'
-        a.str "#{OperationalDataExtractor::PrePregnancy::INTERVIEW_PREFIX}.C_ADDR_2_1", ''
-        a.str "#{OperationalDataExtractor::PrePregnancy::INTERVIEW_PREFIX}.C_UNIT_1", ''
-        a.str "#{OperationalDataExtractor::PrePregnancy::INTERVIEW_PREFIX}.C_CITY_1", 'Chicago'
-        a.choice "#{OperationalDataExtractor::PrePregnancy::INTERVIEW_PREFIX}.C_STATE_1", state
-        a.str "#{OperationalDataExtractor::PrePregnancy::INTERVIEW_PREFIX}.C_ZIP_1", '65432'
-        a.str "#{OperationalDataExtractor::PrePregnancy::INTERVIEW_PREFIX}.C_ZIP4_1", '1234'
-        a.str "#{OperationalDataExtractor::PrePregnancy::INTERVIEW_PREFIX}.CONTACT_PHONE_1", '3125551212'
+      take_survey(@survey, @response_set) do |r|
+        r.a "#{OperationalDataExtractor::PrePregnancy::INTERVIEW_PREFIX}.CONTACT_FNAME_1", 'Donna'
+        r.a "#{OperationalDataExtractor::PrePregnancy::INTERVIEW_PREFIX}.CONTACT_LNAME_1", 'Noble'
+        r.a "#{OperationalDataExtractor::PrePregnancy::INTERVIEW_PREFIX}.CONTACT_RELATE_1", @contact_friend
+        r.a "#{OperationalDataExtractor::PrePregnancy::INTERVIEW_PREFIX}.C_ADDR_1_1", '123 Easy St.'
+        r.a "#{OperationalDataExtractor::PrePregnancy::INTERVIEW_PREFIX}.C_ADDR_2_1", ''
+        r.a "#{OperationalDataExtractor::PrePregnancy::INTERVIEW_PREFIX}.C_UNIT_1", ''
+        r.a "#{OperationalDataExtractor::PrePregnancy::INTERVIEW_PREFIX}.C_CITY_1", 'Chicago'
+        r.a "#{OperationalDataExtractor::PrePregnancy::INTERVIEW_PREFIX}.C_STATE_1", state
+        r.a "#{OperationalDataExtractor::PrePregnancy::INTERVIEW_PREFIX}.C_ZIP_1", '65432'
+        r.a "#{OperationalDataExtractor::PrePregnancy::INTERVIEW_PREFIX}.C_ZIP4_1", '1234'
+        r.a "#{OperationalDataExtractor::PrePregnancy::INTERVIEW_PREFIX}.CONTACT_PHONE_1", '3125551212'
       end
 
       @response_set.responses.reload
@@ -191,18 +190,18 @@ describe OperationalDataExtractor::PrePregnancy do
     it "creates another new person record and associates it with the particpant" do
       state = NcsCode.for_list_name_and_local_code("STATE_CL1", 14)
 
-      take_survey(@survey, @response_set) do |a|
-        a.str "#{OperationalDataExtractor::PrePregnancy::INTERVIEW_PREFIX}.CONTACT_FNAME_2", 'Carole'
-        a.str "#{OperationalDataExtractor::PrePregnancy::INTERVIEW_PREFIX}.CONTACT_LNAME_2", 'King'
-        a.choice "#{OperationalDataExtractor::PrePregnancy::INTERVIEW_PREFIX}.CONTACT_RELATE_2", @contact_neighbor
-        a.str "#{OperationalDataExtractor::PrePregnancy::INTERVIEW_PREFIX}.C_ADDR_1_2", '123 Tapestry St.'
-        a.str "#{OperationalDataExtractor::PrePregnancy::INTERVIEW_PREFIX}.C_ADDR_2_2", ''
-        a.str "#{OperationalDataExtractor::PrePregnancy::INTERVIEW_PREFIX}.C_UNIT_2", ''
-        a.str "#{OperationalDataExtractor::PrePregnancy::INTERVIEW_PREFIX}.C_CITY_2", 'Chicago'
-        a.choice "#{OperationalDataExtractor::PrePregnancy::INTERVIEW_PREFIX}.C_STATE_2", state
-        a.str "#{OperationalDataExtractor::PrePregnancy::INTERVIEW_PREFIX}.C_ZIP_2", '65432'
-        a.str "#{OperationalDataExtractor::PrePregnancy::INTERVIEW_PREFIX}.C_ZIP4_2", '1234'
-        a.str "#{OperationalDataExtractor::PrePregnancy::INTERVIEW_PREFIX}.CONTACT_PHONE_2", '3125551212'
+      take_survey(@survey, @response_set) do |r|
+        r.a "#{OperationalDataExtractor::PrePregnancy::INTERVIEW_PREFIX}.CONTACT_FNAME_2", 'Carole'
+        r.a "#{OperationalDataExtractor::PrePregnancy::INTERVIEW_PREFIX}.CONTACT_LNAME_2", 'King'
+        r.a "#{OperationalDataExtractor::PrePregnancy::INTERVIEW_PREFIX}.CONTACT_RELATE_2", @contact_neighbor
+        r.a "#{OperationalDataExtractor::PrePregnancy::INTERVIEW_PREFIX}.C_ADDR_1_2", '123 Tapestry St.'
+        r.a "#{OperationalDataExtractor::PrePregnancy::INTERVIEW_PREFIX}.C_ADDR_2_2", ''
+        r.a "#{OperationalDataExtractor::PrePregnancy::INTERVIEW_PREFIX}.C_UNIT_2", ''
+        r.a "#{OperationalDataExtractor::PrePregnancy::INTERVIEW_PREFIX}.C_CITY_2", 'Chicago'
+        r.a "#{OperationalDataExtractor::PrePregnancy::INTERVIEW_PREFIX}.C_STATE_2", state
+        r.a "#{OperationalDataExtractor::PrePregnancy::INTERVIEW_PREFIX}.C_ZIP_2", '65432'
+        r.a "#{OperationalDataExtractor::PrePregnancy::INTERVIEW_PREFIX}.C_ZIP4_2", '1234'
+        r.a "#{OperationalDataExtractor::PrePregnancy::INTERVIEW_PREFIX}.CONTACT_PHONE_2", '3125551212'
       end
 
       @response_set.responses.reload
@@ -227,10 +226,10 @@ describe OperationalDataExtractor::PrePregnancy do
     it "creates an other relative person record and associates it with the particpant" do
       state = NcsCode.for_list_name_and_local_code("STATE_CL1", 14)
 
-      take_survey(@survey, @response_set) do |a|
-        a.str "#{OperationalDataExtractor::PrePregnancy::INTERVIEW_PREFIX}.CONTACT_FNAME_1", 'Ivy'
-        a.str "#{OperationalDataExtractor::PrePregnancy::INTERVIEW_PREFIX}.CONTACT_LNAME_1", 'Anderson'
-        a.choice "#{OperationalDataExtractor::PrePregnancy::INTERVIEW_PREFIX}.CONTACT_RELATE_1", @contact_aunt_uncle
+      take_survey(@survey, @response_set) do |r|
+        r.a "#{OperationalDataExtractor::PrePregnancy::INTERVIEW_PREFIX}.CONTACT_FNAME_1", 'Ivy'
+        r.a "#{OperationalDataExtractor::PrePregnancy::INTERVIEW_PREFIX}.CONTACT_LNAME_1", 'Anderson'
+        r.a "#{OperationalDataExtractor::PrePregnancy::INTERVIEW_PREFIX}.CONTACT_RELATE_1", @contact_aunt_uncle
       end
 
       @response_set.responses.reload
@@ -250,10 +249,10 @@ describe OperationalDataExtractor::PrePregnancy do
     it "creates a grandparent person record and associates it with the particpant" do
       state = NcsCode.for_list_name_and_local_code("STATE_CL1", 14)
 
-      take_survey(@survey, @response_set) do |a|
-        a.str "#{OperationalDataExtractor::PrePregnancy::INTERVIEW_PREFIX}.CONTACT_FNAME_1", 'Billie'
-        a.str "#{OperationalDataExtractor::PrePregnancy::INTERVIEW_PREFIX}.CONTACT_LNAME_1", 'Holiday'
-        a.choice "#{OperationalDataExtractor::PrePregnancy::INTERVIEW_PREFIX}.CONTACT_RELATE_1", @contact_grandparent
+      take_survey(@survey, @response_set) do |r|
+        r.a "#{OperationalDataExtractor::PrePregnancy::INTERVIEW_PREFIX}.CONTACT_FNAME_1", 'Billie'
+        r.a "#{OperationalDataExtractor::PrePregnancy::INTERVIEW_PREFIX}.CONTACT_LNAME_1", 'Holiday'
+        r.a "#{OperationalDataExtractor::PrePregnancy::INTERVIEW_PREFIX}.CONTACT_RELATE_1", @contact_grandparent
       end
 
       @response_set.responses.reload

@@ -20,10 +20,10 @@ describe OperationalDataExtractor::PostNatal do
       response_set, instrument = prepare_instrument(@person, @child_participant, @survey)
       response_set.save!
 
-      take_survey(@survey, response_set) do |a|
-        a.str "#{OperationalDataExtractor::PostNatal::SIX_MONTH_CHILD_SECTION_PREFIX}.C_FNAME", 'Jo'
-        a.str "#{OperationalDataExtractor::PostNatal::SIX_MONTH_CHILD_SECTION_PREFIX}.C_LNAME", 'Stafford'
-        a.date "#{OperationalDataExtractor::PostNatal::SIX_MONTH_CHILD_SECTION_PREFIX}.CHILD_DOB", '01/01/2012'
+      take_survey(@survey, response_set) do |r|
+        r.a "#{OperationalDataExtractor::PostNatal::SIX_MONTH_CHILD_SECTION_PREFIX}.C_FNAME", 'Jo'
+        r.a "#{OperationalDataExtractor::PostNatal::SIX_MONTH_CHILD_SECTION_PREFIX}.C_LNAME", 'Stafford'
+        r.a "#{OperationalDataExtractor::PostNatal::SIX_MONTH_CHILD_SECTION_PREFIX}.CHILD_DOB", '2012-01-01'
       end
 
       response_set.responses.reload
@@ -54,8 +54,8 @@ describe OperationalDataExtractor::PostNatal do
       @response_set, instrument = prepare_instrument(@person, @participant, @survey)
       @response_set.save!
 
-      take_survey(@survey, @response_set) do |a|
-        a.str "#{OperationalDataExtractor::PostNatal::SIX_MONTH_MOTHER_SECTION_PREFIX}.EMAIL", 'email@dev.null'
+      take_survey(@survey, @response_set) do |r|
+        r.a "#{OperationalDataExtractor::PostNatal::SIX_MONTH_MOTHER_SECTION_PREFIX}.EMAIL", 'email@dev.null'
       end
 
       @response_set.responses.reload
@@ -81,11 +81,11 @@ describe OperationalDataExtractor::PostNatal do
       @response_set, instrument = prepare_instrument(@person, @participant, @survey)
       @response_set.save!
 
-      take_survey(@survey, @response_set) do |a|
-        a.yes "#{OperationalDataExtractor::PostNatal::SIX_MONTH_MOTHER_SECTION_PREFIX}.CELL_PHONE_1"
-        a.yes "#{OperationalDataExtractor::PostNatal::SIX_MONTH_MOTHER_SECTION_PREFIX}.CELL_PHONE_2"
-        a.yes "#{OperationalDataExtractor::PostNatal::SIX_MONTH_MOTHER_SECTION_PREFIX}.CELL_PHONE_4"
-        a.str "#{OperationalDataExtractor::PostNatal::SIX_MONTH_MOTHER_SECTION_PREFIX}.CELL_PHONE", '3125557890'
+      take_survey(@survey, @response_set) do |r|
+        r.yes "#{OperationalDataExtractor::PostNatal::SIX_MONTH_MOTHER_SECTION_PREFIX}.CELL_PHONE_1"
+        r.yes "#{OperationalDataExtractor::PostNatal::SIX_MONTH_MOTHER_SECTION_PREFIX}.CELL_PHONE_2"
+        r.yes "#{OperationalDataExtractor::PostNatal::SIX_MONTH_MOTHER_SECTION_PREFIX}.CELL_PHONE_4"
+        r.a "#{OperationalDataExtractor::PostNatal::SIX_MONTH_MOTHER_SECTION_PREFIX}.CELL_PHONE", '3125557890'
       end
 
       @response_set.responses.reload
@@ -120,18 +120,18 @@ describe OperationalDataExtractor::PostNatal do
 
       state = NcsCode.for_list_name_and_local_code("STATE_CL1", 14)
 
-      take_survey(@survey, @response_set) do |a|
-        a.str "#{OperationalDataExtractor::PostNatal::SIX_MONTH_MOTHER_SECTION_PREFIX}.CONTACT_FNAME_1", 'Donna'
-        a.str "#{OperationalDataExtractor::PostNatal::SIX_MONTH_MOTHER_SECTION_PREFIX}.CONTACT_LNAME_1", 'Noble'
-        a.choice "#{OperationalDataExtractor::PostNatal::SIX_MONTH_MOTHER_SECTION_PREFIX}.CONTACT_RELATE_1", @contact_neighbor
-        a.str "#{OperationalDataExtractor::PostNatal::SIX_MONTH_MOTHER_SECTION_PREFIX}.C_ADDR_1_1", '123 Easy St.'
-        a.str "#{OperationalDataExtractor::PostNatal::SIX_MONTH_MOTHER_SECTION_PREFIX}.C_ADDR_2_1", ''
-        a.str "#{OperationalDataExtractor::PostNatal::SIX_MONTH_MOTHER_SECTION_PREFIX}.C_UNIT_1", ''
-        a.str "#{OperationalDataExtractor::PostNatal::SIX_MONTH_MOTHER_SECTION_PREFIX}.C_CITY_1", 'Chicago'
-        a.choice "#{OperationalDataExtractor::PostNatal::SIX_MONTH_MOTHER_SECTION_PREFIX}.C_STATE_1", state
-        a.str "#{OperationalDataExtractor::PostNatal::SIX_MONTH_MOTHER_SECTION_PREFIX}.C_ZIP_1", '65432'
-        a.str "#{OperationalDataExtractor::PostNatal::SIX_MONTH_MOTHER_SECTION_PREFIX}.C_ZIP4_1", '1234'
-        a.str "#{OperationalDataExtractor::PostNatal::SIX_MONTH_MOTHER_SECTION_PREFIX}.CONTACT_PHONE_1", '3125551212'
+      take_survey(@survey, @response_set) do |r|
+        r.a "#{OperationalDataExtractor::PostNatal::SIX_MONTH_MOTHER_SECTION_PREFIX}.CONTACT_FNAME_1", 'Donna'
+        r.a "#{OperationalDataExtractor::PostNatal::SIX_MONTH_MOTHER_SECTION_PREFIX}.CONTACT_LNAME_1", 'Noble'
+        r.a "#{OperationalDataExtractor::PostNatal::SIX_MONTH_MOTHER_SECTION_PREFIX}.CONTACT_RELATE_1", @contact_neighbor
+        r.a "#{OperationalDataExtractor::PostNatal::SIX_MONTH_MOTHER_SECTION_PREFIX}.C_ADDR_1_1", '123 Easy St.'
+        r.a "#{OperationalDataExtractor::PostNatal::SIX_MONTH_MOTHER_SECTION_PREFIX}.C_ADDR_2_1", ''
+        r.a "#{OperationalDataExtractor::PostNatal::SIX_MONTH_MOTHER_SECTION_PREFIX}.C_UNIT_1", ''
+        r.a "#{OperationalDataExtractor::PostNatal::SIX_MONTH_MOTHER_SECTION_PREFIX}.C_CITY_1", 'Chicago'
+        r.a "#{OperationalDataExtractor::PostNatal::SIX_MONTH_MOTHER_SECTION_PREFIX}.C_STATE_1", state
+        r.a "#{OperationalDataExtractor::PostNatal::SIX_MONTH_MOTHER_SECTION_PREFIX}.C_ZIP_1", '65432'
+        r.a "#{OperationalDataExtractor::PostNatal::SIX_MONTH_MOTHER_SECTION_PREFIX}.C_ZIP4_1", '1234'
+        r.a "#{OperationalDataExtractor::PostNatal::SIX_MONTH_MOTHER_SECTION_PREFIX}.CONTACT_PHONE_1", '3125551212'
       end
 
       @response_set.responses.reload
@@ -173,10 +173,10 @@ describe OperationalDataExtractor::PostNatal do
 
     describe "processing racial data" do
       before do
-        take_survey(@survey, @response_set) do |a|
-          a.choice "#{OperationalDataExtractor::PostNatal::THREE_MONTH_MOTHER_RACE_PREFIX}.RACE", black_race
-          a.choice "#{OperationalDataExtractor::PostNatal::THREE_MONTH_MOTHER_RACE_PREFIX}.RACE", other_race
-          a.str "#{OperationalDataExtractor::PostNatal::THREE_MONTH_MOTHER_RACE_PREFIX}.RACE_OTH", "Aborigine"
+        take_survey(@survey, @response_set) do |r|
+          r.a "#{OperationalDataExtractor::PostNatal::THREE_MONTH_MOTHER_RACE_PREFIX}.RACE", black_race
+          r.a "#{OperationalDataExtractor::PostNatal::THREE_MONTH_MOTHER_RACE_PREFIX}.RACE", other_race
+          r.a "#{OperationalDataExtractor::PostNatal::THREE_MONTH_MOTHER_RACE_PREFIX}.RACE_OTH", "Aborigine"
         end
 
         OperationalDataExtractor::PostNatal.new(@response_set).extract_data

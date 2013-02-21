@@ -40,8 +40,8 @@ module NcsNavigator::Core
           pv1_survey = create_pv1_with_fields_for_pv2_prepopulation
           pv1_response_set, pv1_instrument = prepare_instrument(person, participant, pv1_survey)
 
-          take_survey(pv1_survey, pv1_response_set) do |a|
-            a.refused "PREG_VISIT_1_3.WORK_NAME"
+          take_survey(pv1_survey, pv1_response_set) do |r|
+            r.refused "PREG_VISIT_1_3.WORK_NAME"
           end
 
           assert_response_value(@rsp.populate, "prepopulated_is_work_name_previously_collected_and_valid", "FALSE")
@@ -51,8 +51,8 @@ module NcsNavigator::Core
           pv1_survey = create_pv1_with_fields_for_pv2_prepopulation
           pv1_response_set, pv1_instrument = prepare_instrument(person, participant, pv1_survey)
 
-          take_survey(pv1_survey, pv1_response_set) do |a|
-            a.dont_know "PREG_VISIT_1_3.WORK_NAME"
+          take_survey(pv1_survey, pv1_response_set) do |r|
+            r.dont_know "PREG_VISIT_1_3.WORK_NAME"
           end
 
           assert_response_value(@rsp.populate, "prepopulated_is_work_name_previously_collected_and_valid", "FALSE")
@@ -62,8 +62,8 @@ module NcsNavigator::Core
           pv1_survey = create_pv1_with_fields_for_pv2_prepopulation
           pv1_response_set, pv1_instrument = prepare_instrument(person, participant, pv1_survey)
 
-          take_survey(pv1_survey, pv1_response_set) do |a|
-            a.str "PREG_VISIT_1_3.WORK_NAME", "work_name"
+          take_survey(pv1_survey, pv1_response_set) do |r|
+            r.a "PREG_VISIT_1_3.WORK_NAME", :value => "work_name"
           end
 
           assert_response_value(@rsp.populate, "prepopulated_is_work_name_previously_collected_and_valid", "TRUE")
@@ -81,8 +81,8 @@ module NcsNavigator::Core
           pv1_survey = create_pv1_with_fields_for_pv2_prepopulation
           pv1_response_set, pv1_instrument = prepare_instrument(person, participant, pv1_survey)
 
-          take_survey(pv1_survey, pv1_response_set) do |a|
-            a.refused "PREG_VISIT_1_3.WORK_ADDRESS_1"
+          take_survey(pv1_survey, pv1_response_set) do |r|
+            r.refused "PREG_VISIT_1_3.WORK_ADDRESS_1"
           end
 
           assert_response_value(@rsp.populate, "prepopulated_is_work_address_previously_collected_and_valid", "FALSE")
@@ -92,8 +92,8 @@ module NcsNavigator::Core
           pv1_survey = create_pv1_with_fields_for_pv2_prepopulation
           pv1_response_set, pv1_instrument = prepare_instrument(person, participant, pv1_survey)
 
-          take_survey(pv1_survey, pv1_response_set) do |a|
-            a.dont_know "PREG_VISIT_1_3.WORK_ADDRESS_1"
+          take_survey(pv1_survey, pv1_response_set) do |r|
+            r.dont_know "PREG_VISIT_1_3.WORK_ADDRESS_1"
           end
 
           assert_response_value(@rsp.populate, "prepopulated_is_work_address_previously_collected_and_valid", "FALSE")
@@ -103,8 +103,8 @@ module NcsNavigator::Core
           pv1_survey = create_pv1_with_fields_for_pv2_prepopulation
           pv1_response_set, pv1_instrument = prepare_instrument(person, participant, pv1_survey)
 
-          take_survey(pv1_survey, pv1_response_set) do |a|
-            a.str "PREG_VISIT_1_3.WORK_ADDRESS_1", "work_address"
+          take_survey(pv1_survey, pv1_response_set) do |r|
+            r.a "PREG_VISIT_1_3.WORK_ADDRESS_1", :value => "work_address"
           end
 
           assert_response_value(@rsp.populate, "prepopulated_is_work_address_previously_collected_and_valid", "TRUE")
@@ -163,9 +163,8 @@ module NcsNavigator::Core
               pre_preg_survey = create_pre_preg_survey_with_fields_used_in_pv1_prepopulation
               pre_preg_response_set, pre_preg_instrument = prepare_instrument(person, participant, pre_preg_survey)
 
-              yes = mock(NcsCode, :local_code => 1)
-              take_survey(pre_preg_survey, pre_preg_response_set) do |a|
-                a.choice "PRE_PREG.OWN_HOME", yes
+              take_survey(pre_preg_survey, pre_preg_response_set) do |r|
+                r.yes "PRE_PREG.OWN_HOME"
               end
 
               rsp = ResponseSetPopulator::PregnancyVisit.new(person, @instrument, survey)
@@ -188,9 +187,8 @@ module NcsNavigator::Core
                 pre_preg_survey = create_pre_preg_survey_with_fields_used_in_pv1_prepopulation
                 pre_preg_response_set, pre_preg_instrument = prepare_instrument(person, participant, pre_preg_survey)
 
-                yes = mock(NcsCode, :local_code => 1)
-                take_survey(pre_preg_survey, pre_preg_response_set) do |a|
-                  a.choice "PRE_PREG.RECENT_MOVE", yes
+                take_survey(pre_preg_survey, pre_preg_response_set) do |r|
+                  r.yes "PRE_PREG.RECENT_MOVE"
                 end
 
                 rsp = ResponseSetPopulator::PregnancyVisit.new(person, @instrument, survey)
@@ -205,9 +203,8 @@ module NcsNavigator::Core
                 pre_preg_survey = create_pre_preg_survey_with_fields_used_in_pv1_prepopulation
                 pre_preg_response_set, pre_preg_instrument = prepare_instrument(person, participant, pre_preg_survey)
 
-                no = mock(NcsCode, :local_code => 2)
-                take_survey(pre_preg_survey, pre_preg_response_set) do |a|
-                  a.choice "PRE_PREG.RECENT_MOVE", no
+                take_survey(pre_preg_survey, pre_preg_response_set) do |r|
+                  r.no "PRE_PREG.RECENT_MOVE"
                 end
 
                 rsp = ResponseSetPopulator::PregnancyVisit.new(person, @instrument, survey)
