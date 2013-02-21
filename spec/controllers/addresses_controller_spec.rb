@@ -17,22 +17,28 @@ describe AddressesController do
   context "with an authenticated user" do
     before(:each) do
       @person = Factory(:person)
+      @person1 = Factory(:person)
+      @participant = Factory(:participant)
+      @person1.participant = @participant
+      @person1.save
       @address1 = Factory(:address, :person => @person, :address_one => "1 Main Street")
       @address2 = Factory(:address, :person => @person, :address_one => "2 State Street")
       @address3 = Factory(:address, :person => @person, :address_one => "3 My Way")
+      @address4 = Factory(:address, :person => @person1,:address_one => "4 Ogden Ave")
+      @address5 = Factory(:address, :person => nil, :address_one => "5 Lake Street")
       login(user_login)
     end
 
     describe "GET index" do
 
       before(:each) do
-        Address.count.should == 3
+        Address.count.should == 5
       end
 
       describe "without search parameters" do
         it "assigns all addresses as @addresses" do
           get :index
-          assigns[:addresses].count.should equal(3)
+          assigns[:addresses].count.should equal(5)
           assigns[:addresses].should include @address1
           assigns[:addresses].should include @address2
           assigns[:addresses].should include @address3
@@ -178,10 +184,21 @@ describe AddressesController do
             assigns(:address).should eq(@address1)
           end
 
-          it "redirects to the address" do
-            put :update, :id => @address1.id, :address => valid_attributes
-            response.should redirect_to(edit_address_path(@address1))
+          it "redirects to the address when no person associated" do
+            put :update, :id => @address5.id, :address => valid_attributes
+            response.should redirect_to(edit_address_path(@address5))
           end
+
+          it "redirects to the person when non-participant associated" do
+            put :update, :id => @address1.id, :address => valid_attributes
+            response.should redirect_to(person_path(@person))
+          end
+
+          it "redirects to the participant when associated" do
+            put :update, :id => @address4.id, :address => valid_attributes
+            response.should redirect_to(participant_path(@participant))
+          end
+
         end
 
         describe "with json request" do
@@ -190,7 +207,7 @@ describe AddressesController do
             response.body.should eq @address1.to_json
           end
         end
-      end
+      end      
 
       describe "with invalid params" do
         describe "html request" do
