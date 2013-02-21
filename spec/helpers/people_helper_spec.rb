@@ -235,7 +235,7 @@ end
 
     describe "#group_cme" do     
       it "groups phone types according to the order defined in the PeopleHelper module" do                
-        helper.group_cme(@email_addresses).should == 
+        helper.group_cme(@phones).should == 
           {1=>[@phone_a,@phone_duplicate_1_a,
                @phone_duplicate_2_a,@secondary_home_phone,@secondary_work_phone],
           2=>[@phone_b,
@@ -246,7 +246,7 @@ end
     
     describe "#sort_cme" do
       it "sorts phone groups by rank according to the order defined in the PeopleHelper module" do 
-        helper.sort_cme(helper.group_cme(@email_addresses)).should == 
+        helper.sort_cme(helper.group_cme(@phones)).should == 
           {1=>[@phone_a,@phone_duplicate_1_a,
                @phone_duplicate_2_a,@secondary_home_phone,@secondary_work_phone],
           2=>[@phone_b,
