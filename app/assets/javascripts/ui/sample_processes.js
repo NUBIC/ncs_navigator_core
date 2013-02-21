@@ -108,7 +108,10 @@ $(function() {
   $('.confirm_link').live('click',
   function() {
     blockUnblockProcessingDiv(true, "Please complete the confirmation operation or click Exit when you are done")
-    $(".display").load($(this).attr('href'), function(){addStyles()})
+    $(".display").load($(this).attr('href'), function(){
+      $(".sample_receipt_tabs").tabs().addClass('ui-tabs-vertical ui-helper-clearfix');
+      $(".sample_receipt_tabs li").removeClass('ui-corner-top').addClass('ui-corner-left');
+    })
 
     return false;
   }); 
