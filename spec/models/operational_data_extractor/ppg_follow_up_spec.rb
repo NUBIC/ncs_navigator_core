@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-
 require 'spec_helper'
 
 describe OperationalDataExtractor::PpgFollowUp do
@@ -26,9 +25,9 @@ describe OperationalDataExtractor::PpgFollowUp do
     end
 
     it "updates the ppg status to 1 if the person responds that they are pregnant" do
-      take_survey(@survey, @response_set) do |a|
-        a.choice "#{OperationalDataExtractor::PpgFollowUp::INTERVIEW_PREFIX}.PREGNANT", @ppg1
-        a.date "#{OperationalDataExtractor::PpgFollowUp::INTERVIEW_PREFIX}.PPG_DUE_DATE_1", '2011-12-25'
+      take_survey(@survey, @response_set) do |r|
+        r.a "#{OperationalDataExtractor::PpgFollowUp::INTERVIEW_PREFIX}.PREGNANT", @ppg1
+        r.a "#{OperationalDataExtractor::PpgFollowUp::INTERVIEW_PREFIX}.PPG_DUE_DATE_1", '2011-12-25'
       end
 
       @response_set.responses.reload
@@ -46,8 +45,8 @@ describe OperationalDataExtractor::PpgFollowUp do
     end
 
     it "updates the ppg status to 3 if the person responds that they recently lost their child during pregnancy" do
-      take_survey(@survey, @response_set) do |a|
-        a.choice "#{OperationalDataExtractor::PpgFollowUp::INTERVIEW_PREFIX}.PREGNANT", @ppg3
+      take_survey(@survey, @response_set) do |r|
+        r.a "#{OperationalDataExtractor::PpgFollowUp::INTERVIEW_PREFIX}.PREGNANT", @ppg3
       end
 
       @response_set.responses.reload
@@ -65,8 +64,8 @@ describe OperationalDataExtractor::PpgFollowUp do
     end
 
     it "updates the ppg status to 2 if the person responds that they are trying" do
-      take_survey(@survey, @response_set) do |a|
-        a.yes "#{OperationalDataExtractor::PpgFollowUp::INTERVIEW_PREFIX}.TRYING"
+      take_survey(@survey, @response_set) do |r|
+        r.yes "#{OperationalDataExtractor::PpgFollowUp::INTERVIEW_PREFIX}.TRYING"
       end
 
       @response_set.responses.reload
@@ -84,8 +83,8 @@ describe OperationalDataExtractor::PpgFollowUp do
     end
 
     it "updates the ppg status to 3 if the person responds that they recently lost their child" do
-      take_survey(@survey, @response_set) do |a|
-        a.choice "#{OperationalDataExtractor::PpgFollowUp::INTERVIEW_PREFIX}.TRYING", @ppg3
+      take_survey(@survey, @response_set) do |r|
+        r.a "#{OperationalDataExtractor::PpgFollowUp::INTERVIEW_PREFIX}.TRYING", @ppg3
       end
 
       @response_set.responses.reload
@@ -103,8 +102,8 @@ describe OperationalDataExtractor::PpgFollowUp do
     end
 
     it "updates the ppg status to 4 if the person responds that they recently gave birth" do
-      take_survey(@survey, @response_set) do |a|
-        a.choice "#{OperationalDataExtractor::PpgFollowUp::INTERVIEW_PREFIX}.TRYING", @ppg4
+      take_survey(@survey, @response_set) do |r|
+        r.a "#{OperationalDataExtractor::PpgFollowUp::INTERVIEW_PREFIX}.TRYING", @ppg4
       end
 
       @response_set.responses.reload
@@ -122,8 +121,8 @@ describe OperationalDataExtractor::PpgFollowUp do
     end
 
     it "updates the ppg status to 5 if the person responds that they are medically unable to become pregnant" do
-      take_survey(@survey, @response_set) do |a|
-        a.yes "#{OperationalDataExtractor::PpgFollowUp::INTERVIEW_PREFIX}.MED_UNABLE"
+      take_survey(@survey, @response_set) do |r|
+        r.yes "#{OperationalDataExtractor::PpgFollowUp::INTERVIEW_PREFIX}.MED_UNABLE"
       end
 
       @response_set.responses.reload
@@ -159,9 +158,9 @@ describe OperationalDataExtractor::PpgFollowUp do
     response_set.save!
     response_set.responses.size.should == 0
 
-    take_survey(survey, response_set) do |a|
-      a.str "#{OperationalDataExtractor::PpgFollowUp::INTERVIEW_PREFIX}.PHONE_NBR", '3125551234'
-      a.choice "#{OperationalDataExtractor::PpgFollowUp::INTERVIEW_PREFIX}.PHONE_TYPE", cell
+    take_survey(survey, response_set) do |r|
+      r.a "#{OperationalDataExtractor::PpgFollowUp::INTERVIEW_PREFIX}.PHONE_NBR", '3125551234'
+      r.a "#{OperationalDataExtractor::PpgFollowUp::INTERVIEW_PREFIX}.PHONE_TYPE", cell
     end
 
     response_set.responses.reload
@@ -195,12 +194,12 @@ describe OperationalDataExtractor::PpgFollowUp do
     response_set.save!
     response_set.responses.size.should == 0
 
-    take_survey(survey, response_set) do |a|
-      a.str "#{OperationalDataExtractor::PpgFollowUp::SAQ_PREFIX}.HOME_PHONE", '3125551234'
-      a.str "#{OperationalDataExtractor::PpgFollowUp::SAQ_PREFIX}.CELL_PHONE", '3125555678'
-      a.str "#{OperationalDataExtractor::PpgFollowUp::SAQ_PREFIX}.WORK_PHONE", '3125559012'
-      a.str "#{OperationalDataExtractor::PpgFollowUp::SAQ_PREFIX}.OTHER_PHONE", '3125553456'
-      a.str "#{OperationalDataExtractor::PpgFollowUp::SAQ_PREFIX}.EMAIL", 'email@dev.null'
+    take_survey(survey, response_set) do |r|
+      r.a "#{OperationalDataExtractor::PpgFollowUp::SAQ_PREFIX}.HOME_PHONE", '3125551234'
+      r.a "#{OperationalDataExtractor::PpgFollowUp::SAQ_PREFIX}.CELL_PHONE", '3125555678'
+      r.a "#{OperationalDataExtractor::PpgFollowUp::SAQ_PREFIX}.WORK_PHONE", '3125559012'
+      r.a "#{OperationalDataExtractor::PpgFollowUp::SAQ_PREFIX}.OTHER_PHONE", '3125553456'
+      r.a "#{OperationalDataExtractor::PpgFollowUp::SAQ_PREFIX}.EMAIL", 'email@dev.null'
     end
 
     response_set.responses.reload

@@ -182,8 +182,7 @@ module PregnancyScreener
 
     # Race One Other
     q = Factory(:question, :reference_identifier => "RACE_OTH", :data_export_identifier => "PREG_SCREEN_HI_RACE_2.RACE_OTH", :survey_section_id => survey_section.id)
-    a = Factory(:answer, :question_id => q.id, :text => "Korean", :response_class => "string")
-    a = Factory(:answer, :question_id => q.id, :text => "Aborigine", :response_class => "string")
+    a = Factory(:answer, :question_id => q.id, :response_class => 'string', :text => 'SPECIFY')
 
     survey
   end
@@ -286,7 +285,6 @@ module PregnancyScreener
     survey
   end
 
-
   def create_pregnancy_screener_survey_with_email_operational_data
     survey = Factory(:survey, :title => "INS_QUE_PregScreen_INT_HILI_P2_V2.0", :access_code => "ins-que-pregscreen-int-hili-p2-v2-0")
     survey_section = Factory(:survey_section, :survey_id => survey.id)
@@ -329,7 +327,6 @@ module PregnancyScreener
     a = Factory(:answer, :question_id => q.id, :text => "Specify", :response_class => "string")
     survey
   end
-
 
   def create_pregnancy_screener_survey_to_determine_due_date
     survey = Factory(:survey, :title => "INS_QUE_PregScreen_INT_HILI_P2_V2.0", :access_code => "ins-que-pregscreen-int-hili-p2-v2-0")

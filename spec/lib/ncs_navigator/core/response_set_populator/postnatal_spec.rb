@@ -33,7 +33,7 @@ module NcsNavigator::Core
 
       unless block_given?
         answer_code = mock(NcsCode, :local_code => answer)
-        block = Proc.new { |a| a.choice(question_dexp_identifier, answer_code) }
+        block = Proc.new { |r| r.a question_dexp_identifier, answer_code }
       end
 
       take_survey(survey, response_set, &block)
@@ -61,13 +61,13 @@ module NcsNavigator::Core
       create_num_hh_for_18_and_24_month(survey_type
                                             ) do |survey, data_export_id|
         if valid_answers
-          prepare_and_take_survey(nil, nil, nil, survey) do |a|
-            a.int(data_export_id, 5)
+          prepare_and_take_survey(nil, nil, nil, survey) do |r|
+            r.a data_export_id, 'number', :value => 5
           end
         else
           answer_code = mock(NcsCode, :local_code => "neg_1")
-          prepare_and_take_survey(nil, nil, nil, survey) do |a|
-            a.choice(data_export_id, answer_code)
+          prepare_and_take_survey(nil, nil, nil, survey) do |r|
+            r.a data_export_id, answer_code
           end
         end
       end
@@ -78,12 +78,12 @@ module NcsNavigator::Core
         create_work_name_or_address_24_month(reference_id
                                             ) do |survey, data_export_id|
           if valid_answers
-            prepare_and_take_survey(nil, nil, nil, survey) do |a|
-              a.str(data_export_id, "work_name") 
+            prepare_and_take_survey(nil, nil, nil, survey) do |r|
+              r.a data_export_id, 'work_name', :value => "work_name"
             end 
           else
-            prepare_and_take_survey(nil, nil, nil, survey) do |a|
-              a.refused(data_export_id)
+            prepare_and_take_survey(nil, nil, nil, survey) do |r|
+              r.refused(data_export_id)
             end
           end
         end
@@ -302,8 +302,8 @@ module NcsNavigator::Core
 
         it "should be TRUE if child number is 1" do
           prepare_and_take_survey(nil, nil,
-                                  :create_participant_verif_child_qnum) do |a|
-            a.int("PARTICIPANT_VERIF.CHILD_QNUM", 1)
+                                  :create_participant_verif_child_qnum) do |r|
+            r.a "PARTICIPANT_VERIF.CHILD_QNUM", 'number', :value => 1
           end
           rsp = ResponseSetPopulator::Postnatal.new(@person, @instrument,
                                                     @survey)
@@ -313,8 +313,8 @@ module NcsNavigator::Core
 
         it "should be FALSE if child number is not 1" do
           prepare_and_take_survey(nil, nil,
-                                  :create_participant_verif_child_qnum) do |a|
-            a.int("PARTICIPANT_VERIF.CHILD_QNUM", 2)
+                                  :create_participant_verif_child_qnum) do |r|
+            r.a "PARTICIPANT_VERIF.CHILD_QNUM", 'number', :value => 2
           end
           rsp = ResponseSetPopulator::Postnatal.new(@person, @instrument,
                                                     @survey)
