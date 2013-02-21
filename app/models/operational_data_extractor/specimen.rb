@@ -29,7 +29,7 @@ module OperationalDataExtractor
       "SPEC_BLOOD_2_TUBE[tube_type=7].SPECIMEN_ID" => "specimen_id",
       # MDES 3.1
       # New from BreastMilkColl_SAQSpec
-      "REAST_MILK_SAQ.SPECIMEN_ID" => "specimen_id",
+      "BREAST_MILK_SAQ.SPECIMEN_ID" => "specimen_id",
       # New from ChildBlood_INT
       "CHILD_BLOOD_TUBE[tube_type=1].SPECIMEN_ID" => "specimen_id",
       "CHILD_BLOOD_TUBE[tube_type=2].SPECIMEN_ID" => "specimen_id",

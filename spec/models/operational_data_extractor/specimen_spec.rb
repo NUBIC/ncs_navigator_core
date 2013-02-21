@@ -232,6 +232,43 @@ describe OperationalDataExtractor::Specimen do
 
     end
 
+    context "the child urine collection instrument" do
+      it "creates a sample from the instrument response" do
+        survey = create_child_urine_survey_with_specimen_operational_data
+        response_set, instrument = prepare_instrument(person, participant, survey)
+        expected = 'AA1234567-BU01'
+
+        take_survey(survey, response_set) do |a|
+          a.str "CHILD_URINE.SPECIMEN_ID", expected
+        end
+
+        OperationalDataExtractor::Specimen.new(response_set).extract_data
+
+        specimens = Specimen.where(:instrument_id => instrument.id).all
+        specimens.should_not be_blank
+        specimens.size.should == 1
+      end
+
+    end
+
+    context "the breast milk collection instrument" do
+      it "creates a sample from the instrument response" do
+        survey = create_breast_milk_survey_with_specimen_operational_data
+        response_set, instrument = prepare_instrument(person, participant, survey)
+        expected = 'AA1234567-BM01'
+
+        take_survey(survey, response_set) do |a|
+          a.str "BREAST_MILK_SAQ.SPECIMEN_ID", expected
+        end
+
+        OperationalDataExtractor::Specimen.new(response_set).extract_data
+
+        specimens = Specimen.where(:instrument_id => instrument.id).all
+        specimens.should_not be_blank
+        specimens.size.should == 1
+      end
+    end
+
   end
 
 end

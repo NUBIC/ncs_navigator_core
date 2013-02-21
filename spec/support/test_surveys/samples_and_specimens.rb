@@ -36,6 +36,26 @@ module SamplesAndSpecimens
     survey
   end
 
+  def create_breast_milk_survey_with_specimen_operational_data
+    survey = Factory(:survey, :title => "INS_BIO_BreastMilkColl_SAQSpec_EHPBHI_M3.1_V1.0", :access_code => "ins-bio-breastmilkcoll-saqspec-ehpbhi-m3-1-v1-0")
+    survey_section = Factory(:survey_section, :survey_id => survey.id)
+
+    q = Factory(:question, :reference_identifier => "SPECIMEN_ID", :data_export_identifier => "BREAST_MILK_SAQ.SPECIMEN_ID", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "Specimen ID", :response_class => "string")
+
+    survey
+  end
+
+  def create_child_urine_survey_with_specimen_operational_data
+    survey = Factory(:survey, :title => "INS_BIO_ChildUrineColl_INT_EHPBHI_M3.1_V1.0", :access_code => "ins-bio-childurinecoll-int-ehpbhi-m3-1-v1-0")
+    survey_section = Factory(:survey_section, :survey_id => survey.id)
+
+    q = Factory(:question, :reference_identifier => "SPECIMEN_ID", :data_export_identifier => "CHILD_URINE.SPECIMEN_ID", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "SPECIMEN ID", :response_class => "string")
+
+    survey
+  end
+
   def create_vacuum_bag_dust_survey_with_sample_operational_data
     survey = Factory(:survey, :title => "INS_ENV_VacBagDustTechCollect_DCI_EHPBHI_P2_V1.0", :access_code => "ins-env-vacbagdusttechcollect-dci-ehpbhi-p2-v1-0")
     survey_section = Factory(:survey_section, :survey_id => survey.id)
