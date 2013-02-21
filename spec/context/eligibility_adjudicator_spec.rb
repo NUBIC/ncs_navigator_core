@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe MakeIneligible do
+describe EligibilityAdjudicator do
 
   context "person having taken screener" do
 
@@ -29,34 +29,34 @@ describe MakeIneligible do
       end
 
       it "deletes all participant_person_links for a participant" do
-        MakeIneligible.run(@response_set)
+        EligibilityAdjudicator.adjudicate_eligibility(@response_set)
         ParticipantPersonLink.where(:participant_id => @response_set.participant).count.should == 0
       end
 
       it "sets the participant_id to nil for all events associated with the person" do
         participant_id = @response_set.participant.id
-        MakeIneligible.run(@response_set)
+        EligibilityAdjudicator.adjudicate_eligibility(@response_set)
         Event.where(:participant_id => participant_id).count.should be 0
       end
 
       it "does not delete the event records" do
         participant_id = @response_set.participant.id
-        MakeIneligible.run(@response_set)
+        EligibilityAdjudicator.adjudicate_eligibility(@response_set)
         Event.exists?(@event.id).should be_true
       end
 
       it "sets the participant_id to nil for the response set" do
-        MakeIneligible.run(@response_set)
+        EligibilityAdjudicator.adjudicate_eligibility(@response_set)
         ResponseSet.find(@response_set.id).participant_id.should be_nil
       end
 
       it "creates a SamplePersonsIneligibility record" do
-        MakeIneligible.run(@response_set)
+        EligibilityAdjudicator.adjudicate_eligibility(@response_set)
         SampledPersonsIneligibility.count.should == 1
       end
 
       it "deletes participant record" do
-        MakeIneligible.run(@response_set)
+        EligibilityAdjudicator.adjudicate_eligibility(@response_set)
         Participant.count.should == 0
       end
     end
@@ -67,28 +67,28 @@ describe MakeIneligible do
       end
 
       it "does not delete participant_person_links for a participant" do
-        MakeIneligible.run(@response_set)
+        EligibilityAdjudicator.adjudicate_eligibility(@response_set)
         ParticipantPersonLink.where(:participant_id => @response_set.participant.id).count.should == 3
       end
 
       it "does not disturb the participant association with events associated with the person" do
         participant_id = @response_set.participant.id
-        MakeIneligible.run(@response_set)
+        EligibilityAdjudicator.adjudicate_eligibility(@response_set)
         Event.where(:participant_id => participant_id).count.should be 1
       end
 
       it "does not set the participant_id to nil for the response set" do
-        MakeIneligible.run(@response_set)
+        EligibilityAdjudicator.adjudicate_eligibility(@response_set)
         ResponseSet.find(@response_set.id).participant_id.should_not be_nil
       end
 
       it "does not create a SamplePersonsIneligibility record" do
-        MakeIneligible.run(@response_set)
+        EligibilityAdjudicator.adjudicate_eligibility(@response_set)
         SampledPersonsIneligibility.count.should == 0
       end
 
       it "does not deletes participant record" do
-        MakeIneligible.run(@response_set)
+        EligibilityAdjudicator.adjudicate_eligibility(@response_set)
         Participant.count.should be 1
       end
     end
@@ -112,21 +112,21 @@ describe MakeIneligible do
 
     context "survey is screener" do
       it "returns false when person is eligible" do
-        MakeIneligible.new(@screener_and_eligible_person_response_set).person_taking_screener_ineligible?.should be_false
+        EligibilityAdjudicator.new(@screener_and_eligible_person_response_set).person_taking_screener_ineligible?.should be_false
       end
 
       it "returns true when person is not eligible" do
-        MakeIneligible.new(@screener_and_ineligible_person_response_set).person_taking_screener_ineligible?.should be_true
+        EligibilityAdjudicator.new(@screener_and_ineligible_person_response_set).person_taking_screener_ineligible?.should be_true
       end
     end
 
     context "survey is not screener" do
       it "returns false when person is eligible" do
-        MakeIneligible.new(@non_screener_and_eligible_person_response_set).person_taking_screener_ineligible?.should be_false
+        EligibilityAdjudicator.new(@non_screener_and_eligible_person_response_set).person_taking_screener_ineligible?.should be_false
       end
 
       it "returns false when person is not eligible" do
-        MakeIneligible.new(@non_screener_and_ineligible_person_response_set).person_taking_screener_ineligible?.should be_false
+        EligibilityAdjudicator.new(@non_screener_and_ineligible_person_response_set).person_taking_screener_ineligible?.should be_false
       end
     end
   end

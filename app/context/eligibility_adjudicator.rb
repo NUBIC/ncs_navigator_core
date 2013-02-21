@@ -1,4 +1,4 @@
-class MakeIneligible
+class EligibilityAdjudicator
 
   def initialize(response_set)
     @person = response_set.person
@@ -10,8 +10,8 @@ class MakeIneligible
     !@participant.eligible? && @response_set.survey.title =~ /PBSamplingScreen/
   end
 
-  def self.run(response_set)
-    me = MakeIneligible.new(response_set)
+  def self.adjudicate_eligibility(response_set)
+    me = EligibilityAdjudicator.new(response_set)
     me.make_ineligible if me.person_taking_screener_ineligible?
   end
 
