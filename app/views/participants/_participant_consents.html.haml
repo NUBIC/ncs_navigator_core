@@ -15,11 +15,7 @@
           %th
             Consent Date
           %th
-            Who Consented
-          %th
-            Consent Withdrawn Date
-          %th
-            Who Withdrew
+            Sample Consents
         - @participant.participant_consents.each do |consent|
           %tr{ :class => cycle('even_record', 'odd_record') }
             %td
@@ -30,32 +26,12 @@
             %td
               = consent.consent_date
             %td
-              = consent.who_consented
-            %td
-              = consent.consent_withdraw_date
-            %td
-              = consent.who_wthdrw_consent
-  .sample_consents
-    %b
-      Sample Consents
-    - if @participant.participant_consent_samples.blank?
-      %p
-        No sample consent records exist for this participant.
-    - else
-      %table.records
-        %tr
-          %th
-            Type
-          %th
-            Associated Consent
-          %th
-            Consent Given
-        - @participant.participant_consent_samples.each do |consent|
-          %tr{ :class => cycle('even_record', 'odd_record') }
-            %td
-              = consent.sample_consent_type
-            %td
-              - txt = consent.participant_consent.phase_one? ? consent.participant_consent.consent_type : consent.participant_consent.consent_form_type
-              = link_to txt, edit_participant_consent_path(consent.participant_consent), :class => "edit_link icon_link"
-            %td
-              = consent.sample_consent_given
+              - if consent.participant_consent_samples.blank?
+                No sample consent records exist for this participant.
+              - else
+                - consent.participant_consent_samples.each do |consent|
+                  = consent.sample_consent_type
+                  &mdash;
+                  = consent.sample_consent_given
+                  %br
+
