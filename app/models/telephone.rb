@@ -115,16 +115,12 @@ class Telephone < ActiveRecord::Base
     end
   end
 
-  def filter_criteria
-    :phone_nbr
-  end
-
   def type_code
-    :phone_type_code
+    self.phone_type_code
   end
 
   def rank_code
-    :phone_rank_code
+    self.phone_rank_code
   end
 
 end
