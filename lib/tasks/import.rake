@@ -275,11 +275,12 @@ namespace :import do
 
       psc.scheduled_activities(part).each do |a|
         if a.has_non_matching_mdes_version_instrument?
-          reason ="Does not include an instrument for MDES version #{NcsNavigatorCore.mdes.version}."
-          $stderr.print("Activity #{a.activity_name} has non matching mdes versioned instrument. Canceling activity for participant #{part.p_id}.")
+          reason = "Does not include an instrument for MDES version #{NcsNavigatorCore.mdes.version}."
+          $stderr.print("\n  Activity #{a.activity_name} has non matching mdes versioned instrument. Canceling.")
           Rails.logger.info("Activity #{a.activity_name} has non matching mdes versioned instrument. Canceling activity for participant #{part.p_id}.")
           psc.update_activity_state(a.activity_id, part, Psc::ScheduledActivity::CANCELED, Date.parse(a.ideal_date), reason)
         end
+        $stderr.puts
       end
     end
   end
