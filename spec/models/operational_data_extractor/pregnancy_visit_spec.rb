@@ -461,6 +461,136 @@ describe OperationalDataExtractor::PregnancyVisit do
     end
   end
 
+  context "associates one institution of proper type per address" do
+    before(:each) do
+      @state = NcsCode.for_list_name_and_local_code("STATE_CL1", 14)
+      @hospital = NcsCode.for_list_name_and_local_code("ORGANIZATION_TYPE_CL1",
+                                                       1)
+      @other = NcsCode.for_list_name_and_local_code("ORGANIZATION_TYPE_CL1",
+                                                    1)
+      @person = Factory(:person)
+      @person.addresses.size.should == 0
+      @participant = Factory(:participant)
+      part_person_link = Factory(:participant_person_link, :participant => @participant, :person => @person)
+    end
+
+    it "for birth address, with and existing institution of other type, for PBS PV1" do
+      survey = create_pbs_pregnancy_visit_1_with_birth_institution_operational_data
+      response_set, instrument = prepare_instrument(@person, @participant,
+                                                    survey)
+      response_set.save!
+
+      @institution = Factory(:institution, :institute_type_code => -5)
+      @institution_person_link = Factory(:institution_person_link,
+                                         :person => @person,
+                                         :institution => @institution)
+      @institution.response_set = response_set
+      @institution.save!
+
+      take_survey(survey, response_set) do |a|
+        a.choice "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.BIRTH_PLAN", @hospital
+        a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.BIRTH_PLACE", "FAKE HOSPITAL MEMORIAL"
+        a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.B_ADDRESS_1", '123 Hospital Way'
+      end
+      response_set.responses.reload
+      response_set.responses.size.should == 3
+
+      OperationalDataExtractor::PregnancyVisit.new(response_set).extract_data
+      @participant.person.institutions.size.should == 2
+
+      take_survey(survey, response_set) do |a|
+        a.choice "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.BIRTH_PLAN", @hospital
+        a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.BIRTH_PLACE", "FAKE HOSPITAL MEMORIAL 2"
+        a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.B_ADDRESS_1", '234 Hospital Way'
+      end
+      response_set.responses.reload
+      response_set.responses.size.should == 6
+
+      OperationalDataExtractor::PregnancyVisit.new(response_set).extract_data
+      @participant.person.institutions.size.should == 2
+      birth_inst = Institution.where('institute_type_code = ? and ' +
+                                     'response_set_id = ?',
+                                     @hospital.local_code,
+                                     response_set.id).first!
+      Address.where('institute_id = ? and person_id = ?', birth_inst.id,
+                    @person.id).count.should == 1
+    end
+
+    it "for birth address, with and existing institution, for PBS PV1" do
+      survey = create_pbs_pregnancy_visit_1_with_birth_institution_operational_data
+      response_set, instrument = prepare_instrument(@person, @participant,
+                                                    survey)
+      response_set.save!
+
+      @institution = Factory(:institution, :institute_type_code => 1)
+      @institution_person_link = Factory(:institution_person_link,
+                                         :person => @person,
+                                         :institution => @institution)
+      @institution.response_set = response_set
+      @institution.save!
+
+      take_survey(survey, response_set) do |a|
+        a.choice "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.BIRTH_PLAN", @hospital
+        a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.BIRTH_PLACE", "FAKE HOSPITAL MEMORIAL"
+        a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.B_ADDRESS_1", '123 Hospital Way'
+      end
+      response_set.responses.reload
+      response_set.responses.size.should == 3
+
+      OperationalDataExtractor::PregnancyVisit.new(response_set).extract_data
+      @participant.person.institutions.size.should == 1
+
+      take_survey(survey, response_set) do |a|
+        a.choice "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.BIRTH_PLAN", @hospital
+        a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.BIRTH_PLACE", "FAKE HOSPITAL MEMORIAL 2"
+        a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.B_ADDRESS_1", '234 Hospital Way'
+      end
+      response_set.responses.reload
+      response_set.responses.size.should == 6
+
+      OperationalDataExtractor::PregnancyVisit.new(response_set).extract_data
+      @participant.person.institutions.size.should == 1
+      Address.where('institute_id = ? and person_id = ?', @institution.id,
+                    @person.id).count.should == 1
+    end
+
+    it "for birth address, with not existing institution, for PBS PV1" do
+      survey = create_pbs_pregnancy_visit_1_with_birth_institution_operational_data
+      response_set, instrument = prepare_instrument(@person, @participant,
+                                                    survey)
+      response_set.save!
+
+      take_survey(survey, response_set) do |a|
+        a.choice "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.BIRTH_PLAN", @hospital
+        a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.BIRTH_PLACE", "FAKE HOSPITAL MEMORIAL"
+        a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.B_ADDRESS_1", '123 Hospital Way'
+      end
+      response_set.responses.reload
+      response_set.responses.size.should == 3
+
+      OperationalDataExtractor::PregnancyVisit.new(response_set).extract_data
+      @participant.person.institutions.size.should == 1
+
+      take_survey(survey, response_set) do |a|
+        a.choice "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.BIRTH_PLAN", @hospital
+        a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.BIRTH_PLACE", "FAKE HOSPITAL MEMORIAL 2"
+        a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.B_ADDRESS_1", '234 Hospital Way'
+      end
+      response_set.responses.reload
+      response_set.responses.size.should == 6
+
+      OperationalDataExtractor::PregnancyVisit.new(response_set).extract_data
+      @participant.person.institutions.size.should == 1
+      birth_inst = Institution.where('institute_type_code = ? and ' +
+                                     'response_set_id = ?',
+                                     @hospital.local_code,
+                                     response_set.id).first!
+      Address.where('institute_id = ? and person_id = ?', birth_inst.id,
+                    @person.id).count.should == 1
+    end
+
+  end
+
   context "extracts address operational data from the survey responses" do
 
     before(:each) do
