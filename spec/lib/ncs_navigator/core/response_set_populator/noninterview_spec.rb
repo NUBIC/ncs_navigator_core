@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 require 'spec_helper'
+require File.expand_path('../../../../../shared/custom_recruitment_strategy', __FILE__)
 
 module NcsNavigator::Core
 
@@ -62,66 +63,101 @@ module NcsNavigator::Core
       end
 
       describe "prepopulated_study_center_type" do
-        def set_recruitment_strategy(center_type)
-          # center type is in the form of display_text from NcsCode for
-          # readability
-          code = NcsCode.for_list_name_and_display_text("RECRUIT_TYPE_CL1",
-                                                        center_type)
-          NcsNavigator.configuration.recruitment_type_id = code.local_code
-          NcsNavigatorCore.recruitment_strategy =
-                            RecruitmentStrategy.for_code(code.local_code)
-        end
-          
-        it "should be 'OVC AND EH STUDY CENTER' if OVC type" do
-          set_recruitment_strategy("Original VC")
-          assert_match(@rsp.populate,
-                                "prepopulated_study_center_type",
-                                "OVC AND EH STUDY CENTERS")
-        end
-        it "should be 'OVC AND EH STUDY CENTER' if EH type" do
-          set_recruitment_strategy("Enhanced Household Enumeration")
-          assert_match(@rsp.populate,
-                                "prepopulated_study_center_type",
-                                "OVC AND EH STUDY CENTERS")
-        end
-        it "should not be 'OVC AND EH STUDY CENTER' if not EH or OVC type" do
-          set_recruitment_strategy("Two-Tier")
-          assert_miss(@rsp.populate,
-                                "prepopulated_study_center_type",
-                                "OVC AND EH STUDY CENTERS")
+
+        context "for 'OriginalVanguard'" do
+          include_context 'custom recruitment strategy'
+          let(:recruitment_strategy) { OriginalVanguard.new }
+
+          before do
+            NcsNavigatorCore.stub(:recruitment_type_id).and_return(4)
+          end
+
+          it "should be 'OVC AND EH STUDY CENTER' if OVC type" do
+            assert_match(@rsp.populate,
+                                  "prepopulated_study_center_type",
+                                  "OVC AND EH STUDY CENTERS")
+          end
         end
 
-        it "should be 'PB AND PBS STUDY CENTERS' if PB type" do
-          set_recruitment_strategy("Provider-Based Recruitment")
-          assert_match(@rsp.populate,
-                                "prepopulated_study_center_type",
-                                "PB AND PBS STUDY CENTERS")
-        end
-        it "should be 'PB AND PBS STUDY CENTERS' if PBS type" do
-          set_recruitment_strategy("Provider Based Subsample")
-          assert_match(@rsp.populate,
-                                "prepopulated_study_center_type",
-                                "PB AND PBS STUDY CENTERS")
-        end
-        it "should not be 'PB AND PBS STUDY CENTERS' if not PB or PBS type" do
-          set_recruitment_strategy("Two-Tier")
-          assert_miss(@rsp.populate,
-                                "prepopulated_study_center_type",
-                                "PB AND PBS STUDY CENTERS")
+        context "for 'EnhancedHousehold'" do
+          include_context 'custom recruitment strategy'
+          let(:recruitment_strategy) { EnhancedHousehold.new }
+
+          before do
+            NcsNavigatorCore.stub(:recruitment_type_id).and_return(1)
+          end
+
+          it "should be 'OVC AND EH STUDY CENTER' if EH type" do
+            assert_match(@rsp.populate,
+                                  "prepopulated_study_center_type",
+                                  "OVC AND EH STUDY CENTERS")
+          end
         end
 
-        it "should be 'HILI STUDY CENTERS' if HILI type" do
-          set_recruitment_strategy("Two-Tier")
-          assert_match(@rsp.populate,
-                                "prepopulated_study_center_type",
-                                "HILI STUDY CENTERS")
+        context "for 'TwoTier'" do
+          include_context 'custom recruitment strategy'
+          let(:recruitment_strategy) { TwoTier.new }
+
+          before do
+            NcsNavigatorCore.stub(:recruitment_type_id).and_return(3)
+          end
+
+          it "should not be 'OVC AND EH STUDY CENTER' if not EH or OVC type" do
+            assert_miss(@rsp.populate,
+                                  "prepopulated_study_center_type",
+                                  "OVC AND EH STUDY CENTERS")
+          end
+
+          it "should not be 'PB AND PBS STUDY CENTERS' if not PB or PBS type" do
+            assert_miss(@rsp.populate,
+                                  "prepopulated_study_center_type",
+                                  "PB AND PBS STUDY CENTERS")
+          end
+
+          it "should be 'HILI STUDY CENTERS' if HILI type" do
+            assert_match(@rsp.populate,
+                                  "prepopulated_study_center_type",
+                                  "HILI STUDY CENTERS")
+          end
         end
-        it "should not be 'HILI STUDY CENTERS' if not HILI type" do
-          set_recruitment_strategy("Provider Based Subsample")
-          assert_miss(@rsp.populate,
-                                "prepopulated_study_center_type",
-                                "HILI STUDY CENTERS")
+
+        context "for 'ProviderBased'" do
+          include_context 'custom recruitment strategy'
+          let(:recruitment_strategy) { ProviderBased.new }
+
+          before do
+            NcsNavigatorCore.stub(:recruitment_type_id).and_return(2)
+          end
+
+          it "should be 'PB AND PBS STUDY CENTERS' if PB type" do
+            assert_match(@rsp.populate,
+                                  "prepopulated_study_center_type",
+                                  "PB AND PBS STUDY CENTERS")
+          end
+
         end
+
+        context "for 'ProviderBasedSubsample'" do
+          include_context 'custom recruitment strategy'
+          let(:recruitment_strategy) { ProviderBasedSubsample.new }
+
+          before do
+            NcsNavigatorCore.stub(:recruitment_type_id).and_return(5)
+          end
+
+          it "should be 'PB AND PBS STUDY CENTERS' if PBS type" do
+            assert_match(@rsp.populate,
+                                  "prepopulated_study_center_type",
+                                  "PB AND PBS STUDY CENTERS")
+          end
+
+          it "should not be 'HILI STUDY CENTERS' if not HILI type" do
+            assert_miss(@rsp.populate,
+                                  "prepopulated_study_center_type",
+                                  "HILI STUDY CENTERS")
+          end
+        end
+
       end
 
   end
