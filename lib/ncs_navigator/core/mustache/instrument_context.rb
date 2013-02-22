@@ -289,6 +289,10 @@ module NcsNavigator::Core::Mustache
       single_birth? ? baby_sex_possessive(baby_sex_response) : "their"
     end
 
+    def his_her_their_upcase
+      his_her_their.upcase
+    end
+
     # {he/she}
     def he_she
       baby_sex(baby_sex_response)
@@ -709,6 +713,127 @@ module NcsNavigator::Core::Mustache
     def schip_name
       "[STATE CHILD HEALTH INSURANCE PROGRAM NAME]"
     end
+
+    def child_sex
+      response_for("PARTICIPANT_VERIF_CHILD.CHILD_SEX")
+    end
+
+    def boys_girls
+      case child_sex
+      when "MALE"
+        "boys"
+      when "FEMALE"
+        "girls"
+      else
+        "boys/girls"
+      end
+    end
+
+    def approximate_visit_time_table(event_code, recruitment_type)
+      avtt = {
+        Event::pregnancy_visit_1_code => {
+          "EnhancedHousehold"  => "1.5 hours",
+          "ProviderBased"  => "1.5 hours",
+          "HighIntensity"  => "1.5 hours",
+          "LowIntensity"  => "1 hour",
+          "ProviderBasedSubsample" => "1 hour"
+        },
+        Event::pregnancy_visit_2_code => {
+          "EnhancedHousehold"  => "1.5 hours",
+          "ProviderBased"  => "1.5 hours",
+          "HighIntensity"  => "1.5 hours",
+          "LowIntensity"  => "1 hour",
+          "ProviderBasedSubsample" => "1 hour"
+        },
+        Event::father_visit_code => {
+          "EnhancedHousehold"  => "1.75 hours",
+          "ProviderBased"  => "1.75 hours",
+          "HighIntensity"  => "1.75 hours"
+        },
+        Event::birth_code => {
+          "EnhancedHousehold"  => "45 minutes",
+          "ProviderBased"  => "45 minutes",
+          "HighIntensity"  => "45 minutes",
+          "ProviderBasedSubsample" => "45 minutes",
+          "LowIntensity"  => "30 minutes"
+        },
+        Event::three_month_visit_code => {
+          "EnhancedHousehold"  => "40 minutes",
+          "ProviderBased"  => "40 minutes",
+          "HighIntensity"  => "40 minutes",
+          "ProviderBasedSubsample" => "40 minutes",
+          "LowIntensity"  => "40 minutes"
+        },
+        Event::six_month_visit_code => {
+          "EnhancedHousehold"  => "2 hours",
+          "ProviderBased"  => "2 hours",
+          "HighIntensity"  => "2 hours",
+          "ProviderBasedSubsample" => "1.5 hours"
+        },
+        Event::nine_month_visit_code => {
+          "EnhancedHousehold"  => "35 minutes",
+          "ProviderBased"  => "35 minutes",
+          "HighIntensity"  => "35 minutes",
+          "ProviderBasedSubsample" => "35 minutes",
+        },
+        Event::twelve_month_visit_code => {
+          "EnhancedHousehold"  => "2 hours",
+          "ProviderBased"  => "2 hours",
+          "HighIntensity"  => "2 hours",
+          "ProviderBasedSubsample" => "1 hour"
+        },
+        Event::eighteen_month_visit_code => {
+          "EnhancedHousehold"  => "45 minutes",
+          "ProviderBased"  => "45 minutes",
+          "HighIntensity"  => "45 minutes",
+          "ProviderBasedSubsample" => "45 minutes",
+          "LowIntensity"  => "45 minutes"
+        },
+        Event::twenty_four_month_visit_code => {
+          "EnhancedHousehold"  => "1.5 hours",
+          "ProviderBased"  => "1.5 hours",
+          "HighIntensity"  => "1.5 hours",
+          "ProviderBasedSubsample" => "45 minutes",
+          "LowIntensity"  => "45 minutes"
+        },
+        Event::thirty_six_month_visit_code => {
+          "EnhancedHousehold"  => "1.75 hours",
+          "ProviderBased"  => "1.75 hours",
+          "HighIntensity"  => "1.75 hours",
+          "LowIntensity"  => "1.75 hour",
+          "ProviderBasedSubsample" => "1.75 hour"
+        },
+      }
+
+      if event_code && recruitment_type
+        avtt[event_code][recruitment_type]
+      else
+        "unknown amount of time"
+      end
+    end
+
+    def hi_lo
+      @response_set.participant.high_intensity? ? "HighIntensity" : "LowIntensity"
+    end
+
+    def get_recruitment_strategy
+      recruitment_type = NcsNavigatorCore.recruitment_strategy.class.name
+      case recruitment_type
+      when "TwoTier"
+        hi_lo
+      when "ProviderBased", "EnhancedHousehold", "ProviderBasedSubsample"
+        recruitment_type
+      else
+        nil
+      end
+    end
+
+    def approximate_visit_time
+      result = approximate_visit_time_table(
+                        @response_set.instrument.event.try(:event_type_code),
+                        get_recruitment_strategy)
+    end
+
   end
 
 end

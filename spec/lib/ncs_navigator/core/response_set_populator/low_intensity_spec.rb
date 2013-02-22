@@ -22,6 +22,7 @@ module NcsNavigator::Core
         @survey = create_lo_i_quex_with_prepopulated_ppg_status
         @response_set, @instrument = prepare_instrument(@person, @participant, @survey)
 
+        @participant.ppg_status_histories.reload
         @participant.ppg_status.local_code.should == 2
         @response_set.responses.should be_empty
       end
