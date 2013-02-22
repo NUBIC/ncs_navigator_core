@@ -28,6 +28,20 @@ module RecruitmentStrategy
 
   module_function :for_code
 
+  def for_class_name(strategy)
+    case strategy
+    when  "EnhancedHousehold"; 1
+    when  "ProviderBased"; 2
+    when  "TwoTier"; 3
+    when  "OriginalVanguard"; 4
+    when  "ProviderBasedSubsample"; 5
+    else raise "Unknown recruitment strategy #{strategy}"
+    end
+  end
+
+  module_function :for_class_name
+
+
   ##
   # Does the strategy have two tiers?
   def two_tier_knowledgable?

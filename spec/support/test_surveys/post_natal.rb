@@ -214,4 +214,246 @@ module PostNatal
     survey
   end
 
+  def create_18mm_v2_survey_part_three_for_mold_prepopulators
+    survey = Factory(:survey,
+                     :title =>
+                            "INS_QUE_18MMother_INT_EHPBHI_M2.2_V2.0_PART_THREE",
+                     :access_code =>
+                            "ins_que_18mmother_int_ehpbhi_m2_2_V2_0_part_three")
+    survey_section = Factory(:survey_section, :survey_id => survey.id)
+    q = Factory(:question,
+                :reference_identifier => "MOLD",
+                :data_export_identifier => "EIGHTEEN_MTH_MOTHER_2.MOLD",
+                :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :reference_identifier => "1",
+                :text => "YES", :response_class => "answer")
+    a = Factory(:answer, :question_id => q.id, :reference_identifier => "2",
+                :text => "NO", :response_class => "answer")
+    a = Factory(:answer, :question_id => q.id, :text => "REFUSED",
+                :response_class => "answer", :reference_identifier => "neg_1")
+    a = Factory(:answer, :question_id => q.id, :text => "DON'T KNOW",
+                :response_class => "answer", :reference_identifier => "neg_2")
+    survey
+  end
+
+  def create_pm_child_anthr_survey_for_6_month_event
+    survey = Factory(:survey,
+                     :title => "INS_PM_ChildAnthro_DCI_EHPBHI_M3.1_V1.0",
+                     :access_code => "ins_pm_childanthro_dci_ehpbhi_m3_1_v1_0")
+    survey_section = Factory(:survey_section, :survey_id => survey.id)
+    q = Factory(:question,
+                :reference_identifier => "prepopulated_is_6_month_event",
+                :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "TRUE",
+                :response_class => "answer", :reference_identifier => "true")
+    a = Factory(:answer, :question_id => q.id, :text => "FALSE",
+                :response_class => "answer", :reference_identifier => "false")
+    survey
+  end
+
+  def create_bio_child_anthr_survey_for_12_month_visit
+    survey = Factory(:survey,
+                     :title => "INS_BIO_ChildBlood_INT_EHPBHI_M3.1_V1.0",
+                     :access_code => "ins_bio_childblood_int_ehpbhi_m3_1_v1_0")
+    survey_section = Factory(:survey_section, :survey_id => survey.id)
+    q = Factory(:question,
+                :reference_identifier => "prepopulated_is_12_month_visit",
+                :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "TRUE",
+                :response_class => "answer", :reference_identifier => "true")
+    a = Factory(:answer, :question_id => q.id, :text => "FALSE",
+                :response_class => "answer", :reference_identifier => "false")
+    survey
+  end
+
+  def create_con_reconsideration_for_events
+    survey = Factory(:survey,
+                     :title => "INS_CON_Reconsideration_DCI_EHPBHI_M3.1_V1.0",
+                     :access_code =>
+                               "ins_con_reconsideration_dci_ehpbhi_m3_1_v1_0")
+    survey_section = Factory(:survey_section, :survey_id => survey.id)
+    q = Factory(:question,
+                :reference_identifier => "prepopulated_event_type",
+                :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "PV1 or PV2",
+                :response_class => "answer", :reference_identifier => "pv")
+    a = Factory(:answer, :question_id => q.id, :text => "12 MONTH",
+                :response_class => "answer",
+                :reference_identifier => "twelve_mns")
+    survey
+  end
+
+  def create_birth_part_one_birth_deliver
+    survey = Factory(:survey,
+                     :title =>
+                            "INS_QUE_Birth_INT_LI_M3.1_V2.0_PART_ONE",
+                     :access_code =>
+                            "ins_que_birth_int_li_m3_1_V2_0_part_one")
+    survey_section = Factory(:survey_section, :survey_id => survey.id)
+    q = Factory(:question,
+                :reference_identifier => "BIRTH_DELIVER",
+                :data_export_identifier => "BIRTH_VISIT_LI_2.BIRTH_DELIVER",
+                :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :reference_identifier => "1",
+                :text => "HOSPITAL", :response_class => "answer")
+    a = Factory(:answer, :question_id => q.id, :reference_identifier => "2",
+                :text => "BIRTHING CENTER", :response_class => "answer")
+    a = Factory(:answer, :question_id => q.id, :reference_identifier => "3",
+                :text => "AT HOME", :response_class => "answer")
+    a = Factory(:answer, :question_id => q.id, :text => "SOME OTHER PLACE",
+                :response_class => "answer", :reference_identifier => "neg_5")
+    survey
+  end
+
+  def create_6mm_part_one_mult_child
+    survey = Factory(:survey,
+                     :title => "INS_QUE_6MMother_INT_EHPBHI_P2_V11_PART_ONE",
+                     :access_code =>
+                               "ins_que_6mmother_int_ehpbhi_p2_v11_part_one")
+    survey_section = Factory(:survey_section, :survey_id => survey.id)
+    q = Factory(:question,
+                :reference_identifier => "MULT_CHILD",
+                :data_export_identifier => "SIX_MTH_MOTHER.MULT_CHILD",
+                :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :reference_identifier => "1",
+                :text => "YES", :response_class => "answer")
+    a = Factory(:answer, :question_id => q.id, :reference_identifier => "2",
+                :text => "NO", :response_class => "answer")
+    survey
+  end
+
+  def create_participant_verif_mult_child
+    survey = Factory(:survey, :title =>
+                  "INS_QUE_ParticipantVerif_DCI_EHPBHILIPBS_M3.0_V1.0_PART_ONE",
+                :access_code =>
+                  "ins_que_participantverif_dci_ehpbhilipbs_m3_0_v1_0_part_one")
+    survey_section = Factory(:survey_section, :survey_id => survey.id)
+    q = Factory(:question,
+                :reference_identifier => "MULT_CHILD",
+                :data_export_identifier => "PARTICIPANT_VERIF.MULT_CHILD",
+                :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :reference_identifier => "1",
+                :text => "YES", :response_class => "answer")
+    a = Factory(:answer, :question_id => q.id, :reference_identifier => "2",
+                :text => "NO", :response_class => "answer")
+    survey
+  end
+
+  def create_participant_verif_child_qnum
+    survey = Factory(:survey, :title =>
+                  "INS_QUE_ParticipantVerif_DCI_EHPBHILIPBS_M3.0_V1.0_PART_ONE",
+                :access_code =>
+                  "ins_que_participantverif_dci_ehpbhilipbs_m3_0_v1_0_part_one")
+    survey_section = Factory(:survey_section, :survey_id => survey.id)
+    q = Factory(:question,
+                :reference_identifier => "CHILD_QNUM",
+                :data_export_identifier => "PARTICIPANT_VERIF.CHILD_QNUM",
+                :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :reference_identifier => "number",
+                :text => "NUMBER", :response_class => "integer")
+    survey
+  end
+
+  def create_participant_verif_resp_rel_new
+    survey = Factory(:survey, :title =>
+                  "INS_QUE_ParticipantVerif_DCI_EHPBHILIPBS_M3.0_V1.0_PART_TWO",
+                :access_code =>
+                  "ins_que_participantverif_dci_ehpbhilipbs_m3_0_v1_0_part_two")
+    survey_section = Factory(:survey_section, :survey_id => survey.id)
+    q = Factory(:question,
+                :reference_identifier => "RESP_REL_NEW",
+                :data_export_identifier => "PARTICIPANT_VERIF.RESP_REL_NEW",
+                :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :reference_identifier => "1",
+                :text => "BIOLOGICAL (OR BIRTH) MOTHER",
+                :response_class => "answer")
+    a = Factory(:answer, :question_id => q.id, :reference_identifier => "2",
+                :text => "BIOLOGICAL FATHER", :response_class => "answer")
+    survey
+  end
+
+  def create_12mm_part_one_mult_child
+    survey = Factory(:survey,
+                     :title => "INS_QUE_12MMother_INT_EHPBHI_P2_V11_PART_ONE",
+                     :access_code =>
+                               "ins_que_12mmother_int_ehpbhi_p2_v11_part_one")
+    survey_section = Factory(:survey_section, :survey_id => survey.id)
+    q = Factory(:question,
+                :reference_identifier => "MULT_CHILD",
+                :data_export_identifier => "TWELVE_MTH_MOTHER.MULT_CHILD",
+                :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :reference_identifier => "1",
+                :text => "YES", :response_class => "answer")
+    a = Factory(:answer, :question_id => q.id, :reference_identifier => "2",
+                :text => "NO", :response_class => "answer")
+    survey
+  end
+
+  def create_survey_section_question(title, data_export_id)
+    begin
+      survey = Factory(:survey,
+                      :title => title,
+                      :access_code => title.downcase.tr('.', '_'))
+    rescue
+      raise "Survey #{title} caused problems."
+    end
+    survey_section = Factory(:survey_section, :survey_id => survey.id)
+    Factory(:question, :reference_identifier => data_export_id.split('.')[1],
+            :data_export_identifier => data_export_id,
+            :survey_section_id => survey_section.id)
+  end
+
+  def create_num_hh_for_18_and_24_month(survey_type)
+    pairs = [
+      ["INS_QUE_Birth_INT_M3.2_V3.1_PART_TWO", "BIRTH_VISIT_4.NUM_HH"],
+      ["INS_QUE_Birth_INT_LI_M3.1_V2.0_PART_TWO", "BIRTH_VISIT_LI_2.NUM_HH"],
+      ["INS_QUE_Birth_INT_EHPBHIPBS_M3.0_V3.0_PART_TWO", "BIRTH_VISIT_3.NUM_HH"]
+    ]
+    pairs + [["INS_QUE_18Month_INT_EHPBHILIPBS_M3.1_V3.0_PART_ONE",
+     "EIGHTEEN_MTH_MOTHER_3.NUM_HH"]] if survey_type == "18M"
+
+    pairs.each do |args|
+      q = create_survey_section_question(*args)
+      a = Factory(:answer, :question_id => q.id,
+                  :reference_identifier => "number",
+                  :text => "NUMBER OF PERSONS", :response_class => "integer")
+      a = Factory(:answer, :question_id => q.id,
+                  :reference_identifier => "neg_1",
+                  :text => "REFUSED", :response_class => "answer")
+      a = Factory(:answer, :question_id => q.id,
+                  :reference_identifier => "neg_2",
+                  :text => "DON'T KNOW", :response_class => "answer")
+      yield q.survey_section.survey, q.data_export_identifier
+    end
+  end
+
+  def create_work_name_or_address_24_month(reference_id)
+    pairs = [
+      ["INS_QUE_Birth_INT_EHPBHIPBS_M3.0_V3.0_PART_TWO",
+       "BIRTH_VISIT_3.#{reference_id}"],
+      ["INS_QUE_Birth_INT_LI_M3.1_V2.0_PART_TWO",
+       "BIRTH_VISIT_LI_2.#{reference_id}"],
+      ["INS_QUE_Birth_INT_M3.2_V3.1_PART_TWO",
+       "BIRTH_VISIT_4.#{reference_id}"],
+      ["INS_QUE_PregVisit1_INT_EHPBHIPBS_M3.0_V3.0",
+       "PREG_VISIT_1_3.#{reference_id}"],
+      ["INS_QUE_PregVisit2_INT_EHPBHIPBS_M3.0_V3.0",
+       "PREG_VISIT_2_3.#{reference_id}"]
+    ]
+
+    pairs.each do |args|
+      q = create_survey_section_question(*args)
+      a = Factory(:answer, :question_id => q.id,
+                  :reference_identifier => "number",
+                  :text => "WORK NAME:", :response_class => "string")
+      a = Factory(:answer, :question_id => q.id,
+                  :reference_identifier => "neg_1",
+                  :text => "REFUSED", :response_class => "answer")
+      a = Factory(:answer, :question_id => q.id,
+                  :reference_identifier => "neg_2",
+                  :text => "DON'T KNOW", :response_class => "answer")
+      yield q.survey_section.survey, q.data_export_identifier
+    end
+  end
+
 end

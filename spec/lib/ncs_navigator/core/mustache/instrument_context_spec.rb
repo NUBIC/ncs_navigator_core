@@ -441,6 +441,36 @@ module NcsNavigator::Core::Mustache
 
       end
 
+      describe ".his_her_their_upcase" do
+
+        it "returns 'THEIR' if multiple birth" do
+          create_multiple_birth
+          instrument_context.his_her_their_upcase.should == "THEIR"
+        end
+
+        it "returns 'HIS' if male and single birth" do
+          create_single_birth
+          create_male_response
+          instrument_context.his_her_their_upcase.should == "HIS"
+        end
+
+        it "returns 'HER' if female and single birth" do
+          create_single_birth
+          create_female_response
+          instrument_context.his_her_their_upcase.should == "HER"
+        end
+
+        it "returns 'HIS/HER' if no sex response and single birth" do
+          create_single_birth
+          instrument_context.his_her_their_upcase.should == "HIS/HER"
+        end
+
+        it "returns 'HIS/HER' if no sex response and unknown if single or multiple birth" do
+          instrument_context.his_her_their_upcase.should == "HIS/HER"
+        end
+
+      end
+
       describe ".he_she" do
 
         it "returns 'he' if male" do
@@ -1583,6 +1613,137 @@ module NcsNavigator::Core::Mustache
       end
 
     end
+
+    context "for multi_mode_visit_info approximate_visit_time" do
+      let(:instrument_context) { InstrumentContext.new(@response_set) }
+
+      before(:each) do
+        survey = Factory(:survey, :title => "Stub Survey")
+        setup_survey_instrument(survey)
+      end
+
+      def set_high_intensity()
+        @participant.high_intensity = true
+        @participant.save!
+      end
+
+      def set_low_intensity()
+        @participant.high_intensity = false
+        @participant.save!
+      end
+
+      def add_event(event_type_code)
+        @response_set.instrument.event = Factory(:event,
+                                         :event_type_code => event_type_code, 
+                                         :participant => @participant)
+        @participant.events.reload
+      end
+
+      def set_recruitment_strategy(strategy)
+        return unless strategy
+        code = RecruitmentStrategy.for_class_name(strategy)
+        NcsNavigator.configuration.recruitment_type_id = code
+        NcsNavigatorCore.recruitment_strategy =
+                                          RecruitmentStrategy.for_code(code)
+      end
+
+      describe ".approximate_visit_time" do
+        it "returns '1.5 hours' for 'Enhanced Household Enumeration', Twenty Four Month Visit" do
+          set_recruitment_strategy("EnhancedHousehold")
+          add_event(Event::twenty_four_month_visit_code)
+          instrument_context.approximate_visit_time.should == "1.5 hours"
+        end
+
+        it "returns '45 minutes' for 'Provider-Based Recruitment', Eighteen Month Visit" do
+          set_recruitment_strategy("ProviderBased")
+          add_event(Event::eighteen_month_visit_code)
+          instrument_context.approximate_visit_time.should == "45 minutes"
+        end
+
+        it "returns '2 hours' for 'High Intensity', Twelve Month Visit" do
+          set_recruitment_strategy("TwoTier")
+          set_high_intensity
+          add_event(Event::twelve_month_visit_code)
+          instrument_context.approximate_visit_time.should == "2 hours"
+        end
+
+        it "returns '1 hour' for 'Low Intensity', Pregnancy Visit 1" do
+          set_recruitment_strategy("TwoTier")
+          set_low_intensity
+          add_event(Event::pregnancy_visit_1_code)
+          instrument_context.approximate_visit_time.should == "1 hour"
+        end
+
+        it "returns '1.5 hours' for 'Provider Based Subsample', Six Month Visit" do
+          set_recruitment_strategy("ProviderBasedSubsample")
+          add_event(Event::six_month_visit_code)
+          instrument_context.approximate_visit_time.should == "1.5 hours"
+        end
+
+        it "returns 'unknown amount of time' if valid recruitment time but event_code is not set" do
+          set_recruitment_strategy("TwoTier")
+          set_high_intensity
+          instrument_context.approximate_visit_time.should ==
+                                                    "unknown amount of time"
+        end
+
+        it "returns 'unknown amount of time' if recruitment center is set to 'OVC' and event_code is valid" do
+          set_recruitment_strategy("OriginalVanguard")
+          add_event(Event::pregnancy_visit_2_code)
+          instrument_context.approximate_visit_time.should ==
+                                                  "unknown amount of time"
+        end
+      end
+
+    end
+
+    context "for a 30 month visit" do
+      let(:instrument_context) { InstrumentContext.new(@response_set) }
+
+      before(:each) do
+        setup_survey_instrument(
+                    create_participant_verif_child_sex_survey_for_30m)
+      end
+
+      describe ".boys_girls" do
+        it "returns 'boys' if CHILD_SEX set to MALE (1)" do
+          take_survey(@survey, @response_set) do |a|
+            male = mock(NcsCode, :local_code => 1)
+            a.choice("PARTICIPANT_VERIF_CHILD.CHILD_SEX", male)
+          end
+          instrument_context.boys_girls.should == "boys"
+        end
+
+        it "returns 'girls' if CHILD_SEX set to FEMALE (2)" do
+          take_survey(@survey, @response_set) do |a|
+            female = mock(NcsCode, :local_code => 2)
+            a.choice("PARTICIPANT_VERIF_CHILD.CHILD_SEX", female)
+          end
+          instrument_context.boys_girls.should == "girls"
+        end
+
+        it "returns 'boys/girls' if CHILD_SEX set to REFUSED" do
+          take_survey(@survey, @response_set) do |a|
+            a.refused("PARTICIPANT_VERIF_CHILD.CHILD_SEX")
+          end
+          instrument_context.boys_girls.should == "boys/girls"
+        end
+
+        it "returns 'boys/girls' if CHILD_SEX set to DON'T KNOW" do
+          take_survey(@survey, @response_set) do |a|
+            could_not_obtain= mock(NcsCode, :local_code => "neg_2")
+            a.choice("PARTICIPANT_VERIF_CHILD.CHILD_SEX", could_not_obtain)
+          end
+          instrument_context.boys_girls.should == "boys/girls"
+        end
+
+        it "returns 'boys/girls' if CHILD_SEX is not set" do
+          instrument_context.boys_girls.should == "boys/girls"
+        end
+
+      end
+    end
+
 
     def create_single_birth
       take_survey(@survey, @response_set) do |a|

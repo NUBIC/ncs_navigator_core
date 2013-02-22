@@ -13,7 +13,8 @@ module NcsNavigator::Core::ResponseSetPopulator
         "prepopulated_is_valid_work_name_provided",
         "prepopulated_is_valid_work_address_provided",
         "prepopulated_is_pv_one_complete",
-        "prepopulated_is_pv_two_complete"
+        "prepopulated_is_pv_two_complete",
+        "prepopulated_is_p_type_fifteen"
       ]
     end
 
@@ -53,6 +54,8 @@ module NcsNavigator::Core::ResponseSetPopulator
                     answer_for(question, participant.try(:completed_event?, 13))
                   when "prepopulated_is_pv_two_complete"
                     answer_for(question, participant.try(:completed_event?, 15))
+                  when "prepopulated_is_p_type_fifteen"
+                    is_participant_p_type_15?(question)
                   else
                     nil
                   end
@@ -96,5 +99,9 @@ module NcsNavigator::Core::ResponseSetPopulator
     end
     private :work_attr_provided?
 
-  end
+    def is_participant_p_type_15?(question)
+      answer_for(question, participant.p_type.local_code == 15 ? true : false)
+    end
+
+end
 end

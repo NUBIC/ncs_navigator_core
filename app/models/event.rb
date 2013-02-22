@@ -183,6 +183,77 @@ class Event < ActiveRecord::Base
     -5, # Other
     -4  # Missing in Error
   ]
+  
+  NAMED_EVENT_CODES = {
+    "household_enumeration" => 1,
+    "two_tier_enumeration" => 2,
+    "providerbased_recruitment" => 22,
+    "provider_recruitment" => 22,
+    "ongoing_tracking_of_dwelling_units" => 3,
+    "pbs_eligibility_screener" => 34,
+    "pbs_frame_saq" => 35,
+    "pregnancy_screening_provider_group" => 4,
+    "pregnancy_screening_high_intensity_group" => 5,
+    "pregnancy_screening_low_intensity_group" => 6,
+    "pregnancy_screening_household_enumeration_group" => 9,
+    "pregnancy_screener" => 29,
+    "informed_consent" => 10,
+    "low_intensity_data_collection" => 33,
+    "low_to_high_conversion" => 32,
+    "pregnancy_probability" => 7,
+    "ppg_followup_by_mailed_saq" => 8,
+    "prepregnancy_visit" => 11,
+    "prepregnancy_visit_saq" => 12,
+    "pregnancy_visit_1" => 13,
+    "pv1" => 13,
+    "pregnancy_visit1" => 13,
+    "pregnancy_visit_1_saq" => 14,
+    "pv2saq" => 14,
+    "pregnancy_visit_2" => 15,
+    "pv2" => 15,
+    "pregnancy_visit2" => 15,
+    "pregnancy_visit_2_saq" => 16,
+    "pv2saq" => 16,
+    "pregnancy_visit_low_intensity_group" => 17,
+    "birth" => 18,
+    "father_visit" => 19,
+    "father" => 19,
+    "father_visit_saq" => 20,
+    "father_saq" => 20,
+    "validation_visit" => 21,
+    "three_month_visit" => 23,
+    "six_month_visit" => 24,
+    "six_month_infant_feeding_saq_visit" => 25,
+    "nine_month_visit" => 26,
+    "twelve_month_visit" => 27,
+    "twelve_month_mother_interview_saq_visit" => 28,
+    "eighteen_month_visit" => 30,
+    "twenty_four_month_visit" => 31,
+    "thirty_month_visit" => 36,
+    "thirty_six_month_visit" => 37,
+    "forty_two_month_visit" => 38,
+    "other" => -5,
+    "missing_in_error" => -4
+  }
+
+  def self.method_missing(method_name, *args)
+    method_name = method_name.to_s
+    if method_name =~ /_code/
+      return NAMED_EVENT_CODES[method_name.sub("_code", "")]
+    end
+
+    super
+  end
+
+  def method_missing(method_name, *args)
+    method_name = method_name.to_s
+    if method_name =~ /\?/
+      super unless NAMED_EVENT_CODES[method_name.sub("\?", "")]
+      return NAMED_EVENT_CODES[method_name.sub("\?", "")] == self.event_type_code
+    end
+
+    super
+  end
 
   # An event that can take place during the same contact
   # as another event
@@ -375,78 +446,6 @@ class Event < ActiveRecord::Base
   #   executed more than once per participant.
   def self.participant_repeatable_event_type_codes
     PARTICIPANT_REPEATABLE_EVENTS
-  end
-
-  def self.household_enumeration_code
-    1
-  end
-
-  def self.pregnancy_probability_code
-    7
-  end
-
-  def self.informed_consent_code
-    10
-  end
-
-  def self.pre_pregnancy_code
-    11
-  end
-
-  def self.pregnancy_visit_1_code
-    13
-  end
-
-  def self.pregnancy_visit_2_code
-    15
-  end
-
-  def self.birth_code
-    18
-  end
-
-  def self.father_code
-    19
-  end
-
-  def self.provider_recruitment_code
-    22
-  end
-
-  def self.pregnancy_screener_code
-    29
-  end
-
-  def self.low_to_high_conversion_code
-    32
-  end
-
-  def self.low_intensity_data_collection_code
-    33
-  end
-
-  def self.pbs_eligibility_screener_code
-    34
-  end
-
-  def pregnancy_visit_1?
-    self.event_type_code == Event.pregnancy_visit_1_code
-  end
-  alias :pv1? :pregnancy_visit_1?
-  alias :pregnancy_visit1? :pregnancy_visit_1?
-
-  def pregnancy_visit_2?
-    self.event_type_code == Event.pregnancy_visit_2_code
-  end
-  alias :pv2? :pregnancy_visit_2?
-  alias :pregnancy_visit2? :pregnancy_visit_2?
-
-  def birth?
-    self.event_type_code == Event.birth_code
-  end
-
-  def informed_consent?
-    self.event_type_code == Event.informed_consent_code
   end
 
   ##

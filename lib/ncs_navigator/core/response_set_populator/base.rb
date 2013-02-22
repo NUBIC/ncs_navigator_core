@@ -70,7 +70,7 @@ module NcsNavigator::Core::ResponseSetPopulator
       result = false
       if response = person.responses_for(data_export_identifier).send(which_response)
         reference_identifier = response.try(:answer).try(:reference_identifier).to_s
-        result = true unless %w(neg_1 neg_2).include?(reference_identifier)
+        result = true unless %w(neg_1 neg_2 neg_8).include?(reference_identifier)
       end
       result
     end

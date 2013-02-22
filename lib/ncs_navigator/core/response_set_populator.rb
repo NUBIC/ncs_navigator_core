@@ -11,6 +11,9 @@ module NcsNavigator::Core::ResponseSetPopulator
   autoload :TracingModule,            'ncs_navigator/core/response_set_populator/tracing_module'
   autoload :LowIntensity,             'ncs_navigator/core/response_set_populator/low_intensity'
   autoload :Birth,                    'ncs_navigator/core/response_set_populator/birth'
+  autoload :NonInterview,             'ncs_navigator/core/response_set_populator/noninterview'
+  autoload :ChildAndAdHoc,            'ncs_navigator/core/response_set_populator/child_and_adhoc'
+  autoload :Postnatal,                'ncs_navigator/core/response_set_populator/postnatal'
 
   POPULATORS = [
     [/_ParticipantVerif_/,  ParticipantVerification],
@@ -21,6 +24,15 @@ module NcsNavigator::Core::ResponseSetPopulator
     [/_Birth_/,             Birth],
     [/_PregVisit1_/,        PregnancyVisit],
     [/_PregVisit2_/,        PregnancyVisit],
+    [/_NonIntRespQues_/,    NonInterview],
+    [/_PM_Child/,           ChildAndAdHoc],
+    [/_BIO_Child/,          ChildAndAdHoc],
+    [/_CON_Reconsideration/,ChildAndAdHoc],
+    [/_Father.*M2.1/,       ChildAndAdHoc],
+    [/_InternetUseContact/, ChildAndAdHoc],
+    [/_MultiModeVisitInfo/, ChildAndAdHoc],
+    [/_\d{1,2}MMother/,     Postnatal],
+    [/_\d{1,2}Month/,       Postnatal],
   ]
 
 end

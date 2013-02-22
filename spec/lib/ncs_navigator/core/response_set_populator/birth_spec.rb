@@ -197,6 +197,47 @@ module NcsNavigator::Core
 
     end
 
+    context "for prepopulated P_TYPE 15 response in part two of M3.2_V3.1" do
+
+      let(:person) { Factory(:person) }
+      let(:survey) { create_birth_part_two_survey_for_m3_1_v_3_2 }
+
+      def build_rsp(participant)
+        participant.person = person
+        participant.save!
+        response_set, instrument = prepare_instrument(person,
+                                                        participant,
+                                                        survey)
+        response_set.responses.should be_empty
+        ResponseSetPopulator::Birth.new(person, instrument, survey)
+      end
+
+      describe "prepopulated_is_p_type_fifteen" do
+        it "should be TRUE if participant is of p_code 15 type" do
+          if Float(NcsNavigatorCore.mdes_version.number) >= 3.2
+            rsp = build_rsp(Factory(:participant, :p_type_code => 15))
+            assert_response_value(rsp.populate,
+                                  "prepopulated_is_p_type_fifteen",
+                                  "TRUE")
+          else
+            pending
+          end
+        end
+
+        it "should be FALSE if participant is not of p_code 15 type" do
+          if Float(NcsNavigatorCore.mdes_version.number) >= 3.2
+            rsp = build_rsp(Factory(:participant))
+            assert_response_value(rsp.populate,
+                                  "prepopulated_is_p_type_fifteen",
+                                  "FALSE")
+          else
+            pending
+          end
+        end
+      end
+
+    end
+
     context "with birth baby name instrument" do
 
       let(:person) { Factory(:person) }
