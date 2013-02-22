@@ -129,16 +129,12 @@ class Address < ActiveRecord::Base
     zip4.blank? ? zip.to_s : zip.to_s + '-' + zip4.to_s
   end
 
-  def filter_criteria
-    :address_one
-  end
-
   def type_code
-    :address_type_code
+    self.address_type_code
   end
 
   def rank_code
-    :address_rank_code
+    self.address_rank_code
   end
 
 end
