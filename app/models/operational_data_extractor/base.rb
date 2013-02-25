@@ -807,7 +807,7 @@ module OperationalDataExtractor
     def process_person_race(person_race_map)
       person_race_map.each do |key, attribute|
         collect_race_responses(key).each do |r|
-          person_race = get_person_race
+          person_race = get_person_race(r.answer.reference_identifier.to_i)
           if value = response_value(r)
             if key =~ /NEW/
               process_new_type_race(person_race, attribute, r)
@@ -864,9 +864,9 @@ module OperationalDataExtractor
       person_race.save!
     end
 
-    def get_person_race
+    def get_person_race(racial_code)
       person_race = person.races.where(:race_code => NcsCode::OTHER, :race_other => nil).first
-      person_race = person.races.build if person_race.nil?
+      person_race = person.races.find_or_initialize_by_person_id_and_race_code(person.id, racial_code) if person_race.nil?
       person_race
     end
 

@@ -751,6 +751,7 @@ describe OperationalDataExtractor::Base do
         it "saves all the records" do
           @on_and_off_code_list_birth_extractor.process_person_race(@person_race_map)
           @person.races.count.should == 2
+
         end
 
         it "specifies the response that matches the standard code list as its integer code value" do
@@ -874,13 +875,27 @@ describe OperationalDataExtractor::Base do
 
       it "returns an existing person race record when the is one that contains an other choice selection, yet whose other text description is blank" do
         other_with_no_description = @person.races.create(:race_code => -5, :race_other => nil)
-        @birth_extractor.get_person_race.should eql(other_with_no_description)
+        @birth_extractor.get_person_race(other_race).should eql(other_with_no_description)
       end
 
       it "returns a new person race record when a record of the above description does not exist" do
-        person_race = @birth_extractor.get_person_race
+        person_race = @birth_extractor.get_person_race(white_race)
         person_race.should be_instance_of(PersonRace)
-        person_race.race_code.should be_nil
+        person_race.new_record?.should be_true
+      end
+    end
+
+    describe "record duplication" do
+      before do
+        @birth_extractor = OperationalDataExtractor::Birth.new(@response_set)
+      end
+
+      it "does not create a person race record if one already exists" do
+        (2).times do
+          @birth_extractor.process_person_race(@person_race_map )
+        end
+
+        PersonRace.where(:person_id => @person.id, :race_code => white_race.local_code).size.should == 1
       end
     end
   end
