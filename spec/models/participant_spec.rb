@@ -1538,47 +1538,60 @@ describe Participant do
         @part.eligible?.should be_true
       end
 
+      describe "#pbs_eligbility_prefix" do
+        context "for a participant who is not in the birth cohort" do
+
+          before do
+            @part.should_not be_hospital
+          end
+
+          it "returns the screener prefix taken by the participant" do
+            @part.pbs_eligbility_prefix.should == OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX
+          end
+        end
+      end
+
       describe "#age_eligible?" do
         it "returns whether participant is age-eligible" do
-          @part.should be_age_eligible(@pers,"#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}")
+          @part.should be_age_eligible(@pers)
         end
 
         it "returns false if participant is not age eligible" do
           take_survey(@survey, @response_set) { |a| a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.AGE_ELIG", @not_age_eligible }
-          @part.should_not be_age_eligible(@pers,"#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}")
+          @part.should_not be_age_eligible(@pers)
         end
       end
 
       describe "#psu_county_eligible?" do
         it "returns whether participant lives in eligible PSU" do
-          @part.should be_psu_county_eligible(@pers,"#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}")
+          @part.should be_psu_county_eligible(@pers)
         end
 
         it "returns false if participant coes not live in an eligible PSU" do
           take_survey(@survey, @response_set) { |a| a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.PSU_ELIG_CONFIRM", @does_not_live_in_county }
-          @part.should_not be_psu_county_eligible(@pers,"#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}")
+          @part.should_not be_psu_county_eligible(@pers)
         end
       end
 
       describe "#pbs_pregnant?" do
         it "returns whether participant is pregnant" do
-          @part.should be_pbs_pregnant(@pers,"#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}")
+          @part.should be_pbs_pregnant(@pers)
         end
 
         it "returns false if they are not pregnant" do
           take_survey(@survey, @response_set) { |a| a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.PREGNANT", @not_pregnant }
-          @part.should_not be_pbs_pregnant(@pers,"#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}")
+          @part.should_not be_pbs_pregnant(@pers)
         end
       end
 
       describe "#first_visit?" do
         it "is this the participants first visit to this provider?" do
-          @part.should be_first_visit(@pers,"#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}")
+          @part.should be_first_visit(@pers)
         end
 
         it "returns false if its not the participant's first visit" do
           take_survey(@survey, @response_set) { |a| a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.FIRST_VISIT", @not_first_visit }
-          @part.should_not be_first_visit(@pers,"#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}")
+          @part.should_not be_first_visit(@pers)
         end
       end
 
@@ -1600,7 +1613,7 @@ describe Participant do
 
       it "returns false if ineligible" do
         take_survey(@survey, @response_set) { |a| a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.PSU_ELIG_CONFIRM", @does_not_live_in_county }
-        @part.should_not be_psu_county_eligible(@pers,"#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}")
+        @part.should_not be_psu_county_eligible(@pers)
         @part.should_not be_eligible
       end
     end

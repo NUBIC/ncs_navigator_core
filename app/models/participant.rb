@@ -1178,43 +1178,45 @@ class Participant < ActiveRecord::Base
   def eligible_for_pbs?
     eligible = []
     person = ParticipantPersonLink.where(:participant_id => self.id, :relationship_code => 1).first.person
-    prefix = "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}"
     providers_in_frame_prefix = "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX_PROVIDER_OFFICE}"
 
     eligibility_determination = [:age_eligible?,
                                  :psu_county_eligible?,
                                  :pbs_pregnant?,
                                  :first_visit?]
-    eligibility_determination.all? { |ed| self.send(ed, person, prefix) } &&
+    eligibility_determination.all? { |ed| self.send(ed, person) } &&
     self.send(:no_preceding_providers_in_frame?, person, providers_in_frame_prefix)
   end
 
   def eligible_for_birth_cohort?
     eligible = []
     person = ParticipantPersonLink.where(:participant_id => self.id, :relationship_code => 1).first.person
-    prefix = "#{OperationalDataExtractor::PbsEligibilityScreener::HOSPITAL_INTERVIEW_PREFIX}"
     providers_in_frame_prefix = "#{OperationalDataExtractor::PbsEligibilityScreener::HOSPITAL_INTERVIEW_PREFIX_PROVIDER_OFFICE}"
 
     eligibility_determination = [:age_eligible?,
                                  :psu_county_eligible?]
-    eligibility_determination.all? { |ed| self.send(ed, person, prefix) } &&
+    eligibility_determination.all? { |ed| self.send(ed, person) } &&
     self.send(:no_preceding_providers_in_frame?, person, providers_in_frame_prefix)
   end
 
-  def age_eligible?(person, prefix)
-    eligible_for?(person, prefix, "AGE_ELIG")
+  def pbs_eligbility_prefix
+    hospital? ? "#{OperationalDataExtractor::PbsEligibilityScreener::HOSPITAL_INTERVIEW_PREFIX}" : "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}"
   end
 
-  def psu_county_eligible?(person, prefix)
-    eligible_for?(person, prefix, "PSU_ELIG_CONFIRM")
+  def age_eligible?(person)
+    eligible_for?(person, "AGE_ELIG")
   end
 
-  def pbs_pregnant?(person, prefix)
-    eligible_for?(person, prefix, "PREGNANT")
+  def psu_county_eligible?(person)
+    eligible_for?(person, "PSU_ELIG_CONFIRM")
   end
 
-  def first_visit?(person, prefix)
-    eligible_for?(person, prefix, "FIRST_VISIT")
+  def pbs_pregnant?(person)
+    eligible_for?(person, "PREGNANT")
+  end
+
+  def first_visit?(person)
+    eligible_for?(person, "FIRST_VISIT")
   end
 
   ##
@@ -1224,8 +1226,8 @@ class Participant < ActiveRecord::Base
   # @param[Person, nil] Person the person associated with the participant
   # @param[String] data_export_identifier for question
   # @return[Boolean]
-  def eligible_for?(person, prefix, reference_identifier)
-    data_export_identifier = prefix + "." + reference_identifier
+  def eligible_for?(person, reference_identifier)
+    data_export_identifier = pbs_eligbility_prefix + "." + reference_identifier
     most_recent_response = person.responses_for(data_export_identifier).last
     most_recent_response.try(:answer).try(:reference_identifier) == "1"
   end
