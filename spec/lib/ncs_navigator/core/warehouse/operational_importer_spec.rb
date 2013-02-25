@@ -808,7 +808,7 @@ module NcsNavigator::Core::Warehouse
 
       let!(:f_consent) {
         create_warehouse_record_with_defaults(wh_config.model(:ParticipantConsent),
-          :participant_consent_id => 'f_consent',
+          :participant_consent_id => 'f_consent', :consent_date => '2011-02-03',
           :p => fred_p, :consent_given => '1', :consent_type => '7', :consent_form_type => '7')
       }
 
@@ -832,7 +832,7 @@ module NcsNavigator::Core::Warehouse
           :event_id => 'f_e3',
           :participant => fred_p,
           :event_disp => 4,
-          :event_type => code_for_event_type('Pregnancy Visit 1'),
+          :event_type => code_for_event_type('Pregnancy Probability'),
           :event_start_date => '2010-09-03')
       }
       let(:f_e1) {
@@ -890,28 +890,14 @@ module NcsNavigator::Core::Warehouse
           :contact => f_c3, :event => f_e4, :instrument => nil)
       }
 
-      let(:f_e5) {
+      let!(:f_e5) {
         create_warehouse_record_with_defaults(wh_config.model(:Event),
           :event_id => 'f_e5',
           :participant => fred_p,
           :event_disp => 4,
-          :event_type => code_for_event_type('Low to High Conversion'),
+          :event_type => code_for_event_type('Informed Consent'),
           :event_start_date => '2011-01-08',
           :event_end_date => '2011-04-04')
-      }
-      let(:f_e5_i) {
-        create_warehouse_record_with_defaults(wh_config.model(:Instrument),
-          :instrument_id => 'f_e5_i',
-          :instrument_type => code_for_instrument_type(
-            'Low Intensity Invitation to High-Intensity Conversion Interview'),
-          :event => f_e5)
-      }
-      let!(:f_e5_i_script) {
-        create_warehouse_record_with_defaults(wh_config.model(:LowHighScript),
-          :instrument => f_e5_i, :instrument_type => code_for_instrument_type(
-            'Low Intensity Invitation to High-Intensity Conversion Interview'),
-          :event => f_e5, :event_type => code_for_event_type('Low to High Conversion'),
-          :p => fred_p)
       }
 
       let!(:g_e1) {
@@ -1062,9 +1048,8 @@ module NcsNavigator::Core::Warehouse
             order.collect { |p_id, links| p_id }.sort.should == %w(fred_p ginger_p)
           end
 
-          # TODO: this is a way crappy test
-          it 'orders by the earliest set date date followed by the type, except for lo-hi conversion which goes by last date' do
-            events_for('fred_p').collect(&:event_id).should == %w(f_e2 f_e1 f_e3 f_e4 f_e5)
+          it 'orders by the earliest set date date followed by the type' do
+            events_for('fred_p').collect(&:event_id).should == %w(f_e2 f_e1 f_e3 f_e5 f_e4)
           end
 
           it 'includes events without link_contact' do
@@ -1076,11 +1061,11 @@ module NcsNavigator::Core::Warehouse
           let(:participant) { Participant.find_by_p_id('fred_p') }
 
           let(:target_states) {
-            participant.low_intensity_state_transition_audits.order(:id).collect(&:to)
+            participant.low_intensity_state_transition_audits.order(:id).collect(&:to).uniq
           }
 
           let(:expected_states) {
-            %w(pending registered in_pregnancy_probability_group following_low_intensity following_low_intensity)
+            %w(pending registered in_pregnancy_probability_group following_low_intensity)
           }
 
           context do
@@ -1119,13 +1104,15 @@ module NcsNavigator::Core::Warehouse
                 target_states.should == expected_states + ['moved_to_high_intensity_arm']
               end
 
-              it 'is taken if the participant has a consent with consent_form_type=1' do
-                f_consent.consent_form_type = '1'
-                save_wh(f_consent)
+              %w(1 2 6).each do |transition_consent_form_type|
+                it "is taken if the participant has a consent with consent_form_type=#{transition_consent_form_type}" do
+                  f_consent.consent_form_type = transition_consent_form_type
+                  save_wh(f_consent)
 
-                do_import
+                  do_import
 
-                target_states.should == expected_states + ['moved_to_high_intensity_arm']
+                  target_states.should == expected_states + ['moved_to_high_intensity_arm']
+                end
               end
 
               it 'is not taken if the participant consent was not given' do
@@ -1190,7 +1177,7 @@ module NcsNavigator::Core::Warehouse
         it 'saves the instruments' do
           do_import
           wh_config.model(:Instrument).all.collect(&:instrument_id).sort.
-            should == %w(f_e2_i f_e5_i g_e1_i)
+            should == %w(f_e2_i g_e1_i)
         end
 
         describe 'PSC sync records' do
@@ -1242,7 +1229,7 @@ module NcsNavigator::Core::Warehouse
             end
 
             it "stores a list of events that need to be sync'd for each participant" do
-              redis.smembers("#{ns}:psc_sync:p:fred_p:events").
+              redis.smembers("#{ns}:psc_sync:p:fred_p:events").sort.
                 should == %w(f_e1 f_e2 f_e3 f_e4 f_e5)
             end
 
@@ -1271,11 +1258,11 @@ module NcsNavigator::Core::Warehouse
               end
 
               it 'has the event type code' do
-                event_hash['event_type_code'].should == '13'
+                event_hash['event_type_code'].should == '7'
               end
 
               it 'has the event type label' do
-                event_hash['event_type_label'].should == 'pregnancy_visit_1'
+                event_hash['event_type_label'].should == 'pregnancy_probability'
               end
 
               it 'knows whether the person is hi or lo' do
@@ -1283,7 +1270,7 @@ module NcsNavigator::Core::Warehouse
               end
 
               it 'has the sort key' do
-                event_hash['sort_key'].should == '2010-09-03:013'
+                event_hash['sort_key'].should == '2010-09-03:007'
               end
             end
 
