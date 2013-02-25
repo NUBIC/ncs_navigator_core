@@ -335,17 +335,6 @@ describe Participant do
           participant.should be_in_pregnancy_probability_group
         end
       end
-
-      describe "given Informed Consent" do
-        it "should be in the consented_low_intensity state" do
-          event = Factory(:event, :event_type => NcsCode.where("list_name = 'EVENT_TYPE_CL1' and local_code = ?", 10).first)
-          participant.set_state_for_event_type(event)
-          participant.should be_consented_low_intensity
-        end
-      end
-
-      describe "given Low Intensity Data Collection"
-
     end
 
     context "with a participant in the in_pregnancy_probability_group state" do
@@ -384,15 +373,6 @@ describe Participant do
           event = Factory(:event, :event_type => NcsCode.where("list_name = 'EVENT_TYPE_CL1' and local_code = ?", 8).first)
           participant.set_state_for_event_type(event)
           participant.should_not be_following_high_intensity
-        end
-
-      end
-
-      describe "given Informed Consent" do
-        it "should be in the consented_low_intensity state" do
-          event = Factory(:event, :event_type => NcsCode.where("list_name = 'EVENT_TYPE_CL1' and local_code = ?", 10).first)
-          participant.set_state_for_event_type(event)
-          participant.should be_consented_low_intensity
         end
       end
 
@@ -529,16 +509,6 @@ describe Participant do
         end
       end
 
-      describe "given Low to High Conversion" do
-        it "should be in the moved_to_high_intensity_arm state" do
-          event = Factory(:event, :event_type => NcsCode.where("list_name = 'EVENT_TYPE_CL1' and local_code = ?", 32).first)
-          participant.set_state_for_event_type(event)
-          participant.should be_high_intensity
-          participant.should be_moved_to_high_intensity_arm
-          participant.should be_in_high_intensity_arm
-        end
-      end
-
     end
 
     context "with a participant in the following_low_intensity state" do
@@ -579,16 +549,6 @@ describe Participant do
           event = Factory(:event, :event_type => NcsCode.where("list_name = 'EVENT_TYPE_CL1' and local_code = ?", 10).first)
           participant.set_state_for_event_type(event)
           participant.should be_following_low_intensity
-        end
-      end
-
-      describe "given Low to High Conversion" do
-        it "should be in the moved_to_high_intensity_arm state" do
-          event = Factory(:event, :event_type => NcsCode.where("list_name = 'EVENT_TYPE_CL1' and local_code = ?", 32).first)
-          participant.set_state_for_event_type(event)
-          participant.should be_high_intensity
-          participant.should be_moved_to_high_intensity_arm
-          participant.should be_in_high_intensity_arm
         end
       end
 
@@ -743,10 +703,12 @@ describe Participant do
           :desired_history_date => '2010-01-01')
         Factory(:ppg_status_history, :participant => participant, :ppg_status => status1)
 
-        participant.ppg_details.should_not be_empty
-        participant.ppg_status_histories.should_not be_empty
-        participant.ppg_status.should == status1
-        participant.ppg_status.should_not == status4
+        pt = Participant.find(participant.id)
+        pt.ppg_details.should_not be_empty
+        pt.ppg_status_histories.should_not be_empty
+        pt.ppg_status.should == status1
+        pt.ppg_status.should_not == status4
+        @previous_status = pt.ppg_status
       end
 
       it "should update the ppg status to 4" do
@@ -755,10 +717,9 @@ describe Participant do
       end
 
       it "should not run the postnatal transitions in importer mode" do
-        previous_status = participant.ppg_status
         Participant.importer_mode do
           participant.birth_event!
-          Participant.find(participant.id).ppg_status.should == previous_status
+          Participant.find(participant.id).ppg_status.should == @previous_status
         end
       end
 
