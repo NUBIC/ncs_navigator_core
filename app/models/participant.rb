@@ -1065,7 +1065,24 @@ class Participant < ActiveRecord::Base
       assign_to_pregnancy_probability_group! if can_assign_to_pregnancy_probability_group?
     when 10
       # Informed Consent
-      low_intensity_consent! if can_low_intensity_consent?
+      if low_intensity?
+        granting_consents = event.match_consents_by_date(participant_consents).select { |c| c.consent_given_code == NcsCode::YES }
+        has_any_consent = !granting_consents.empty?
+        has_hi_consent = granting_consents.any? { |c| [1].include?(c.consent_type_code) || [1, 2, 6].include?(c.consent_form_type_code) }
+
+        Rails.logger.debug("Applying informed consent event #{event.event_id} to lo participant #{p_id}'s state.")
+        Rails.logger.debug("  has_any_consent=#{has_any_consent.inspect} has_hi_consent=#{has_hi_consent.inspect} granting_consents=#{granting_consents.collect(&:public_id).inspect}")
+
+        # Have to have consented to low first
+        if has_any_consent
+          low_intensity_consent! if can_low_intensity_consent?
+        end
+
+        if has_hi_consent
+          move_to_high_intensity_if_required
+        end
+      end
+      # if already hi, do nothing
     when 7, 8
       # Pregnancy Probability
       follow_low_intensity! if can_follow_low_intensity?
@@ -1100,7 +1117,8 @@ class Participant < ActiveRecord::Base
         birth_event! if can_birth_event?
       end
     when 32
-      enroll_in_high_intensity_arm! if can_enroll_in_high_intensity_arm?
+      # The Low-High conversion event itself does not indicate that the person
+      # was converted. Conversion is handled in 10 "Informed Consent".
     when 17, 19, 21, 1, -5
       # Do not correspond to states in state machine
     else
@@ -1395,12 +1413,8 @@ class Participant < ActiveRecord::Base
     end
 
     def move_to_high_intensity_if_required
-      if consented_low_intensity?
-        # if consented to low intensity - assume that this was a consent to high since the
-        # given event is in the high intensity arm
-        enroll_in_high_intensity_arm! if can_enroll_in_high_intensity_arm?
-        high_intensity_conversion! if can_high_intensity_conversion?
-      end
+      enroll_in_high_intensity_arm! if can_enroll_in_high_intensity_arm?
+      high_intensity_conversion! if can_high_intensity_conversion?
     end
 
     ##
