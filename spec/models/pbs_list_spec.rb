@@ -278,5 +278,21 @@ describe PbsList do
     end
   end
 
-end
+  describe "#hospital?" do
+    before do
+      not_hospital = NcsCode.where(:list_name => 'INOUT_FRAME_CL1', :local_code => 1).first.local_code
+      hospital     = NcsCode.where(:list_name => 'INOUT_FRAME_CL1', :local_code => 4).first.local_code
+      @non_hospital_pbs_list = Factory(:pbs_list, :in_out_frame_code => not_hospital)
+      @hospital_pbs_list     = Factory(:pbs_list, :in_out_frame_code => hospital)
+    end
 
+    it "true when in_out_frame_code is a hospital value" do
+      @hospital_pbs_list.hospital?.should be_true
+    end
+
+    it "false when in_out_frame_codde is not a hospital value" do
+      @non_hospital_pbs_list.hospital?.should be_false
+    end
+  end
+
+end

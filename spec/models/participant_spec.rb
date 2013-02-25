@@ -114,7 +114,6 @@ describe Participant do
       pr.next_scheduled_event.event.should == PatientStudyCalendar::HIGH_INTENSITY_PREGNANCY_VISIT_1
       pr.next_scheduled_event.date.should == date
     end
-
   end
 
   context "as mdes record" do
@@ -1523,13 +1522,13 @@ describe Participant do
         @not_first_visit = NcsCode.for_list_name_and_local_code("CONFIRM_TYPE_CL7", 2)
         @provider_in_frame = NcsCode.for_list_name_and_local_code("PROVIDER_OFFICE_ON_FRAME_CL1", 1)
 
-      take_survey(@survey, @response_set) do |a|
-        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.AGE_ELIG", @age_eligible
-        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.PSU_ELIG_CONFIRM", @lives_in_county
-        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.PREGNANT",@pregnant
-        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.FIRST_VISIT", @first_visit
-        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX_PROVIDER_OFFICE}.PROVIDER_OFFICE_ON_FRAME", @provider_out_of_frame
-      end
+        take_survey(@survey, @response_set) do |a|
+          a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.AGE_ELIG", @age_eligible
+          a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.PSU_ELIG_CONFIRM", @lives_in_county
+          a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.PREGNANT",@pregnant
+          a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.FIRST_VISIT", @first_visit
+          a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX_PROVIDER_OFFICE}.PROVIDER_OFFICE_ON_FRAME", @provider_out_of_frame
+        end
 
         @response_set.responses.reload
         @response_set.responses.size.should == 5
@@ -1541,68 +1540,170 @@ describe Participant do
 
       describe "#age_eligible?" do
         it "returns whether participant is age-eligible" do
-          @part.should be_age_eligible(@pers)
+          @part.should be_age_eligible(@pers,"#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}")
         end
 
         it "returns false if participant is not age eligible" do
           take_survey(@survey, @response_set) { |a| a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.AGE_ELIG", @not_age_eligible }
-          @part.should_not be_age_eligible(@pers)
+          @part.should_not be_age_eligible(@pers,"#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}")
         end
       end
 
       describe "#psu_county_eligible?" do
         it "returns whether participant lives in eligible PSU" do
-          @part.should be_psu_county_eligible(@pers)
+          @part.should be_psu_county_eligible(@pers,"#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}")
         end
 
         it "returns false if participant coes not live in an eligible PSU" do
           take_survey(@survey, @response_set) { |a| a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.PSU_ELIG_CONFIRM", @does_not_live_in_county }
-          @part.should_not be_psu_county_eligible(@pers)
+          @part.should_not be_psu_county_eligible(@pers,"#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}")
         end
       end
 
       describe "#pbs_pregnant?" do
         it "returns whether participant is pregnant" do
-          @part.should be_pbs_pregnant(@pers)
+          @part.should be_pbs_pregnant(@pers,"#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}")
         end
 
         it "returns false if they are not pregnant" do
           take_survey(@survey, @response_set) { |a| a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.PREGNANT", @not_pregnant }
-          @part.should_not be_pbs_pregnant(@pers)
+          @part.should_not be_pbs_pregnant(@pers,"#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}")
         end
       end
 
       describe "#first_visit?" do
         it "is this the participants first visit to this provider?" do
-          @part.should be_first_visit(@pers)
+          @part.should be_first_visit(@pers,"#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}")
         end
 
         it "returns false if its not the participant's first visit" do
           take_survey(@survey, @response_set) { |a| a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.FIRST_VISIT", @not_first_visit }
-          @part.should_not be_first_visit(@pers)
+          @part.should_not be_first_visit(@pers,"#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}")
         end
       end
 
       describe "#no_preceding_providers_in_frame?" do
         it "have any of the providers been in-frame" do
-          @part.should be_no_preceding_providers_in_frame(@pers)
+          @part.should be_no_preceding_providers_in_frame(@pers, "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX_PROVIDER_OFFICE}")
         end
 
         it "returns false if there was a former provider in frame" do
           take_survey(@survey, @response_set) { |a| a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX_PROVIDER_OFFICE}.PROVIDER_OFFICE_ON_FRAME", @provider_in_frame }
-          @part.should_not be_no_preceding_providers_in_frame(@pers)
+          @part.should_not be_no_preceding_providers_in_frame(@pers, "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX_PROVIDER_OFFICE}")
         end
 
         it "defaults to true if there are no responses as to whether a former provider was in frame" do
           Response.delete_all
-          @part.should be_no_preceding_providers_in_frame(@pers)
+          @part.should be_no_preceding_providers_in_frame(@pers, "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX_PROVIDER_OFFICE}")
         end
       end
 
       it "returns false if ineligible" do
         take_survey(@survey, @response_set) { |a| a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.PSU_ELIG_CONFIRM", @does_not_live_in_county }
-        @part.should_not be_psu_county_eligible(@pers)
+        @part.should_not be_psu_county_eligible(@pers,"#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}")
         @part.should_not be_eligible
+      end
+    end
+  end
+
+  context "confirming participant eligibility for Birth Cohort" do
+    include SurveyCompletion
+
+    describe "#eligible?" do
+      include_context 'custom recruitment strategy'
+
+      let(:recruitment_strategy) { ProviderBasedSubsample.new }
+
+      before(:each) do
+        NcsNavigatorCore.stub!(:recruitment_type_id).and_return(5)
+        prefix = "#{OperationalDataExtractor::PbsEligibilityScreener::HOSPITAL_INTERVIEW_PREFIX}"
+        provider_prefix = "#{OperationalDataExtractor::PbsEligibilityScreener::HOSPITAL_INTERVIEW_PREFIX_PROVIDER_OFFICE}"
+
+        # participants for Birth Cohort
+        @eligible_person   = Factory(:person)
+        @ineligible_person = Factory(:person)
+        @eligible_participant = Factory(:participant)
+        @ineligible_participant = Factory(:participant)
+        Factory(:participant_person_link, :person => @eligible_person, :participant => @eligible_participant, :relationship_code => 1)
+        Factory(:participant_person_link, :person => @ineligible_person, :participant => @ineligible_participant, :relationship_code => 1)
+        @eligible_participant.stub!(:hospital? => true)
+        @ineligible_participant.stub!(:hospital? => true)
+
+        # ineligible questions
+        negative_age_eligible_question = Factory(:question, :data_export_identifier => prefix + ".AGE_ELIG")
+        negative_psu_county_eligible_question = Factory(:question, :data_export_identifier => prefix + ".PSU_ELIG_CONFIRM")
+        negative_provider_in_frame_question = Factory(:question, :data_export_identifier => provider_prefix + ".PROVIDER_OFFICE_ON_FRAME")
+
+        # ineligible answers
+        ineligible_answer = Factory(:answer, :reference_identifier => 2)
+        ineligible_provider_answer = Factory(:answer, :reference_identifier => 1)
+
+        # ineligible responses
+        @negative_age_eligible_response = Factory(:response, :question => negative_age_eligible_question, :answer => ineligible_answer)
+        @negative_psu_county_eligible_response = Factory(:response, :question => negative_psu_county_eligible_question, :answer => ineligible_answer)
+        @negative_provider_in_frame_response = Factory(:response, :question => negative_provider_in_frame_question, :answer => ineligible_provider_answer)
+
+        # eligible questions
+        positive_age_eligible_question = Factory(:question, :data_export_identifier => prefix + ".AGE_ELIG")
+        positive_psu_county_eligible_question = Factory(:question, :data_export_identifier => prefix + ".PSU_ELIG_CONFIRM")
+        positive_provider_in_frame_question = Factory(:question, :data_export_identifier => provider_prefix + ".PROVIDER_OFFICE_ON_FRAME")
+
+        #eligible answers
+        eligible_provider_answer = Factory(:answer, :reference_identifier => 3)
+        eligible_answer   = Factory(:answer, :reference_identifier => 1)
+
+        # eligible responses
+        @positive_age_eligible_response = Factory(:response, :question => positive_age_eligible_question, :answer => eligible_answer)
+        @positive_psu_county_eligible_response = Factory(:response, :question => positive_psu_county_eligible_question, :answer => eligible_answer)
+        @positive_provider_in_frame_response = Factory(:response, :question => positive_provider_in_frame_question, :answer => eligible_provider_answer)
+      end
+
+      context "A person is ineligible when they have" do
+        it "no responses for eligiblity questions (except provider frame questions)" do
+          @ineligible_participant.eligible?.should be_false
+        end
+
+        it "all ineligible responses" do
+          all_ineligible_response_set = Factory(:response_set, :person => @ineligible_person)
+
+          @negative_age_eligible_response.update_attribute(:response_set, all_ineligible_response_set)
+          @negative_psu_county_eligible_response.update_attribute(:response_set, all_ineligible_response_set)
+          @negative_provider_in_frame_response.update_attribute(:response_set, all_ineligible_response_set)
+
+          @ineligible_participant.eligible?.should be_false
+        end
+
+        it "multiple ineligible responses" do
+          multiple_ineligible_response_set = Factory(:response_set, :person => @ineligible_person)
+
+          @positive_age_eligible_response.update_attribute(:response_set, multiple_ineligible_response_set)
+          @negative_psu_county_eligible_response.update_attribute(:response_set, multiple_ineligible_response_set)
+          @negative_provider_in_frame_response.update_attribute(:response_set, multiple_ineligible_response_set)
+
+          @ineligible_participant.eligible?.should be_false
+        end
+
+        it "even one ineligible response" do
+          one_ineligible_response_set = Factory(:response_set, :person => @ineligible_person)
+
+          @positive_age_eligible_response.update_attribute(:response_set, one_ineligible_response_set)
+          @positive_psu_county_eligible_response.update_attribute(:response_set, one_ineligible_response_set)
+          @negative_provider_in_frame_response.update_attribute(:response_set, one_ineligible_response_set)
+
+          @ineligible_participant.eligible?.should be_false
+        end
+      end
+
+      context "A person is eligible when they have" do
+        it "all eligible responses" do
+          eligible_response_set = Factory(:response_set, :person => @eligible_person)
+
+          @positive_age_eligible_response.update_attribute(:response_set, eligible_response_set)
+          @positive_psu_county_eligible_response.update_attribute(:response_set, eligible_response_set)
+          @positive_provider_in_frame_response.update_attribute(:response_set, eligible_response_set)
+
+          @eligible_participant.eligible?.should be_true
+        end
       end
     end
   end
@@ -1800,11 +1901,7 @@ describe Participant do
     end
   end
 
-  describe "determining if participants are from a hospital" do
-    before do
-
-    end
-
+  context "determining if participants are from a hospital" do
     describe ".in_hospital" do
       before do
         @participant1 = Factory(:participant)
@@ -1861,6 +1958,37 @@ describe Participant do
         @participant.should_not be_hospital
       end
     end
-
   end
+
+  context "hospital (Birth Cohort) participant completing screener" do
+
+    describe "#update_state_after_survey" do
+
+      before do
+        @participant = Factory(:participant, :high_intensity => true)
+        survey = Factory(:survey, :title => "INS_QUE_PBSampScreenHosp_INT_M3.2_V1.0")
+        @response_set = Factory(:response_set, :survey => survey)
+        @psc = double("PatientStudyCalendar")
+        @psc.stub!(:update_subject => true) # this method is irrelevant in this test case
+        @participant.high_intensity_conversion!
+      end
+
+      context "participant who completed hospital screener" do
+        before do
+          @participant.stub!(:should_be_screened? => false)
+        end
+
+        it "state is ready for birth afterwards" do
+          @participant.update_state_after_survey(@response_set, @psc)
+          @participant.state.should == "ready_for_birth"
+        end
+
+        it "next study segment is birth" do
+          @participant.update_state_after_survey(@response_set, @psc)
+          @participant.next_study_segment.should == "Child: Child"
+        end
+      end
+    end
+  end
+
 end
