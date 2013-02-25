@@ -35,6 +35,7 @@ class PatientStudyCalendar
   PREGNANCY_VISIT_1     = "Pregnancy Visit 1"
   PREGNANCY_VISIT_2     = "Pregnancy Visit 2"
   CHILD                 = "Child"
+  BIRTH_COHORT          = "Birth Cohort"
 
   # Low Intensity Epoch and Segments
   LOW_INTENSITY_PREGNANCY_SCREENER    = "#{LOW_INTENSITY}: #{PREGNANCY_SCREENER}"
@@ -52,6 +53,9 @@ class PatientStudyCalendar
 
   # PBS Eligibility Epoch and Segment
   PBS_ELIGIBILITY_SCREENER = "#{PBS_ELIGIBILITY}: #{PBS_ELIGIBILITY}"
+
+  # Birth Cohort Segment
+  BIRTH_COHORT_SCREENING = "#{PBS_ELIGIBILITY}: #{BIRTH_COHORT}"
 
   # Birth and Post-Natal Epoch and Segment
   CHILD_CHILD = "#{CHILD_EPOCH}: #{CHILD}"

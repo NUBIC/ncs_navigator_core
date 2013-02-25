@@ -67,6 +67,10 @@ class PbsList < ActiveRecord::Base
     where(:in_out_frame_code => HOSPITAL_VALUES)
   end
 
+  def hospital?
+    HOSPITAL_VALUES.include?(in_out_frame_code)
+  end
+
   def recruitment_started?
     !self.pr_recruitment_start_date.blank? && self.pr_recruitment_status_code == 3
   end
