@@ -229,6 +229,10 @@ class Participant < ActiveRecord::Base
       transition [:pregnancy_one, :pregnancy_two, :ready_for_birth] => :parenthood
     end
 
+    event :birth_cohort do
+      transition :converted_high_intensity => :ready_for_birth
+    end
+
   end
 
   ##
@@ -286,6 +290,12 @@ class Participant < ActiveRecord::Base
       assign_to_pregnancy_probability_group! if can_assign_to_pregnancy_probability_group?
     end
 
+    if /_PBSampScreenHosp_/ =~ survey_title
+      psc.update_subject(self)
+      assign_to_pregnancy_probability_group! if can_assign_to_pregnancy_probability_group?
+      birth_cohort!
+    end
+
     if /_LIPregNotPreg_/ =~ survey_title && can_follow_low_intensity?
       follow_low_intensity!
     end
@@ -303,12 +313,12 @@ class Participant < ActiveRecord::Base
       if low_intensity? &&
          can_impregnate_low? &&
          !due_date_is_greater_than_follow_up_interval(most_recent_contact.contact_date_date)
-        impregnate_low!
+         impregnate_low!
       end
 
       if high_intensity? &&
          can_impregnate?
-        impregnate!
+         impregnate!
       end
     end
 
@@ -589,7 +599,7 @@ class Participant < ActiveRecord::Base
 
         if high_intensity? &&
          can_impregnate?
-        impregnate!
+         impregnate!
         end
       end
 
@@ -1055,7 +1065,24 @@ class Participant < ActiveRecord::Base
       assign_to_pregnancy_probability_group! if can_assign_to_pregnancy_probability_group?
     when 10
       # Informed Consent
-      low_intensity_consent! if can_low_intensity_consent?
+      if low_intensity?
+        granting_consents = event.match_consents_by_date(participant_consents).select { |c| c.consent_given_code == NcsCode::YES }
+        has_any_consent = !granting_consents.empty?
+        has_hi_consent = granting_consents.any? { |c| [1].include?(c.consent_type_code) || [1, 2, 6].include?(c.consent_form_type_code) }
+
+        Rails.logger.debug("Applying informed consent event #{event.event_id} to lo participant #{p_id}'s state.")
+        Rails.logger.debug("  has_any_consent=#{has_any_consent.inspect} has_hi_consent=#{has_hi_consent.inspect} granting_consents=#{granting_consents.collect(&:public_id).inspect}")
+
+        # Have to have consented to low first
+        if has_any_consent
+          low_intensity_consent! if can_low_intensity_consent?
+        end
+
+        if has_hi_consent
+          move_to_high_intensity_if_required
+        end
+      end
+      # if already hi, do nothing
     when 7, 8
       # Pregnancy Probability
       follow_low_intensity! if can_follow_low_intensity?
@@ -1090,7 +1117,8 @@ class Participant < ActiveRecord::Base
         birth_event! if can_birth_event?
       end
     when 32
-      enroll_in_high_intensity_arm! if can_enroll_in_high_intensity_arm?
+      # The Low-High conversion event itself does not indicate that the person
+      # was converted. Conversion is handled in 10 "Informed Consent".
     when 17, 19, 21, 1, -5
       # Do not correspond to states in state machine
     else
@@ -1137,32 +1165,56 @@ class Participant < ActiveRecord::Base
     NcsNavigatorCore.recruitment_strategy.pbs? ? eligible_for_pbs? : has_eligible_ppg_status?
   end
 
+  def eligible?
+    if NcsNavigatorCore.recruitment_strategy.pbs? && !hospital?
+      eligible_for_pbs?
+    elsif NcsNavigatorCore.recruitment_strategy.pbs? && hospital?
+      eligible_for_birth_cohort?
+    else
+      has_eligible_ppg_status?
+    end
+  end
+
   def eligible_for_pbs?
     eligible = []
     person = ParticipantPersonLink.where(:participant_id => self.id, :relationship_code => 1).first.person
+    prefix = "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}"
+    providers_in_frame_prefix = "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX_PROVIDER_OFFICE}"
 
     eligibility_determination = [:age_eligible?,
                                  :psu_county_eligible?,
                                  :pbs_pregnant?,
-                                 :first_visit?,
-                                 :no_preceding_providers_in_frame?]
-    eligibility_determination.all? { |ed| self.send(ed, person) }
+                                 :first_visit?]
+    eligibility_determination.all? { |ed| self.send(ed, person, prefix) } &&
+    self.send(:no_preceding_providers_in_frame?, person, providers_in_frame_prefix)
   end
 
-  def age_eligible?(person)
-    eligible_for?(person, "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.AGE_ELIG")
+  def eligible_for_birth_cohort?
+    eligible = []
+    person = ParticipantPersonLink.where(:participant_id => self.id, :relationship_code => 1).first.person
+    prefix = "#{OperationalDataExtractor::PbsEligibilityScreener::HOSPITAL_INTERVIEW_PREFIX}"
+    providers_in_frame_prefix = "#{OperationalDataExtractor::PbsEligibilityScreener::HOSPITAL_INTERVIEW_PREFIX_PROVIDER_OFFICE}"
+
+    eligibility_determination = [:age_eligible?,
+                                 :psu_county_eligible?]
+    eligibility_determination.all? { |ed| self.send(ed, person, prefix) } &&
+    self.send(:no_preceding_providers_in_frame?, person, providers_in_frame_prefix)
   end
 
-  def psu_county_eligible?(person)
-    eligible_for?(person, "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.PSU_ELIG_CONFIRM")
+  def age_eligible?(person, prefix)
+    eligible_for?(person, prefix, "AGE_ELIG")
   end
 
-  def pbs_pregnant?(person)
-    eligible_for?(person, "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.PREGNANT")
+  def psu_county_eligible?(person, prefix)
+    eligible_for?(person, prefix, "PSU_ELIG_CONFIRM")
   end
 
-  def first_visit?(person)
-    eligible_for?(person, "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.FIRST_VISIT")
+  def pbs_pregnant?(person, prefix)
+    eligible_for?(person, prefix, "PREGNANT")
+  end
+
+  def first_visit?(person, prefix)
+    eligible_for?(person, prefix, "FIRST_VISIT")
   end
 
   ##
@@ -1172,15 +1224,18 @@ class Participant < ActiveRecord::Base
   # @param[Person, nil] Person the person associated with the participant
   # @param[String] data_export_identifier for question
   # @return[Boolean]
-  def eligible_for?(person, data_export_identifier)
+  def eligible_for?(person, prefix, reference_identifier)
+    data_export_identifier = prefix + "." + reference_identifier
     most_recent_response = person.responses_for(data_export_identifier).last
     most_recent_response.try(:answer).try(:reference_identifier) == "1"
   end
   private :eligible_for?
 
-  def no_preceding_providers_in_frame?(person)
+  def no_preceding_providers_in_frame?(person, prefix)
     answers = []
-    rsps = person.responses_for("#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX_PROVIDER_OFFICE}.PROVIDER_OFFICE_ON_FRAME").all
+    reference_identifier ="PROVIDER_OFFICE_ON_FRAME"
+    data_export_identifier = prefix + "." + reference_identifier
+    rsps = person.responses_for(data_export_identifier).all
     rsps.each { |rsp| answers << rsp.answer.reference_identifier } if rsps != nil
     return true if rsps == nil
     answers.any? { |a| a == "1" } ? false : true
@@ -1247,7 +1302,7 @@ class Participant < ActiveRecord::Base
 
     def screener_instrument
       if NcsNavigatorCore.recruitment_strategy.pbs?
-        PatientStudyCalendar::PBS_ELIGIBILITY_SCREENER
+        self.hospital? ? PatientStudyCalendar::BIRTH_COHORT_SCREENING : PatientStudyCalendar::PBS_ELIGIBILITY_SCREENER
       else
         PatientStudyCalendar::LOW_INTENSITY_PREGNANCY_SCREENER
       end
@@ -1358,12 +1413,8 @@ class Participant < ActiveRecord::Base
     end
 
     def move_to_high_intensity_if_required
-      if consented_low_intensity?
-        # if consented to low intensity - assume that this was a consent to high since the
-        # given event is in the high intensity arm
-        enroll_in_high_intensity_arm! if can_enroll_in_high_intensity_arm?
-        high_intensity_conversion! if can_high_intensity_conversion?
-      end
+      enroll_in_high_intensity_arm! if can_enroll_in_high_intensity_arm?
+      high_intensity_conversion! if can_high_intensity_conversion?
     end
 
     ##

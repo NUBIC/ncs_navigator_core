@@ -114,7 +114,7 @@ module NcsNavigator::Core::Warehouse
       ordered_event_sets.each do |p_id, events_and_links|
         Participant.transaction do
           Participant.importer_mode do
-            participant = Participant.where(:p_id => p_id).first
+            participant = Participant.where(:p_id => p_id).includes(:participant_consents).first
 
             for_psc = (participant.being_followed && participant.p_type_code != 6)
             @sync_loader.cache_participant(participant) if for_psc
@@ -125,9 +125,7 @@ module NcsNavigator::Core::Warehouse
             events_and_links.each do |event_and_links|
               core_event = apply_mdes_record_to_core(Event, event_and_links[:event])
 
-              if should_affect_participant_state?(participant, core_event)
-                participant.set_state_for_event_type(core_event)
-              end
+              participant.set_state_for_event_type(core_event)
 
               @sync_loader.cache_event(core_event, participant) if for_psc
 
@@ -157,23 +155,6 @@ module NcsNavigator::Core::Warehouse
       end
     ensure
       drop_state_impacting_ids_table
-    end
-
-    def should_affect_participant_state?(core_participant, core_event)
-      return false unless core_event.new_record?
-      # low-high conversion
-      if core_event.event_type_code == 32
-        # only apply if eventually consented
-        results = ::DataMapper.repository.adapter.select(<<-SQL)
-          SELECT COUNT(*) hi_consents FROM participant_consent
-          WHERE p_id='#{core_participant.p_id}'
-            AND (consent_type='1' OR consent_form_type='1')
-            AND consent_given='1'
-        SQL
-        results.first > 0
-      else
-        true
-      end
     end
 
     STATE_IMPACTING_IDS_TABLE_NAME = 'scratch_core_importer_state_impacting_elci'
@@ -324,8 +305,7 @@ module NcsNavigator::Core::Warehouse
                 ordinal = Event::TYPE_ORDER.index(e.event_type.to_i) ||
                   fail("No ordinal for event_type #{e.event_type}")
                 [
-                  # 32 is low-high conversion
-                  e.event_type == '32' ? latest_date(*dates) : earliest_date(*dates),
+                  earliest_date(*dates),
                   ordinal
                 ]
               }

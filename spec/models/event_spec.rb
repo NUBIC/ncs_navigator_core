@@ -1028,4 +1028,63 @@ describe Event do
     end
 
   end
+
+  describe '#match_consents_by_date' do
+    let(:event) {
+      Factory(:event,
+        :event_start_date => Date.new(2010, 3, 1),
+        :event_end_date => Date.new(2010, 4, 1),
+        :participant => event_participant
+      )
+    }
+
+    let(:event_participant) { Factory(:participant, :participant_consents => [event_participant_consent]) }
+    let(:event_participant_consent) { Factory(:participant_consent, :consent_date => Date.new(2010, 3, 15)) }
+
+    let(:consent_feb) { Factory(:participant_consent, :consent_date => Date.new(2010, 2, 15)) }
+    let(:consent_mar) { Factory(:participant_consent, :consent_date => Date.new(2010, 3, 15)) }
+    let(:consent_apr) { Factory(:participant_consent, :consent_date => Date.new(2010, 4, 15)) }
+
+    let(:consents) { [consent_feb, consent_mar, consent_apr] }
+
+    it 'considers the consents for the associated participant if none given' do
+      event.match_consents_by_date.first.should be event_participant_consent
+    end
+
+    it 'considers only the given consents if any given' do
+      event.match_consents_by_date(consents).first.should be consent_mar
+    end
+
+    let(:matches) { event.match_consents_by_date(consents) }
+
+    it 'finds just the consents within the date range for the event' do
+      matches.should == [consent_mar]
+    end
+
+    it 'includes consents on the start date' do
+      event.event_start_date = consent_feb.consent_date
+      matches.should == [consent_feb, consent_mar]
+    end
+
+    it 'includes consents on the end date' do
+      event.event_end_date = consent_apr.consent_date
+      matches.should == [consent_mar, consent_apr]
+    end
+
+    it 'treats a nil start date as unbounded into the past' do
+      event.event_start_date = nil
+      matches.should == [consent_feb, consent_mar]
+    end
+
+    it 'treats a nil end date as unbounded into the future' do
+      event.event_end_date = nil
+      matches.should == [consent_mar, consent_apr]
+    end
+
+    it 'does not include consents without a consent date' do
+      event.event_start_date = Date.new(2010, 2, 1)
+      consent_mar.consent_date = nil
+      matches.should == [consent_feb]
+    end
+  end
 end

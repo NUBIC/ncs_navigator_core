@@ -869,4 +869,21 @@ class Event < ActiveRecord::Base
 
   end
 
+  ##
+  # Returns the consents which were signed within the date range for this event.
+  #
+  # @param [Array<ParticipantConsent>] the consents to check. This parameter is
+  #   to enable caching of the consents list when matching across a series of
+  #   events; if it is omitted, the event's associated participant's consents
+  #   will be used.
+  #
+  # @return [Array<ParticipantConsent>]
+  def match_consents_by_date(consents=self.participant.participant_consents)
+    start = event_start_date || Date.new(0, 1, 1) # Date::Infinity.new(-1) does not work
+    stop = event_end_date || Date::Infinity.new
+    bounds = (start..stop)
+
+    consents.select { |c| bounds.cover?(c.consent_date) }
+  end
+
 end
