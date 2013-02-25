@@ -9,9 +9,7 @@ class ProvidersController < ApplicationController
     params[:q] ||= Hash.new
     params[:q]['s'] ||= "name_practice asc"
 
-    @q = Provider.search(params[:q])
-    result = @q.result(:distinct => true)
-    @providers = result.paginate(:page => params[:page], :per_page => 20)
+    @q, @providers = ransack_paginate(Provider)
 
     respond_to do |format|
       format.html

@@ -23,6 +23,19 @@ describe ProvidersController do
       let(:provider2) { Factory(:provider, :name_practice => "provider2") }
       let(:provider3) { Factory(:provider, :name_practice => "provider3") }
 
+      # id sort for paginate
+      it "defaults to sorting providers by name then id" do 
+        get :index
+        assigns(:q).sorts[0].name.should == "name_practice"
+        assigns(:q).sorts[1].name.should == "id"
+      end
+      
+      it "performs user selected sort first; id second" do 
+        get :index, :q => { :s => "name_practice desc" }
+        assigns(:q).sorts[0].name.should == "name_practice"
+        assigns(:q).sorts[1].name.should == "id"
+      end
+
       describe "without search parameters" do
 
         before do

@@ -17,6 +17,21 @@ describe ContactLinksController do
       login(user_login)
     end
 
+    describe "GET index" do 
+      
+      # id sort for paginate
+      it "defaults to sorting contact links by id" do 
+        get :index
+        assigns(:q).sorts[0].name.should == "id"
+      end
+      
+      it "performs user selected sort first; id second" do 
+        get :index, :q => { :s => "person_last_name asc" }
+        assigns(:q).sorts[0].name.should == "person_last_name"
+        assigns(:q).sorts[1].name.should == "id"
+      end
+    end
+
     describe "GET select_instrument" do
 
     	context do

@@ -98,4 +98,11 @@ class ApplicationController < ActionController::Base
       end
       person.participant? ? participant_path(person.participant) : person_path(person)
     end
+
+    def ransack_paginate(model)
+      q = model.search(params[:q])
+      q.sorts = 'id'
+      page = q.result.paginate(:page => params[:page], :per_page => 20)
+      [q, page]
+    end
 end
