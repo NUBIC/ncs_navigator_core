@@ -1,8 +1,6 @@
 class SetPscIdealDateOnEvents < ActiveRecord::Migration
   def up
-    Event.all.each do |e|
-      e.update_attribute(:psc_ideal_date, e.event_start_date) if e.psc_ideal_date.blank?
-    end
+    execute("UPDATE events SET psc_ideal_date = event_start_date")
   end
 
   def down
