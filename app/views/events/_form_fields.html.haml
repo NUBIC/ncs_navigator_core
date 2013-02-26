@@ -4,17 +4,6 @@
 
   = render "shared/ncs_code_select", { :f => f, :code => :event_type_code, :label_text => "Event Type", :other => :event_type_other, :help_text => "events/event_event_type_tooltip", :html_attrs => { :disabled => 'disabled' } }
 
-  - if permit?(Role::SYSTEM_ADMINISTRATOR)
-    %p
-      %a{ :href => "javascript:void(0);", :class => "toggle_enable_link icon_link", :id => "enable_event_psc_ideal_date" }
-        Enable PSC Ideal Date
-      %a{ :href => "javascript:void(0);", :class => "toggle_disable_link icon_link", :id => "disable_event_psc_ideal_date" }
-        Disable PSC Ideal Date
-      %br
-      = f.label :psc_ideal_date, "PSC Ideal Date"
-      %br
-      = f.text_field :psc_ideal_date, :class => "datepicker", :disabled => 'disabled'
-
   = render "shared/ncs_code_select", { :f => f, :code => :event_disposition_category_code, :label_text => "Disposition Category" }
   = render "shared/disposition_code", { :f => f, :code => :event_disposition, :notify_marker => true }
 
