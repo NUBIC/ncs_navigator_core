@@ -1,7 +1,492 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<study xmlns="http://bioinformatics.northwestern.edu/ns/psc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" assigned-identifier="NCS Hi-Lo" last-modified-date="2013-02-08T13:52:41.764Z" xsi:schemaLocation="http://bioinformatics.northwestern.edu/ns/psc http://bioinformatics.northwestern.edu/ns/psc/psc.xsd">
+<study xmlns="http://bioinformatics.northwestern.edu/ns/psc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" assigned-identifier="NCS Hi-Lo" last-modified-date="2013-02-26T14:04:23.101Z" xsi:schemaLocation="http://bioinformatics.northwestern.edu/ns/psc http://bioinformatics.northwestern.edu/ns/psc/psc.xsd">
   <planned-calendar id="80f00ffd-5454-4193-aca5-23f289a22e9a"/>
+  <amendment name="Rev 38" date="2013-02-26" mandatory="true" released-date="2013-02-26T14:04:23.101Z" updated-date="2013-02-26T14:04:03.26Z" previous-amendment-key="2013-02-08~Rev 37">
+    <planned-activity-delta id="2ebe3d71-7b95-4531-b814-1001e00b3707" node-id="df1ceee2-0b0d-45ad-9a5d-982c15738817">
+      <property-change id="9f2639ff-0143-4cc7-9b17-6876b94cd7ac" property-name="day" old-value="1" new-value="1"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="ac076049-82f4-48a9-aa9b-fdd77aeb9a21" node-id="2b68bb5c-edde-4510-81c8-b962704bc968">
+      <property-change id="7dbb5596-8a7f-4cb0-9632-a9a7c4759873" property-name="day" old-value="1" new-value="1"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="df1726ac-03fe-45ed-a41a-1261b683d1b2" node-id="bbb8de5c-a025-4b4c-b7d2-577a96551263">
+      <property-change id="021dfe23-32f3-410a-83bf-d5f453a58835" property-name="day" old-value="1" new-value="1"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="e3cacb95-e036-40f1-b7c5-ed2c573c425f" node-id="0fd3ef61-49ce-49dc-aa70-b23e01428ae8">
+      <property-change id="759cda36-f344-46b8-8584-c93008257bb6" property-name="day" old-value="1" new-value="1"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="cb89f13c-e395-48c5-b4e5-feead7114623" node-id="3613113a-fae4-4af4-b6f0-c30ae09a67b2">
+      <property-change id="060a650f-e7a7-4388-80b1-d47d18f1b5ca" property-name="day" old-value="1" new-value="1"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="a3ba9845-90e3-4032-b394-d3d3a5ca70f0" node-id="2690f0c5-936f-49cb-8be2-e02e832d6105">
+      <property-change id="62fe2ae5-8103-4f91-94fc-de2e82546d1e" property-name="day" old-value="1" new-value="1"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="c4755749-5a5e-4ee0-9c1c-572cc3c9f020" node-id="32d4d5e0-36d2-4fe5-ad01-53c7cdb1d87f">
+      <property-change id="aca03dc4-dc29-4429-8fc2-4307c1fb449f" property-name="day" old-value="1" new-value="1"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="b41ad4aa-3090-4341-88d1-01feb9b0596a" node-id="018502ad-a622-4db4-9f12-8ec5ac2f6f50">
+      <property-change id="078bddec-24c3-49de-a883-37075f00979f" property-name="day" old-value="1" new-value="1"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="09894f4a-bf6f-4402-831f-e8d54c4cc719" node-id="023c7f19-a172-4700-864f-f825f14eea5a">
+      <property-change id="8462c438-34fe-48ef-818b-8de8707c541a" property-name="day" old-value="1" new-value="1"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="745362d4-3d41-4833-acc9-ed92098df2bf" node-id="3ff90782-a30e-425f-96ad-2ea589c756fc">
+      <property-change id="ad81d608-be1f-414b-b7b4-ad3f62c02f97" property-name="day" old-value="1" new-value="1"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="248d826f-afcb-4529-877c-2453f57da391" node-id="c6ca0a71-c3c0-48b8-af52-77bd246c0992">
+      <property-change id="e8c94a50-d1fc-4bdb-b2cb-100707230289" property-name="day" old-value="1" new-value="1"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="221f7a59-fe9a-409e-af51-5d26aebe8d05" node-id="cad092e0-5863-44ee-9439-506bf34c1a97">
+      <property-change id="dd2caeea-7cf0-45e0-88d2-d1d920f6bbb7" property-name="day" old-value="1" new-value="1"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="9422264b-b1f1-4c8c-87e2-050ec70315f6" node-id="803eaa20-6a1d-4e39-807d-fa2eba112ba9">
+      <property-change id="f3a75f6d-c8ad-4ed7-bb95-f726b1864e3c" property-name="day" old-value="1" new-value="1"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="8c24d318-d7be-440a-8fd6-41704f731328" node-id="e40443d8-b9d0-47d1-a676-10417a0d5179">
+      <property-change id="35000c09-4e78-4731-8dc9-c8e3d30d2464" property-name="day" old-value="1" new-value="1"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="4fee9da8-9525-46d7-a38b-1e00e6871f4f" node-id="3a9323d6-7435-49ec-9f99-722a3c7b9be4">
+      <property-change id="fa94478c-bd9f-425f-9ae1-b59b4712f042" property-name="day" old-value="1" new-value="1"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="b2fa4c6e-66e2-4229-a12a-ec68adc488a9" node-id="2543d77d-d3c4-49f9-92b3-df3753a675de">
+      <property-change id="0435ab75-f01d-4420-b381-1e3823f1c521" property-name="day" old-value="1" new-value="1"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="417ae4b9-8c8a-47a5-b172-abc7b1e7c936" node-id="920d662a-5a70-4b64-880e-dd1511496caf">
+      <property-change id="2b57b760-bb8a-46c0-9902-cc4a5f2d9508" property-name="day" old-value="1" new-value="1"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="6d44b535-72b5-448e-b207-0e5b56f1cfd3" node-id="fa8ccc94-9353-4819-ad59-e33301c6062a">
+      <property-change id="a4854f23-a655-48dd-986b-9a2557574188" property-name="day" old-value="1" new-value="1"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="39b4e714-a965-45c2-954f-82c84f456b34" node-id="622ba200-cc5e-42ca-a513-774141eeab7e">
+      <property-change id="ec951951-e4ea-4172-a7df-9238403df82c" property-name="day" old-value="1" new-value="1"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="51f817fd-b912-4d1d-b5e0-705393f81fef" node-id="0a1cbb16-b7a1-436b-8560-0ec97d73e21c">
+      <property-change id="9c333ee3-5537-4b9b-8125-ad9e9355cdf8" property-name="day" old-value="1" new-value="1"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="64e18bee-0d18-49f7-9944-48a2d56e2298" node-id="85a29718-afd3-4965-b1a6-5d509d57734f">
+      <property-change id="76522f48-176a-4892-a9c1-a0719997bf3d" property-name="day" old-value="1" new-value="1"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="ee2a5e24-1a5c-4cd5-a52f-6cf088b93daf" node-id="81956a56-e5c0-4c15-ba7b-386dec3697e9">
+      <property-change id="83122f96-a3a9-4104-a9db-9b29ed1fef7a" property-name="day" old-value="1" new-value="1"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="e527e15c-7253-4ef1-b82c-9da619cdc85e" node-id="39ba335d-b52e-48e6-8e5c-41768f2e4377">
+      <property-change id="1e8a400e-b04c-4f0f-9d3b-5fe2970bc1c6" property-name="day" old-value="1" new-value="1"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="f04bb003-c5d6-417a-822f-62f649583df4" node-id="99aa3b3b-e262-4385-881b-49a23fc47a13">
+      <property-change id="54fb40ab-188b-4e6a-a30b-151b4b010ffe" property-name="day" old-value="1" new-value="1"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="97bdb25c-b0a3-4155-9f4d-a65492d2d68c" node-id="8f7b2974-7cd6-4e14-887c-56d96f632608">
+      <property-change id="6590fd99-7f24-4d88-a734-01e06e4218dc" property-name="day" old-value="1" new-value="1"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="0db9abcb-29db-478f-a95e-1df0083d08d6" node-id="aee4d64b-7e08-4ec4-8667-4711c9e48cc7">
+      <property-change id="ccb9bdb1-5ce2-46c0-8e3a-44aeba6630c3" property-name="day" old-value="1" new-value="1"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="408dcc0a-973c-4e4f-bba9-e415dd19fdc4" node-id="5ea073b8-6c3d-4ad2-acd2-7095cb760bf9">
+      <property-change id="4c7d8599-59e3-47a7-814e-b27e3d6e16ab" property-name="day" old-value="1" new-value="1"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="a725db11-7155-4e3d-b9f5-6135f673e838" node-id="c2edce44-60d5-4aed-8f6e-b38388fdfc0b">
+      <property-change id="a3f3d042-94ab-4b31-ac34-6f0af2fbcad2" property-name="day" old-value="1" new-value="1"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="d0722566-0563-4538-99b7-c3bf74952bea" node-id="329ccd6b-d366-4e81-86e4-e5ea853111e0">
+      <property-change id="adc2bd5f-d178-446b-8692-0d98f4b8a02d" property-name="day" old-value="1" new-value="1"/>
+      <remove id="68e52a7c-0929-4348-93f8-4fd33434c4f6" child-id="aaf7ba25-4f1f-4aa4-8502-b8bd8af3fd34"/>
+      <add id="c835435c-fb36-4a8c-926c-af78c2a6fa0b">
+        <label id="ace7baa8-bf45-4447-91db-5b02c7bb16fe" name="order:94_01"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="e7b9a2a9-39d0-4fd3-9df3-a7334a6ca05c" node-id="03a14417-4d1b-4243-938b-af7dcf44771d">
+      <property-change id="013f4158-689e-4a3b-b047-b0f8b75784b2" property-name="day" old-value="1" new-value="1"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="4c52a90c-7200-48ab-a224-1b525064697a" node-id="2eab7a03-9e0b-449f-82c4-9087b705ff29">
+      <property-change id="02928f1a-5190-4aae-a9ae-52a68b7c5569" property-name="day" old-value="1" new-value="1"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="33c84fe9-454f-4de5-b626-edffac553018" node-id="94b28d6d-a769-45dd-a0a3-de5a93bf76f9">
+      <property-change id="247cdaa2-9a64-4803-9976-b0cffcf60f37" property-name="day" old-value="1" new-value="1"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="f4d6681d-0d15-40d3-adb8-9d27bf2fbd57" node-id="52c7cd03-c066-468f-967c-6022601c608d">
+      <property-change id="b327dfb0-c843-4ee8-b8bd-157d88fd6597" property-name="day" old-value="1" new-value="1"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="39567bcf-9471-4aea-a19e-4b0c0443265d" node-id="3300cff6-43d5-42fb-b143-b36d91438a50">
+      <property-change id="0569012e-8c85-4d72-84a9-e7d77a612976" property-name="day" old-value="1" new-value="1"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="233b0de6-0f40-4a33-8539-169a1242c994" node-id="e0149f26-2fd8-4be0-9f4c-45ec3ace25ca">
+      <property-change id="bd531a1b-1d5a-4738-9b71-2c26d89791ef" property-name="day" old-value="1" new-value="1"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="44d2df69-bb9f-440c-bfce-702fbbdde2e3" node-id="c767a6de-4bc5-4143-b76d-59439ec82a63">
+      <property-change id="0f2d451a-ced8-420e-bc2f-8cb1d3fe7c88" property-name="day" old-value="1" new-value="1"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="f54f65ce-295a-403a-81f8-6ab2d164ca02" node-id="30a79ffb-f7de-41dd-841e-0f8ca6a97c0c">
+      <property-change id="c64a11ba-9a6b-4086-9be3-883cc440804b" property-name="day" old-value="1" new-value="1"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="4647d2d6-b34a-455b-a7c5-e288403e2b23" node-id="f75e6c58-4bb2-4330-81c5-ff5d6dd2c9d0">
+      <property-change id="6f5cee5f-ec7b-4f91-9dc8-5a0c17b0b221" property-name="day" old-value="1" new-value="1"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="16963e39-3b27-4295-be88-b83449afc9d0" node-id="46ce7427-6039-4393-89f5-9ed5a8b39826">
+      <property-change id="d93ff16a-9165-49f4-b733-b1bd2e6bd48f" property-name="day" old-value="1" new-value="1"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="da060633-9a2f-4847-bb2d-21eb29b2d417" node-id="1c5d3b15-57e5-4cce-b933-c354b4e71238">
+      <property-change id="b5ea3507-1862-4aad-b026-09ac5480146e" property-name="day" old-value="1" new-value="1"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="4e0773f3-2b93-43e0-94a2-16d28e5df9e6" node-id="152543e8-313e-43bf-9125-432893b19e70">
+      <property-change id="3fcb5a97-2992-45f4-8156-cd0922bfad28" property-name="day" old-value="1" new-value="1"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="499da37b-5012-43a8-b61a-d9c784ac26ab" node-id="6bb3cb8e-5e47-42e7-9b00-352106c9bfb5">
+      <property-change id="0e12f2ff-a8b8-4b8b-ac83-d83820b9f58e" property-name="day" old-value="1" new-value="1"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="fe2888c2-df17-4a4e-8bb3-124480bab924" node-id="93589159-2493-4d02-9c7c-dc253692bd80">
+      <property-change id="0356ad05-6520-4af5-9c03-0bbf9b6a19b2" property-name="day" old-value="1" new-value="1"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="41e2bceb-8919-4635-acff-c66c6de6a945" node-id="4a3ec00c-7aeb-489e-9f54-acf445219ece">
+      <property-change id="132b33af-ac2f-47e2-b562-db3e8717de32" property-name="day" old-value="1" new-value="1"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="cf44557e-e10f-431e-bc70-c3afb8e8ce30" node-id="435c01f9-f55f-4621-b12c-4475d4decca6">
+      <property-change id="487be540-9add-463b-8a06-0c9c61800c3f" property-name="day" old-value="1" new-value="1"/>
+      <remove id="b4710f30-fd93-4f05-bcf7-7d75c707bccf" child-id="ab0486a0-6c80-4575-ae6a-fd3105320b9c"/>
+      <add id="79930223-4e36-4633-919a-7c44ac28f422">
+        <label id="05e30794-0d46-4d12-be09-e9956af055cb" name="order:94_01"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="7778bc2a-7646-49e2-93a7-0d5b3451002c" node-id="67434ff2-6581-4573-85e1-0c93aac1773d">
+      <property-change id="5bc17a4d-4bda-4317-942a-41a6873fbf4f" property-name="day" old-value="1" new-value="1"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="a1b66d79-5ba1-455e-8524-0ab21bf5da9b" node-id="e1c269f7-a880-49fd-9b6e-c79d68d5b93b">
+      <property-change id="75188119-cab3-4f73-b70c-011fc7309714" property-name="day" old-value="1" new-value="1"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="8b23a1c9-aa32-4b2d-8cb4-5ef1870d46ab" node-id="4e33bea0-cefa-4132-bd1b-5179eec993d9">
+      <property-change id="69395bea-b3f2-4067-af32-334c48d2350a" property-name="day" old-value="1" new-value="1"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="527e2e0f-891b-417f-a69a-3b7e8be02802" node-id="b1b535d1-6c50-4865-9dda-610f7e5d0261">
+      <property-change id="b9c6e9f0-f7bd-478d-863e-4b793f5ae72f" property-name="day" old-value="1" new-value="1"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="1e6a4ca7-afb2-4ea4-b353-7cd1fd6c10fe" node-id="03ee6f29-1d9f-400b-8a04-532d0632d996">
+      <property-change id="820e9c52-89e7-4e14-9a6a-6b3f8987281c" property-name="day" old-value="1" new-value="1"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="fcab7b89-0fb5-4102-9e27-e8a5f91dad3d" node-id="9db060c7-93fe-47d4-8941-e706b4459c5f">
+      <property-change id="6eb86b63-5166-4e2f-bfba-a450718b1646" property-name="day" old-value="1" new-value="1"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="ff390f35-a2c1-4b8e-8142-605f257db54a" node-id="930ce80d-b991-42db-99df-ac3e4bcce069">
+      <property-change id="344436fd-736e-4a79-a426-c804199e577f" property-name="day" old-value="1" new-value="1"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="2aa65226-047d-4809-892e-13781e95f722" node-id="1525ccde-3179-43ee-9bdb-1d152015da5c">
+      <property-change id="b1a8be6c-5882-4072-8c23-a5d777f0b7d8" property-name="day" old-value="92" new-value="92"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="3828ce06-7246-4c9f-9935-63f287fde479" node-id="39a71df4-f871-4e29-bfce-fca3fa7f2656">
+      <property-change id="fbc7124e-5cb9-49f2-aad4-4f4235b6141f" property-name="day" old-value="1" new-value="1"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="c49963e9-efbd-4502-97fe-fabce9251b4d" node-id="0c9603d6-d6d6-4679-9057-6669fa5c3e40">
+      <property-change id="23cecb6c-dfe3-43ac-b18e-3fca0cd52d39" property-name="day" old-value="366" new-value="366"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="b351396f-727a-41b8-bb86-61c8626e65fc" node-id="d156cb7e-2d4a-4c6b-bbea-5af2a40daad4">
+      <property-change id="83e850cd-73a4-4a90-9571-32732d85954c" property-name="day" old-value="366" new-value="366"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="db03eb40-e523-4974-8088-8f1bc58cdc51" node-id="385d9e2d-2ec4-4b70-ba41-e3c153ad7cd9">
+      <property-change id="43e1e1e3-0c1b-4892-93c8-87b9c85de9ac" property-name="day" old-value="366" new-value="366"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="a30634c0-3098-4659-b1ac-5344675d3121" node-id="6b829817-d6db-4e22-ac1c-2614c0bbe668">
+      <property-change id="d184cbfe-3ab7-468d-ac03-7d135eff0725" property-name="day" old-value="366" new-value="366"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="797dff42-8527-4ab0-af03-cf1c33a4c1ec" node-id="575d7614-8473-4936-a9e7-356cb88dfa29">
+      <property-change id="ee2c1c48-a62a-484e-a2d0-6c99864c6f18" property-name="day" old-value="183" new-value="183"/>
+      <remove id="7f230167-e058-41b8-917d-1851d004b29c" child-id="c7799c1e-6d8e-415e-abc3-d9a940b89368"/>
+      <add id="c31476eb-9fd2-464e-a092-d4da32e55311">
+        <label id="c9175e50-204d-47af-ad9d-a71f09cf90b7" name="order:94_01"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="f5c1be71-13b0-4280-9fe3-d2eba35b5048" node-id="a9a7f9cd-cf0c-4ff7-8276-f1112f5587bd">
+      <property-change id="d59fa6fb-c930-4abb-840f-f9fd9cf5ac72" property-name="day" old-value="1" new-value="1"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="fe8168a5-6f4a-4870-9500-1f8c80b7821d" node-id="86134b47-52d3-4b44-8373-3095287a5214">
+      <property-change id="5d89cead-fc9b-4740-8bca-7632ff1ff094" property-name="day" old-value="1" new-value="1"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="705713d5-a6fe-470c-8f2d-76264ea9b859" node-id="71eff7d1-e4a3-446b-a878-ef835b368181">
+      <property-change id="c1163cba-84e1-4fa3-aa48-ccf22961267b" property-name="day" old-value="366" new-value="366"/>
+      <remove id="af28be51-57f7-43fa-8fe7-5ea73ae44618" child-id="00eadfce-fd32-4b51-95ad-d613808d4e32"/>
+      <add id="939f2f11-8131-455a-ac9b-c56bfc1e4291">
+        <label id="e95b242a-b5f8-476a-8303-2729dd9e8254" name="order:96_01"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="cd6cf792-055d-4e0e-b917-d99adfee5666" node-id="2bb166f9-f124-4b23-bdaa-8feb8a2eca1b">
+      <property-change id="de34d970-25d9-415f-bf27-141a05c07d3a" property-name="day" old-value="183" new-value="183"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="f89381d4-465d-411f-8629-c124bc90f125" node-id="39aa9050-31b0-41a3-81cf-a513b57d2fff">
+      <property-change id="037fa725-d742-450e-a7bc-d01a85d277af" property-name="day" old-value="1" new-value="1"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="20668e5b-6f2b-465f-b632-c8a08701a4b0" node-id="48da916f-60b7-4643-93f3-19a4eddf9089">
+      <property-change id="eb6bceda-a71b-4749-beaa-1289130d4ee4" property-name="day" old-value="366" new-value="366"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="c2cef353-ec3f-4ecb-9624-3252a33e7334" node-id="7083e4a1-4f2b-45e3-a35c-f4fcbd93d323">
+      <property-change id="74d78e21-a2a0-4196-8d7b-f3a3748583be" property-name="day" old-value="366" new-value="366"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="285754d7-0857-418c-9098-a1a38abfbac9" node-id="7de5af22-cf1d-47ea-ac9c-e23e93f8e8e0">
+      <property-change id="a3a80c87-ed41-4c77-8d6e-a5a415a7dfd2" property-name="day" old-value="366" new-value="366"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="136360b0-1e7b-4e16-a911-de743994b7eb" node-id="599d1e75-7d6e-4933-a69a-76c83a7b9f80">
+      <property-change id="44056c71-280d-4072-9ac0-a28b255f114c" property-name="day" old-value="366" new-value="366"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="3cf98479-eecb-4fc3-af08-75561d1400ab" node-id="9a076cdd-8d89-40fe-9dc2-20293250569e">
+      <property-change id="8cfb6627-69f5-423f-a7b6-acf12a09ed6f" property-name="day" old-value="548" new-value="548"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="b697fa4f-a53b-4875-a457-e9920b277cb4" node-id="b1968455-0f1d-4053-91e1-676b7e30df47">
+      <property-change id="f6cc2d2b-8965-4527-9376-36bee2416667" property-name="day" old-value="548" new-value="548"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="284ccd43-61c3-4a72-8985-ba1d15565a05" node-id="58e4444f-dbe3-4f38-95c9-8137a286bfe4">
+      <property-change id="922ad1f3-906d-4270-ae6b-3b4a49133809" property-name="day" old-value="548" new-value="548"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="02a12b12-76fb-424f-815e-695001eed023" node-id="ecfbdfbd-2f3d-4071-b0e4-2d3320c1f7bf">
+      <property-change id="d0d0dcba-1716-49c7-9b44-fda3c3cecf53" property-name="day" old-value="548" new-value="548"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="b75e4d75-0101-45c1-b1a4-72d6705bcdd3" node-id="11991a81-9666-4d09-b8f2-745e7e45e8d3">
+      <property-change id="c3457be4-c0c8-4bd6-8146-3da41313fca4" property-name="day" old-value="548" new-value="548"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="000e6af1-ad33-4595-96ba-0a2d2178ac60" node-id="bc551e77-4de0-47ed-9662-d077125c18dd">
+      <property-change id="f2d9e4c3-9a1b-4758-b033-29b4204a86c3" property-name="day" old-value="548" new-value="548"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="5673d6a7-8f5e-455e-9a4d-f68cff552369" node-id="155b16b9-6a5c-4f45-b2ce-535d794a9210">
+      <property-change id="3e7c2408-b267-4135-98b5-8db1582d997b" property-name="day" old-value="548" new-value="548"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="43174cba-79e1-4d06-8d19-c37f554a2efc" node-id="4703e456-b50f-45dd-9074-b54f61c613d6">
+      <property-change id="9f8835bd-8f62-4e5a-b910-4d6b0ef8c329" property-name="day" old-value="548" new-value="548"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="3908c55d-8477-48e7-b1d8-b3b7ba192541" node-id="03e4da89-a3c6-4f65-ac8a-60e92a314193">
+      <property-change id="c929da4c-c901-42a1-9019-091093995517" property-name="day" old-value="548" new-value="548"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="b176de01-8d4c-4f2c-b941-87231767f0e1" node-id="0a0919e3-79c3-435f-b897-9e0c4fa4247f">
+      <property-change id="3e7e8e78-e2cd-4583-be78-94f55e55bc64" property-name="day" old-value="548" new-value="548"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="5bc6002d-bc97-46d4-88ca-20b520929dc9" node-id="6349900a-f574-4471-a96e-ebb7e8d0b481">
+      <property-change id="88143c86-b950-40ab-a9c5-08a8676ac228" property-name="day" old-value="548" new-value="548"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="05a4227a-f52a-4fd7-9f89-54784907631b" node-id="dae6ee34-2f84-4da7-9edb-9a68a151beef">
+      <property-change id="da26a2de-d9b8-4335-aaf5-886f34fa9582" property-name="day" old-value="548" new-value="548"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="a2cc4a1a-04c3-4e77-8281-de8ac19b11c2" node-id="1415b015-89e2-46e8-b538-2b51ac32da7c">
+      <property-change id="349e152d-8d1f-4ad8-8c57-80808868663b" property-name="day" old-value="730" new-value="730"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="f47c1f11-c137-463c-b7fc-0a3a26cd346a" node-id="ac876b37-8ed2-493c-ba62-c4b1cd07f4cf">
+      <property-change id="7c40bac4-ef1f-41d8-8c3b-fb695a9c8847" property-name="day" old-value="730" new-value="730"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="7f36e8c4-8ae7-4e10-b5ec-23e2f3085680" node-id="1d4cc487-1fb4-459d-b026-96481d180a3c">
+      <property-change id="9e76265d-5233-4875-822b-17da35862c90" property-name="day" old-value="730" new-value="730"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="eea9b79d-7a56-4edb-b44d-a0676adc0f38" node-id="dadf88a4-be33-4f74-998e-0b67f3e7e39f">
+      <property-change id="c30eccd7-f889-4c97-aa5b-397e2ba7e930" property-name="day" old-value="730" new-value="730"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="cfd4bae4-73be-4666-a284-1d3d7ab3d20c" node-id="584f17eb-1f34-4660-a0e0-8312349b9688">
+      <property-change id="3497437e-2447-4e5b-a926-9ef61c0400d8" property-name="day" old-value="730" new-value="730"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="e9886b47-b888-46ad-a321-f1535e9c650b" node-id="eaf53769-ecaa-41fb-9dba-baaac948bb3e">
+      <property-change id="a9f16b35-eaa2-4b7b-9662-381a0b26a21d" property-name="day" old-value="730" new-value="730"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="1c6635e8-cf78-42b2-b986-280a46b0d8b6" node-id="c08cfb96-96d3-4876-a9f5-ed7df94deb7a">
+      <property-change id="9b20065e-5ca6-4c56-8666-ff0fa056d01e" property-name="day" old-value="730" new-value="730"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="18609e38-901f-473b-b606-5f79c7f107e2" node-id="06b1e674-3af9-45e1-ac7e-2c30843fd365">
+      <property-change id="c291f1ce-5208-4984-816a-bde9b4f3bf5d" property-name="day" old-value="730" new-value="730"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="2ab37a1a-4fc7-4d55-85cb-cbba032349dd" node-id="ffe68733-aa09-450d-ad57-b40934054578">
+      <property-change id="0ebb09d0-964d-40e9-a4ff-96514b138c06" property-name="day" old-value="730" new-value="730"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="a7383463-5ebc-4c24-a7c6-d7a877e82cfb" node-id="9a2b7579-518f-4a55-9186-19a6436d14d0">
+      <property-change id="64526eb0-0059-406c-a62d-32bf0c583d5a" property-name="day" old-value="92" new-value="92"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="3fbed343-2975-456b-b232-df9a98f88f54" node-id="67b46261-201b-469e-8a84-088b5165a6cc">
+      <property-change id="23927b34-fccc-4ceb-8f5b-1fea6e3ab9da" property-name="day" old-value="92" new-value="92"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="70fb036a-d06b-4dd5-999e-6e7cf1254be2" node-id="38c6cdae-fac6-46eb-8e30-551aeb7a3269">
+      <property-change id="10a0ad20-019b-4abe-a478-a08722082b43" property-name="day" old-value="92" new-value="92"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="3b7ad7ca-e774-49e7-8f92-e5b88a8bc413" node-id="7b2c914e-e0e4-41cd-a2f4-5e3557426fbb">
+      <property-change id="b88fe2db-6d92-4394-af2d-d61eeb7d31c9" property-name="day" old-value="92" new-value="92"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="e78734e2-8cb6-4d54-9023-11de8ee9519f" node-id="cc965f45-32ac-4be5-90be-1d7ecba04ac3">
+      <property-change id="3430aac3-0b55-43f3-a451-986729bcd3fd" property-name="day" old-value="730" new-value="730"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="6318c552-346e-4c90-84c9-7ea416c9fb7d" node-id="01be00a9-bcf1-4d40-918e-d41d65ccaac6">
+      <property-change id="d8714258-bc07-4e70-ad24-08c5babd25d7" property-name="day" old-value="183" new-value="183"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="a17793e9-a53b-4c32-9c91-e1b1f63749a7" node-id="837251ed-7843-40ab-a9e6-7e2f891b470d">
+      <property-change id="9627c8fd-2e30-4679-9bed-620498c7e13e" property-name="day" old-value="183" new-value="183"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="541f04d9-1770-4d2e-bc1b-9d4fd64bedca" node-id="2617458d-e457-4909-a2ed-b0f54fdef877">
+      <property-change id="773435b4-046e-4d6f-957b-d69e4d23a724" property-name="day" old-value="183" new-value="183"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="8b2517e2-b9c5-4133-81ab-52252cb4b004" node-id="5872a8c5-441f-4a2d-ad24-fbe12edc9331">
+      <property-change id="b1155374-d7e1-444b-b876-531796f84393" property-name="day" old-value="183" new-value="183"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="aa075a90-6be3-447e-bba0-06f7f3f54c61" node-id="206ed626-4d1b-441c-9f77-89eda9f2a1fb">
+      <property-change id="8f1523a4-57a1-4630-9932-32f7bc689cbd" property-name="day" old-value="274" new-value="274"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="243e53db-3f79-4d95-946c-a13277f1771d" node-id="d4518fd1-25fb-4602-a4e0-fb89d34c3435">
+      <property-change id="31ded486-615c-4447-874b-cd74100d574b" property-name="day" old-value="274" new-value="274"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="82edeff6-d1a6-446d-b2f8-3367df8ec4b4" node-id="b91da252-9133-497a-b241-375b7d71c229">
+      <property-change id="37893adc-0db9-45a1-b40b-50f9d0743c07" property-name="day" old-value="1" new-value="1"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="65cdebf4-4366-4a20-8bcd-751af0a0c7b3" node-id="d48b58fe-04e6-4ddf-acd5-c89e31dfd052">
+      <property-change id="4d80070a-a7d0-4e50-91c1-dd65959a34fa" property-name="day" old-value="1" new-value="1"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="b7752201-8bef-4526-b29f-09ab368f1e2e" node-id="0dae325c-4033-4a4a-82aa-e8378177c9eb">
+      <property-change id="a88e5439-88ef-47c2-a40d-047d082d23ef" property-name="day" old-value="1" new-value="1"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="8624cf6e-0d07-44ae-9b24-18e8ec79e4f0" node-id="83981aea-7c8a-42fc-a9ca-3f9fcdefdd71">
+      <property-change id="6d301368-089f-4875-9705-05c5b445faa3" property-name="day" old-value="366" new-value="366"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="81513644-14f3-4a26-9e85-e76fbc71d313" node-id="d2419f3b-021b-40a8-b68a-547094382a49">
+      <property-change id="b5d4ae0e-5d09-4134-ace4-5e0f1e355d54" property-name="day" old-value="1" new-value="1"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="9c71b801-73fe-4ce3-8000-0c1ce0d78ad5" node-id="9fdd5098-d081-45b6-9d72-8df5dce4f155">
+      <property-change id="047ff246-9c3f-4865-95d5-8410c18d98b5" property-name="day" old-value="730" new-value="730"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="5d339d21-8164-45bf-8b4b-c25f5c26378c" node-id="08cfa770-60f7-4834-9c8c-dd1aa219bd02">
+      <property-change id="bf25bed2-9b31-44ce-bbab-c59a3f8bcd74" property-name="day" old-value="366" new-value="366"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="acd609dc-5ddc-4f71-a9b4-99c9bd349953" node-id="8e27b6ff-723c-4c12-adde-bc23167f9355">
+      <property-change id="033b53fb-1805-4831-9ed6-58d2b63824bd" property-name="day" old-value="548" new-value="548"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="8d643153-b47d-4f7d-a2f9-bf0abe44a963" node-id="179b8ca9-481d-457c-a8ed-c59c7ed9f519">
+      <property-change id="6688323c-f93e-4eb8-8786-576ce3219bff" property-name="day" old-value="730" new-value="730"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="9d3c040a-4b8c-4f11-bac6-f06220ea19be" node-id="39526434-02a3-41bf-8c38-e12e506397b9">
+      <property-change id="820b5177-cf40-4820-a41d-16ca7fa2eb0e" property-name="day" old-value="92" new-value="92"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="d7a30804-acd0-4d8d-a3cd-a773914eb815" node-id="8d5b1f92-a09f-45ee-881b-a450a9e7507d">
+      <property-change id="ffb00c69-9718-4591-8cec-93cddf21c863" property-name="day" old-value="183" new-value="183"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="8eb7dd05-6b44-450b-88a5-31aa4e7812c4" node-id="64eb76fe-cc90-4cce-b7fe-c60ccda6251c">
+      <property-change id="83a464c8-a933-49df-a261-e7271a89a8b9" property-name="day" old-value="274" new-value="274"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="3d2584fc-de00-494d-93f1-07ca5c9357a6" node-id="e8af54c1-56af-4baf-b1f2-2cf9d54b5924">
+      <property-change id="a6ee4699-ca54-4b63-85c3-910523f7aa07" property-name="day" old-value="1" new-value="1"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="e1e4ca52-162b-41d4-b31b-8f88180a4ba9" node-id="4da55c5e-e925-45c1-bf30-75e6a8139acf">
+      <property-change id="38049d04-f08c-4d7f-929f-ebc39635a0de" property-name="day" old-value="1" new-value="1"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="cbb50231-ffec-45f4-a704-b77f99c43512" node-id="e99b3b7d-4a42-48c1-82cc-e621c7bb1191">
+      <property-change id="19e57446-50a1-46df-b6d7-955c8eb7328b" property-name="day" old-value="366" new-value="366"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="1e980869-82a0-4ad0-989f-85b4ce4cf586" node-id="b5963f8b-b721-4fd4-ab45-2da957fbcffc">
+      <property-change id="a9d04033-ea1d-4556-8acb-19d41328ccbd" property-name="day" old-value="548" new-value="548"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="a1db3ede-a505-4c5f-9f0f-87305faf59ea" node-id="51c5d91d-973e-4051-ac30-a72781e9f6a3">
+      <property-change id="12ea37dc-9c33-4075-a25e-a297dffbc68c" property-name="day" old-value="730" new-value="730"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="d7032c30-4aee-49fb-83cd-87fcc00232b6" node-id="5a756a07-eab5-4871-bca6-41b03eb981b7">
+      <property-change id="d91fbaec-050f-484a-aecb-7ec79a55780f" property-name="day" old-value="92" new-value="92"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="abf3de28-c1f4-4ea6-89b6-79144fb82580" node-id="216913d7-bd3d-4d85-bce0-a2d4491a1669">
+      <property-change id="841d479f-e002-46e8-b6b2-4436c3738de3" property-name="day" old-value="183" new-value="183"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="08c84984-adb0-4246-beec-b1ea587d673f" node-id="cc1bce3d-d808-43fe-8e99-dd315f9810b2">
+      <property-change id="bd5a5956-5451-4ac0-834d-e493482b5eaf" property-name="day" old-value="274" new-value="274"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="7dd98d49-129c-4396-ba01-6fdbc9cfca92" node-id="f241e0a3-b0d0-428c-8e9d-ee6f55d82c56">
+      <property-change id="95230a41-b963-4b5f-b090-9be8f438755f" property-name="day" old-value="366" new-value="366"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="dfe3fc03-281d-43c6-a29d-012444700384" node-id="7f4232b5-6229-465e-a89a-ad31ec42fa87">
+      <property-change id="57a0771b-638e-4638-98b7-ffc951a4da3c" property-name="day" old-value="366" new-value="366"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="846bcca5-9f7b-41f5-ac77-b3246d903475" node-id="d6457a0a-0252-40b8-af1b-205acbeaa381">
+      <property-change id="e39b4b55-e2cc-44ed-b82c-c8139a270c55" property-name="day" old-value="548" new-value="548"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="85ec6a56-85f3-425e-9cf1-6c968220e269" node-id="b74d7dc8-b319-4265-b788-2e6a743431eb">
+      <property-change id="24ed91ee-91b6-49d0-8450-7e8a4b2ee0bd" property-name="day" old-value="730" new-value="730"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="54156a0a-7541-414e-9072-81da6c8bd6e8" node-id="03d1aad7-bc53-446b-b4d7-940f1faa6afc">
+      <property-change id="3c490cbb-c6fa-42af-a779-bd8d56f5e94c" property-name="day" old-value="92" new-value="92"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="5a92a2d9-e2ca-4840-9ef0-e17544bbdab0" node-id="12c9ed5e-e261-42e4-93ef-a9baa13e0458">
+      <property-change id="96bce887-0cc5-4ac7-82a7-6019a65f1b53" property-name="day" old-value="183" new-value="183"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="c3b29d79-4b03-4796-a5e8-e5a151ea3599" node-id="8fad52ad-251c-4e99-a7ed-f613fefddbc0">
+      <property-change id="1ea8bc86-10af-4e8d-a2e7-18bb5e748f18" property-name="day" old-value="274" new-value="274"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="436b54b2-3549-4972-b0c3-3a2589afa178" node-id="cdff78b4-ff7b-401d-be81-b61c7bbbcbf4">
+      <property-change id="c5d428b5-5d8a-4fe6-8ee7-b07da8247a50" property-name="day" old-value="1" new-value="1"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="f8adc86d-7948-43dc-be63-8083f7eb0f1c" node-id="aa1d19ed-4bf4-461c-82ca-9b4efe9e6ae7">
+      <property-change id="1896a176-e688-49ee-b253-cad27d2ed1d8" property-name="day" old-value="366" new-value="366"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="7e3f36f5-9ed5-407f-b4a5-e3841bc775e2" node-id="cc2d5a1d-36cc-4601-8a40-101fc109c132">
+      <property-change id="7d9e419d-65c0-4d5c-8b91-c6300cfa463c" property-name="day" old-value="730" new-value="730"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="4fa3240b-6796-4004-8af5-167479ada564" node-id="a02cda13-de2b-486b-94c3-4df4386e5045">
+      <property-change id="af080fd0-83ac-4701-85c4-cee87444487f" property-name="day" old-value="183" new-value="183"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="00dc6aee-6653-419e-97cd-45cafcbff2a5" node-id="43a082a2-209c-41d6-b675-a6aa2d714a37">
+      <property-change id="8ea19040-1113-4868-afe5-59e4721ef682" property-name="day" old-value="366" new-value="366"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="98338fa3-f424-49f6-81a6-f4dba15c71e3" node-id="07f17ee6-6027-4e2d-a9c5-78a8d758d614">
+      <property-change id="a1c0e6cd-7a8c-45e6-bdca-87e8ad6e2a51" property-name="day" old-value="730" new-value="730"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="f35f8c62-5e28-4458-b5e7-fd9e7323c6e7" node-id="f9ded0e0-2f09-41e1-9ee2-a5abec04bce9">
+      <property-change id="7ae72eb9-514e-4939-948f-de95b20b80d5" property-name="day" old-value="1" new-value="1"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="181a4f8a-016e-4972-aa50-50dbb9afc48f" node-id="999b184f-4497-4b20-97d0-ea0e0bda4480">
+      <property-change id="a7101620-099c-479d-a788-ff8c2e5cbf6a" property-name="day" old-value="1" new-value="1"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="699a36ee-f225-4113-a046-c612511cd322" node-id="c8946f02-c7f3-4343-a32a-17c8b8249a68">
+      <property-change id="a4fc3e94-e4a9-45f6-a467-2ef6f00a241f" property-name="day" old-value="1" new-value="1"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="c15c5756-e093-4dfc-8052-22c0e5894823" node-id="083bf949-e182-4aeb-bc9c-dd3fbef2545a">
+      <property-change id="e1290182-4efd-4c16-8eee-39c5f685eed7" property-name="day" old-value="1" new-value="1"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="3c0f450d-81c1-45de-b6a7-6d33d7352dde" node-id="5e335b92-f448-47a7-bf3c-f49de5164dd0">
+      <property-change id="660421ef-4318-41d2-be70-70cf208b2f95" property-name="day" old-value="1" new-value="1"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="2506f8d7-aa7d-434e-b092-591a7cd2a14c" node-id="52e976cb-767a-46e5-a222-4dbafe38aa95">
+      <property-change id="2880a96d-0188-4ca9-8c01-e70dfd505d2a" property-name="day" old-value="1" new-value="1"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="7ab103ba-f8fb-4327-aa25-b8dcc7b50ce4" node-id="f3d13ba1-e743-40b0-8736-38ac04f7dc60">
+      <property-change id="228da91f-9475-4d47-9a78-5b1fd4d70e42" property-name="day" old-value="1" new-value="1"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="35104833-f5f1-42ee-9654-3ff7866f5121" node-id="d9d278a7-fefc-4683-a893-5461136ea9f4">
+      <property-change id="f98bc6bd-a881-4ae2-9381-297e66f53f93" property-name="day" old-value="1" new-value="1"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="ef4b48aa-0b1f-4558-9a07-fe46baa45d82" node-id="6dad43b4-95ba-4bc9-82d1-e1a4846d4aa9">
+      <property-change id="bdac3059-cd63-4ed7-94a4-382e90725a59" property-name="day" old-value="1" new-value="1"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="9f7829eb-0e59-464f-a60d-efe14fe6db50" node-id="5da8cc20-0953-448d-b4f6-61660b94d89a">
+      <property-change id="4cae110d-7cc2-4c06-93b9-893ca58990bd" property-name="day" old-value="1" new-value="1"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="eb99ae58-9c91-43fc-aa17-5e8e660a72ad" node-id="d9c5d92e-6ddc-4eb1-b8f3-30e953fc6f38">
+      <property-change id="5017a2ed-5877-47c3-8a44-01e7622ebf62" property-name="day" old-value="1" new-value="1"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="481aad23-b0be-4d47-921f-4fd30321f7cc" node-id="cf8cd719-70ea-4272-9e01-219bd868395b">
+      <property-change id="5d389161-fb8f-4c7f-bd9c-4aca16cfd8d4" property-name="day" old-value="1" new-value="1"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="4caf2787-6bd5-4825-ae84-5fd484f49153" node-id="f3f6c2a0-1672-47c4-ac9d-09a89f73c93e">
+      <property-change id="3a991d4a-bdc0-492b-8a8b-5a0140e83879" property-name="day" old-value="1" new-value="1"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="ba76102e-4c7b-466f-9b26-dc0e0d09c2af" node-id="632d8af5-1b94-4144-ba73-67fc49df31e0">
+      <property-change id="6d2000a7-f041-434d-a690-9b9d85a8d2c9" property-name="day" old-value="1" new-value="1"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="f816bcda-c3a7-4fa9-9506-3f1f71cff641" node-id="ac18a853-13b2-4735-b6cd-af7cbaaa99c7">
+      <property-change id="421d7cbd-2649-4720-833d-57a2cad198b7" property-name="day" old-value="1" new-value="1"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="9405335c-bf44-4a46-828f-3396bd784b5b" node-id="728c0594-dac4-4e10-8b45-b570fb5bc7ad">
+      <property-change id="0bac5c5c-ce5d-49df-b63d-11e20b7b081c" property-name="day" old-value="1" new-value="1"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="11d3bbdb-657e-4f57-8086-da84e039380e" node-id="807edf81-f8f2-47c1-92ac-8099ca2f9575">
+      <property-change id="60d3a5a8-a145-45f7-814b-1a530fa04d1b" property-name="day" old-value="1" new-value="1"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="b1a2e010-f285-4d94-aaac-54e5e8ccdbf5" node-id="0db6452c-93e5-4c95-ae26-b898b583d82b">
+      <property-change id="e6b4fb1e-0a06-474a-8ec6-c30cb8060200" property-name="day" old-value="1" new-value="1"/>
+      <remove id="8691862d-172d-4b80-891a-2f26fb4631e2" child-id="3bbf455a-d110-43fe-b532-88150be13c95"/>
+      <add id="2824a319-57f0-444f-8693-26eac6e98877">
+        <label id="b4d9f816-2ffa-4ba1-8c5d-5d28d7336751" name="order:01_02"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="6158f701-74b4-4ed8-aaa5-cbcf4176f0a1" node-id="7129e5dc-d47c-42e3-8359-6307a1cca055">
+      <property-change id="67a70424-22b2-4e4c-a573-a9b8ddfeea64" property-name="day" old-value="1" new-value="1"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="2bad2baa-348a-4dde-8aba-32064f3ac919" node-id="f9cd1b41-a3c1-4639-ae36-dce58422b885">
+      <property-change id="acfce8f9-a7fc-479b-8b0c-cdc86a6f59f8" property-name="day" old-value="1" new-value="1"/>
+      <remove id="2bc284d7-8144-443b-835f-358172562997" child-id="fc5b67a6-5601-4beb-b48f-35dd80d0e7e9"/>
+      <add id="321274fd-a58d-4673-9e6b-226a8d7ff8eb">
+        <label id="c73f2f95-209e-435b-8c53-eacd2f871d19" name="order:00_02"/>
+      </add>
+    </planned-activity-delta>
+  </amendment>
   <amendment name="Rev 37" date="2013-02-08" mandatory="true" released-date="2013-02-08T13:52:41.764Z" updated-date="2013-02-08T13:45:45.688Z" previous-amendment-key="2013-02-01~Rev 36">
     <epoch-delta id="65d41f65-8ffb-4c3a-a4d1-4640ec86fe59" node-id="4950389a-cd24-4ae0-8c3f-248732ffa093">
       <add id="580faeba-6746-4e73-a820-97722c9e9ca1" index="1">

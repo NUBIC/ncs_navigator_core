@@ -345,7 +345,7 @@
             <label id="aaa7c75d-6cc2-420d-b88e-231da0b2c91f" name="event:pregnancy_visit_1"/>
             <label id="cd55f805-35e0-46f1-bf37-fa33ce4ec745" name="instrument:3.1:ins_con_reconsideration_dci_ehpbhi_m3.1_v1.0"/>
             <label id="538607a5-2554-465c-9a7f-e8c8b70d36c8" name="instrument:3.2:ins_con_reconsideration_dci_ehpbhi_m3.1_v1.0"/>
-            <label id="aaf7ba25-4f1f-4aa4-8502-b8bd8af3fd34" name="order:95_01"/>
+            <label id="ace7baa8-bf45-4447-91db-5b02c7bb16fe" name="order:94_01"/>
             <label id="0be8bab1-5769-4acf-abec-9a33dbb54a02" name="participant_type:mother"/>
             <activity-reference code="RI" source="NCS"/>
           </planned-activity>
@@ -505,7 +505,7 @@
             <label id="df7b1c03-3121-4ced-a61f-27e23d1b5d97" name="event:pregnancy_visit_2"/>
             <label id="b15f51dd-5ebd-4aa9-bed1-f178aecbae18" name="instrument:3.1:ins_con_reconsideration_dci_ehpbhi_m3.1_v1.0"/>
             <label id="e35fe253-3bbe-495d-9526-fb82bf11d991" name="instrument:3.2:ins_con_reconsideration_dci_ehpbhi_m3.1_v1.0"/>
-            <label id="ab0486a0-6c80-4575-ae6a-fd3105320b9c" name="order:95_01"/>
+            <label id="05e30794-0d46-4d12-be09-e9956af055cb" name="order:94_01"/>
             <label id="356a4409-7139-41ec-b4da-433463ae23ce" name="participant_type:mother"/>
             <activity-reference code="RI" source="NCS"/>
           </planned-activity>
@@ -631,7 +631,7 @@
           </planned-activity>
           <planned-activity id="71eff7d1-e4a3-446b-a878-ef835b368181" details="11-15 month window" day="366">
             <label id="bf9adf26-86a7-4b84-be97-bd0c61ff7a38" name="event:12_month"/>
-            <label id="00eadfce-fd32-4b51-95ad-d613808d4e32" name="order:95_01"/>
+            <label id="e95b242a-b5f8-476a-8303-2729dd9e8254" name="order:96_01"/>
             <activity-reference code="12MVIS" source="NCS"/>
           </planned-activity>
           <planned-activity id="599d1e75-7d6e-4933-a69a-76c83a7b9f80" details="11-15 month window" day="366">
@@ -1365,7 +1365,7 @@
             <label id="89265fd9-8aaa-4fdd-a11b-c1cad98212f3" name="event:6_month"/>
             <label id="1dee71da-6934-4680-9d6f-a6380452626f" name="instrument:3.1:ins_bio_childurinecoll_int_ehpbhi_m3.1_v1.0"/>
             <label id="72bf57c0-c748-43da-a4bd-c14342098dbf" name="instrument:3.2:ins_bio_childurinecoll_int_ehpbhi_m3.1_v1.0"/>
-            <label id="c7799c1e-6d8e-415e-abc3-d9a940b89368" name="order:95_04"/>
+            <label id="c9175e50-204d-47af-ad9d-a71f09cf90b7" name="order:94_01"/>
             <label id="4aa2d28e-26cc-454a-bc07-98e29407fcb4" name="participant_type:child"/>
             <activity-reference code="BCUCI" source="NCS"/>
           </planned-activity>
@@ -1670,7 +1670,7 @@
         <period id="a8bca937-cc9a-4640-bd94-6d99483ac8b5" name="Parental Permission for Child Participation" repetitions="1" start-day="1" duration-quantity="1" duration-unit="day">
           <planned-activity id="0db6452c-93e5-4c95-ae26-b898b583d82b" day="1">
             <label id="1033214a-401c-4063-bcec-b9392bad0143" name="event:informed_consent"/>
-            <label id="3bbf455a-d110-43fe-b532-88150be13c95" name="order:01_01"/>
+            <label id="b4d9f816-2ffa-4ba1-8c5d-5d28d7336751" name="order:01_02"/>
             <label id="c2d0f110-eb26-4dbb-8438-79efe05d6759" name="participant_type:child"/>
             <activity-reference code="CC" source="NCS"/>
           </planned-activity>
@@ -1679,7 +1679,7 @@
             <label id="b632cc63-b63f-4254-b12f-a26863e4fa92" name="instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_two"/>
             <label id="b981c8df-ff10-4a1d-8d46-b50c728b2f2a" name="instrument:3.1:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_two"/>
             <label id="5624b051-ea5b-416f-9bc2-4e023a0275d7" name="instrument:3.2:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_two"/>
-            <label id="fc5b67a6-5601-4beb-b48f-35dd80d0e7e9" name="order:00_01"/>
+            <label id="c73f2f95-209e-435b-8c53-eacd2f871d19" name="order:00_02"/>
             <label id="092164b0-1a42-4e17-88fd-b7a7dd33e308" name="participant_type:child"/>
             <label id="60e351d9-357d-4186-bea5-a99621438290" name="references:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one"/>
             <label id="fcdb947c-06e7-4235-bc79-4f185231dfa0" name="references:3.1:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one"/>
