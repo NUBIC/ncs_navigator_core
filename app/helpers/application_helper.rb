@@ -102,6 +102,8 @@ module ApplicationHelper
       "DUST"
     elsif value.include? "w"
       "WATER"
+    elsif value.include? "cb"
+      "CORD BLOOD"
     else
       "TYPE UNKNOWN"
     end
