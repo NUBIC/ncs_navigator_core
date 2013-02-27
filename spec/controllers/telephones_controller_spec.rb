@@ -5,10 +5,10 @@ require 'spec_helper'
 
 describe TelephonesController do
 
-  def valid_attributes
-    {
-      :phone_nbr => "3125551234"
-    }
+  def valid_attributes(person=nil)
+    v={:phone_nbr => "3125551234"}
+    v[:person_id] = person.id unless person.nil?
+    v
   end
 
   context "with an authenticated user" do
@@ -34,22 +34,54 @@ describe TelephonesController do
 
     describe "POST create" do
       describe "with valid params" do
-        describe "with html request" do
+        describe "with html request without a person" do
           it "creates a new Telephone" do
             expect {
-              post :create, :person_id => @person.id, :telephone => valid_attributes
+              post :create, :telephone => valid_attributes
             }.to change(Telephone, :count).by(1)
           end
 
           it "assigns a newly created telephone as @telephone" do
-            post :create, :person_id => @person.id, :telephone => valid_attributes
+            post :create, :telephone => valid_attributes
             assigns(:telephone).should be_a(Telephone)
             assigns(:telephone).should be_persisted
           end
 
           it "redirects to the edit telephone form" do
-            post :create, :person_id => @person.id, :telephone => valid_attributes
-            response.should redirect_to(person_path(@person))
+            post :create, :telephone => valid_attributes
+            response.should redirect_to(edit_telephone_path(assigns(:telephone)))
+          end
+        end
+
+        describe "with html request for non-participant person" do
+          before(:each) do
+            @person1 = Factory(:person)
+          end
+          it "associates person with telephone" do
+            @person1.telephones.should be_empty
+
+            post :create, :telephone => valid_attributes(@person1)
+            assigns(:telephone).should be_a(Telephone)
+
+            person = Person.find(@person1.id)
+            person.telephones.should_not be_empty
+            person.telephones.first.should == assigns(:telephone)
+          end
+
+          it "redirects to the person" do
+            post :create, :telephone => valid_attributes(@person1)
+            response.should redirect_to(person_path(@person1))
+          end
+        end
+
+        describe "with html request for participant" do
+          it "redirects to the participant" do
+            @person2 = Factory(:person)
+            @participant2 = Factory(:participant)
+            @person2.participant = @participant2
+            @person2.save
+            post :create, :telephone => valid_attributes(@person2)
+            response.should redirect_to(participant_path(@participant2))
           end
         end
 
@@ -58,38 +90,6 @@ describe TelephonesController do
             expect {
               post :create, :person_id => @person.id, :telephone => valid_attributes, :format => 'json'
             }.to change(Telephone, :count).by(1)
-          end
-        end
-
-        describe "with html request for person" do
-          it "associates person with telephone" do
-            person = Factory(:person)
-            person.telephones.should be_empty
-
-            phone_nbr = "3125551212"
-            phone_attrs = {
-              :person_id => person.id,
-              :phone_nbr => phone_nbr
-            }
-
-            post :create, :person_id => person.id, :telephone => phone_attrs
-            assigns(:telephone).should be_a(Telephone)
-
-            person = Person.find(person.id)
-            person.telephones.should_not be_empty
-            person.telephones.first.phone_nbr.should == phone_nbr
-          end
-
-          it "redirects to the edit person form" do
-            person = Factory(:person)
-            phone_nbr = "3125551212"
-            phone_attrs = {
-              :person_id => person.id,
-              :phone_nbr => phone_nbr
-            }
-
-            post :create, :person_id => person.id, :telephone => phone_attrs
-            response.should redirect_to(person_path(person))
           end
         end
       end
@@ -135,9 +135,26 @@ describe TelephonesController do
             assigns(:telephone).should eq(@telephone)
           end
 
-          it "redirects to the telephone" do
-            put :update, :person_id => @person.id, :id => @telephone.id, :telephone => valid_attributes
+          it "redirects to the edit telephone form when no person associated" do
+            (@telephone_no_person = Telephone.new(valid_attributes)).save
+            put :update, :id => @telephone_no_person.id, :telephone => valid_attributes
+            response.should redirect_to(edit_telephone_path(@telephone_no_person))
+          end
+
+          it "redirects to the person when non-participant associated" do
+            put :update, :id => @telephone.id, :telephone => valid_attributes
             response.should redirect_to(person_path(@person))
+          end
+
+          it "redirects to the participant when associated" do
+            @person3 = Factory(:person)
+            @participant3 = Factory(:participant)
+            @person3.participant = @participant3
+            @telephone3 = Factory(:telephone, :person=> @person3)
+            @person3.save
+
+            put :update, :id => @telephone3.id, :telephone => valid_attributes
+            response.should redirect_to(participant_path(@participant3))
           end
         end
 

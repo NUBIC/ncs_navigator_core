@@ -90,4 +90,12 @@ class ApplicationController < ActionController::Base
       end
     end
 
+    # @param contact_info [Address, Email, Telephone]
+    def contact_info_redirect_path(contact_info)
+      person = contact_info.person
+      if person.nil?
+        return edit_polymorphic_url(contact_info)
+      end
+      person.participant? ? participant_path(person.participant) : person_path(person)
+    end
 end

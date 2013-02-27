@@ -5,40 +5,36 @@ require 'spec_helper'
 
 describe AddressesController do
 
-  def valid_attributes
-    {
+  def valid_attributes(person=nil)
+    v={
       :address_one => "2 Main",
       :city => "Chicago",
       :state_code => 1,
       :zip => "60666"
     }
+    v[:person_id] = person.id unless person.nil?
+    v
   end
 
   context "with an authenticated user" do
     before(:each) do
       @person = Factory(:person)
-      @person1 = Factory(:person)
-      @participant = Factory(:participant)
-      @person1.participant = @participant
-      @person1.save
       @address1 = Factory(:address, :person => @person, :address_one => "1 Main Street")
       @address2 = Factory(:address, :person => @person, :address_one => "2 State Street")
       @address3 = Factory(:address, :person => @person, :address_one => "3 My Way")
-      @address4 = Factory(:address, :person => @person1,:address_one => "4 Ogden Ave")
-      @address5 = Factory(:address, :person => nil, :address_one => "5 Lake Street")
       login(user_login)
     end
 
     describe "GET index" do
 
       before(:each) do
-        Address.count.should == 5
+        Address.count.should == 3
       end
 
       describe "without search parameters" do
         it "assigns all addresses as @addresses" do
           get :index
-          assigns[:addresses].count.should equal(5)
+          assigns[:addresses].count.should equal(3)
           assigns[:addresses].should include @address1
           assigns[:addresses].should include @address2
           assigns[:addresses].should include @address3
@@ -99,38 +95,45 @@ describe AddressesController do
           end
         end
 
-        describe "with html request for person" do
+        describe "with html request for non-participant person" do
+          before(:each) {@homeless_person1 = Factory(:person)}
           it "associates person with address" do
-            person = Factory(:person)
-            person.addresses.should be_empty
+            @homeless_person1.addresses.should be_empty
 
-            address_attrs = {
-              :person_id => person.id,
-              :address_one => "2 Main",
-              :city => "Chicago",
-              :state_code => 1,
-              :zip => "60666"
-            }
-
-            post :create, :address => address_attrs
+            post :create, :address => valid_attributes(@homeless_person1)
             assigns(:address).should be_a(Address)
 
-            person = Person.find(person.id)
+            person = Person.find(@homeless_person1.id)
             person.addresses.should_not be_empty
           end
 
-          it "redirects to the edit person form" do
-            person = Factory(:person)
-            address_attrs = {
-              :person_id => person.id,
-              :address_one => "2 Main",
-              :city => "Chicago",
-              :state_code => 1,
-              :zip => "60666"
-            }
+          it "redirects to the person" do
+            post :create, :address => valid_attributes(@homeless_person1)
+            response.should redirect_to(person_path(@homeless_person1))
+          end
+        end
 
-            post :create, :address => address_attrs
-            response.should redirect_to(person_path(person))
+        describe "with html request for participant" do
+          before(:each) do
+            @homeless_person2 = Factory(:person)
+            @homeless_participant2 = Factory(:participant)
+            @homeless_person2.participant = @homeless_participant2
+            @homeless_person2.save
+          end
+
+          it "associates person with address" do
+            @homeless_person2.addresses.should be_empty
+
+            post :create, :address => valid_attributes(@homeless_person2)
+            assigns(:address).should be_a(Address)
+
+            person = Person.find(@homeless_person2.id)
+            person.addresses.should_not be_empty
+          end
+
+          it "redirects to the participant" do
+            post :create, :address => valid_attributes(@homeless_person2)
+            response.should redirect_to(participant_path(@homeless_participant2))
           end
         end
 
@@ -184,7 +187,8 @@ describe AddressesController do
             assigns(:address).should eq(@address1)
           end
 
-          it "redirects to the address when no person associated" do
+          it "redirects to the edit address form when no person associated" do
+            @address5 = Factory(:address, :person => nil, :address_one => "5 Lake Street")
             put :update, :id => @address5.id, :address => valid_attributes
             response.should redirect_to(edit_address_path(@address5))
           end
@@ -195,6 +199,11 @@ describe AddressesController do
           end
 
           it "redirects to the participant when associated" do
+            @person1 = Factory(:person)
+            @participant = Factory(:participant)
+            @person1.participant = @participant
+            @person1.save
+            @address4 = Factory(:address, :person => @person1,:address_one => "4 Ogden Ave")
             put :update, :id => @address4.id, :address => valid_attributes
             response.should redirect_to(participant_path(@participant))
           end
@@ -207,7 +216,7 @@ describe AddressesController do
             response.body.should eq @address1.to_json
           end
         end
-      end      
+      end
 
       describe "with invalid params" do
         describe "html request" do
