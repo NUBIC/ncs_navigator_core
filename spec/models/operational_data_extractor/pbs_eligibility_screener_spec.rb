@@ -664,7 +664,7 @@ describe OperationalDataExtractor::PbsEligibilityScreener do
     describe "#known_keys" do
       it "collects all the keys for the ODE maps" do
         ode = OperationalDataExtractor::PbsEligibilityScreener.new(@response_set)
-        ode.known_keys.size.should == 42
+        ode.known_keys.size.should == 46
       end
     end
 
@@ -769,8 +769,14 @@ describe OperationalDataExtractor::PbsEligibilityScreener do
 
     let(:white_race) { NcsCode.for_list_name_and_local_code("RACE_CL1", 1) }
     let(:black_race) { NcsCode.for_list_name_and_local_code("RACE_CL1", 2) }
+    let(:asian_race) { NcsCode.for_list_name_and_local_code("RACE_CL1", 4) }
+    let(:pacific_islander_race) { NcsCode.for_list_name_and_local_code("RACE_CL1", 5) }
     let(:other_race) { NcsCode.for_list_name_and_local_code("RACE_CL1", -5) }
-    let(:vietnamese_race) { NcsCode.for_list_name_and_local_code("RACE_CL6", 9) }
+    let(:vietnamese_race) { NcsCode.for_list_name_and_local_code("RACE_CL6", 9) } # new-type vietnamese (differing race code list)
+    let(:filipino_race) { NcsCode.for_list_name_and_local_code("RACE_CL7", 3) }
+    let(:asian_indian_race) { NcsCode.for_list_name_and_local_code("RACE_CL7", 1) }
+    let(:samoan_race) { NcsCode.for_list_name_and_local_code("RACE_CL8", 3) }
+    let(:native_hawaiian_race) { NcsCode.for_list_name_and_local_code("RACE_CL8", 1) }
 
     before do
       @person = Factory(:person)
@@ -833,6 +839,80 @@ describe OperationalDataExtractor::PbsEligibilityScreener do
       it "the record generated from a response that is NOT on the standard race code list should have the text associated with the choice in the 'race_other' attribute" do
         other_race_record = @person.races.detect { |race| race.race_code == other_race.local_code }
         other_race_record.race_other.should == "Vietnamese"
+      end
+
+      it "does not create duplicate entries when data is extracted multiple times" do
+        10.times do
+          OperationalDataExtractor::PbsEligibilityScreener.new(@response_set).extract_data
+        end
+
+        PersonRace.count.should == 2
+      end
+    end
+
+    describe "processing with multiple specific asian records" do
+      before do
+        take_survey(@survey, @response_set) do |a|
+          a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::PBS_ELIG_SCREENER_RACE_1_PREFIX}.RACE_1", asian_race
+          a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::PBS_ELIG_SCREENER_RACE_2_PREFIX}.RACE_2", filipino_race
+          a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::PBS_ELIG_SCREENER_RACE_2_PREFIX}.RACE_2", asian_indian_race
+        end
+
+        OperationalDataExtractor::PbsEligibilityScreener.new(@response_set).extract_data
+      end
+
+      it "extracts three racial data" do
+        PersonRace.count.should == 3
+      end
+
+      it "the base asian race classification is stored in race_code as the local code of its code list value" do
+        @person.races.select { |race| race.race_code == asian_race.local_code }.size.should == 1
+      end
+
+      it "the more specific asian races should have a race_code of 'other' (-5)" do
+        @person.races.select { |race| race.race_code == other_race.local_code }.size.should == 2
+      end
+
+      it "the more specific asian races should have a race_other of the text of their race" do
+         @person.races.one? { |race| race.race_other == "Asian Indian" }.should be_true
+         @person.races.one? { |race| race.race_other == "Filipino" }.should be_true
+      end
+    end
+
+    describe "processing with multiple specific pacific islander records" do
+      before do
+        take_survey(@survey, @response_set) do |a|
+          a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::PBS_ELIG_SCREENER_RACE_1_PREFIX}.RACE_1", pacific_islander_race
+          a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::PBS_ELIG_SCREENER_RACE_3_PREFIX}.RACE_3", samoan_race
+          a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::PBS_ELIG_SCREENER_RACE_3_PREFIX}.RACE_3", native_hawaiian_race
+        end
+
+        OperationalDataExtractor::PbsEligibilityScreener.new(@response_set).extract_data
+      end
+
+      it "extracts three racial data" do
+        PersonRace.count.should == 3
+      end
+
+      it "the base pacific islander race classification is stored in race_code as the local code of its code list value" do
+        @person.races.select { |race| race.race_code == pacific_islander_race.local_code }.size.should == 1
+      end
+
+      it "the more specific pacific islander races should have a race_code of 'other' (-5)" do
+        @person.races.select { |race| race.race_code == other_race.local_code }.size.should == 2
+      end
+
+      it "the more specific pacific islander races should have a race_other of the text of their race" do
+         @person.races.one? { |race| race.race_other == "Samoan" }.should be_true
+         @person.races.one? { |race| race.race_other == "Native Hawaiian" }.should be_true
+      end
+
+      it "does not create duplicate entries when data is extracted multiple times" do
+        10.times do
+          OperationalDataExtractor::PbsEligibilityScreener.new(@response_set).extract_data
+        end
+
+        PersonRace.count.should == 3
       end
     end
   end

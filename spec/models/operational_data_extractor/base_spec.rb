@@ -600,6 +600,10 @@ describe OperationalDataExtractor::Base do
     let(:asian_race) { NcsCode.for_list_name_and_local_code("RACE_CL1", 4) }
     let(:other_race) { NcsCode.for_list_name_and_local_code("RACE_CL1", -5) }
     let(:vietnamese_race) { NcsCode.for_list_name_and_local_code("RACE_CL6", 9) }
+    let(:filipino_race) { NcsCode.for_list_name_and_local_code("RACE_CL7", 3) }
+    let(:asian_indian_race) { NcsCode.for_list_name_and_local_code("RACE_CL7", 1) }
+    let(:samoan_race) { NcsCode.for_list_name_and_local_code("RACE_CL8", 3) }
+    let(:native_hawaiian_race) { NcsCode.for_list_name_and_local_code("RACE_CL8", 1) }
 
     before do
       @person_race_map = OperationalDataExtractor::Birth::PERSON_RACE_MAP
@@ -793,15 +797,58 @@ describe OperationalDataExtractor::Base do
     end
 
     describe "#process_standard_race" do
+      let(:general_question) { Factory(:question, :reference_identifier => "BABY_RACE_1") }
+      let(:general_answer)   { Factory(:answer, :reference_identifier => "4", :response_class => "answer", :text => "Asian")}
+      let(:general_response) { Factory(:response, :question => general_question, :answer => general_answer)}
+
+      let(:specific_asian_question) { Factory(:question, :reference_identifier => "BABY_RACE_2") }
+      let(:specific_asian_answer)   { Factory(:answer, :reference_identifier => "3", :response_class => "answer", :text => "Filipino")}
+      let(:specific_asian_response) { Factory(:response, :question => specific_asian_question, :answer => specific_asian_answer)}
+
+      let(:specific_pacific_islander_question) { Factory(:question, :reference_identifier => "BABY_RACE_3") }
+      let(:specific_pacific_islander_answer)   { Factory(:answer, :reference_identifier => "3", :response_class => "answer", :text => "Native Hawaiian")}
+      let(:specific_pacific_islander_response) { Factory(:response, :question => specific_pacific_islander_question, :answer => specific_pacific_islander_answer)}
+
       before do
         @blank_person_race = Factory(:person_race, :race_code => nil)
       end
 
-      it "populates a standard PersonRace record with a response" do
-        attribute = "race_code"
-        response = 1
-        @birth_extractor.process_standard_race(@blank_person_race, attribute, response)
-        @blank_person_race.race_code.should == 1
+      context "when it is a general race response" do
+        it "populates a race code with the response reference id" do
+          attribute = "race_code"
+          @birth_extractor.process_standard_race(@blank_person_race, attribute, general_response)
+          @blank_person_race.race_code.should == 4
+        end
+      end
+
+      context "when it is a more specific asian race response" do
+
+        it "populates race_code attribute with the code value for 'other' (-5)" do
+          attribute = "race_code"
+          @birth_extractor.process_standard_race(@blank_person_race, attribute, specific_asian_response)
+          @blank_person_race.race_code.should == -5
+        end
+
+        it "populates race_other attribute with the text value of the response" do
+          attribute = "race_other"
+          @birth_extractor.process_standard_race(@blank_person_race, attribute, specific_asian_response)
+          @blank_person_race.race_other.should == "Filipino"
+        end
+      end
+
+      context "when it is a more specific pacific islander race response" do
+
+        it "populates race_code attribute with the code value for 'other' (-5)" do
+          attribute = "race_code"
+          @birth_extractor.process_standard_race(@blank_person_race, attribute, specific_pacific_islander_response)
+          @blank_person_race.race_code.should == -5
+        end
+
+        it "populates race_other attribute with the text value of the response" do
+          attribute = "race_other"
+          @birth_extractor.process_standard_race(@blank_person_race, attribute, specific_pacific_islander_response)
+          @blank_person_race.race_other.should == "Native Hawaiian"
+        end
       end
     end
 
@@ -825,30 +872,31 @@ describe OperationalDataExtractor::Base do
     end
 
     describe "#get_person_race" do
+      let(:question) { Factory(:question) }
+      let(:answer)   { Factory(:answer, :reference_identifier => "-5",  :text => "Other")}
+      let(:response) { Factory(:response, :question => question, :answer => answer)}
+
       before do
         @birth_extractor = OperationalDataExtractor::Birth.new(@response_set)
       end
 
       it "returns an existing person race record when the is one that contains an other choice selection, yet whose other text description is blank" do
         other_with_no_description = @person.races.create(:race_code => -5, :race_other => nil)
-        @birth_extractor.get_person_race(other_race).should eql(other_with_no_description)
+        @birth_extractor.get_person_race(response).should eql(other_with_no_description)
       end
 
       it "returns a new person race record when a record of the above description does not exist" do
-        person_race = @birth_extractor.get_person_race(white_race)
+        person_race = @birth_extractor.get_person_race(response)
         person_race.should be_instance_of(PersonRace)
         person_race.new_record?.should be_true
       end
     end
 
     describe "record duplication" do
-      before do
-        @birth_extractor = OperationalDataExtractor::Birth.new(@response_set)
-      end
 
       it "does not create a person race record if one already exists" do
         (2).times do
-          @birth_extractor.process_person_race(@person_race_map )
+          @birth_extractor.process_person_race(@person_race_map)
         end
 
         PersonRace.where(:person_id => @person.id, :race_code => white_race.local_code).size.should == 1
