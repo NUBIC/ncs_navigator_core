@@ -28,6 +28,7 @@
               = text_area_tag :enrollment_status_comment
             %p
               = f.submit "Mark Participant as not being actively followed", :confirm => "Are you certain?"
+- if permit?(Role::SYSTEM_ADMINISTRATOR)
   .page_section
     .psc
       %b
