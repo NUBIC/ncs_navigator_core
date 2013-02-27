@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # == Schema Information
-# Schema version: 20120629204215
+# Schema version: 20130226172617
 #
 # Table name: events
 #
@@ -23,6 +23,7 @@
 #  id                                 :integer          not null, primary key
 #  lock_version                       :integer          default(0)
 #  participant_id                     :integer
+#  psc_ideal_date                     :date
 #  psu_code                           :integer          not null
 #  scheduled_study_segment_identifier :string(255)
 #  transaction_type                   :string(255)
@@ -61,6 +62,7 @@ class Event < ActiveRecord::Base
 
   before_validation :strip_time_whitespace
   before_create :set_start_time
+  before_save :set_psc_ideal_date
 
   POSTNATAL_EVENTS = [
     18, # Birth
@@ -183,7 +185,7 @@ class Event < ActiveRecord::Base
     -5, # Other
     -4  # Missing in Error
   ]
-  
+
   NAMED_EVENT_CODES = {
     "household_enumeration" => 1,
     "two_tier_enumeration" => 2,
@@ -328,6 +330,12 @@ class Event < ActiveRecord::Base
     end
   end
   private :set_start_time
+
+  # Set event psc_ideal_date to the event start date if it is blank
+  def set_psc_ideal_date
+    self.psc_ideal_date = self.event_start_date if self.psc_ideal_date.blank?
+  end
+  private :set_psc_ideal_date
 
   def event_start_time=(t)
     self['event_start_time'] = format_event_time(t)
@@ -643,7 +651,7 @@ class Event < ActiveRecord::Base
 
   ##
   # Checks that the event label and ideal date from PSC
-  # matches the event_type and event_start_date
+  # matches the event_type and psc_ideal_date
   # @param[ScheduledActivity]
   # @return[boolean]
   def matches_activity(scheduled_activity)
@@ -652,7 +660,7 @@ class Event < ActiveRecord::Base
   end
 
   def implied_by?(label, date)
-    self.label == label && event_start_date.to_s == date
+    self.label == label && psc_ideal_date.to_s == date
   end
 
   def set_event_disposition_category(contact)
@@ -789,8 +797,11 @@ class Event < ActiveRecord::Base
     rescue
       # NOOP - do not set unparsable date
     end
-    Event.create(:participant => participant, :psu_code => participant.psu_code,
-                 :event_start_date => date, :event_type_code => event_type_code,
+    Event.create(:participant => participant,
+                 :psu_code => participant.psu_code,
+                 :event_type_code => event_type_code,
+                 :event_start_date => date,
+                 :psc_ideal_date => date,
                  :scheduled_study_segment_identifier => study_segment_identifier)
   end
 
@@ -818,7 +829,8 @@ class Event < ActiveRecord::Base
         :event_start_date,
         :event_start_time,
         :event_end_date,
-        :event_end_time
+        :event_end_time,
+        :psc_ideal_date
       ].each do |a|
         ic.send("#{a}=", self.send(a)) if ic.send(a).blank? || ic.send(a) == -4
       end

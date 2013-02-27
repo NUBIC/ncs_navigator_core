@@ -126,6 +126,7 @@ Factory.define :event do |e|
   e.event_disposition_category_code  1
   e.event_breakoff_code              1
   e.event_incentive_type_code        1
+  e.psc_ideal_date                   nil
 end
 
 Factory.define :mdes_min_event, :class => Event do |e|
