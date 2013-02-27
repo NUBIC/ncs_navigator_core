@@ -10,7 +10,4 @@ class RemoveDuplicatePersonRaceRecords < ActiveRecord::Migration
                        AND pr.race_other IS NULL))
              AND person_races.id > pr.id;"
   end
-
-  def down
-  end
 end
