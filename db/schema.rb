@@ -272,8 +272,6 @@ ActiveRecord::Schema.define(:version => 20130207172547) do
     t.integer  "lock_version",                                                                    :default => 0
   end
 
-  add_index "events", ["event_type_code"], :name => "e_event_type_code"
-
   create_table "fieldworks", :force => true do |t|
     t.string   "fieldwork_id",        :limit => 36
     t.datetime "created_at"
@@ -343,6 +341,8 @@ ActiveRecord::Schema.define(:version => 20130207172547) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "institution_person_links", ["institution_id", "person_id"], :name => "index_institution_person_links_on_institution_id_and_person_id", :unique => true
 
   create_table "institutions", :force => true do |t|
     t.string   "psu_code",                    :limit => 36, :null => false
@@ -835,8 +835,8 @@ ActiveRecord::Schema.define(:version => 20130207172547) do
   end
 
   create_table "person_races", :force => true do |t|
-    t.integer  "psu_code",                       :null => false
-    t.string   "person_race_id",   :limit => 36, :null => false
+    t.string   "psu_code",         :limit => 36, :null => false
+    t.binary   "person_race_id",                 :null => false
     t.integer  "person_id",                      :null => false
     t.integer  "race_code",                      :null => false
     t.string   "race_other"
@@ -1649,8 +1649,6 @@ ActiveRecord::Schema.define(:version => 20130207172547) do
   add_foreign_key "participant_visit_records", "contacts", :name => "participant_visit_records_contacts_fk"
   add_foreign_key "participant_visit_records", "participants", :name => "participant_visit_records_participants_fk"
   add_foreign_key "participant_visit_records", "people", :name => "participant_visit_records_people_fk", :column => "rvis_person_id"
-
-  add_foreign_key "person_races", "people", :name => "person_races_people_fk"
 
   add_foreign_key "ppg_details", "participants", :name => "ppg_details_participants_fk"
 

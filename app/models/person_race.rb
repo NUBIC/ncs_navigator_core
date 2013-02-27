@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 # == Schema Information
-# Schema version: 20120629204215
+# Schema version: 20130207172547
 #
 # Table name: person_races
 #
 #  created_at       :datetime
 #  id               :integer          not null, primary key
 #  person_id        :integer          not null
-#  person_race_id   :string(36)       not null
-#  psu_code         :integer          not null
+#  person_race_id   :binary           not null
+#  psu_code         :string(36)       not null
 #  race_code        :integer          not null
 #  race_other       :string(255)
 #  transaction_type :string(36)
