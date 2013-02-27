@@ -8,10 +8,10 @@ event:informed_consent instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m
 event:informed_consent order:01_01 participant_type:mother
 
 # Participant Verification Part Two
-event:informed_consent instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_two instrument:3.1:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_two instrument:3.2:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_two order:00_01 participant_type:child references:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one references:3.1:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one references:3.2:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one
+event:informed_consent instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_two instrument:3.1:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_two instrument:3.2:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_two order:00_02 participant_type:child references:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one references:3.1:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one references:3.2:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one
 
 # Parental Permission for Child Participation
-event:informed_consent order:01_01 participant_type:child
+event:informed_consent order:01_02 participant_type:child
 
 
 
@@ -84,15 +84,14 @@ collection:biological event:pre-pregnancy_visit instrument:2.0:ins_bio_adulturin
 # Non-Pregnant Woman Informed Consent
 event:pre-pregnancy_visit participant_type:mother order:95_01
 
-# Pre-Pregnancy Visit Information Sheet
-event:pre-pregnancy_visit order:95_02
-
 # Pre-Pregnancy Interview
 event:pre-pregnancy_visit instrument:2.0:ins_que_prepreg_int_ehpbhi_p2_v1.1 instrument:2.1:ins_que_prepreg_int_ehpbhi_m2.1_v1.2 instrument:2.2:ins_que_prepreg_int_ehpbhi_m2.1_v1.2 instrument:3.0:ins_que_prepreg_int_ehpbhi_m2.1_v1.2 instrument:3.1:ins_que_prepreg_int_ehpbhi_m2.1_v1.2 instrument:3.2:ins_que_prepreg_int_ehpbhi_m2.1_v1.2 order:01_01 participant_type:mother
 
 # Pre-Pregnancy SAQ
 event:pre-pregnancy_visit instrument:2.0:ins_que_prepreg_saq_ehpbhi_p2_v1.1 instrument:2.1:ins_que_prepreg_saq_ehpbhi_p2_v1.1 instrument:2.2:ins_que_prepreg_saq_ehpbhi_p2_v1.1 instrument:3.0:ins_que_prepreg_saq_ehpbhi_p2_v1.1 instrument:3.1:ins_que_prepreg_saq_ehpbhi_p2_v1.1 instrument:3.2:ins_que_prepreg_saq_ehpbhi_p2_v1.1 order:02_01 participant_type:mother
 
+# Pre-Pregnancy Visit Information Sheet
+event:pre-pregnancy_visit order:95_02
 
 
 Pregnancy Visit 1 - 13
@@ -131,15 +130,6 @@ collection:environmental event:pregnancy_visit_1 instrument:2.2:ins_env_vacbagdu
 # Environmental Sample Kit Distribution Instrument
 collection:environmental event:pregnancy_visit_1 instrument:2.2:ins_env_sampledistrib_dci_ehpbhi_m2.2_v1.0 instrument:3.0:ins_env_sampledistrib_dci_ehpbhi_m2.2_v1.0 instrument:3.1:ins_env_sampledistrib_dci_ehpbhi_m2.2_v1.0 instrument:3.2:ins_env_sampledistrib_dci_ehpbhi_m2.2_v1.0 order:23_01 participant_type:mother
 
-# Birth Visit Information Sheet
-event:pregnancy_visit_1 order:95_01
-
-# Pregnancy Visit 1 Visit Information Sheet
-event:pregnancy_visit_1 order:95_02
-
-# Pregnancy Health Care Log
-event:pregnancy_visit_1 order:95_03
-
 # Participant Verification Questionnaire
 event:pregnancy_visit_1 instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one instrument:3.1:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one instrument:3.2:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one order:00_01 participant_type:mother
 
@@ -153,7 +143,16 @@ event:pregnancy_visit_1 instrument:2.0:ins_que_pregvisit1_saq_ehpbhi_p2_v2.0 ins
 event:pregnancy_visit_1 instrument:3.0:ins_que_tracing_int_ehpbhilipbs_m3.0_v1.0 instrument:3.1:ins_que_tracing_int_ehpbhilipbs_m3.0_v1.0 instrument:3.2:ins_que_tracing_int_ehpbhilipbs_m3.0_v1.0 order:90_01
 
 # Reconsideration Instrument
-event:pregnancy_visit_1 instrument:3.1:ins_con_reconsideration_dci_ehpbhi_m3.1_v1.0 instrument:3.2:ins_con_reconsideration_dci_ehpbhi_m3.1_v1.0 order:95_01 participant_type:mother
+event:pregnancy_visit_1 instrument:3.1:ins_con_reconsideration_dci_ehpbhi_m3.1_v1.0 instrument:3.2:ins_con_reconsideration_dci_ehpbhi_m3.1_v1.0 order:94_01 participant_type:mother
+
+# Birth Visit Information Sheet
+event:pregnancy_visit_1 order:95_01
+
+# Pregnancy Visit 1 Visit Information Sheet
+event:pregnancy_visit_1 order:95_02
+
+# Pregnancy Health Care Log
+event:pregnancy_visit_1 order:95_03
 
 Pregnancy Visit 2 - 15
 ----------------------
@@ -163,12 +162,6 @@ collection:biological event:pregnancy_visit_2 instrument:2.0:ins_bio_adultblood_
 
 # Biospecimen Adult Urine Instrument
 collection:biological event:pregnancy_visit_2 instrument:2.0:ins_bio_adulturine_dci_ehpbhi_p2_v1.0 instrument:2.1:ins_bio_adulturine_dci_ehpbhi_m2.1_v1.1 instrument:2.2:ins_bio_adulturine_dci_ehpbhi_m2.1_v1.1 instrument:3.0:ins_bio_adulturine_dci_ehpbhi_m2.1_v1.1 instrument:3.1:ins_bio_adulturine_dci_ehpbhi_m2.1_v1.1 instrument:3.2:ins_bio_adulturine_dci_ehpbhi_m2.1_v1.1 order:11_01 participant_type:mother
-
-# Pregnancy Visit 2 Visit Information Sheet
-event:pregnancy_visit_2 order:95_01
-
-# Pregnancy Health Care Log
-event:pregnancy_visit_2 order:95_02
 
 # Child Participation Informed Consent
 event:pregnancy_visit_2 order:90_99 participant_type:child
@@ -186,7 +179,13 @@ event:pregnancy_visit_2 instrument:2.0:ins_que_pregvisit2_saq_ehpbhi_p2_v2.0 ins
 event:pregnancy_visit_2 instrument:3.0:ins_que_tracing_int_ehpbhilipbs_m3.0_v1.0 instrument:3.1:ins_que_tracing_int_ehpbhilipbs_m3.0_v1.0 instrument:3.2:ins_que_tracing_int_ehpbhilipbs_m3.0_v1.0 order:90_01
 
 # Reconsideration Instrument
-event:pregnancy_visit_2 instrument:3.1:ins_con_reconsideration_dci_ehpbhi_m3.1_v1.0 instrument:3.2:ins_con_reconsideration_dci_ehpbhi_m3.1_v1.0 order:95_01 participant_type:mother
+event:pregnancy_visit_2 instrument:3.1:ins_con_reconsideration_dci_ehpbhi_m3.1_v1.0 instrument:3.2:ins_con_reconsideration_dci_ehpbhi_m3.1_v1.0 order:94_01 participant_type:mother
+
+# Pregnancy Visit 2 Visit Information Sheet
+event:pregnancy_visit_2 order:95_01
+
+# Pregnancy Health Care Log
+event:pregnancy_visit_2 order:95_02
 
 Low to High Conversion - 32
 ---------------------------
@@ -215,14 +214,14 @@ Father - 19
 # Father Informed Consent
 event:father event_type:informed_consent participant_type:father order:95_01
 
-# Father Visit Information Sheet
-event:father order:95_02
-
 # Father Interview
 event:father instrument:2.0:ins_que_father_int_ehpbhi_p2_v1.0 instrument:2.1:ins_que_father_int_ehpbhi_m2.1_v2.0 instrument:2.2:ins_que_father_int_ehpbhi_m2.1_v2.0 instrument:3.0:ins_que_father_int_ehpbhi_m2.1_v2.0 instrument:3.1:ins_que_father_int_ehpbhi_m2.1_v2.0 instrument:3.2:ins_que_father_int_ehpbhi_m2.1_v2.0 order:01_01 participant_type:father
 
 # Participant Verification Questionnaire Part 1
 event:father instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one instrument:3.1:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one instrument:3.2:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one order:00_01 participant_type:father
+
+# Father Visit Information Sheet
+event:father order:95_02
 
 Birth LI - 18
 -------------
@@ -247,12 +246,6 @@ Birth - 18
 # Biospecimen Cord Blood Instrument
 collection:biological event:birth instrument:2.0:ins_bio_cordblood_dci_ehpbhi_p2_v1.0 instrument:2.1:ins_bio_cordblood_dci_ehpbhi_m2.1_v2.0 instrument:2.2:ins_bio_cordblood_dci_ehpbhi_m2.2_v3.0 instrument:3.0:ins_bio_cordblood_dci_ehpbhi_m2.2_v3.0 instrument:3.1:ins_bio_cordblood_dci_ehpbhi_m2.2_v3.0 instrument:3.2:ins_bio_cordblood_dci_ehpbhi_m2.2_v3.0 order:10_01 participant_type:child
 
-# Birth Visit Information Sheet
-event:birth order:95_03
-
-# Infant Health Care Log
-event:birth order:95_04
-
 # Child Participation Informed Consent
 event:birth order:00_00 participant_type:child
 
@@ -276,6 +269,12 @@ event:birth instrument:3.0:ins_que_tracing_int_ehpbhilipbs_m3.0_v1.0 instrument:
 
 # Biospecimen Breast Milk Collection SAQ
 collection:biological event:birth instrument:3.1:ins_bio_breastmilkcoll_saqspec_ehpbhi_m3.1_v1.0 instrument:3.2:ins_bio_breastmilkcoll_saqspec_ehpbhi_m3.1_v1.0 order:95_01 participant_type:mother
+
+# Birth Visit Information Sheet
+event:birth order:95_03
+
+# Infant Health Care Log
+event:birth order:95_04
 
 3 Month - 23
 ------------
@@ -308,9 +307,6 @@ collection:biological event:3_month instrument:3.1:ins_bio_breastmilkcoll_saqspe
 6 Month - 24
 ------------
 
-# 6-Month Visit Information Sheet
-event:6_month order:95_02
-
 # 6-Month Mother Interview Part 1
 event:6_month instrument:2.0:ins_que_6mmother_int_ehpbhi_p2_v1.1_part_one instrument:2.1:ins_que_6mmother_int_ehpbhi_p2_v1.1_part_one instrument:2.2:ins_que_6mmother_int_ehpbhi_p2_v1.1_part_one instrument:3.0:ins_que_6mmother_int_ehpbhi_p2_v1.1_part_one instrument:3.1:ins_que_6month_int_ehpbhipbs_m3.1_v2.0_part_one instrument:3.2:ins_que_6month_int_ehpbhipbs_m3.1_v2.0_part_one order:01_01 participant_type:mother
 
@@ -336,7 +332,10 @@ event:6_month instrument:3.0:ins_que_tracing_int_ehpbhilipbs_m3.0_v1.0 instrumen
 event:6_month instrument:3.1:ins_pm_childanthro_dci_ehpbhi_m3.1_v1.0 instrument:3.2:ins_pm_childanthro_dci_ehpbhi_m3.1_v1.0 order:91_01 participant_type:child
 
 # Biospecimen Child Urine Collection Instrument
-collection:biological event:6_month instrument:3.1:ins_bio_childurinecoll_int_ehpbhi_m3.1_v1.0 instrument:3.2:ins_bio_childurinecoll_int_ehpbhi_m3.1_v1.0 order:95_04 participant_type:child
+collection:biological event:6_month instrument:3.1:ins_bio_childurinecoll_int_ehpbhi_m3.1_v1.0 instrument:3.2:ins_bio_childurinecoll_int_ehpbhi_m3.1_v1.0 order:94_01 participant_type:child
+
+# 6-Month Visit Information Sheet
+event:6_month order:95_02
 
 9 Month - 26
 ------------
@@ -359,9 +358,6 @@ event:9_month instrument:3.0:ins_que_tracing_int_ehpbhilipbs_m3.0_v1.0 instrumen
 
 12 Month - 27
 -------------
-
-# 12-Month Visit Information Sheet
-event:12_month order:95_01
 
 # 12-Month Mother Interview Part 1
 event:12_month instrument:2.0:ins_que_12mmother_int_ehpbhi_p2_v1.1_part_one instrument:2.1:ins_que_12mmother_int_ehpbhi_p2_v1.1_part_one instrument:2.2:ins_que_12mmother_int_ehpbhi_p2_v1.1_part_one instrument:3.0:ins_que_12mmother_int_ehpbhi_p2_v1.1_part_one instrument:3.1:ins_que_12month_int_ehpbhipbs_m3.1_v2.0_part_one instrument:3.2:ins_que_12month_int_ehpbhipbs_m3.1_v2.0_part_one order:01_01 participant_type:mother
@@ -408,6 +404,8 @@ collection:biological event:12_month instrument:3.1:ins_bio_childurinecoll_int_e
 # Brief Infant Toddler Social Emotional Assessment (BITSEA) SAQ
 event:12_month instrument:3.1:ins_neu_bitsea_saqspec_ehpbhilipbs_m3.1_v1.0 instrument:3.2:ins_neu_bitsea_saqspec_ehpbhilipbs_m3.1_v1.0 order:95_06 participant_type:child
 
+# 12-Month Visit Information Sheet
+event:12_month order:96_01
 
 18 Month - 30
 -------------

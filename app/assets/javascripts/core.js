@@ -66,7 +66,7 @@ $(document).ready(function() {
 
   $("input[type='text'].datetime").datetimepicker({
     controlType: 'select',
-    timeFormat: 'hh:mm:ss',
+    timeFormat: 'HH:mm:ss',
     dateFormat: 'yy-mm-dd'
   });
   $("input[type='text'].date").datepicker({
