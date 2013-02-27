@@ -30,14 +30,11 @@ class TelephonesController < ApplicationController
   end
 
   def create
-    @person = Person.find(params[:person_id])
     @telephone = Telephone.new(params[:telephone])
-
     respond_to do |format|
       if @telephone.save
-        path = @person.participant? ? participant_path(@person.participant) : person_path(@person)
         flash[:notice] = 'Telephone was successfully created.'
-        format.html { redirect_to(path) }
+        format.html { redirect_to(contact_info_redirect_path(@telephone)) }
         format.json  { render :json => @telephone }
       else
         format.html { render :action => "new" }
@@ -47,14 +44,11 @@ class TelephonesController < ApplicationController
   end
 
   def update
-    @person = Person.find(params[:person_id])
     @telephone = Telephone.find(params[:id])
-
     respond_to do |format|
       if @telephone.update_attributes(params[:telephone])
-        path = @person.participant? ? participant_path(@person.participant) : person_path(@person)
         flash[:notice] = 'Telephone was successfully updated.'
-        format.html { redirect_to(path) }
+        format.html { redirect_to(contact_info_redirect_path(@telephone)) }
         format.json  { render :json => @telephone }
       else
         format.html { render :action => "edit" }

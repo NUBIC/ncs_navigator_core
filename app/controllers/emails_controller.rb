@@ -31,14 +31,11 @@ class EmailsController < ApplicationController
   end
 
   def create
-    @person = Person.find(params[:person_id])
     @email = Email.new(params[:email])
-
     respond_to do |format|
       if @email.save
-        path = @person.participant? ? participant_path(@person.participant) : person_path(@person)
         flash[:notice] = 'Email was successfully created.'
-        format.html { redirect_to(path) }
+        format.html { redirect_to(contact_info_redirect_path(@email)) }
         format.json  { render :json => @email }
       else
         format.html { render :action => "new" }
@@ -48,14 +45,11 @@ class EmailsController < ApplicationController
   end
 
   def update
-    @person = Person.find(params[:person_id])
     @email = Email.find(params[:id])
-
     respond_to do |format|
       if @email.update_attributes(params[:email])
-        path = @person.participant? ? participant_path(@person.participant) : person_path(@person)
         flash[:notice] = 'Email was successfully updated.'
-        format.html { redirect_to(path) }
+        format.html { redirect_to(contact_info_redirect_path(@email)) }
         format.json  { render :json => @email }
       else
         format.html { render :action => "edit" }

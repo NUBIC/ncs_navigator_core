@@ -8,6 +8,8 @@ NcsNavigatorCore::Application.routes.draw do
   end
   resources :household_units
   resources :addresses, :except => [:destroy]
+  resources :emails, :except => [:index, :destroy]
+  resources :telephones, :except => [:index, :destroy]
   resources :events, :only => [:index, :edit, :update] do
     member do
       get :versions
