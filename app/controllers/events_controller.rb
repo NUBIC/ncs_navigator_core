@@ -81,7 +81,6 @@ class EventsController < ApplicationController
 
   def reschedule
     @event = Event.find(params[:id])
-    @date = @event.event_start_date
 
     if request.put?
       reason = params[:reason]
