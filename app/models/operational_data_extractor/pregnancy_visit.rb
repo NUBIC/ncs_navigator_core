@@ -14,6 +14,8 @@ module OperationalDataExtractor
 
     PREG_VISIT_1_RACE_NEW_3_INTERVIEW_PREFIX = "PREG_VISIT_1_RACE_NEW_3"
     PREG_VISIT_1_RACE_1_3_INTERVIEW_PREFIX   = "PREG_VISIT_1_RACE_1_3"
+    PREG_VISIT_1_RACE_2_3_INTERVIEW_PREFIX   = "PREG_VISIT_1_RACE_2_3"
+    PREG_VISIT_1_RACE_3_3_INTERVIEW_PREFIX   = "PREG_VISIT_1_RACE_3_3"
 
     PERSON_MAP = {
       "#{PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.R_FNAME"           => "first_name",
@@ -308,7 +310,9 @@ module OperationalDataExtractor
       "#{PREG_VISIT_1_RACE_NEW_3_INTERVIEW_PREFIX}.RACE_NEW"        => "race_code",
       "#{PREG_VISIT_1_RACE_NEW_3_INTERVIEW_PREFIX}.RACE_NEW_OTH"    => "race_other",
       "#{PREG_VISIT_1_RACE_1_3_INTERVIEW_PREFIX}.RACE_1"            => "race_code",
-      "#{PREG_VISIT_1_RACE_1_3_INTERVIEW_PREFIX}.RACE_1_OTH"        => "race_other"
+      "#{PREG_VISIT_1_RACE_1_3_INTERVIEW_PREFIX}.RACE_1_OTH"        => "race_other",
+      "#{PREG_VISIT_1_RACE_2_3_INTERVIEW_PREFIX}.RACE_2"            => "race_code",
+      "#{PREG_VISIT_1_RACE_3_3_INTERVIEW_PREFIX}.RACE_3"            => "race_code"
     }
 
     def initialize(response_set)
