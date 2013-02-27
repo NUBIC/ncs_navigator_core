@@ -1,4 +1,5 @@
 # == Schema Information
+# Schema version: 20130226172617
 #
 # Table name: events
 #
@@ -21,6 +22,7 @@
 #  id                                 :integer          not null, primary key
 #  lock_version                       :integer          default(0)
 #  participant_id                     :integer
+#  psc_ideal_date                     :date
 #  psu_code                           :integer          not null
 #  scheduled_study_segment_identifier :string(255)
 #  transaction_type                   :string(255)

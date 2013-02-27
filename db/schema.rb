@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130207172547) do
+ActiveRecord::Schema.define(:version => 20130226172617) do
 
   create_table "addresses", :force => true do |t|
     t.integer  "psu_code",                                                :null => false
@@ -270,9 +270,8 @@ ActiveRecord::Schema.define(:version => 20130207172547) do
     t.datetime "updated_at"
     t.string   "scheduled_study_segment_identifier"
     t.integer  "lock_version",                                                                    :default => 0
+    t.date     "psc_ideal_date"
   end
-
-  add_index "events", ["event_type_code"], :name => "e_event_type_code"
 
   create_table "fieldworks", :force => true do |t|
     t.string   "fieldwork_id",        :limit => 36
@@ -343,6 +342,8 @@ ActiveRecord::Schema.define(:version => 20130207172547) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "institution_person_links", ["institution_id", "person_id"], :name => "index_institution_person_links_on_institution_id_and_person_id", :unique => true
 
   create_table "institutions", :force => true do |t|
     t.string   "psu_code",                    :limit => 36, :null => false

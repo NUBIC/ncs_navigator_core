@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # == Schema Information
-# Schema version: 20120629204215
+# Schema version: 20130226172617
 #
 # Table name: events
 #
@@ -23,6 +23,7 @@
 #  id                                 :integer          not null, primary key
 #  lock_version                       :integer          default(0)
 #  participant_id                     :integer
+#  psc_ideal_date                     :date
 #  psu_code                           :integer          not null
 #  scheduled_study_segment_identifier :string(255)
 #  transaction_type                   :string(255)
@@ -59,6 +60,27 @@ describe Event do
       winner.event_type_other = 'winner'
       loser.event_type_other = 'loser'
     end
+  end
+
+  describe "#set_psc_ideal_date" do
+    let(:event) { Factory(:event, :event_start_date => start_date, :psc_ideal_date => ideal_date) }
+
+    describe "for an event without an ideal date" do
+      let(:start_date) { Date.parse('2525-12-25') }
+      let(:ideal_date) { nil }
+      it "sets the psc ideal date to the event start date before save" do
+        event.psc_ideal_date.should == start_date
+      end
+    end
+
+    describe "for an event without an ideal date" do
+      let(:start_date) { Date.parse('2525-12-25') }
+      let(:ideal_date) { Date.parse('2525-01-01') }
+      it "does not override the existing value" do
+        event.psc_ideal_date.should == ideal_date
+      end
+    end
+
   end
 
   describe 'to_s' do
@@ -799,7 +821,7 @@ describe Event do
     it 'returns activities whose label and ideal date match' do
       # Pregnancy Visit 1.
       event.event_type = NcsCode.for_list_name_and_local_code('EVENT_TYPE_CL1', 13)
-      event.event_start_date = '2012-01-01'
+      event.psc_ideal_date = '2012-01-01'
       psc_participant.stub!(:scheduled_activities).and_return(schedule)
 
       event.scheduled_activities(psc_participant).should == [
