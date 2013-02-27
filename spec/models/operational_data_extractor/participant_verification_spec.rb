@@ -34,10 +34,11 @@ describe OperationalDataExtractor::ParticipantVerification do
         a.str "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_CHILD_PREFIX}.C_FNAME", 'Baby'
         a.str "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_CHILD_PREFIX}.C_LNAME", 'James'
         a.date "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_CHILD_PREFIX}.CHILD_DOB", '01/01/2013'
+        a.choice "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_CHILD_PREFIX}.CHILD_SEX", @female
       end
 
       response_set.responses.reload
-      response_set.responses.size.should == 3
+      response_set.responses.size.should == 4
 
       OperationalDataExtractor::ParticipantVerification.new(response_set).extract_data
 
@@ -52,6 +53,7 @@ describe OperationalDataExtractor::ParticipantVerification do
       child.first_name.should == "Baby"
       child.last_name.should == "James"
       child.person_dob.should == '2013-01-01'
+      child.sex.should == @female
 
       child.participant.should_not be_nil
       child.participant.should == @child_participant

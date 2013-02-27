@@ -49,6 +49,12 @@ module ParticipantVerification
     a = Factory(:answer, :question_id => q.id, :text => "Date of Birth", :response_class => "date")
     a = Factory(:answer, :question_id => q.id, :text => "Refused", :response_class => "answer", :reference_identifier => "neg_1")
     a = Factory(:answer, :question_id => q.id, :text => "Don't know", :response_class => "answer", :reference_identifier => "neg_2")
+    # Child Gender
+    q = Factory(:question, :reference_identifier => "CHILD_SEX", :data_export_identifier => "PARTICIPANT_VERIF_CHILD.CHILD_SEX", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "MALE", :response_class => "answer", :reference_identifier => "1")
+    a = Factory(:answer, :question_id => q.id, :text => "FEMALE", :response_class => "answer", :reference_identifier => "2")
+    a = Factory(:answer, :question_id => q.id, :text => "Refused", :response_class => "answer", :reference_identifier => "neg_1")
+    a = Factory(:answer, :question_id => q.id, :text => "Don't know", :response_class => "answer", :reference_identifier => "neg_2")
 
     # Address One
     q = Factory(:question, :reference_identifier => "C_ADDRESS_1", :data_export_identifier => "PARTICIPANT_VERIF.C_ADDRESS_1", :survey_section_id => survey_section.id)

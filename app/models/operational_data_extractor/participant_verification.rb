@@ -41,6 +41,7 @@ module OperationalDataExtractor
       "#{INTERVIEW_CHILD_PREFIX}.C_FNAME"         => "first_name",
       "#{INTERVIEW_CHILD_PREFIX}.C_LNAME"         => "last_name",
       "#{INTERVIEW_CHILD_PREFIX}.CHILD_DOB"       => "person_dob",
+      "#{INTERVIEW_CHILD_PREFIX}.CHILD_SEX"       => "sex_code",
     }
 
     CHILD_ADDRESS_MAP = {
