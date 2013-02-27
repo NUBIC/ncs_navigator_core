@@ -49,15 +49,10 @@ class AddressesController < ApplicationController
 
   def create
     @address = Address.new(params[:address])
-
     respond_to do |format|
       if @address.save
-        path = edit_address_path(@address)
-        if @address.person
-          path = @address.person.participant? ? participant_path(@address.person.participant) : person_path(@address.person)
-        end
         flash[:notice] = 'Address was successfully created.'
-        format.html { redirect_to(path) }
+        format.html { redirect_to(contact_info_redirect_path(@address)) }
         format.json  { render :json => @address }
       else
         format.html { render :action => "new" }
@@ -68,11 +63,10 @@ class AddressesController < ApplicationController
 
   def update
     @address = Address.find(params[:id])
-
     respond_to do |format|
       if @address.update_attributes(params[:address])
         flash[:notice] = 'Address was successfully updated.'
-        format.html { redirect_to(edit_address_path(@address)) }
+        format.html { redirect_to(contact_info_redirect_path(@address)) }
         format.json  { render :json => @address }
       else
         format.html { render :action => "edit" }
