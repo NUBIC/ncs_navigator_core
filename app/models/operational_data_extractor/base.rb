@@ -627,7 +627,11 @@ module OperationalDataExtractor
       if any_address_changes?(addresses)
         changed_addresses = which_addresses_changed(addresses).flatten
         changed_addresses.each do |change_addrs|
-          person.addresses.each { |a| a.demote_primary_rank_to_secondary(change_addrs.address_type_code) }
+          person.addresses.each do |a|
+            unless a.id == change_addrs.id
+              a.demote_primary_rank_to_secondary(change_addrs.address_type_code)
+            end
+          end
         end
         addresses.flatten.each { |a| a.save! unless a.to_s.blank? }
       end
@@ -659,7 +663,11 @@ module OperationalDataExtractor
       if any_telephone_changes?(telephones)
         changed_phones = which_telephones_changed(telephones).flatten
         changed_phones.each do |phone|
-          person.telephones.each { |t| t.demote_primary_rank_to_secondary(phone.phone_type_code) }
+          person.telephones.each do |t|
+            unless t.id == phone.id
+              t.demote_primary_rank_to_secondary(phone.phone_type_code)
+            end
+          end
         end
         telephones.flatten.each { |t| t.save! unless t.try(:phone_nbr).blank? }
       end
@@ -687,7 +695,20 @@ module OperationalDataExtractor
       email
     end
 
+    def find_institution_type(map, type)
+      extracted_type = data_export_identifier_indexed_responses.find { |k, v|
+        map[k]
+      }
+      type = NcsCode.for_list_name_and_local_code(
+        'ORGANIZATION_TYPE_CL1', response_value(extracted_type[1])
+      ) if extracted_type
+      type
+    end
+
     def process_institution(map, response_set, type = other_institute_type)
+      unless type && type.local_code != -5
+        type = find_institution_type(map, type) 
+      end
       institution = get_institution(response_set, type)
       map.each do |key, attribute|
         if r = data_export_identifier_indexed_responses[key]
@@ -733,7 +754,11 @@ module OperationalDataExtractor
 
     def finalize_email(email)
       unless email.try(:email).blank?
-        person.emails.each { |e| e.demote_primary_rank_to_secondary(email.email_type_code) }
+        person.emails.each do |e|
+          unless e.id == email.id
+            e.demote_primary_rank_to_secondary(email.email_type_code)
+          end
+        end
         email.save!
       end
     end
