@@ -107,27 +107,27 @@ describe DispositionMapper do
         describe "for a mailing contact" do
           it "returns the disposition text for the contact type" do
             contact = Factory(:contact, :contact_type_code => Contact::MAILING_CONTACT_CODE, :contact_disposition => contact_disposition)
-            DispositionMapper.disposition_text_for_contact(nil, contact).should == "Partial with sufficient information in Other Language"
+            DispositionMapper.disposition_text_for_contact(contact).should == "Partial with sufficient information in Other Language"
           end
         end
 
         describe "for a telephone contact" do
           it "returns the disposition text for the contact type" do
             contact = Factory(:contact, :contact_type_code => Contact::TELEPHONE_CONTACT_CODE, :contact_disposition => contact_disposition)
-            DispositionMapper.disposition_text_for_contact(nil, contact).should == "Unknown if participant is a household resident"
+            DispositionMapper.disposition_text_for_contact(contact).should == "Unknown if participant is a household resident"
           end
         end
 
         describe "for an in person contact" do
           it "returns the disposition text for the contact type" do
             contact = Factory(:contact, :contact_type_code => Contact::IN_PERSON_CONTACT_CODE, :contact_disposition => contact_disposition)
-            DispositionMapper.disposition_text_for_contact(nil, contact).should == "Eligible Non-response- Other"
+            DispositionMapper.disposition_text_for_contact(contact).should == "Eligible Non-response- Other"
           end
         end
 
         it "returns the raw disposition if contact type is missing" do
           contact = Factory(:contact, :contact_type_code => nil, :contact_disposition => 55)
-          DispositionMapper.disposition_text_for_contact(nil, contact).should == 55
+          DispositionMapper.disposition_text_for_contact(contact).should == 55
         end
       end
 
@@ -138,13 +138,13 @@ describe DispositionMapper do
         it "returns the disposition text if the event type determines the disposition category" do
           event = Factory(:event, :event_type_code => Event::pbs_eligibility_screener_code)
           contact = Factory(:contact, :contact_type_code => Contact::IN_PERSON_CONTACT_CODE, :contact_disposition => contact_disposition)
-          DispositionMapper.disposition_text_for_contact(event, contact).should == "Patient does not meet one or more of the eligibility criteria"
+          DispositionMapper.disposition_text_for_contact(contact, event).should == "Patient does not meet one or more of the eligibility criteria"
         end
 
         it "returns the disposition text based on contact type" do
           event = Factory(:event, :event_type_code => Event::pregnancy_visit_1_code)
           contact = Factory(:contact, :contact_type_code => Contact::IN_PERSON_CONTACT_CODE, :contact_disposition => contact_disposition)
-          DispositionMapper.disposition_text_for_contact(event, contact).should == "Participant deceased"
+          DispositionMapper.disposition_text_for_contact(contact, event).should == "Participant deceased"
         end
 
       end

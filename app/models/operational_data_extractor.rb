@@ -39,6 +39,10 @@ module OperationalDataExtractor
     [/_12MMother/,          OperationalDataExtractor::PostNatal],
     [/_18MMother/,          OperationalDataExtractor::PostNatal],
     [/_24MMother/,          OperationalDataExtractor::PostNatal],
+    [/_ChildBlood_/,        OperationalDataExtractor::Specimen],
+    [/_ChildSalivaColl_/,   OperationalDataExtractor::Specimen],
+    [/_ChildUrineColl_/,    OperationalDataExtractor::Specimen],
+    [/_BreastMilkColl_/,    OperationalDataExtractor::Specimen],
   ]
 
 
