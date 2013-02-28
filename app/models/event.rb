@@ -780,6 +780,10 @@ class Event < ActiveRecord::Base
         psc.cancel_non_matching_mdes_version_instruments(participant, study_segment_identifier, date,
           "Does not include an instrument for MDES version #{NcsNavigatorCore.mdes.version}.")
       end
+      if participant.consented?
+        psc.cancel_consent_activities(participant, study_segment_identifier, date,
+          "Participant has already consented.")
+      end
     end
   end
 

@@ -270,14 +270,16 @@ namespace :import do
   desc 'Cancel scheduled events that have no matching mdes versioned instrument in PSC for followed participants'
   task :cancel_activities_with_non_matching_mdes_instruments => [:psc_setup, :environment, :set_whodunnit, :find_participants_for_psc]  do
     expected_participants_for_psc.each do |part|
-      $stderr.print("Looking for activities to cancel for participant #{part.p_id}...")
-      Rails.logger.info("Looking for activities to cancel for participant #{part.p_id}")
+      msg = "Looking for activities to cancel for participant #{part.p_id}..."
+      $stderr.print(msg)
+      Rails.logger.info(msg)
 
       psc.scheduled_activities(part).each do |a|
         if a.has_non_matching_mdes_version_instrument?
-          reason ="Does not include an instrument for MDES version #{NcsNavigatorCore.mdes.version}."
-          $stderr.print("Activity #{a.activity_name} has non matching mdes versioned instrument. Canceling activity for participant #{part.p_id}.")
-          Rails.logger.info("Activity #{a.activity_name} has non matching mdes versioned instrument. Canceling activity for participant #{part.p_id}.")
+          msg = "Activity #{a.activity_name} has non matching mdes versioned instrument. Canceling activity for participant #{part.p_id}."
+          $stderr.print("\n#{msg}")
+          Rails.logger.info(msg)
+          reason = "Does not include an instrument for MDES version #{NcsNavigatorCore.mdes.version}."
           psc.update_activity_state(a.activity_id, part, Psc::ScheduledActivity::CANCELED, Date.parse(a.ideal_date), reason)
         end
       end
@@ -287,18 +289,21 @@ namespace :import do
   desc 'Cancel collection activities if not expanded phase two'
   task :cancel_collection_activities => [:psc_setup, :environment, :set_whodunnit, :find_participants_for_psc]  do
     expected_participants_for_psc.each do |part|
-      $stderr.print("Looking for activities to cancel for participant #{part.p_id}...")
-      Rails.logger.info("Looking for activities to cancel for participant #{part.p_id}")
+      msg = "Looking for activities to cancel for participant #{part.p_id}..."
+      $stderr.print(msg)
+      Rails.logger.info(msg)
 
       if NcsNavigatorCore.expanded_phase_two?
-        $stderr.print("No need to cancel activities. Cases is configured for expanded phase two.")
-        Rails.logger.info("No need to cancel activities. Cases is configured for expanded phase two.")
+        msg = "No need to cancel activities. Cases is configured for expanded phase two."
+        $stderr.print("\n#{msg}")
+        Rails.logger.info(msg)
       else
         psc.scheduled_activities(part).each do |a|
           if Instrument.collection?(a.labels)
+            msg = "Activity #{a.activity_name} is a collection activity. Canceling activity for participant #{part.p_id}."
+            $stderr.print("\n#{msg}")
+            Rails.logger.info(msg)
             reason ="Study Center is not configured to collection samples or specimens."
-            $stderr.print("Activity #{a.activity_name} is a collection activity. Canceling activity for participant #{part.p_id}.")
-            Rails.logger.info("Activity #{a.activity_name} is a collection activity. Canceling activity for participant #{part.p_id}.")
             psc.update_activity_state(a.activity_id, part, Psc::ScheduledActivity::CANCELED, Date.parse(a.ideal_date), reason)
           end
         end
@@ -306,5 +311,29 @@ namespace :import do
     end
   end
 
+  desc 'Cancel consent activities for participants who have already consented'
+  task :cancel_consent_activities => [:psc_setup, :environment, :set_whodunnit, :find_participants_for_psc]  do
+    expected_participants_for_psc.each do |part|
+      msg = "Looking for activities to cancel for participant #{part.p_id}..."
+      $stderr.print(msg)
+      Rails.logger.info(msg)
+
+      if participant.consented?
+        psc.scheduled_activities(part).each do |a|
+          if psc.should_cancel_consent_activity?(a)
+            msg = "Activity #{a.activity_name} is a consent activity. Canceling activity for participant #{part.p_id}."
+            $stderr.print("\n#{msg}")
+            Rails.logger.info(msg)
+            reason ="Study Center is not configured to collection samples or specimens."
+            psc.update_activity_state(a.activity_id, part, Psc::ScheduledActivity::CANCELED, Date.parse(a.ideal_date), reason)
+          end
+        end
+      else
+        msg = "No need to cancel activities for participant. #{participant} has not yet consented."
+        $stderr.print("\n#{msg}")
+        Rails.logger.info(msg)
+      end
+    end
+  end
 
 end
