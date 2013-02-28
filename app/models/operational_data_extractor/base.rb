@@ -15,11 +15,11 @@ module OperationalDataExtractor
 
       def extractor_for(response_set)
         extractor = EXTRACTORS.find { |instrument, handler| instrument =~ response_set.survey.title }
-        unless extractor.blank?
-          extractor[1].new(response_set)
-        else
+        if extractor.blank?
           log_error(self, "Extractor for the instrument #{response_set.survey.title} is not found.")
           OperationalDataExtractor::PregnancyScreener.new(response_set)
+        else
+          extractor[1].new(response_set)
         end
       end
     end
