@@ -15,7 +15,12 @@ module OperationalDataExtractor
 
       def extractor_for(response_set)
         extractor = EXTRACTORS.find { |instrument, handler| instrument =~ response_set.survey.title }
-        extractor ? extractor[1].new(response_set) : OperationalDataExtractor::PregnancyScreener.new(response_set)
+        unless extractor.blank?
+          extractor[1].new(response_set)
+        else
+          log_error(self, "Extractor for the instrument #{response_set.survey.title} is not found.")
+          OperationalDataExtractor::PregnancyScreener.new(response_set)
+        end
       end
     end
 
@@ -299,12 +304,16 @@ module OperationalDataExtractor
     end
 
     def log_error(obj, msg)
-      path = error_log_path
-      File.open(path, 'w') { |f| f.write("[#{Time.now.to_s(:db)}] OPERATIONAL DATA EXTRACTION ERROR LOG\n\n") } unless File.exists?(path)
-      File.open(path, 'a') { |f| f.write("[#{Time.now.to_s(:db)}] [#{obj.class}] [#{obj.id}] #{msg}") }
+      self.class.log_error(obj, msg)
     end
 
-    def error_log_path
+    def self.log_error(obj, msg)
+      path = error_log_path
+      File.open(path, 'w') { |f| f.write("[#{Time.now.to_s(:db)}] OPERATIONAL DATA EXTRACTION ERROR LOG\n\n") } unless File.exists?(path)
+      File.open(path, 'a') { |f| f.write("[#{Time.now.to_s(:db)}] [#{obj.class.name =~ /Class/ ? obj : obj.class}] [#{obj.respond_to?(:id) ? obj.id  : 'None' }] #{msg}\n") }
+    end
+
+    def self.error_log_path
       dir = "#{Rails.root}/log/operational_data_extractor"
       FileUtils.makedirs(dir) unless File.exists?(dir)
       log_path = "#{dir}/#{Date.today.strftime('%Y%m%d')}_data_extraction_errors.log"
