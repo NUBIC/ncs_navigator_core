@@ -457,49 +457,6 @@ class Event < ActiveRecord::Base
   end
 
   ##
-  # Returns true if this event is created during the same contact as another event
-  # @return [Boolean]
-  def associated_with_other_event?
-    contacts = contact_links.map(&:contact).uniq
-    contacts.count == 1 &&
-      contacts.first.contact_links.map(&:event).map(&:event_type_code).uniq.count > 1
-  end
-
-  ##
-  # Returns the Event that was the primary reason for the interaction
-  # with the Participant (e.g. the Screener Event)
-  #
-  # @see principal_event_codes
-  # @return [Event]
-  def principal_event
-    return self unless associated_with_other_event?
-    contact = contact_links.map(&:contact).uniq.first
-    contact.contact_links.map(&:event).detect do |e|
-      principal_event_codes.include? e.event_type_code
-    end
-  end
-
-  ##
-  # The NcsCode values for event types that can be the
-  # principal event associated with another event during the
-  # same contact
-  # (i.e. Informed Consent is an activity during this Event)
-  # @return[Array<Integer>]
-  def principal_event_codes
-    [
-      Event.pregnancy_screener_code,
-      Event.pbs_eligibility_screener_code,
-      Event.low_to_high_conversion_code,
-      Event.low_intensity_data_collection_code,
-      Event.pregnancy_visit_1_code,
-      Event.pregnancy_visit_2_code,
-      Event.birth_code,
-      Event.pre_pregnancy_code,
-      Event.pregnancy_probability_code
-    ]
-  end
-
-  ##
   # Returns the (zero-based) number of times the event
   # participant has performed this event
   # @return [Integer]

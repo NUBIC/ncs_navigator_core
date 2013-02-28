@@ -145,6 +145,27 @@ class Contact < ActiveRecord::Base
   end
 
   ##
+  # Returns the count of total unique events associated with a contact
+  # @return [Boolean]
+  def multiple_unique_events_for_contact?
+    contact_links.map(&:event).uniq.compact.count > 1
+  end
+
+  ##
+  # Returns appropriate event disposition codes based on the number of
+  # unique events associated with a contact.
+  # @return [NcsCode]
+  def event_disposition_category_for_contact
+    if multiple_unique_events_for_contact?
+      # GENERAL_STUDY_VISIT_EVENT
+      NcsCode.for_list_name_and_local_code('EVENT_DSPSTN_CAT_CL1', 3)
+    else
+      event_type_code = contact_links.last.try(:event).try(:event_type_code)
+      DispositionMapper.determine_category_from_event_type(event_type_code)
+    end
+  end
+
+  ##
   # Given a collection of participant ids return the last contact for events
   # associated with these participants
   # @param[Array<Integer>]
