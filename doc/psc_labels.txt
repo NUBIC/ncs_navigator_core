@@ -5,7 +5,8 @@ Informed Consent - 10
 event:informed_consent instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one instrument:3.1:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one instrument:3.2:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one order:00_01 participant_type:mother
 
 # Informed Consent
-event:informed_consent order:01_01 participant_type:mother
+event:informed_consent instrument:2.0:irb_con_informed_consent instrument:2.1:irb_con_informed_consent instrument:2.2:irb_con_informed_consent instrument:3.0:irb_con_informed_consent instrument:3.1:irb_con_informed_consent instrument:3.2:irb_con_informed_consent order:01_01 participant_type:mother
+
 
 # Participant Verification Part Two
 event:informed_consent instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_two instrument:3.1:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_two instrument:3.2:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_two order:00_01 participant_type:child references:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one references:3.1:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one references:3.2:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one
@@ -13,6 +14,14 @@ event:informed_consent instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m
 # Parental Permission for Child Participation
 event:informed_consent order:01_01 participant_type:child
 
+
+# WITHDRAWAL
+
+# Participant Verification Part One
+event:informed_consent instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one instrument:3.1:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one instrument:3.2:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one order:00_01 participant_type:mother
+
+# Informed Consent
+event:informed_consent instrument:2.0:irb_con_withdrawal instrument:2.1:irb_con_withdrawal instrument:2.2:irb_con_withdrawal instrument:3.0:irb_con_withdrawal instrument:3.1:irb_con_withdrawal instrument:3.2:irb_con_withdrawal order:01_01 participant_type:mother
 
 
 Pregnancy Screener - 29
@@ -34,7 +43,7 @@ event:pbs_participant_eligibility_screening instrument:3.0:ins_que_pbsamplingscr
 event:pbs_participant_eligibility_screening instrument:3.0:ins_que_tracing_int_ehpbhilipbs_m3.0_v1.0 instrument:3.1:ins_que_tracing_int_ehpbhilipbs_m3.0_v1.0 instrument:3.2:ins_que_tracing_int_ehpbhilipbs_m3.0_v1.0 order:10_99
 
 # Informed Consent
-event:pbs_participant_eligibility_screening order:90_01 participant_type:mother
+event:pbs_participant_eligibility_screening instrument:2.0:irb_con_informed_consent instrument:2.1:irb_con_informed_consent instrument:2.2:irb_con_informed_consent instrument:3.0:irb_con_informed_consent instrument:3.1:irb_con_informed_consent instrument:3.2:irb_con_informed_consent order:90_01 participant_type:mother
 
 
 Birth Cohort Screening - 34
@@ -46,7 +55,7 @@ event:pbs_participant_eligibility_screening instrument:3.2:ins_que_pbsampscreenh
 event:pbs_participant_eligibility_screening instrument:3.2:ins_que_tracing_int_ehpbhilipbs_m3.0_v1.0 order:10_99
 
 # Informed Consent
-event:pbs_participant_eligibility_screening order:90_01 participant_type:mother
+event:pbs_participant_eligibility_screening instrument:2.0:irb_con_informed_consent instrument:2.1:irb_con_informed_consent instrument:2.2:irb_con_informed_consent instrument:3.0:irb_con_informed_consent instrument:3.1:irb_con_informed_consent instrument:3.2:irb_con_informed_consent order:90_01 participant_type:mother
 
 
 
@@ -105,7 +114,7 @@ collection:biological event:pregnancy_visit_1 instrument:2.0:ins_bio_adultblood_
 collection:biological event:pregnancy_visit_1 instrument:2.0:ins_bio_adulturine_dci_ehpbhi_p2_v1.0 instrument:2.1:ins_bio_adulturine_dci_ehpbhi_m2.1_v1.1 instrument:2.2:ins_bio_adulturine_dci_ehpbhi_m2.1_v1.1 instrument:3.0:ins_bio_adulturine_dci_ehpbhi_m2.1_v1.1 instrument:3.1:ins_bio_adulturine_dci_ehpbhi_m2.1_v1.1 instrument:3.2:ins_bio_adulturine_dci_ehpbhi_m2.1_v1.1 order:11_01 participant_type:mother
 
 # Pregnant Woman Informed Consent
-event:pregnancy_visit_1 order:00_99 participant_type:mother
+event:pregnancy_visit_1 order:00_99 instrument:2.0:irb_con_informed_consent instrument:2.1:irb_con_informed_consent instrument:2.2:irb_con_informed_consent instrument:3.0:irb_con_informed_consent instrument:3.1:irb_con_informed_consent instrument:3.2:irb_con_informed_consent participant_type:mother
 
 # Child Participation Informed Consent
 event:pregnancy_visit_1 order:90_99 participant_type:child
