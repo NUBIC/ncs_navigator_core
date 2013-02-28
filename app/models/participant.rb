@@ -744,7 +744,7 @@ class Participant < ActiveRecord::Base
   def withdrawn?(consent_type = nil)
     return false if participant_consents.empty?
     consents = consent_type.nil? ? participant_consents : consents_for_type(consent_type)
-    consents.select { |c| c.consent_withdraw_code == 1 }.size > 0
+    consents.select { |c| c.withdrawn? }.size > 0
   end
 
   ##
