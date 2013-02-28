@@ -103,6 +103,18 @@ describe ParticipantConsent do
     end
   end
 
+  describe "withdrawn?" do
+
+    it "returns true if the consent_withdraw_code is Yes (1)" do
+      Factory(:participant_consent, :consent_withdraw_code => NcsCode::YES).should be_withdrawn
+    end
+
+    it "returns true if the consent_withdraw_code is Yes (1)" do
+      Factory(:participant_consent, :consent_withdraw_code => NcsCode::YES).should be_withdrawn
+    end
+
+  end
+
   context "for a participant" do
 
     before(:each) do

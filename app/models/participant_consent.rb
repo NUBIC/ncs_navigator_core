@@ -123,6 +123,13 @@ class ParticipantConsent < ActiveRecord::Base
   end
 
   ##
+  # True if the participant withdrew consent in the affirmative
+  # @return [Boolean]
+  def withdrawn?
+    consent_withdraw_code == 1
+  end
+
+  ##
   # Sets the consent_withdraw to Yes (1)
   # and sets the withdraw type code to the given
   # (defaulting to Involuntary withdrawal initiated by the Study)
