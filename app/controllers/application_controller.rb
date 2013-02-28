@@ -52,6 +52,11 @@ class ApplicationController < ActionController::Base
     ##
     # Disposition group based on specific events
     def set_disposition_group_for_event
+      if @contact.multiple_unique_events_for_contact?
+        @disposition_group = DispositionMapper::GENERAL_STUDY_VISIT_EVENT
+        return
+      end
+
       case @event.event_type_code
       when Event.pregnancy_screener_code
         @disposition_group = DispositionMapper::PREGNANCY_SCREENER_EVENT
@@ -81,6 +86,7 @@ class ApplicationController < ActionController::Base
     def set_disposition_group_for_contact_link
       instrument = @contact_link.instrument
       contact    = @contact_link.contact
+
       if contact && contact.contact_type_code.to_i > 0
         @disposition_group = @contact_link.contact.contact_type.to_s
       elsif instrument && instrument.survey.try(:title)

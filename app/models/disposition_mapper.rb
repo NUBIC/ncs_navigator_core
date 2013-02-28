@@ -122,25 +122,32 @@ class DispositionMapper
     end
 
     ##
+    # Check if an event or contact's event is associated with a
+    # disposition code
+    def find_events_category(contact, event)
+      if event
+        determine_category_from_event_type(event.try(:event_type_code))
+      else
+        contact.event_disposition_category_for_contact
+      end
+    end
+    private :find_events_category
+
+    ##
     # Determine the disposition text for the given Contact for
     # the given Event
     # @see #disposition_text
-    # @param[Event] - to determine category (if Event determines category)
     # @param[Contact] - to determine category and code (if Event does not determine category)
+    # @param[Event] - to determine category (if Event determines category)
     # @return[String] - the text associated with that code in that category
-    def disposition_text_for_contact(event, contact)
-      if category = determine_category_from_event_type(event.try(:event_type_code))
+    def disposition_text_for_contact(contact, event = nil)
+      if event_category = find_events_category(contact, event)
+        disposition_text(event_category, contact.contact_disposition)
+      elsif category = determine_category_from_contact_type(
+                                                contact.contact_type_code)
         disposition_text(category, contact.contact_disposition)
       else
-        if contact.contact_type_code.to_i <= 0
-          return contact.contact_disposition
-        else
-          if category = determine_category_from_contact_type(contact.contact_type_code)
-            disposition_text(category, contact.contact_disposition)
-          else
-            return contact.contact_disposition
-          end
-        end
+        contact.contact_disposition
       end
     end
 

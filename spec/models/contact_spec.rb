@@ -377,4 +377,70 @@ describe Contact do
       Contact.start(person).contact_interpret_other.should == 'green'
     end
   end
+
+  describe "#multiple_unique_events_for_contact?" do
+
+    let(:event1) { Factory(:event, :event_type_code => Event.informed_consent_code) }
+    let(:event2) { Factory(:event, :event_type_code => Event.pbs_eligibility_screener_code) }
+    let(:contact1) { Factory(:contact) }
+    let(:contact2) { Factory(:contact) }
+
+    it "returns true if a contact contains multiple events" do
+      Factory(:contact_link, :event => event1, :contact => contact1)
+      Factory(:contact_link, :event => event2, :contact => contact1)
+      contact1.should be_multiple_unique_events_for_contact
+    end
+
+    it "returns true if a contact shares an event with other contacts, and contains no additional events" do
+      Factory(:contact_link, :event => event1, :contact => contact1)
+      Factory(:contact_link, :event => event1, :contact => contact2)
+      contact1.should_not be_multiple_unique_events_for_contact
+    end
+
+    it "returns true if a contact shares an event with other contacts, and contains additional events" do
+      Factory(:contact_link, :event => event1, :contact => contact1)
+      Factory(:contact_link, :event => event2, :contact => contact1)
+      Factory(:contact_link, :event => event1, :contact => contact2)
+      contact1.should be_multiple_unique_events_for_contact
+    end
+
+    it "returns false if a contact shares an event with other contacts, and the other contact contain additional events" do
+      Factory(:contact_link, :event => event1, :contact => contact1)
+      Factory(:contact_link, :event => event2, :contact => contact1)
+      Factory(:contact_link, :event => event1, :contact => contact2)
+      contact2.should_not be_multiple_unique_events_for_contact
+    end
+
+    it "returns false if contact contains no events" do
+      contact1.should_not be_multiple_unique_events_for_contact
+    end
+
+  end
+
+  describe "#event_disposition_category_for_contact" do
+
+    let(:event1) { Factory(:event, :event_type_code => Event.informed_consent_code) }
+    let(:event2) { Factory(:event, :event_type_code => Event.pbs_eligibility_screener_code) }
+    let(:contact1) { Factory(:contact) }
+    let(:contact2) { Factory(:contact) }
+
+    it "returns General Study category if a contact contains multiple events" do
+      Factory(:contact_link, :event => event1, :contact => contact1)
+      Factory(:contact_link, :event => event2, :contact => contact1)
+                                                     # General Study Category
+      contact1.event_disposition_category_for_contact.local_code.should == 3
+    end
+
+    it "returns the event's category if a contact contains a single event" do
+      Factory(:contact_link, :event => event2, :contact => contact1)
+                                                      # PBS Screener Category
+      contact1.event_disposition_category_for_contact.local_code.should == 8
+    end
+
+    it "returns nil if a contact contains a single event with undefined category" do
+      Factory(:contact_link, :event => event1, :contact => contact1)
+      contact1.event_disposition_category_for_contact.should be_nil
+    end
+  end
+
 end

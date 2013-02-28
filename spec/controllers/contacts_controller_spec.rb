@@ -85,7 +85,10 @@ describe ContactsController do
 
         context "with a mock contact" do
           before do
-            Contact.stub(:find).with("37").and_return(mock_contact(:set_default_end_time => nil))
+            Contact.stub(:find).with("37").and_return(mock_contact(
+              :set_default_end_time => nil,
+              :multiple_unique_events_for_contact? => false
+            ))
           end
 
           it "assigns the requested contact as @contact" do
