@@ -54,7 +54,7 @@ class ParticipantConsent < ActiveRecord::Base
 
   ncs_coded_attribute :psu,                        'PSU_CL1'
   ncs_coded_attribute :consent_type,               'CONSENT_TYPE_CL1'
-  ncs_coded_attribute :consent_form_type,          'CONSENT_TYPE_CL1'
+  ncs_coded_attribute :consent_form_type,          'CONSENT_TYPE_CL3'
   ncs_coded_attribute :consent_given,              'CONFIRM_TYPE_CL2'
   ncs_coded_attribute :consent_withdraw,           'CONFIRM_TYPE_CL2'
   ncs_coded_attribute :consent_withdraw_type,      'CONSENT_WITHDRAW_REASON_CL1'
