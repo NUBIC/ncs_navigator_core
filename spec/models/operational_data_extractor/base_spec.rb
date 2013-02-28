@@ -53,6 +53,42 @@ describe OperationalDataExtractor::Base do
       end
     end
 
+    context "with a child blood instrument" do
+      it "chooses the OperationalDataExtractor::Specimen" do
+        survey = create_child_blood_survey_with_specimen_operational_data
+        response_set, instrument = prepare_instrument(person, participant, survey)
+        handler = OperationalDataExtractor::Base.extractor_for(response_set)
+        handler.class.should == OperationalDataExtractor::Specimen
+      end
+    end
+
+    context "with a child saliva instrument" do
+      it "chooses the OperationalDataExtractor::Specimen" do
+        survey = create_child_saliva_survey_with_specimen_operational_data
+        response_set, instrument = prepare_instrument(person, participant, survey)
+        handler = OperationalDataExtractor::Base.extractor_for(response_set)
+        handler.class.should == OperationalDataExtractor::Specimen
+      end
+    end
+
+    context "with a child urine instrument" do
+      it "chooses the OperationalDataExtractor::Specimen" do
+        survey = create_child_urine_survey_with_specimen_operational_data
+        response_set, instrument = prepare_instrument(person, participant, survey)
+        handler = OperationalDataExtractor::Base.extractor_for(response_set)
+        handler.class.should == OperationalDataExtractor::Specimen
+      end
+    end
+
+    context "with a breast milk instrument" do
+      it "chooses the OperationalDataExtractor::Specimen" do
+        survey = create_breast_milk_survey_with_specimen_operational_data
+        response_set, instrument = prepare_instrument(person, participant, survey)
+        handler = OperationalDataExtractor::Base.extractor_for(response_set)
+        handler.class.should == OperationalDataExtractor::Specimen
+      end
+    end
+
     context "with a pre pregnancy instrument" do
       it "chooses the OperationalDataExtractor::PrePregnancy" do
         survey = create_pre_pregnancy_survey_with_person_operational_data

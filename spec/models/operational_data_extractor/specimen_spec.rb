@@ -17,6 +17,24 @@
 
 require 'spec_helper'
 
+describe OperationalDataExtractor do
+  describe "::extractor_for" do
+    let(:person) { Factory(:person) }
+    let(:participant) { Factory(:participant) }
+
+    it "returns OperationalDataExtractor of type Specimen" do
+      SamplesAndSpecimens.instance_methods.select{|m| m.to_s =~ /^create.*specimen_operational_data/}.each do |m|
+        survey = send(m)
+        response_set, instrument = prepare_instrument(person, participant, survey)
+
+        handler = OperationalDataExtractor::Base.extractor_for(response_set)
+        handler.instance_of?(OperationalDataExtractor::Specimen).should be(true)
+
+      end
+    end
+  end
+end
+
 describe OperationalDataExtractor::Specimen do
   include SurveyCompletion
 
@@ -175,6 +193,7 @@ describe OperationalDataExtractor::Specimen do
 
     end
 
+
     context "the cord blood collection instrument" do
       it "creates up to 3 specimens from the instrument response" do
         survey = create_cord_blood_survey_with_specimen_operational_data
@@ -231,7 +250,117 @@ describe OperationalDataExtractor::Specimen do
       end
 
     end
+    context "the child blood collection instruments" do
+      it "creates up to 4 specimens from the instrument response" do
+        survey = create_child_blood_survey_with_specimen_operational_data
+        response_set, instrument = prepare_instrument(person, participant, survey)
+        specimen_ids = [
+          "AA1212122-LV20",
+          "AA1212122-RD20",
+          "AA1212122-RD21",
+          "AA1212122-LV21",
+        ]
 
+        take_survey(survey, response_set) do |a|
+          a.str "CHILD_BLOOD_TUBE[tube_type=1].SPECIMEN_ID", specimen_ids[0]
+          a.str "CHILD_BLOOD_TUBE[tube_type=2].SPECIMEN_ID", specimen_ids[1]
+          a.str "CHILD_BLOOD_TUBE[tube_type=3].SPECIMEN_ID", specimen_ids[2]
+          a.str "CHILD_BLOOD_TUBE[tube_type=4].SPECIMEN_ID", specimen_ids[3]
+        end
+
+        response_set.responses.reload
+        response_set.responses.size.should == 4
+
+        handler = OperationalDataExtractor::Base.extractor_for(response_set)
+        handler.extract_data
+
+        instrument.specimens.reload
+        instrument.specimens.count.should == 4
+
+        specimen_ids.each do |specimen_id|
+          instrument.specimens.where(:specimen_id => specimen_id).first.should_not be_nil
+        end
+
+      end
+    end
+    context "the child saliva instruments" do
+      it "creates specimen from the instrument response" do
+        survey = create_child_saliva_survey_with_specimen_operational_data
+        response_set, instrument = prepare_instrument(person, participant, survey)
+        specimen_ids = [
+          "AA1212122-SC12"
+        ]
+
+        take_survey(survey, response_set) do |a|
+          a.str "CHILD_SALIVA.SPECIMEN_ID", specimen_ids[0]
+        end
+
+        response_set.responses.reload
+        response_set.responses.size.should == 1
+
+        OperationalDataExtractor::Base.extractor_for(response_set).extract_data
+
+        instrument.specimens.reload
+        instrument.specimens.count.should == 1
+
+        specimen_ids.each do |specimen_id|
+          instrument.specimens.where(:specimen_id => specimen_id).first.should_not be_nil
+        end
+
+      end
+    end
+    context "the child urine instruments" do
+      it "creates specimen from the instrument response" do
+        survey = create_child_urine_survey_with_specimen_operational_data
+        response_set, instrument = prepare_instrument(person, participant, survey)
+        specimen_ids = [
+          "AA1212122-BU12"
+        ]
+
+        take_survey(survey, response_set) do |a|
+          a.str "CHILD_URINE.SPECIMEN_ID", specimen_ids[0]
+        end
+
+        response_set.responses.reload
+        response_set.responses.size.should == 1
+
+        OperationalDataExtractor::Base.extractor_for(response_set).extract_data
+
+        instrument.specimens.reload
+        instrument.specimens.count.should == 1
+
+        specimen_ids.each do |specimen_id|
+          instrument.specimens.where(:specimen_id => specimen_id).first.should_not be_nil
+        end
+
+      end
+    end
+    context "the breast milk instruments" do
+      it "creates specimen from the instrument response" do
+        survey = create_breast_milk_survey_with_specimen_operational_data
+        response_set, instrument = prepare_instrument(person, participant, survey)
+        specimen_ids = [
+          "AA1212122-BM12"
+        ]
+
+        take_survey(survey, response_set) do |a|
+          a.str "BREAST_MILK_SAQ.SPECIMEN_ID", specimen_ids[0]
+        end
+
+        response_set.responses.reload
+        response_set.responses.size.should == 1
+
+        OperationalDataExtractor::Base.extractor_for(response_set).extract_data
+
+        instrument.specimens.reload
+        instrument.specimens.count.should == 1
+
+        specimen_ids.each do |specimen_id|
+          instrument.specimens.where(:specimen_id => specimen_id).first.should_not be_nil
+        end
+
+      end
+    end
   end
 
 end
