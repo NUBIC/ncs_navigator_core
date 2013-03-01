@@ -19,6 +19,18 @@ describe ParticipantsController do
       assigns[:q].being_followed_true.should_not be_true
     end
 
+     # id sort for paginate
+    it "defaults to sorting participants by id" do 
+      get :index
+      assigns(:q).sorts[0].name.should == "id"
+    end
+    
+    it "performs user selected sort first; id second" do 
+      get :index, :q => { :s => "p_id asc" }
+      assigns(:q).sorts[0].name.should == "p_id"
+      assigns(:q).sorts[1].name.should == "id"
+    end
+
   end
 
   describe 'GET :show' do

@@ -12,10 +12,8 @@ class PeopleController < ApplicationController
   def index
     params[:page] ||= 1
 
-    @q = Person.search(params[:q])
-    result = @q.result(:distinct => true)
-    @people = result.paginate(:page => params[:page], :per_page => 20)
-
+    @q, @people = ransack_paginate(Person)
+    
     respond_to do |format|
       format.html # index.html.haml
     end

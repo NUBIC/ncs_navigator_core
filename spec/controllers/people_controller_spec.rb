@@ -18,6 +18,18 @@ describe PeopleController do
       before(:each) do
         Person.count.should == 3
       end
+      
+      # id sort for paginate
+      it "defaults to sorting people by id" do 
+        get :index
+        assigns(:q).sorts[0].name.should == "id"
+      end
+      
+      it "performs user selected sort first; id second" do 
+        get :index, :q => { :s => "last_name asc" }
+        assigns(:q).sorts[0].name.should == "last_name"
+        assigns(:q).sorts[1].name.should == "id"
+      end
 
       describe "without search parameters" do
         it "assigns all people as @people" do
