@@ -570,21 +570,25 @@ class Participant < ActiveRecord::Base
   ##
   def update_state_to_next_event(event)
     case event.event_type.local_code
-    when 4, 5, 6, 9, 29, 34
-      # Pregnancy Screener Events or PBS Eligibility Screener
+    when 34
       if NcsNavigatorCore.recruitment_strategy.pbs?
-        completed_pbs_eligibility_screener!
-      elsif can_assign_to_pregnancy_probability_group?
+        if (eligible_for_pbs? || eligible_for_birth_cohort?) && hospital?
+          birth_cohort!
+        else
+          completed_pbs_eligibility_screener!
+        end
+      end
+    when 4, 5, 6, 9, 29
+      # Pregnancy Screener Events or PBS Eligibility Screener
+      if can_assign_to_pregnancy_probability_group?
         assign_to_pregnancy_probability_group!
       end
     when 10
       # Informed Consent
       low_intensity_consent! if can_low_intensity_consent?
-
     when 33
       # Lo I Quex
       follow_low_intensity! if can_follow_low_intensity?
-
     when 7,8
       # Pregnancy Probability
       follow! if can_follow? && high_intensity?
