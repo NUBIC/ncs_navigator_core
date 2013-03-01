@@ -1,10 +1,6 @@
 # -*- coding: utf-8 -*-
 survey "IRB_CON_Withdrawal", :instrument_type => 10, :description => "Withdrawal", :instrument_version => "1.0" do
   section "Withdrawal" do
-    q_prepopulated_psu_id "PSU#",
-      :custom_class => "prepopulated"
-      a_psu_id :string
-
     q_consent_withdraw_code "Consent Withdraw",
       :pick => :one,
       :data_export_identifier => "PARTICIPANT_CONSENT.CONSENT_WITHDRAW_CODE"
