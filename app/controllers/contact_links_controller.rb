@@ -145,7 +145,8 @@ class ContactLinksController < ApplicationController
     @survey       = @response_set.survey if @response_set
     set_instrument_time_and_date(@contact_link.contact)
 
-    @instrument.instrument_repeat_key = @person.instrument_repeat_key(@instrument.survey)
+    repeat_key = @survey.nil? ? 0 : @person.instrument_repeat_key(@survey)
+    @instrument.instrument_repeat_key = repeat_key
     @instrument.set_instrument_breakoff(@response_set)
     if @instrument.instrument_type.blank? || @instrument.instrument_type_code <= 0
       @instrument.instrument_type = @survey.instrument_type
