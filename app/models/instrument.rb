@@ -138,11 +138,22 @@ class Instrument < ActiveRecord::Base
   #
   # @return[Instrument]
   def self.continue_instrument_associated_with_survey(person, participant, instrument_survey, current_survey, event, mode)
-    ins = Instrument.where(:person_id => person.id,
-                           :survey_id => instrument_survey.id,
-                           :event_id => event.id).order("created_at DESC").first
+    instrument = find_instrument_to_continue(person, instrument_survey, event)
+    person.start_instrument(current_survey, participant, mode, instrument)
+  end
 
-    person.start_instrument(current_survey, participant, mode, ins)
+  def self.find_instrument_to_continue(person, instrument_survey, event)
+    ins = Instrument.where(:person_id => person.id,
+                            :survey_id => instrument_survey.id,
+                            :event_id => event.id).order("created_at DESC").first
+    # In case the instrument_survey record has been updated/redeployed while user was
+    # in middle of entering multi-part survey - this check is also brittle in the case
+    # where a survey.title has been changed
+    # Task #3400 should remove the need for this method.
+    if ins.nil?
+      ins = event.instruments.detect { |i| i.survey.title == instrument_survey.title }
+    end
+    ins
   end
 
   ##
