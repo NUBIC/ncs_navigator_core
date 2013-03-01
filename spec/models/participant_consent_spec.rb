@@ -70,6 +70,7 @@ describe ParticipantConsent do
   it { should ensure_length_of(:consent_version).is_at_most(9) }
 
   it { should have_many(:participant_consent_samples) }
+  it { should have_many(:response_sets) }
 
   context "as mdes record" do
 

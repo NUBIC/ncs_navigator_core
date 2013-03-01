@@ -49,6 +49,7 @@ class ParticipantConsent < ActiveRecord::Base
   belongs_to :person_wthdrw_consent, :class_name => "Person", :foreign_key => :person_wthdrw_consent_id
 
   has_many :participant_consent_samples, :order => "sample_consent_type_code"
+  has_many :response_sets, :inverse_of => :participant_consent, :order => 'created_at ASC'
 
   accepts_nested_attributes_for :participant_consent_samples, :allow_destroy => false
 
