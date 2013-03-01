@@ -62,6 +62,7 @@ describe Contact do
   it { should have_many(:non_interview_reports) }
   it { should have_one(:participant_visit_record) }
   it { should have_many(:participant_visit_consents) }
+  it { should have_many(:participant_consents) }
 
   it {
     should validate_format_of(:contact_start_time).with('66:66').
