@@ -111,4 +111,16 @@ module SamplesAndSpecimens
 
     survey
   end
+
+  def create_sample_distrib_survey_with_sample_operational_data
+    survey = Factory(:survey, :title => "INS_ENV_SampleDistrib_DCI_EHPBHI_M2.2_V1.0", :access_code => "ins_env_sampledistrib_dci_ehpbhi_m2.2_v1.0")
+    survey_section = Factory(:survey_section, :survey_id => survey.id)
+
+    3.times do |x|
+      q = Factory(:question, :reference_identifier => "SAMPLE_ID", :data_export_identifier => "SAMPLE_DIST_SAMP[type=#{x+1}].SAMPLE_ID", :survey_section_id => survey_section.id)
+      a = Factory(:answer, :question_id => q.id, :text => "sample id label", :response_class => "string")
+    end
+
+    survey
+  end
 end
