@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 survey "IRB_CON_Withdrawal", :instrument_type => 10, :description => "Withdrawal", :instrument_version => "1.0" do
   section "Withdrawal" do
-    q_consent_withdraw_code "Consent Withdraw",
+    q_consent_withdraw_code "Consent Withdrawn?",
       :pick => :one,
       :data_export_identifier => "PARTICIPANT_CONSENT.CONSENT_WITHDRAW_CODE"
       a_1 "YES"
@@ -16,7 +16,7 @@ survey "IRB_CON_Withdrawal", :instrument_type => 10, :description => "Withdrawal
 
     q_consent_withdraw_reason_code "Consent Withdraw Reason",
       :pick => :one,
-      :data_export_identifier => "PARTICIPANT_CONSENT.CONSENT_WITHDRAW_TYPE_CODE"
+      :data_export_identifier => "PARTICIPANT_CONSENT.CONSENT_WITHDRAW_REASON_CODE"
       a_1 "FAMILY REASONS"
       a_2 "TIME COMMITMENT"
       a_3 "SAFETY CONCERNS"
@@ -47,6 +47,10 @@ survey "IRB_CON_Withdrawal", :instrument_type => 10, :description => "Withdrawal
       a_1 "EMANCIPATED MINOR"
       a_2 "ADULT AT AGE OF MAJORITY OR OLDER"
       a_3 "PARENT OR LEGAL GUARDIAN OF MINOR"
+
+    q_consent_version "Consent Version",
+      :data_export_identifier => "PARTICIPANT_CONSENT.CONSENT_VERSION"
+      a_consent_version :string
 
     q_consent_language_code "Language",
       :pick => :one,
