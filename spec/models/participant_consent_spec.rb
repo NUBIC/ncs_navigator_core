@@ -70,7 +70,7 @@ describe ParticipantConsent do
   it { should ensure_length_of(:consent_version).is_at_most(9) }
 
   it { should have_many(:participant_consent_samples) }
-  it { should have_many(:response_sets) }
+  it { should have_one(:response_set) }
 
   context "as mdes record" do
 
@@ -317,5 +317,60 @@ describe ParticipantConsent do
 
   end
 
-end
+  describe ".start!" do
+    let(:contact) { Factory(:contact) }
+    let(:person) { Factory(:person) }
+    let(:participant) { Factory(:participant) }
+    let(:survey) { Survey.last }
 
+    describe "for a new ParticipantConsent record" do
+
+      before do
+        f = "#{Rails.root}/internal_surveys/IRB_CON_Informed_Consent.rb"
+        Surveyor::Parser.parse File.read(f)
+
+        ParticipantConsent.count.should == 0
+        ParticipantConsent.start!(person, participant, survey, contact)
+      end
+
+      it "creates a new ParticipantConsent record" do
+        ParticipantConsent.count.should == 1
+        pc = ParticipantConsent.first
+        pc.contact.should == contact
+        pc.response_set.survey.should == survey
+        pc.response_set.participant.should == participant
+        pc.response_set.person.should == person
+        pc.participant.should == participant
+      end
+
+      it "creates an associated ResponseSet" do
+        ParticipantConsent.first.response_set.should_not be_nil
+      end
+    end
+
+    describe "for a existing ParticipantConsent record" do
+
+      before do
+        f = "#{Rails.root}/internal_surveys/IRB_CON_Informed_Consent.rb"
+        Surveyor::Parser.parse File.read(f)
+      end
+
+      it "returns the ParticipantConsent associated with the survey, person, and contact" do
+        2.times do |i|
+          ParticipantConsent.count.should == i
+          ParticipantConsent.start!(person, participant, survey, contact)
+          ParticipantConsent.count.should == 1
+        end
+
+        pc = ParticipantConsent.last
+        pc.contact.should == contact
+        pc.response_set.survey.should == survey
+        pc.response_set.participant.should == participant
+        pc.response_set.person.should == person
+        pc.participant.should == participant
+      end
+
+    end
+  end
+
+end
