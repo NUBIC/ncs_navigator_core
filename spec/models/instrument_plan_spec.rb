@@ -436,6 +436,7 @@ describe InstrumentPlan do
       let(:part_verif_part_2_in_informed_consent_event_survey)  { Factory(:survey, :title => 'ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_two') }
       let!(:birth_response_set1) { Factory(:response_set, :survey => part_verif_part_1_in_birth_event_survey, :instrument => birth_instrument) }
       let!(:informed_consent_response_set1) { Factory(:response_set, :survey => part_verif_part_1_in_informed_consent_event_survey, :instrument => informed_consent_instrument) }
+      let(:participant_consent_response_set) { Factory(:response_set, :participant_consent => Factory(:participant_consent)) }
 
       it "returns false if, with a scoping event parameter, there a more scheduled activities for that event than there are response sets" do
         plan.final_survey_part?(birth_response_set1, birth_event).should be_false
@@ -444,6 +445,10 @@ describe InstrumentPlan do
       it "returns true if, with an appropriate scoping event parameter, there are equal or greater response sets present than there are scheduled activities for a given event" do
         birth_response_set2 = Factory(:response_set, :survey => part_verif_part_2_in_birth_event_survey, :instrument => birth_instrument)
         plan.final_survey_part?(birth_response_set2, birth_event).should be_true
+      end
+
+      it "returns true if the ResponseSet is associated with a ParticipantConsent" do
+        plan.final_survey_part?(participant_consent_response_set, birth_event).should be_true
       end
 
     end

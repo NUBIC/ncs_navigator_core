@@ -25,7 +25,7 @@ class ResponseSet < ActiveRecord::Base
   belongs_to :person, :foreign_key => :user_id, :class_name => 'Person', :primary_key => :id
   belongs_to :instrument, :inverse_of => :response_sets
   belongs_to :participant, :inverse_of => :response_sets
-  belongs_to :participant_consent, :inverse_of => :response_sets
+  belongs_to :participant_consent, :inverse_of => :response_set
 
   after_save :extract_operational_data
 
@@ -58,4 +58,17 @@ class ResponseSet < ActiveRecord::Base
       'person_id' => person.try(:public_id)
     })
   end
+
+  ##
+  # This ResponseSet may or may not be part of a multi-part Survey.
+  # This method returns itself and all ResponseSets associated with
+  # the Instrument class. If this ResponseSet is associated with a
+  # ParticipantConsent record, then this method will return an Array
+  # with one element, itself (since the ParticipantConsent ResponseSets
+  # are not multi-part).
+  # @return [Array<ReponseSet>]
+  def associated_response_sets
+    participant_consent.blank? ? instrument.response_sets : [self]
+  end
+
 end
