@@ -170,6 +170,14 @@ describe OperationalDataExtractor::Base do
       end
     end
 
+    context "with a sample kit distribution instrument" do
+      it "chooses the OperationalDataExtractor::Sample" do
+        survey = create_sample_distrib_survey_with_sample_operational_data
+        response_set, instrument = prepare_instrument(person, participant, survey)
+        handler = OperationalDataExtractor::Base.extractor_for(response_set)
+        handler.class.should == OperationalDataExtractor::Sample
+      end
+    end
   end
 
   context "processing the response set" do
