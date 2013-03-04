@@ -44,7 +44,9 @@ module OperationalDataExtractor
     [/_ChildUrineColl_/,    OperationalDataExtractor::Specimen],
     [/_BreastMilkColl_/,    OperationalDataExtractor::Specimen],
     [/_SampleDistrib_/,     OperationalDataExtractor::Sample],
-
+    [/_Informed_Consent/,   OperationalDataExtractor::InformedConsent],
+    [/_Withdrawal/,         OperationalDataExtractor::InformedConsent],
+    [/_Reconsent/,          OperationalDataExtractor::InformedConsent],
   ]
 
 end
