@@ -69,6 +69,30 @@ describe ResponseSet do
     end
   end
 
+  describe "#associated_response_sets" do
+
+    context "for a ParticipantConsent Survey" do
+      let(:consent) { Factory(:participant_consent) }
+      let(:rs) { Factory(:response_set, :participant_consent => consent) }
+
+      it "returns an Array of one element - itself" do
+        rs.associated_response_sets.should == [rs]
+      end
+    end
+
+    context "for an Instrument Survey" do
+      let(:instrument) { Factory(:instrument) }
+      let!(:rs1) { Factory(:response_set, :instrument => instrument) }
+      let!(:rs2) { Factory(:response_set, :instrument => instrument) }
+
+      it "returns an Array all ResponseSets associated with the Instrument" do
+        rs1.associated_response_sets.should == instrument.response_sets
+        instrument.response_sets.size.should == 2
+      end
+    end
+
+  end
+
   context "knowing if the user answered questions in each section" do
     before(:each) do
 

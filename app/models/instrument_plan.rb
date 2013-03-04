@@ -159,11 +159,13 @@ class InstrumentPlan
   # part of a multi-part survey.
   # This should be true if there are as many (or more) response_sets
   # for this survey as there are scheduled survey parts.
+  # If this is a Informed Consent survey - there is only one part.
   #
   # @param[ResponseSet]
   # @param [Event]
   # @return Boolean
   def final_survey_part?(response_set, event)
+    return true if response_set.participant_consent
     expected = scheduled_activities_for_survey(response_set.survey.title, event).size
     actual   = response_set.instrument.response_sets.size
     expected <= actual
@@ -231,7 +233,7 @@ class InstrumentPlan
   # All the survey titles for the response_set.instrument
   # @return [Array<String>]
   def already_touched_survey_titles(response_set)
-    response_set.instrument.response_sets.collect { |rs| rs.survey.title.downcase }
+    response_set.associated_response_sets.collect { |rs| rs.survey.title.downcase }
   end
   private :already_touched_survey_titles
 
