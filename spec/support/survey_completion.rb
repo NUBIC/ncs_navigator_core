@@ -26,6 +26,12 @@ module SurveyCompletion
       end
     end
 
+    def txt(identifier, answer)
+      for_each_match(identifier) do |q, section|
+        create_fill_in_response(q, :text_value, answer, section)
+      end
+    end
+
     def int(identifier, answer)
       for_each_match(identifier) do |q, section|
         create_fill_in_response(q, :integer_value, answer, section)
@@ -84,6 +90,7 @@ module SurveyCompletion
            when :datetime_value; 'date'
            when :integer_value; 'integer'
            when :string_value; 'string'
+           when :text_value; 'text'
            end
 
       answer = q.answers.detect { |a| a.response_class == rc }
