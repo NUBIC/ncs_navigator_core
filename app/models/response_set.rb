@@ -68,7 +68,24 @@ class ResponseSet < ActiveRecord::Base
   # are not multi-part).
   # @return [Array<ReponseSet>]
   def associated_response_sets
-    participant_consent.blank? ? instrument.response_sets : [self]
+    instrument_associated? ? instrument.response_sets : [self]
+  end
+
+  ##
+  # The ResponseSet is associated with a contact link through
+  # the Instrument or ParticipantConsent.
+  # Determine the MDES associated class and act accordingly to
+  # get the ContactLink record.
+  # @return [ContactLink]
+  def contact_link
+    instrument_associated? ? instrument.contact_link : participant_consent.contact.contact_links.first
+  end
+
+  ##
+  # True if the Instrument association exists.
+  # @return [Boolean]
+  def instrument_associated?
+    !instrument.blank?
   end
 
 end
