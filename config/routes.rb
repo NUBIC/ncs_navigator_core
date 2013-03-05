@@ -22,6 +22,7 @@ NcsNavigatorCore::Application.routes.draw do
       get :versions
       get :events
       get :start_instrument
+      get :start_consent
       get :responses_for
       put :responses_for
       get :provider_staff_member

@@ -139,6 +139,34 @@ describe PeopleController do
       end
     end
 
+    describe "GET start_consent" do
+      let(:person) { Factory(:person) }
+      let(:participant) { Factory(:participant) }
+      let(:contact) { Factory(:contact) }
+      let!(:contact_link) { Factory(:contact_link, :contact => contact, :person => person) }
+      let(:survey) { Factory(:survey, :access_code => "asdf") }
+
+      before do
+        participant.participant_consents.size.should == 0
+      end
+
+      it "creates a new ParticipantConsent record for the Participant" do
+        get :start_consent, :id => person.id, :participant_id => participant.id,
+                            :survey_access_code => survey.access_code, :contact_link_id => contact_link.id
+        pt = Participant.find participant.id
+        pt.participant_consents.size.should == 1
+      end
+
+      it "redirects to the edit_my_survey_path" do
+        get :start_consent, :id => person.id, :participant_id => participant.id,
+                            :survey_access_code => survey.access_code, :contact_link_id => contact_link.id
+        pt = Participant.find participant.id
+        rs_access_code = pt.participant_consents.first.response_set.try(:access_code)
+        response.should redirect_to(edit_my_survey_path(:survey_code => survey.access_code, :response_set_code => rs_access_code))
+      end
+
+    end
+
     context "with a provider" do
 
       let(:provider) { Factory(:provider) }
