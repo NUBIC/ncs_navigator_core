@@ -22,8 +22,8 @@ class SurveyorController < ApplicationController
         psc.update_activity_state(a.activity_id, @participant, Psc::ScheduledActivity::OCCURRED)
       end
 
-      # go to contact_link.edit_instrument
-      update_participant_based_on_survey(@response_set)
+      # judge eligiblity then go to contact_link.edit_instrument
+      EligibilityAdjudicator.adjudicate_eligibility(@response_set)
       edit_instrument_contact_link_path(contact_link.id)
 
     else
@@ -84,14 +84,5 @@ class SurveyorController < ApplicationController
         raise e
       end
     end
-  end
-
-  private
-
-  # TODO: ensure that the state transitions are based on the responses in the response set
-  #       and that the disposition of the instrument was completed
-  def update_participant_based_on_survey(response_set)
-    EligibilityAdjudicator.adjudicate_eligibility(response_set)
-    response_set.participant.update_state_after_survey(response_set, psc) if response_set.participant
   end
 end
