@@ -1,7 +1,7 @@
 -# activities associated with a previously completed instrument via survey title
 -# but not those that the primary instrument activity (i.e. a multi-part survey)
 - participant = contact_link.event.participant
-- consents = participant.participant_consents.select { |pc| pc.response_sets.first.survey.try(:title) == survey.title }
+- consents = participant.participant_consents.select { |pc| pc.response_set.survey.try(:title) == survey.title }
 - consents.each do |consent|
   %div{ :class => "known_instrument", :title => survey.description}
     - cls = @current_activity == activity ? "star_link icon_link" : "edit_link icon_link"
