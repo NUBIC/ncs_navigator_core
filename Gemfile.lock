@@ -14,6 +14,21 @@ GIT
       inifile (~> 0.4.1)
       ncs_mdes (~> 0.4)
 
+GIT
+  remote: https://github.com/NUBIC/surveyor.git
+  revision: 97d82432a73a560ffd936ae5c9b2233a009c6cb6
+  branch: ncs
+  specs:
+    surveyor (1.2.0)
+      fastercsv (~> 1.5.4)
+      formtastic (~> 2.1.0)
+      haml (~> 3.1.3)
+      mustache (= 0.99.4)
+      rabl (~> 0.6.13)
+      rails (~> 3.0)
+      sass
+      uuidtools (~> 2.1)
+
 GEM
   remote: http://rubygems.org/
   specs:
@@ -420,15 +435,6 @@ GEM
       state_machine
     stream (0.5)
     stringex (1.5.1)
-    surveyor (1.2.0)
-      fastercsv (~> 1.5.4)
-      formtastic (~> 2.1.0)
-      haml (~> 3.1.3)
-      mustache (= 0.99.4)
-      rabl (~> 0.6.13)
-      rails (~> 3.0)
-      sass
-      uuidtools (~> 2.1)
     term-ansicolor (1.0.7)
     test-unit (2.4.8)
     therubyracer (0.10.1)
@@ -529,7 +535,7 @@ DEPENDENCIES
   spork (> 0.9.0.rc)
   state_machine
   state_machine-audit_trail
-  surveyor (~> 1.2.0)
+  surveyor!
   test-unit (= 2.4.8)
   therubyracer
   uglifier
