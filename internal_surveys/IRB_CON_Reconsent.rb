@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-survey "IRB_CON_Reonsent", :instrument_type => 10, :description => "Informed Consent", :instrument_version => "1.0" do
+survey "IRB_CON_Reconsent", :instrument_type => 10, :description => "Informed Consent", :instrument_version => "1.0" do
   section "Informed Consent" do
     q_consent_form_type_code "Consent Form Type",
       :pick => :one,
