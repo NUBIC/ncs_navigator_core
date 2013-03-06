@@ -90,9 +90,12 @@ module NcsNavigator::Core::Mdes
       end
 
       all.each do |migration|
-        $stderr.print "Migrating from #{migration.from} to #{migration.to}..." if interactive?
+        $stderr.puts "Migrating from #{migration.from} to #{migration.to}." if interactive?
         migration.run
-        $stderr.puts "done." if interactive?
+      end
+
+      if interactive?
+        $stderr.puts "MDES version migration complete. Registered MDES version for this deployment is now #{Version.new.number}."
       end
     end
   end
