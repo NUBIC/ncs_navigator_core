@@ -74,7 +74,6 @@ class ParticipantConsent < ActiveRecord::Base
   GENERAL          = 1
   CHILD            = 6
   LOW_INTENSITY    = 7
-  MISSING_IN_ERROR = -4
 
   def self.consent_types
     NcsNavigatorCore.mdes.types.find { |t| t.name == 'consent_type_cl1' }.
@@ -120,33 +119,33 @@ class ParticipantConsent < ActiveRecord::Base
   # and has not withdrawn that consent
   # @return [Boolean]
   def consented?
-    consent_given_code == 1 && consent_withdraw_code != 1
+    consent_given_code == NcsCode::YES
+  end
+
+  ##
+  # True if this consent is a reconsent
+  # @return [Boolean]
+  def reconsent?
+    consent_reconsent_code == NcsCode::YES
+  end
+
+  ##
+  # True if this consent is a reconsent and the
+  # participant gave consent in the affirmative
+  # @return [Boolean]
+  def reconsented?
+    reconsent? && consented?
   end
 
   ##
   # True if the participant withdrew consent in the affirmative
   # @return [Boolean]
   def withdrawn?
-    consent_withdraw_code == 1
-  end
-
-  ##
-  # Sets the consent_withdraw to Yes (1)
-  # and sets the withdraw type code to the given
-  # (defaulting to Involuntary withdrawal initiated by the Study)
-  # @param [Integer] cf. CONSENT_WITHDRAW_REASON_CL1
-  def withdraw(withdraw_type_code = 2)
-    self.consent_withdraw_code = 1
-    self.consent_withdraw_type_code = withdraw_type_code
-  end
-
-  def withdraw!(withdraw_type_code = 2)
-    self.withdraw
-    self.save!
+    consent_withdraw_code == NcsCode::YES
   end
 
   def phase_one?
-    consent_type_code && consent_type_code != -4
+    consent_type_code && consent_type_code != NcsCode::MISSING_IN_ERROR
   end
 
   def phase_two?
