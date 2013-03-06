@@ -64,11 +64,13 @@ class PatientStudyCalendar
   INFORMED_CONSENT = "Informed Consent"
   PARENTAL_PERMISSION_FOR_CHILD_PARTICIPATION = "Parental Permission for Child Participation"
   WITHDRAWAL = "Withdrawal"
+  RECONSENT = "Reconsent"
 
   # Informed Consent Epoch and Segments
   INFORMED_CONSENT_GENERAL_CONSENT = "#{INFORMED_CONSENT_EPOCH}: #{INFORMED_CONSENT}"
   INFORMED_CONSENT_PARENTAL_PERMISSION_FOR_CHILD_PARTICIPATION = "#{INFORMED_CONSENT_EPOCH}: #{PARENTAL_PERMISSION_FOR_CHILD_PARTICIPATION}"
   INFORMED_CONSENT_WITHDRAWAL= "#{INFORMED_CONSENT_EPOCH}: #{WITHDRAWAL}"
+  INFORMED_CONSENT_RECONSENT = "#{INFORMED_CONSENT_EPOCH}: #{RECONSENT}"
 
   # CAS
   CAS_SECURITY_SUFFIX = "/auth/cas_security_check"
@@ -493,6 +495,10 @@ class PatientStudyCalendar
     schedule_segment(participant, INFORMED_CONSENT_GENERAL_CONSENT, date)
   end
 
+  def schedule_reconsent(participant, date = Date.today.to_s)
+    schedule_segment(participant, INFORMED_CONSENT_RECONSENT, date)
+  end
+
   def schedule_parental_permission_informed_consent(participant, date = Date.today.to_s)
     schedule_segment(participant, INFORMED_CONSENT_PARENTAL_PERMISSION_FOR_CHILD_PARTICIPATION, date)
   end
@@ -634,7 +640,9 @@ class PatientStudyCalendar
   def should_cancel_consent_activity?(activity)
     skippable_segments = [
       INFORMED_CONSENT_GENERAL_CONSENT,
-      INFORMED_CONSENT_PARENTAL_PERMISSION_FOR_CHILD_PARTICIPATION
+      INFORMED_CONSENT_PARENTAL_PERMISSION_FOR_CHILD_PARTICIPATION,
+      INFORMED_CONSENT_WITHDRAWAL,
+      INFORMED_CONSENT_RECONSENT,
     ]
     activity.consent_activity? && !activity.child_consent? && !skippable_segments.include?(activity.study_segment)
   end
