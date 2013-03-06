@@ -1,21 +1,22 @@
 # -*- coding: utf-8 -*-
 # == Schema Information
-# Schema version: 20120629204215
+# Schema version: 20130306200153
 #
 # Table name: participant_person_links
 #
-#  created_at         :datetime
-#  id                 :integer          not null, primary key
-#  is_active_code     :integer          not null
-#  participant_id     :integer          not null
-#  person_id          :integer          not null
-#  person_pid_id      :string(36)       not null
-#  psu_code           :integer          not null
-#  relationship_code  :integer          not null
-#  relationship_other :string(255)
-#  response_set_id    :integer
-#  transaction_type   :string(36)
-#  updated_at         :datetime
+#  created_at                  :datetime
+#  id                          :integer          not null, primary key
+#  is_active_code              :integer          not null
+#  participant_id              :integer          not null
+#  person_id                   :integer          not null
+#  person_pid_id               :string(36)       not null
+#  primary_caregiver_flag_code :integer          default(-4), not null
+#  psu_code                    :integer          not null
+#  relationship_code           :integer          not null
+#  relationship_other          :string(255)
+#  response_set_id             :integer
+#  transaction_type            :string(36)
+#  updated_at                  :datetime
 #
 
 
@@ -32,9 +33,10 @@ class ParticipantPersonLink < ActiveRecord::Base
   belongs_to :person
   belongs_to :participant
   belongs_to :response_set
-  ncs_coded_attribute :psu,          'PSU_CL1'
-  ncs_coded_attribute :relationship, 'PERSON_PARTCPNT_RELTNSHP_CL1'
-  ncs_coded_attribute :is_active,    'CONFIRM_TYPE_CL2'
+  ncs_coded_attribute :psu,                       'PSU_CL1'
+  ncs_coded_attribute :relationship,              'PERSON_PARTCPNT_RELTNSHP_CL1'
+  ncs_coded_attribute :is_active,                 'CONFIRM_TYPE_CL2'
+  ncs_coded_attribute :primary_caregiver_flag,    'CONFIRM_TYPE_CL2'
 
   # Validating :person_id instead of :person prevents a reload of the
   # associated object when creating an instance alone. This provides a

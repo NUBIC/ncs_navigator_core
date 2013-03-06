@@ -1,21 +1,22 @@
 # -*- coding: utf-8 -*-
 # == Schema Information
-# Schema version: 20120629204215
+# Schema version: 20130306200153
 #
 # Table name: participant_person_links
 #
-#  created_at         :datetime
-#  id                 :integer          not null, primary key
-#  is_active_code     :integer          not null
-#  participant_id     :integer          not null
-#  person_id          :integer          not null
-#  person_pid_id      :string(36)       not null
-#  psu_code           :integer          not null
-#  relationship_code  :integer          not null
-#  relationship_other :string(255)
-#  response_set_id    :integer
-#  transaction_type   :string(36)
-#  updated_at         :datetime
+#  created_at                  :datetime
+#  id                          :integer          not null, primary key
+#  is_active_code              :integer          not null
+#  participant_id              :integer          not null
+#  person_id                   :integer          not null
+#  person_pid_id               :string(36)       not null
+#  primary_caregiver_flag_code :integer          default(-4), not null
+#  psu_code                    :integer          not null
+#  relationship_code           :integer          not null
+#  relationship_other          :string(255)
+#  response_set_id             :integer
+#  transaction_type            :string(36)
+#  updated_at                  :datetime
 #
 
 
@@ -41,6 +42,7 @@ describe ParticipantPersonLink do
   it { should belong_to(:participant) }
   it { should belong_to(:relationship) }
   it { should belong_to(:is_active) }
+  it { should belong_to(:primary_caregiver_flag) }
 
   it { should validate_presence_of(:person_id) }
   it { should validate_presence_of(:participant_id) }
