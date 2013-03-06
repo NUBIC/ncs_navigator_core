@@ -29,8 +29,11 @@ module NcsNavigator::Core::Mdes
             known_migrations.collect(&:from).should == %w(3 tacos)
         end
 
-        it 'defaults to the KNOWN_MIGRATIONS constant' do
-          VersionMigrator.new.known_migrations.should be(VersionMigrator::KNOWN_MIGRATIONS)
+        it 'defaults to the list returned by .default_migrations' do
+          expected_defaults = VersionMigrator.default_migrations.collect { |m| [m.from, m.to] }
+          actual_defaults   = VersionMigrator.new.known_migrations.collect { |m| [m.from, m.to] }
+
+          actual_defaults.should == expected_defaults
         end
       end
     end

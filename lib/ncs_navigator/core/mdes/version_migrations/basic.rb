@@ -16,9 +16,10 @@ module NcsNavigator::Core::Mdes::VersionMigrations
   class Basic
     attr_reader :from, :to
 
-    def initialize(from_version, to_version)
+    def initialize(from_version, to_version, options={})
       @from = from_version
       @to = to_version
+      @interactive = options[:interactive]
     end
 
     def run
@@ -30,7 +31,7 @@ module NcsNavigator::Core::Mdes::VersionMigrations
 
     def switch_code_lists
       NcsNavigator::Core::MdesCodeListLoader.
-        new(:mdes_version => to, :interactive => true).
+        new(:mdes_version => to, :interactive => @interactive).
         load_from_yaml
     end
     protected :switch_code_lists

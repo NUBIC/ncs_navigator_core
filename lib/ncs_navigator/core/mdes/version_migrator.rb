@@ -16,15 +16,23 @@ module NcsNavigator::Core::Mdes
     # - #from: the version this migration expects Cases to be in before it
     #   starts executing.
     # - #to: the version this migration will leave Cases in after #run is complete.
-    KNOWN_MIGRATIONS = [
-    ]
+    #
+    # @return [Array<#run,#to#from>]
+    def self.default_migrations(options={})
+      [
+        # No semantic differences 3.0 -> 3.2
+        VersionMigrations::Basic.new('3.0', '3.2', options)
+      ]
+    end
 
     attr_reader :start_version, :known_migrations
 
     def initialize(options={})
-      @start_version = options.delete(:start_version) || NcsNavigatorCore.mdes_version.number
-      @known_migrations = options.delete(:known_migrations) || KNOWN_MIGRATIONS
       @interactive = options.delete(:interactive)
+      @start_version = options.delete(:start_version) ||
+        NcsNavigatorCore.mdes_version.number
+      @known_migrations = options.delete(:known_migrations) ||
+        self.class.default_migrations(:interactive => @interactive)
     end
 
     ##
