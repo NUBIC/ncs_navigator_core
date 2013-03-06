@@ -105,15 +105,37 @@ describe ParticipantConsent do
   end
 
   describe "withdrawn?" do
-
     it "returns true if the consent_withdraw_code is Yes (1)" do
       Factory(:participant_consent, :consent_withdraw_code => NcsCode::YES).should be_withdrawn
     end
 
-    it "returns true if the consent_withdraw_code is Yes (1)" do
-      Factory(:participant_consent, :consent_withdraw_code => NcsCode::YES).should be_withdrawn
+    it "returns false if the consent_withdraw_code is No (2)" do
+      Factory(:participant_consent, :consent_withdraw_code => NcsCode::NO).should_not be_withdrawn
+    end
+  end
+
+  describe "reconsent?" do
+    it "returns true if the consent_reconsent_code is Yes (1)" do
+      Factory(:participant_consent, :consent_reconsent_code => NcsCode::YES).should be_reconsent
     end
 
+    it "returns false if the consent_reconsent_code is No (2)" do
+      Factory(:participant_consent, :consent_reconsent_code => NcsCode::NO).should_not be_reconsent
+    end
+
+    it "returns false if the consent_reconsent_code is nil" do
+      Factory(:participant_consent, :consent_reconsent_code => nil).should_not be_reconsent
+    end
+  end
+
+  describe "reconsented?" do
+    it "returns true if the consent_reconsent_code is Yes (1) and consent_given_code is Yes" do
+      Factory(:participant_consent, :consent_reconsent_code => NcsCode::YES, :consent_given_code => NcsCode::YES).should be_reconsented
+    end
+
+    it "returns false if the consent_reconsent_code is Yes (1) and consent_given_code is No" do
+      Factory(:participant_consent, :consent_reconsent_code => NcsCode::YES, :consent_given_code => NcsCode::NO).should_not be_reconsented
+    end
   end
 
   context "for a participant" do

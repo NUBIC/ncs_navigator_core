@@ -712,12 +712,42 @@ class Participant < ActiveRecord::Base
   # @return [Boolean]
   def consented?(consent_type = nil)
     return false if participant_consents.empty?
+    consents = consents_for_type(determine_consent_type(consent_type))
+    consents.select { |c| c.consented? }.size > 0 && !withdrawn?(consent_type)
+  end
+
+  ##
+  # Returns true if a participant_consent record exists for the given consent type
+  # and consent_given_code is true and consent_withdraw_code is not true.
+  # If no consent type is given, then check if any consent record exists
+  # @param [NcsCode]
+  # @return [Boolean]
+  def reconsented?(consent_type = nil)
+    return false if participant_consents.empty?
+    consents = consents_for_type(determine_consent_type(consent_type))
+    consents.select { |c| c.reconsented? }.size > 0 && !withdrawn?(consent_type)
+  end
+
+
+  ##
+  # Returns true if a participant_consent record exists for the given consent type
+  # and consent_withdraw_code is true.
+  # If no consent type is given, then check if any consent record exists that was withdrawn
+  # @param [NcsCode]
+  # @return [Boolean]
+  def withdrawn?(consent_type = nil)
+    return false if participant_consents.empty?
+    consents = consent_type.nil? ? participant_consents : consents_for_type(consent_type)
+    consents.select { |c| c.withdrawn? }.size > 0
+  end
+
+  def determine_consent_type(consent_type)
     if consent_type.nil?
       consent_type = low_intensity? ? ParticipantConsent.low_intensity_consent_type_code : ParticipantConsent.general_consent_type_code
     end
-    consents = consents_for_type(consent_type)
-    consents.select { |c| c.consent_given_code == 1 }.size > 0 && !withdrawn?(consent_type)
+    consent_type
   end
+  private :determine_consent_type
 
   ##
   # Gets all ParticipantConsent records matching the given consent type
@@ -746,18 +776,6 @@ class Participant < ActiveRecord::Base
   end
 
   ##
-  # Returns true if a participant_consent record exists for the given consent type
-  # and consent_withdraw_code is true.
-  # If no consent type is given, then check if any consent record exists that was withdrawn
-  # @param [NcsCode]
-  # @return [Boolean]
-  def withdrawn?(consent_type = nil)
-    return false if participant_consents.empty?
-    consents = consent_type.nil? ? participant_consents : consents_for_type(consent_type)
-    consents.select { |c| c.withdrawn? }.size > 0
-  end
-
-  ##
   # Returns true if participant enroll status is 'Yes' (i.e. local_code == 1)
   # @return [Boolean]
   def enrolled?
@@ -773,14 +791,12 @@ class Participant < ActiveRecord::Base
 
   ##
   # Unenrolling does the following:
-  # 1. Withdraws the participant from the Study
-  # 2. Sets the participant enroll status to No
-  # 3. Cancels all scheduled activities in PSC
-  # 4. Closes or Deletes all pending events
+  # 1. Sets the participant enroll status to No
+  # 2. Cancels all scheduled activities in PSC
+  # 3. Closes or Deletes all pending events
   # @param [PatientStudyCalendar]
   def unenroll(psc, reason = "Participant has been un-enrolled from the study.")
     self.enrollment_status_comment = reason
-    self.participant_consents.each { |c| c.withdraw! if c.consented? }
     self.enroll_status = NcsCode.for_attribute_name_and_local_code(:enroll_status_code, NcsCode::NO)
     self.pending_events.each { |e| e.cancel_and_close_or_delete!(psc, reason) }
     self.being_followed = false
