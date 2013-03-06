@@ -12,7 +12,7 @@ namespace :mdes do
 
     desc 'Generate the code list YAML file for the all supported MDES versions'
     task :all_yaml => :base do
-      %w(2.0 2.1 2.2 3.0 3.1).each do |mdes_version|
+      %w(2.0 2.1 2.2 3.0 3.1 3.2).each do |mdes_version|
         $stderr.print "Creating for #{mdes_version}..."; $stderr.flush
         NcsNavigator::Core::MdesCodeListLoader.new(:interactive => true, :mdes_version => mdes_version).create_yaml
         $stderr.puts 'done.'
@@ -49,6 +49,13 @@ namespace :mdes do
     desc 'Set the MDES version in a new deployment'
     task :set, [:version] => [:base] do |t, args|
       NcsNavigator::Core::Mdes::Version.set!(args[:version])
+    end
+
+    desc 'Convert this instance to the named MDES version'
+    task :migrate, [:to_version] => [:environment] do |t, args|
+      fail "Please specify :to_version" unless args[:to_version]
+      NcsNavigator::Core::Mdes::VersionMigrator.
+        new(:interactive => true).migrate!(args[:to_version])
     end
   end
 end
