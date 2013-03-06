@@ -1117,11 +1117,7 @@ class Participant < ActiveRecord::Base
     ( !pbs? && !has_eligible_ppg_status? )
   end
 
-  def pbs?
-    NcsNavigatorCore.recruitment_strategy.pbs?
-  end
-
-  def pbs_eligbility_prefix
+  def pbs_eligibility_prefix
     hospital? ? "#{OperationalDataExtractor::PbsEligibilityScreener::HOSPITAL_INTERVIEW_PREFIX}" : "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}"
   end
 
@@ -1149,7 +1145,7 @@ class Participant < ActiveRecord::Base
   # @param[String] data_export_identifier for question
   # @return[Boolean]
   def eligible_for?(person, reference_identifier)
-    data_export_identifier = pbs_eligbility_prefix + "." + reference_identifier
+    data_export_identifier = pbs_eligibility_prefix + "." + reference_identifier
     most_recent_response = person.responses_for(data_export_identifier).last
     most_recent_response.try(:answer).try(:reference_identifier) == "1"
   end
@@ -1166,6 +1162,10 @@ class Participant < ActiveRecord::Base
   end
 
   private
+
+    def pbs?
+      NcsNavigatorCore.recruitment_strategy.pbs?
+    end
 
     def relationships(code)
       participant_person_links.

@@ -22,7 +22,7 @@ class SurveyorController < ApplicationController
         psc.update_activity_state(a.activity_id, @participant, Psc::ScheduledActivity::OCCURRED)
       end
 
-      # judge eligiblity then go to contact_link.edit_instrument
+      # judge eligibility then go to contact_link.edit_instrument
       EligibilityAdjudicator.adjudicate_eligibility(@response_set)
       edit_instrument_contact_link_path(contact_link.id)
 

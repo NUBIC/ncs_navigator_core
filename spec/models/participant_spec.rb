@@ -1546,7 +1546,7 @@ describe Participant do
           end
 
           it "returns the screener prefix taken by the participant" do
-            @part.pbs_eligbility_prefix.should == OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX
+            @part.pbs_eligibility_prefix.should == OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX
           end
         end
       end
@@ -1620,59 +1620,45 @@ describe Participant do
 
     context "different eligibility scenarios" do
       let(:participant) { Factory(:participant) }
-      let(:birth_cohort) { participant.stub!(:birth_cohort? => true)}
-      let(:pbs) { participant.stub!(:pbs? => true)}
-      let(:non_pbs) { participant.stub!(:pbs? => false)}
-      let(:eligible_for_pbs) { participant.stub!(:eligible_for_pbs? => true)}
-      let(:ineligible_for_pbs) { participant.stub!(:eligible_for_pbs? => false)}
-      let(:eligible_for_birth_cohort) { participant.stub!(:eligible_for_birth_cohort? => true) }
-      let(:ineligible_for_birth_cohort) { participant.stub!(:eligible_for_birth_cohort? => false) }
-      let(:has_eligible_ppg_status) { participant.stub!(:has_eligible_ppg_status? => true) }
-      let(:does_not_have_eligible_ppg_status) { participant.stub!(:has_eligible_ppg_status? => false) }
 
       it "a birth cohort participant whose ineligible for birth cohort is ineligible" do
-        birth_cohort
-        ineligible_for_birth_cohort
-        participant.ineligible?.should be_true
+        participant.stub!(:birth_cohort? => true, :eligible_for_birth_cohort? => false)
+        participant.should be_ineligible
       end
 
-      it "a birth cohort participant whose eligible for birth cohort is not ineligible" do
-        birth_cohort
-        eligible_for_birth_cohort
-        participant.ineligible?.should be_false
+      it "a birth cohort participant whose eligible for birth cohort is eligible" do
+        participant.stub!(:birth_cohort? => true, :eligible_for_birth_cohort? => true)
+        participant.should_not be_ineligible
       end
 
       it "a pbs participant whose ineligible for pbs, yet eligible for birth cohort, is ineligible" do
-        pbs
-        ineligible_for_pbs
-        eligible_for_birth_cohort
-        participant.ineligible?.should be_true
+        participant.stub!(:pbs? => true, :eligible_for_pbs? => false, :eligible_for_birth_cohort? => true)
+        participant.should be_ineligible
       end
 
-      it "a pbs participant whose eligible for pbs is not ineligible" do
-        pbs
-        eligible_for_pbs
-        participant.ineligible?.should be_false
+      it "a pbs participant whose ineligible for pbs, yet has an eligible ppg status, is ineligible" do
+        participant.stub!(:pbs? => true, :eligible_for_pbs? => false, :has_eligible_ppg_status? => true)
+        participant.should be_ineligible
+      end
+
+      it "a pbs participant whose eligible for pbs is eligible" do
+        participant.stub!(:pbs? => true, :eligible_for_pbs? => true)
+        participant.should_not be_ineligible
       end
 
       it "a non_pbs participant whose eligible for birth cohort, yet does not have an eligible ppg_status, is ineligible" do
-        non_pbs
-        eligible_for_birth_cohort
-        does_not_have_eligible_ppg_status
-        participant.ineligible?.should be_true
+        participant.stub!(:pbs? => false, :eligible_for_birth_cohort? => true, :has_eligible_ppg_status? => false)
+        participant.should be_ineligible
       end
 
       it "a non_pbs participant whose eligible for pbs, yet does not have an eligible ppg_status, is ineligible" do
-        non_pbs
-        eligible_for_pbs
-        does_not_have_eligible_ppg_status
-        participant.ineligible?.should be_true
+        participant.stub!(:pbs? => false, :eligible_for_pbs? => true, :has_eligible_ppg_status? => false)
+        participant.should be_ineligible
       end
 
       it "a non_pbs participant who has an eligible ppg_status, is eligible" do
-        non_pbs
-        has_eligible_ppg_status
-        participant.ineligible?.should be_false
+        participant.stub!(:pbs? => false, :has_eligible_ppg_status? => true)
+        participant.should_not be_ineligible
       end
     end
   end
@@ -1731,7 +1717,7 @@ describe Participant do
 
       context "A person is ineligible when they have" do
         it "no responses for eligiblity questions (except provider frame questions)" do
-          @ineligible_participant.ineligible?.should be_true
+          @ineligible_participant.should be_ineligible
         end
 
         it "all ineligible responses" do
@@ -1741,7 +1727,7 @@ describe Participant do
           @negative_psu_county_eligible_response.update_attribute(:response_set, all_ineligible_response_set)
           @negative_provider_in_frame_response.update_attribute(:response_set, all_ineligible_response_set)
 
-          @ineligible_participant.ineligible?.should be_true
+          @ineligible_participant.should be_ineligible
         end
 
         it "multiple ineligible responses" do
@@ -1751,7 +1737,7 @@ describe Participant do
           @negative_psu_county_eligible_response.update_attribute(:response_set, multiple_ineligible_response_set)
           @negative_provider_in_frame_response.update_attribute(:response_set, multiple_ineligible_response_set)
 
-          @ineligible_participant.ineligible?.should be_true
+          @ineligible_participant.should be_ineligible
         end
 
         it "even one ineligible response" do
@@ -1761,20 +1747,20 @@ describe Participant do
           @positive_psu_county_eligible_response.update_attribute(:response_set, one_ineligible_response_set)
           @negative_provider_in_frame_response.update_attribute(:response_set, one_ineligible_response_set)
 
-          @ineligible_participant.ineligible?.should be_true
+          @ineligible_participant.should be_ineligible
         end
       end
 
       context "A person is eligible when they have" do
         it "all eligible responses" do
-          @eligible_participant.stub!(:birth_cohort => true)
+          @eligible_participant.stub!(:birth_cohort? => true)
           eligible_response_set = Factory(:response_set, :person => @eligible_person)
 
           @positive_age_eligible_response.update_attribute(:response_set, eligible_response_set)
           @positive_psu_county_eligible_response.update_attribute(:response_set, eligible_response_set)
           @positive_provider_in_frame_response.update_attribute(:response_set, eligible_response_set)
 
-          @eligible_participant.ineligible?.should be_false
+          @eligible_participant.should_not be_ineligible
         end
       end
     end
