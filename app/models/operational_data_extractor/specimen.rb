@@ -17,9 +17,13 @@ module OperationalDataExtractor
       "SPEC_CORD_BLOOD_SPECIMEN[cord_container=3].SPECIMEN_ID" => "specimen_id",
 
       # MDES 2.1
-      "SPEC_CORD_BLOOD_SPECIMEN_2.SPECIMEN_ID" => "specimen_id",
+      "SPEC_CORD_BLOOD_SPECIMEN_2[collection_type=1].SPECIMEN_ID" => "specimen_id",
+      "SPEC_CORD_BLOOD_SPECIMEN_2[collection_type=2].SPECIMEN_ID" => "specimen_id",
+      "SPEC_CORD_BLOOD_SPECIMEN_2[collection_type=3].SPECIMEN_ID" => "specimen_id",
       # MDES 2.2
-      "SPEC_BLOOD_SPECIMEN_3.SPECIMEN_ID" => "specimen_id",
+      "SPEC_CORD_BLOOD_SPECIMEN_3[collection_type=1].SPECIMEN_ID" => "specimen_id",
+      "SPEC_CORD_BLOOD_SPECIMEN_3[collection_type=2].SPECIMEN_ID" => "specimen_id",
+      "SPEC_CORD_BLOOD_SPECIMEN_3[collection_type=3].SPECIMEN_ID" => "specimen_id",
       "SPEC_BLOOD_2_TUBE[tube_type=1].SPECIMEN_ID" => "specimen_id",
       "SPEC_BLOOD_2_TUBE[tube_type=2].SPECIMEN_ID" => "specimen_id",
       "SPEC_BLOOD_2_TUBE[tube_type=3].SPECIMEN_ID" => "specimen_id",
