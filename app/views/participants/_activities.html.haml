@@ -3,7 +3,7 @@
     %b
       Upcoming Activities
 
-  - if recruitment_strategy.pbs? && !@participant.eligible?
+  - if recruitment_strategy.pbs? && @participant.ineligible?
     CANDIDATE DETERMINED INELIGIBLE.
   - else
     - pending_event = @participant.pending_events.first

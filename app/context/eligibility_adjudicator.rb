@@ -1,18 +1,13 @@
 class EligibilityAdjudicator
 
-  def initialize(response_set)
-    @person = response_set.person
-    @participant = response_set.participant
-    @response_set = response_set
+  def initialize(person)
+    @person = person
+    @participant = person.participant
   end
 
-  def person_taking_screener_ineligible?
-    !@participant.eligible? && @response_set.survey.title =~ /PBSamplingScreen/
-  end
-
-  def self.adjudicate_eligibility(response_set)
-    me = EligibilityAdjudicator.new(response_set)
-    me.make_ineligible if me.person_taking_screener_ineligible?
+  def self.adjudicate_eligibility(person)
+    me = EligibilityAdjudicator.new(person)
+    me.make_ineligible if person.participant.ineligible?
   end
 
   def make_ineligible
@@ -20,7 +15,7 @@ class EligibilityAdjudicator
       creates_ineligibility_record(@person)
       delete_participant_person_links(@participant)
       disassociates_participant_from_all_events(@participant)
-      disassociates_participant_from_response_set(@response_set)
+      disassociates_participant_from_response_sets(@participant)
       remove_participant(@participant)
     end
   end
@@ -37,8 +32,8 @@ class EligibilityAdjudicator
     participant.events.update_all(:participant_id => nil)
   end
 
-  def disassociates_participant_from_response_set(response_set)
-    ResponseSet.find(response_set.id).update_attribute(:participant_id, nil)
+  def disassociates_participant_from_response_sets(participant)
+    ResponseSet.where(:participant_id => participant.id).each { |rs| rs.update_attribute(:participant_id, nil) }
   end
 
   def remove_participant(participant)

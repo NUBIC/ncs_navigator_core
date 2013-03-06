@@ -43,7 +43,7 @@ module ParticipantsHelper
   end
 
   def should_show_informed_consent_scheduling_form?(participant)
-    participant.eligible? && !(participant.pending_events.first.try(:event_type_code) == Event.informed_consent_code)
+    !participant.ineligible? && !(participant.pending_events.first.try(:event_type_code) == Event.informed_consent_code)
   end
 
   def upcoming_events_for(person_or_participant)
