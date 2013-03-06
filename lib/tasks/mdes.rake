@@ -50,5 +50,12 @@ namespace :mdes do
     task :set, [:version] => [:base] do |t, args|
       NcsNavigator::Core::Mdes::Version.set!(args[:version])
     end
+
+    desc 'Convert this instance to the named MDES version'
+    task :migrate, [:to_version] => [:environment] do |t, args|
+      fail "Please specify :to_version" unless args[:to_version]
+      NcsNavigator::Core::Mdes::VersionMigrator.
+        new(:interactive => true).migrate!(args[:to_version])
+    end
   end
 end
