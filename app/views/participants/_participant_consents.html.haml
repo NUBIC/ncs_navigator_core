@@ -10,6 +10,9 @@
         %tr
           %th
             Type
+          - if mdes_version_is_after?(3.0)
+            %th
+              Reconsent
           %th
             Consent Given
           %th
@@ -19,14 +22,18 @@
         - @participant.participant_consents.each do |consent|
           %tr{ :class => cycle('even_record', 'odd_record') }
             %td
-              - txt = consent.phase_one? ? consent.consent_type : consent.consent_form_type
-              = link_to txt, edit_participant_consent_path(consent), :class => "edit_link icon_link"
+              = link_to consent.description, edit_participant_consent_path(consent), :class => "edit_link icon_link"
+            - if mdes_version_is_after?(3.0)
+              %td
+                = consent.consent_reconsent
             %td
               = consent.consent_given
             %td
-              = consent.consent_date
+              = consent.withdrawn? ? consent.consent_withdraw_date : consent.consent_date
             %td
-              - if consent.participant_consent_samples.blank?
+              - if consent.withdrawn?
+                Not Applicable
+              - elsif consent.participant_consent_samples.blank?
                 No sample consent records exist for this participant.
               - else
                 - consent.participant_consent_samples.each do |consent|
@@ -34,4 +41,19 @@
                   &mdash;
                   = consent.sample_consent_given
                   %br
-
+    - if permit?(Role::FIELD_STAFF, Role::PHONE_STAFF)
+      - if @participant.reconsented? || @participant.consented?
+        .schedule_informed_consent
+          %b
+            Schedule Withdrawal
+          .instructional_note
+            If you would like to withdraw the Participant, use the form below to schedule the
+            %br
+            Informed Consent Event for Withdrawal.
+          .link
+            = form_for @participant, :url => schedule_withdrawal_event_participant_path(@participant) do |f|
+              %b
+                Date
+              = text_field_tag :date, Date.today.to_s, :class => 'datepicker'
+              - msg = "Are you certain you would like to schedule a Withdrawal Event?"
+              = f.submit "Schedule Withdrawal", :disable_with => 'Scheduling Withdrawal...', :confirm => msg

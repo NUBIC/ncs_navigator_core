@@ -731,6 +731,23 @@ class Event < ActiveRecord::Base
   end
 
   ##
+  # Schedule the Withdrawal Segment in PSC.
+  # If successful, create a corresponding, pending Event record
+  #
+  # @see PatientStudyCalendar#schedule_withdrawal
+  # @see Event#create_event_placeholder_and_cancel_activities
+  #
+  # @param[PatientStudyCalendar]
+  # @param[Participant]
+  # @param[Date] (optional)
+  # @return[Response]
+  def self.schedule_withdrawal(psc, participant, date = nil)
+    resp = psc.schedule_withdrawal(participant, date)
+    create_event_placeholder_and_cancel_activities(psc, participant, date, resp)
+    resp
+  end
+
+  ##
   # After successfully scheduling the next segment for the Participant
   # in PSC, create a corresponding Event using the scheduled ideal date as
   # the Event#start_date and the Ncs EVENT_TYPE_CL1 code matching the PSC activity
@@ -767,7 +784,6 @@ class Event < ActiveRecord::Base
       end
     end
   end
-
 
   def self.create_placeholder_record(participant, date, event_type_code, study_segment_identifier)
     begin

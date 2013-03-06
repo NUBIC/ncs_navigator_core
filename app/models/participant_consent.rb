@@ -152,6 +152,16 @@ class ParticipantConsent < ActiveRecord::Base
     !phase_one?
   end
 
+  def description
+    if withdrawn?
+      "Withdrawal"
+    elsif phase_one?
+      consent_type.display_text
+    else
+      consent_form_type.display_text
+    end
+  end
+
   ##
   # Finds the first associated Informed Consent Event
   # through the ParticipantConsent.contact

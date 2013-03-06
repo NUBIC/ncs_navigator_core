@@ -156,6 +156,14 @@ class ParticipantsController < ApplicationController
     redirect_to(participant_path(@participant), :notice => msg)
   end
 
+  ##
+  # Schedule a Withdrawal segment in PSC
+  def schedule_withdrawal_event
+    resp = Event.schedule_withdrawal(psc, @participant, params[:date])
+    msg = resp.success? ? 'Withdrawal event scheduled for Participant.' : 'Could not schedule informed consent'
+    redirect_to(participant_path(@participant), :notice => msg)
+  end
+
   # GET /participants/new
   # GET /participants/new.json
   def new

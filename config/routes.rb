@@ -45,6 +45,7 @@ NcsNavigatorCore::Application.routes.draw do
       put :schedule_next_event_with_psc
       put :schedule_informed_consent_event
       put :schedule_reconsent_event
+      put :schedule_withdrawal_event
       get :schedule
       get :edit_ppg_status
       put :update_ppg_status

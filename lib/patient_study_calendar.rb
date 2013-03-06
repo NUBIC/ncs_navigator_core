@@ -499,6 +499,10 @@ class PatientStudyCalendar
     schedule_segment(participant, INFORMED_CONSENT_RECONSENT, date)
   end
 
+  def schedule_withdrawal(participant, date = Date.today.to_s)
+    schedule_segment(participant, INFORMED_CONSENT_WITHDRAWAL, date)
+  end
+
   def schedule_parental_permission_informed_consent(participant, date = Date.today.to_s)
     schedule_segment(participant, INFORMED_CONSENT_PARENTAL_PERMISSION_FOR_CHILD_PARTICIPATION, date)
   end
