@@ -49,30 +49,7 @@ describe Participant do
     let(:person) { Factory(:person) }
     let(:response_set) { Factory(:response_set, :survey => survey, :person => person) }
 
-    it "should assign the participant into a pregnancy probability group" do
-      participant.should be_registered
-      psc.should_receive(:update_subject).with(participant).and_return(true)
-      participant.update_state_after_survey(response_set, psc)
-      participant.should be_in_pregnancy_probability_group
-    end
-
     describe "who is in PPG 1 or 2" do
-
-      it "requires consent" do
-        participant = Factory(:participant, :low_intensity_state => 'registered')
-        participant.should be_registered
-        psc.should_receive(:update_subject).with(participant).and_return(true)
-        participant.update_state_after_survey(response_set, psc)
-        participant.should be_in_pregnancy_probability_group
-
-        Factory(:ppg_detail, :participant => participant, :ppg_first => status2)
-
-        participant = Participant.find(participant.id)
-        participant.ppg_details.should_not be_empty
-        participant.ppg_status.should == status2_cl1
-
-        participant.requires_consent.should be_true
-      end
 
       it "administers the low intensity questionnaire as soon as possible" do
         participant = Factory(:participant, :low_intensity_state => 'consented_low_intensity')
@@ -81,98 +58,6 @@ describe Participant do
         participant.ppg_status.should == status2_cl1
         participant.should be_consented_low_intensity
         participant.should_take_low_intensity_questionnaire?.should be_true
-      end
-
-    end
-
-  end
-
-  context "after completing the Low Intensity Questionnaire Instrument" do
-
-    let(:participant) { participant= Factory(:participant, :low_intensity_state => 'in_pregnancy_probability_group')
-                        lo_i_quex = Factory(:event, :participant => participant,
-                                            :event_start_date => Date.today, :event_end_date => Date.today,
-                                            :event_type => NcsCode.low_intensity_data_collection)
-                        participant.events << lo_i_quex
-                        participant }
-    let(:survey) { Factory(:survey, :title => "_LIPregNotPreg_") }
-    let(:instrument) { Factory(:instrument, :survey => survey , :person => participant.person)}
-    let(:response_set) { Factory(:response_set, :survey => survey, :person => participant.person) }
-
-    describe "in ppg 2 (trying)" do
-
-      it "should be following the low intensity participant" do
-        Factory(:ppg_detail, :participant => participant, :ppg_first => status2)
-        participant.should be_in_pregnancy_probability_group
-        participant.update_state_after_survey(response_set, psc)
-        participant.should be_following_low_intensity
-      end
-    end
-
-    describe "in ppg 1 (pregnant)" do
-
-      it "should be following low intensity if the due_date > 6 mos" do
-        contact_date = Date.parse("2000-01-01")
-        due_date = 8.months.since(contact_date)
-        contact = Factory(:contact, :contact_date_date => contact_date)
-        event = Factory(:event, :participant => participant)
-        Factory(:contact_link, :contact => contact, :instrument => instrument,:event => event)
-        Factory(:ppg_detail, :participant => participant, :ppg_first => status1, :orig_due_date => due_date.strftime('%Y-%m-%d'))
-
-        participant.should be_in_pregnancy_probability_group
-        participant.update_state_after_survey(response_set, psc)
-        participant.should be_following_low_intensity
-      end
-
-      it "should be pregnant if the due_date < 6 mos" do
-        contact_date = Date.parse("2000-01-01")
-        due_date = 4.months.since(contact_date)
-        contact = Factory(:contact, :contact_date_date => contact_date)
-        event = Factory(:event, :participant => participant)
-        Factory(:contact_link, :contact => contact, :instrument => instrument,:event => event)
-        Factory(:ppg_detail, :participant => participant, :ppg_first => status1, :orig_due_date => due_date.strftime("%Y-%m-%d"))
-        participant.should be_in_pregnancy_probability_group
-        participant.update_state_after_survey(response_set, psc)
-
-        participant.should be_pregnant_low
-
-      end
-
-    end
-  end
-
-  context "after completing the Low to High Conversion" do
-
-    let(:participant) { Factory(:participant, :low_intensity_state => 'in_pregnancy_probability_group') }
-
-    let(:survey) { Factory(:survey, :title => "_LIHIConversion_") }
-    let(:response_set) { Factory(:response_set, :survey => survey, :person => participant.person) }
-
-    it "moves the participant into the high intensity arm" do
-      Factory(:ppg_detail, :participant => participant, :ppg_first => status2)
-      participant.should be_in_pregnancy_probability_group
-      participant.update_state_after_survey(response_set, psc)
-      participant.should be_moved_to_high_intensity_arm
-      participant.requires_consent.should be_true
-    end
-
-    describe "a non-pregnant participant" do
-      it "requires non_pregnant informed consent" do
-        Factory(:ppg_detail, :participant => participant, :ppg_first => status2)
-        participant.should be_in_pregnancy_probability_group
-        participant.update_state_after_survey(response_set, psc)
-        participant.should be_pre_pregnancy
-        participant.requires_consent.should be_true
-      end
-    end
-
-    describe "a pregnant participant" do
-      it "requires pregnant informed consent" do
-        Factory(:ppg_detail, :participant => participant, :ppg_first => status1)
-        participant.should be_in_pregnancy_probability_group
-        participant.update_state_after_survey(response_set, psc)
-        participant.should be_pregnancy_one
-        participant.requires_consent.should be_true
       end
     end
   end
@@ -207,68 +92,6 @@ describe Participant do
         participant.should be_converted_high_intensity
         participant.process_high_intensity_conversion!
         participant.should be_following_high_intensity
-      end
-    end
-
-  end
-
-  context "after completing the PPG Follow-Up" do
-
-    context "for a non-pregnant participant" do
-      let(:participant) { Factory(:participant,
-                                  :low_intensity_state => 'moved_to_high_intensity_arm',
-                                  :high_intensity_state => 'converted_high_intensity',
-                                  :high_intensity => true) }
-      let(:survey) { Factory(:survey, :title => "_PPGFollUp_") }
-      let(:response_set) { Factory(:response_set, :survey => survey,
-                                   :person => participant.person, :participant => participant) }
-
-      describe "a high intensity participant" do
-        it "moves to the high intensity follow state" do
-          participant.should be_converted_high_intensity
-          participant.update_state_after_survey(response_set, psc)
-          participant.should be_following_high_intensity
-        end
-      end
-    end
-
-    context "for a pregnant participant" do
-      let(:participant) { Factory(:participant,
-                                  :high_intensity => true,
-                                  :low_intensity_state => 'moved_to_high_intensity_arm',
-                                  :high_intensity_state => 'converted_high_intensity') }
-      let(:survey) { Factory(:survey, :title => "_PPGFollUp_") }
-      let(:response_set) { Factory(:response_set, :survey => survey,
-                                   :person => participant.person, :participant => participant) }
-
-      describe "a high intensity participant" do
-        it "moves to the high intensity pregnancy_one state" do
-          date = Date.parse("2525-01-01")
-          Factory(:ppg_detail, :participant => participant, :ppg_first => status1,
-                  :orig_due_date => 4.months.since(date).strftime("%m/%d/%Y"))
-
-          participant.should be_converted_high_intensity
-          participant.update_state_after_survey(response_set, psc)
-          participant.should be_pregnancy_one
-        end
-
-      end
-    end
-
-  end
-
-  context "after completing the Pregnancy One Visit" do
-
-    let(:participant) { Factory(:participant, :high_intensity_state => 'pregnancy_one') }
-
-    let(:survey) { Factory(:survey, :title => "_PregVisit1_") }
-    let(:response_set) { Factory(:response_set, :survey => survey, :person => participant.person) }
-
-    describe "a high intensity pregnant participant" do
-      it "moves to the high intensity pregnancy two state" do
-        participant.should be_pregnancy_one
-        participant.update_state_after_survey(response_set, psc)
-        participant.should be_pregnancy_two
       end
     end
 

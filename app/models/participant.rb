@@ -84,6 +84,7 @@ class Participant < ActiveRecord::Base
     self.class.from_hospital_type_provider.exists?(self)
   end
 
+  alias_method :birth_cohort?, :hospital?
   # validates_presence_of :person
 
   accepts_nested_attributes_for :ppg_details, :allow_destroy => true
@@ -267,89 +268,6 @@ class Participant < ActiveRecord::Base
     else
       self.high_intensity_state = state
     end
-  end
-
-  ##
-  # After a survey has been completed the participant would move through the states as
-  # defined in the state machine
-  # @param [ResponseSet] - used to determine survey taken
-  # @param [PatientStudyCalendar] - cf. ApplicationController#psc
-  def update_state_after_survey(response_set, psc)
-
-    # TODO: ensure that the response_set has been completed
-
-    survey_title = response_set.survey.title
-
-    if /_PregScreen_/ =~ survey_title
-      psc.update_subject(self)
-      assign_to_pregnancy_probability_group! if can_assign_to_pregnancy_probability_group?
-    end
-
-    if /_PBSamplingScreen_/ =~ survey_title
-      psc.update_subject(self)
-      assign_to_pregnancy_probability_group! if can_assign_to_pregnancy_probability_group?
-    end
-
-    if /_PBSampScreenHosp_/ =~ survey_title
-      psc.update_subject(self)
-      assign_to_pregnancy_probability_group! if can_assign_to_pregnancy_probability_group?
-      birth_cohort!
-    end
-
-    if /_LIPregNotPreg_/ =~ survey_title && can_follow_low_intensity?
-      follow_low_intensity!
-    end
-
-    if /_LIHIConversion_/ =~ survey_title
-      enroll_in_high_intensity_arm! if can_enroll_in_high_intensity_arm?
-      high_intensity_conversion!
-    end
-
-    if /_PPGFollUp_/ =~ survey_title
-      follow! if can_follow? && high_intensity?
-    end
-
-    if known_to_be_pregnant?
-      if low_intensity? &&
-         can_impregnate_low? &&
-         !due_date_is_greater_than_follow_up_interval(most_recent_contact.contact_date_date)
-         impregnate_low!
-      end
-
-      if high_intensity? &&
-         can_impregnate?
-         impregnate!
-      end
-    end
-
-    if /_PrePreg_/ =~ survey_title
-      non_pregnant_informed_consent! if can_non_pregnant_informed_consent?
-      follow! if can_follow?
-    end
-
-    if /_PregVisit1_/ =~ survey_title && can_pregnancy_one_visit?
-      pregnancy_one_visit!
-    end
-
-    if /_PregVisit2_/ =~ survey_title && can_pregnancy_two_visit?
-      pregnancy_two_visit!
-    end
-
-    if /_Birth_/ =~ survey_title
-      if low_intensity?
-        birth_event_low! if can_birth_event_low?
-      else
-        birth_event! if can_birth_event?
-      end
-    end
-
-    # TODO: move this to a method that can be called after Contact or Event
-    #       has been updated cf. #2524
-    if known_to_have_experienced_child_loss? && can_lose_child?
-      lose_child!
-    end
-
-    self.update_attribute(:being_followed, true) unless self.being_followed?
   end
 
   ##
@@ -570,21 +488,25 @@ class Participant < ActiveRecord::Base
   ##
   def update_state_to_next_event(event)
     case event.event_type.local_code
-    when 4, 5, 6, 9, 29, 34
-      # Pregnancy Screener Events or PBS Eligibility Screener
+    when 34
       if NcsNavigatorCore.recruitment_strategy.pbs?
-        completed_pbs_eligibility_screener!
-      elsif can_assign_to_pregnancy_probability_group?
+        if (eligible_for_pbs? || eligible_for_birth_cohort?) && hospital?
+          birth_cohort!
+        else
+          completed_pbs_eligibility_screener!
+        end
+      end
+    when 4, 5, 6, 9, 29
+      # Pregnancy Screener Events or PBS Eligibility Screener
+      if can_assign_to_pregnancy_probability_group?
         assign_to_pregnancy_probability_group!
       end
     when 10
       # Informed Consent
       low_intensity_consent! if can_low_intensity_consent?
-
     when 33
       # Lo I Quex
       follow_low_intensity! if can_follow_low_intensity?
-
     when 7,8
       # Pregnancy Probability
       follow! if can_follow? && high_intensity?
@@ -1161,20 +1083,6 @@ class Participant < ActiveRecord::Base
 
   end
 
-  def eligible?
-    NcsNavigatorCore.recruitment_strategy.pbs? ? eligible_for_pbs? : has_eligible_ppg_status?
-  end
-
-  def eligible?
-    if NcsNavigatorCore.recruitment_strategy.pbs? && !hospital?
-      eligible_for_pbs?
-    elsif NcsNavigatorCore.recruitment_strategy.pbs? && hospital?
-      eligible_for_birth_cohort?
-    else
-      has_eligible_ppg_status?
-    end
-  end
-
   def eligible_for_pbs?
     eligible = []
     person = ParticipantPersonLink.where(:participant_id => self.id, :relationship_code => 1).first.person
@@ -1199,7 +1107,17 @@ class Participant < ActiveRecord::Base
     self.send(:no_preceding_providers_in_frame?, person, providers_in_frame_prefix)
   end
 
-  def pbs_eligbility_prefix
+  def has_eligible_ppg_status?(date = Date.today)
+    ppg_status(date).try(:local_code).to_i < 5
+  end
+
+  def ineligible?
+    ( birth_cohort? && !eligible_for_birth_cohort?) ||
+    ( pbs? && !birth_cohort? && !eligible_for_pbs? ) ||
+    ( !pbs? && !has_eligible_ppg_status? )
+  end
+
+  def pbs_eligibility_prefix
     hospital? ? "#{OperationalDataExtractor::PbsEligibilityScreener::HOSPITAL_INTERVIEW_PREFIX}" : "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}"
   end
 
@@ -1227,7 +1145,7 @@ class Participant < ActiveRecord::Base
   # @param[String] data_export_identifier for question
   # @return[Boolean]
   def eligible_for?(person, reference_identifier)
-    data_export_identifier = pbs_eligbility_prefix + "." + reference_identifier
+    data_export_identifier = pbs_eligibility_prefix + "." + reference_identifier
     most_recent_response = person.responses_for(data_export_identifier).last
     most_recent_response.try(:answer).try(:reference_identifier) == "1"
   end
@@ -1243,11 +1161,11 @@ class Participant < ActiveRecord::Base
     answers.any? { |a| a == "1" } ? false : true
   end
 
-  def has_eligible_ppg_status?(date = Date.today)
-    ppg_status(date).try(:local_code).to_i < 5
-  end
-
   private
+
+    def pbs?
+      NcsNavigatorCore.recruitment_strategy.pbs?
+    end
 
     def relationships(code)
       participant_person_links.
@@ -1438,4 +1356,3 @@ class Participant < ActiveRecord::Base
       end
     end
 end
-
