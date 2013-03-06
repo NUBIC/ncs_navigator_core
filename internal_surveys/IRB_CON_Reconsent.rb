@@ -72,7 +72,7 @@ survey "IRB_CON_Reconsent", :instrument_type => 10, :description => "Informed Co
 
     q_consent_date "Consent Date",
       :data_export_identifier => "PARTICIPANT_CONSENT.CONSENT_DATE"
-      a_consent_date :date, :custom_class => "date"
+      a_consent_date :string, :custom_class => "date"
 
     q_consent_version "Consent Version",
       :data_export_identifier => "PARTICIPANT_CONSENT.CONSENT_VERSION"
@@ -80,7 +80,7 @@ survey "IRB_CON_Reconsent", :instrument_type => 10, :description => "Informed Co
 
     q_consent_expiration "Consent Expiration Date",
       :data_export_identifier => "PARTICIPANT_CONSENT.CONSENT_EXPIRATION"
-      a_consent_expiration :date, :custom_class => "date"
+      a_consent_expiration :string, :custom_class => "date"
 
     q_who_consented_code "Who Consented?",
       :pick => :one,
