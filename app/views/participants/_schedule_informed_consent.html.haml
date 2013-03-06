@@ -1,18 +1,34 @@
 - if permit?(Role::FIELD_STAFF, Role::PHONE_STAFF)
   .schedule_informed_consent
-    %b
-      Schedule Informed Consent
-    .instructional_note
-      If you would like to perform the Informed Consent as a stand-alone Event
-      %br
-      (i.e. not as an activity during another Event), use the form below to schedule the
-      %br
-      Informed Consent Event. Please choose a day sooner than the next scheduled event.
-    .link
-      = form_for @participant, :url => schedule_informed_consent_event_participant_path(@participant) do |f|
-        %b
-          Date
-        = text_field_tag :date, Date.today.to_s, :class => 'datepicker'
-        - msg = "Are you certain you would like to schedule a stand-alone Informed Consent Event?"
-        - msg = "Participant has already consented. " + msg if @participant.consented?
-        = f.submit "Schedule Informed Consent", :disable_with => 'Scheduling Informed Consent...', :confirm => msg
+    - if @participant.reconsented?
+      -# TODO: determine what to do here? is there anything?
+    - elsif @participant.consented?
+      %b
+        Schedule Reconsent
+      .instructional_note
+        If you would like to reconsent the Participant, use the form below to schedule the
+        %br
+        Informed Consent Event for Reconsent.
+      .link
+        = form_for @participant, :url => schedule_reconsent_event_participant_path(@participant) do |f|
+          %b
+            Date
+          = text_field_tag :date, Date.today.to_s, :class => 'datepicker'
+          - msg = "Are you certain you would like to schedule a stand-alone Reconsent Event?"
+          = f.submit "Schedule Reconsent", :disable_with => 'Scheduling Reconsent...', :confirm => msg
+    - else
+      %b
+        Schedule Informed Consent
+      .instructional_note
+        If you would like to perform the Informed Consent as a stand-alone Event
+        %br
+        (i.e. not as an activity during another Event), use the form below to schedule the
+        %br
+        Informed Consent Event.
+      .link
+        = form_for @participant, :url => schedule_informed_consent_event_participant_path(@participant) do |f|
+          %b
+            Date
+          = text_field_tag :date, Date.today.to_s, :class => 'datepicker'
+          - msg = "Are you certain you would like to schedule a stand-alone Informed Consent Event?"
+          = f.submit "Schedule Informed Consent", :disable_with => 'Scheduling Informed Consent...', :confirm => msg
