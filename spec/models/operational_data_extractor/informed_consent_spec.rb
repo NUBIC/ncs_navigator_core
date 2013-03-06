@@ -14,7 +14,7 @@ describe OperationalDataExtractor::InformedConsent do
   let(:yes) { NcsCode.for_list_name_and_local_code("CONFIRM_TYPE_CL2", 1) }
   let(:no) { NcsCode.for_list_name_and_local_code("CONFIRM_TYPE_CL2", 2) }
   let(:no2) { NcsCode.for_list_name_and_local_code("CONFIRM_TYPE_CL21", 2) }
-  let(:date) { Date.parse("2525-12-12") }
+  let(:date) { "2525-12-12" }
   let(:who) { NcsCode.for_list_name_and_local_code("AGE_STATUS_CL1", 2) }
   let(:en) { NcsCode.for_list_name_and_local_code("LANGUAGE_CL2", 1) }
   let(:no_trans) { NcsCode.for_list_name_and_local_code("TRANSLATION_METHOD_CL1", 1) }
@@ -35,7 +35,7 @@ describe OperationalDataExtractor::InformedConsent do
         take_survey(survey, response_set) do |a|
           a.choice "PARTICIPANT_CONSENT.CONSENT_FORM_TYPE_CODE", consent_form_type
           a.choice "PARTICIPANT_CONSENT.CONSENT_GIVEN_CODE", yes
-          a.date "PARTICIPANT_CONSENT.CONSENT_DATE", date
+          a.str "PARTICIPANT_CONSENT.CONSENT_DATE", date
           a.str "PARTICIPANT_CONSENT.CONSENT_VERSION", "version"
           a.choice "PARTICIPANT_CONSENT.WHO_CONSENTED_CODE", who
           a.choice "PARTICIPANT_CONSENT.CONSENT_LANGUAGE_CODE", en
@@ -52,7 +52,7 @@ describe OperationalDataExtractor::InformedConsent do
         consent = ParticipantConsent.find(consent.id)
         consent.consent_form_type.should == consent_form_type
         consent.consent_given.should == yes
-        consent.consent_date.should == date
+        consent.consent_date.should == Date.parse(date)
         consent.consent_version.should == "version"
         consent.consent_expiration.should be_nil
         consent.who_consented.should == who
@@ -85,7 +85,7 @@ describe OperationalDataExtractor::InformedConsent do
           a.choice "PARTICIPANT_CONSENT.CONSENT_WITHDRAW_CODE", yes
           a.choice "PARTICIPANT_CONSENT.CONSENT_WITHDRAW_TYPE_CODE", wdraw1
           a.choice "PARTICIPANT_CONSENT.CONSENT_WITHDRAW_REASON_CODE", wdraw2
-          a.date "PARTICIPANT_CONSENT.CONSENT_WITHDRAW_DATE", date
+          a.str "PARTICIPANT_CONSENT.CONSENT_WITHDRAW_DATE", date
         end
 
         response_set.responses.reload
@@ -97,7 +97,7 @@ describe OperationalDataExtractor::InformedConsent do
         consent.consent_withdraw.should == yes
         consent.consent_withdraw_type.should == wdraw1
         consent.consent_withdraw_reason.should == wdraw2
-        consent.consent_withdraw_date.should == date
+        consent.consent_withdraw_date.should == Date.parse(date)
       end
     end
   end
