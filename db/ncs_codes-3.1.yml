@@ -15187,6 +15187,9 @@
 - list_name: STUDY_INTRODCTN_OUTCOME_CL1
   local_code: 4
   display_text: Female undecided about SC contact
+- list_name: STUDY_INTRODCTN_OUTCOME_CL1
+  local_code: 5
+  display_text: Provider able to release patient information without contacting patient
 - list_name: STUDY_MNGMNT_TSK_TYPE_CL1
   local_code: -5
   display_text: Other
