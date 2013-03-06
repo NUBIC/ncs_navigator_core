@@ -252,15 +252,10 @@ class ContactLinksController < ApplicationController
     end
 
     def mark_activity_occurred
-      activities = psc.activities_for_event(@contact_link.event)
-
-      activity = nil
-      activities.each do |a|
-        activity = a if @contact_link.instrument.survey.access_code == Instrument.surveyor_access_code(a.labels)
-      end
-
-      if activity
-        psc.update_activity_state(activity.activity_id, @contact_link.person.participant, Psc::ScheduledActivity::OCCURRED)
+      psc.activities_for_event(@contact_link.event).each do |a|
+        if @contact_link.instrument.survey.access_code == Instrument.surveyor_access_code(a.labels)
+          psc.update_activity_state(a.activity_id, @contact_link.event.participant, Psc::ScheduledActivity::OCCURRED)
+        end
       end
     end
 
