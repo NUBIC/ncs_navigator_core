@@ -23,7 +23,7 @@ class SurveyorController < ApplicationController
       end
 
       # judge eligibility then go to contact_link.edit_instrument
-      EligibilityAdjudicator.adjudicate_eligibility(@response_set)
+      EligibilityAdjudicator.adjudicate_eligibility(@response_set.person)
       edit_instrument_contact_link_path(contact_link.id)
 
     else
