@@ -807,12 +807,12 @@ module OperationalDataExtractor
     def process_person_race(person_race_map)
       person_race_map.each do |key, attribute|
         collect_race_responses(key).each do |r|
-          person_race = get_person_race
-          if value = response_value(r)
+          person_race = get_person_race(r)
+          if response_value(r)
             if key =~ /NEW/
               process_new_type_race(person_race, attribute, r)
             else
-              process_standard_race(person_race, attribute, value)
+              process_standard_race(person_race, attribute, r)
             end
           end
         end
@@ -859,14 +859,27 @@ module OperationalDataExtractor
 
     ##
     # Creates a PersonRace record using the RACE_CL1 code list
-    def process_standard_race(person_race, attribute, value)
-      set_value(person_race, attribute, value)
+    def process_standard_race(person_race, attribute, response)
+      value = response_value(response)
+      ref_id = response.question.reference_identifier
+
+      if standard_person_race_codes.include?(value) && ref_id =~ /RACE(?!_\d)|RACE_1$/
+        set_value(person_race, attribute, value)
+      elsif response.answer.response_class == "answer"
+        person_race.race_code = NcsCode::OTHER
+        person_race.race_other = response.answer.text
+      else
+        person_race.race_other = value
+      end
       person_race.save!
     end
 
-    def get_person_race
-      person_race = person.races.where(:race_code => NcsCode::OTHER, :race_other => nil).first
-      person_race = person.races.build if person_race.nil?
+    def get_person_race(r)
+      race_text = r.answer.text
+      racial_code = r.answer.reference_identifier
+      person_race = PersonRace.where(:person_id => person.id, :race_code => NcsCode::OTHER, :race_other => nil).first
+      person_race = PersonRace.where(:person_id => person.id, :race_code => NcsCode::OTHER, :race_other => race_text).first if person_race.nil?
+      person_race = PersonRace.find_or_initialize_by_person_id_and_race_code(person.id, racial_code) if person_race.nil?
       person_race
     end
 
