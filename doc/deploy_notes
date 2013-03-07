@@ -44,6 +44,10 @@
 
 [Cases]
 
+
+!!!!IMPORTANT!!!! - If you are migrating to a new MDES version, do this here before running the cancellation scripts
+
+
 ** If template is updated with changes to existing activities, do the following: **
 
   $ ssh deploy_site
