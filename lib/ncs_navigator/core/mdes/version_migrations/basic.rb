@@ -22,10 +22,34 @@ module NcsNavigator::Core::Mdes::VersionMigrations
       @interactive = options[:interactive]
     end
 
+    ##
+    # Provides the basic behavior documented for the class. Also invokes two
+    # template methods which subclasses may implement to provide additional
+    # behaviors.
+    #
+    # - `run_before_code_list_changes`: executed immediately before the code
+    #   lists are replaced with the lists for the new version.
+    # - `run_after_code_list_changes`: executed immediately after the code lists
+    #   are placed with the lists for the new version.
     def run
-      ActiveRecord::Base.transaction do
-        switch_code_lists
-        change_registered_version
+      original_whodunnit = PaperTrail.whodunnit
+      begin
+        PaperTrail.whodunnit = self.class.to_s
+        ActiveRecord::Base.transaction do
+          if self.respond_to?(:run_before_code_list_changes)
+            run_before_code_list_changes
+          end
+
+          switch_code_lists
+
+          if self.respond_to?(:run_after_code_list_changes)
+            run_after_code_list_changes
+          end
+
+          change_registered_version
+        end
+      ensure
+        PaperTrail.whodunnit = original_whodunnit
       end
     end
 
