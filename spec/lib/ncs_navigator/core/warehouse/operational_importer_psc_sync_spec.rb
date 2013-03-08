@@ -17,7 +17,9 @@ module NcsNavigator::Core::Warehouse
       :lo_birth => '53318f20-d21f-452e-a8e8-3f2ed6bb6c93',
       :lo_ppg_12 => '76025607-f7aa-41e1-8ce9-29e0793cd6d4',
       :lo_postnatal => 'd0faf572-4208-4a43-adc6-5748f80ac321',
-      :lo_hi_conversion => '34d4638b-6f7f-4801-881d-db242d6f7ee5'
+      :lo_hi_conversion => '34d4638b-6f7f-4801-881d-db242d6f7ee5',
+      :pbs_provider_screening => 'f1ec472e-145b-48b4-b4f6-ec5d18e60dc5',
+      :pbs_hospital_screening => 'fb403fbc-0ab3-4155-be82-a72d2386e77d'
     }
 
     let(:redis) { Rails.application.redis }
@@ -50,9 +52,12 @@ module NcsNavigator::Core::Warehouse
       psc_participant.stub!(:participant).and_return(participant)
     end
 
+    def expected_event_key(event_id)
+      "#{ns}:psc_sync:event:#{event_id}"
+    end
+
     def add_event_hash(event_id, start_date, overrides={})
-      key = "#{ns}:psc_sync:event:#{event_id}"
-      redis.hmset(key, *{
+      redis.hmset(expected_event_key(event_id), *{
           :status => 'new',
           :event_id => event_id,
           :start_date => start_date,
@@ -60,6 +65,10 @@ module NcsNavigator::Core::Warehouse
           :recruitment_arm => 'hi',
           :sort_key => "#{start_date}:030"
         }.merge(overrides).to_a.flatten)
+    end
+
+    def update_event_hash(event_id, values={})
+      redis.hmset(expected_event_key(event_id), *values.to_a.flatten)
     end
 
     # mini-integration tests; details are tested below
@@ -289,6 +298,8 @@ module NcsNavigator::Core::Warehouse
     end
 
     describe 'scheduling segments for events' do
+      let(:unschedulable_key) { "#{ns}:psc_sync:p:#{p_id}:events_unschedulable" }
+
       before do
         psc_participant.stub!(:scheduled_events).and_return([{}])
         psc_participant.stub!(:registered?).and_return(true)
@@ -467,8 +478,6 @@ module NcsNavigator::Core::Warehouse
         end
 
         describe 'when there are multiple candidate segments' do
-          let(:unschedulable_key) { "#{ns}:psc_sync:p:#{p_id}:events_unschedulable" }
-
           before do
             # Since informed consent was removed from the template as a separate
             # event as part of #2709, there are no practical examples of events
@@ -527,6 +536,54 @@ module NcsNavigator::Core::Warehouse
               with('2010-10-10', SEGMENT_IDS[:lo_postnatal]).ordered
 
             importer.schedule_events(psc_participant)
+          end
+        end
+
+        describe 'when a PBS screener' do
+          let(:screener_event_id) { 'escr' }
+
+          before do
+            redis.del("#{ns}:psc_sync:p:#{p_id}:events")
+            redis.sadd("#{ns}:psc_sync:p:#{p_id}:events", screener_event_id)
+            add_event_hash(screener_event_id, '2010-04-04',
+              :event_type_label => 'pbs_participant_eligibility_screening')
+          end
+
+          shared_examples_for 'PSC sync for eligibility screener' do
+            # expected let: expected_segment_id
+
+            it 'schedules the appropriate segment' do
+              psc_participant.should_receive(:append_study_segment).
+                with('2010-04-04', expected_segment_id)
+
+              importer.schedule_events(psc_participant)
+            end
+
+            it 'registers no ambiguous segments' do
+              importer.schedule_events(psc_participant)
+
+              redis.smembers(unschedulable_key).should == []
+            end
+          end
+
+          describe 'at the pre-natal provider' do
+            include_context 'PSC sync for eligibility screener'
+
+            let(:expected_segment_id) { SEGMENT_IDS[:pbs_provider_screening] }
+
+            before do
+              update_event_hash(screener_event_id, :pbs_birth_cohort => false)
+            end
+          end
+
+          describe 'at the birthing hospital' do
+            include_context 'PSC sync for eligibility screener'
+
+            let(:expected_segment_id) { SEGMENT_IDS[:pbs_hospital_screening] }
+
+            before do
+              update_event_hash(screener_event_id, :pbs_birth_cohort => true)
+            end
           end
         end
       end
