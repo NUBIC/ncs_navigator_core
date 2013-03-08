@@ -89,5 +89,22 @@ module ResponseSetPrepopulation
     def prepopulated_mode_of_contact(question)
       question.answers.select { |a| a.reference_identifier == mode_to_text }.first
     end
+
+    ##
+    # Translate the mode (an Integer) to a String. Used to determine
+    # the Answer set in prepopulated_mode_of_contact
+    # @return[String]
+    def mode_to_text
+      case mode
+      when Instrument.papi
+        'papi'
+      when Instrument.cati
+        'cati'
+      when Instrument.capi
+        'capi'
+      else
+        'capi'
+      end
+    end
   end
 end
