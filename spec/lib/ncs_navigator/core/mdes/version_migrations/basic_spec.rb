@@ -40,7 +40,7 @@ module NcsNavigator::Core::Mdes::VersionMigrations
       end
 
       it "changes the code lists to the targeted version's lists" do
-        select_one_column("SELECT DISTINCT list_name FROM ncs_codes ORDER BY list_name").
+        select_one_column("SELECT DISTINCT list_name FROM ncs_codes").sort.
           should == target_version_code_lists
       end
     end
