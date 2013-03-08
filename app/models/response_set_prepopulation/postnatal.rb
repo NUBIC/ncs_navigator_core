@@ -1,5 +1,5 @@
 module ResponseSetPrepopulation
-  class Birth < Populator
+  class Postnatal < Populator
     def reference_identifiers
       [
         "prepopulated_should_show_room_mold_child",
