@@ -60,13 +60,6 @@ module ResponseSetPrepopulation
       end
     end
 
-    ##
-    # Determine if the mode of contact is CATI, CAPI, or PAPI
-    # @return[Answer]
-    def prepopulated_mode_of_contact(question)
-      question.answers.select { |a| a.reference_identifier == mode_to_text }.first
-    end
-
     # PROGRAMMER INSTRUCTION:
     # - IF EMPLOY2 = 1, AND WORK_NAME PREVIOUSLY SET TO COMPLETE, AND VALID RESPONSE PROVIDED, GO TO WORK_NAME_CONFIRM.
     # - IF EMPLOY2 = 1, AND WORK_NAME PREVIOUSLY NOT SET TO COMPLETE, GO TO WORK_NAME.
