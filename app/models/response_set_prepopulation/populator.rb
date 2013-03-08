@@ -24,12 +24,15 @@ module ResponseSetPrepopulation
     end
 
     def participant
+      response_set.participant
     end
 
     def person
+      response_set.person
     end
 
     def event
+      response_set.instrument.event
     end
 
     def build_response_for_value(response_type, response_set, question, answer, value)
