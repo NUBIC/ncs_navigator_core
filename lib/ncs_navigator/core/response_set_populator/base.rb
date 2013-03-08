@@ -27,7 +27,13 @@ module NcsNavigator::Core::ResponseSetPopulator
     end
 
     def participant
-      @participant ||= self.instrument.response_sets.last.try(:participant)
+      @participant ||= self.instrument.most_recent_response_set.try(:participant)
+    end
+
+    ##
+    # Set values in the most recent response set for the instrument
+    def populate
+      prepopulate_response_set(instrument.most_recent_response_set)
     end
 
     # To be implemented by subclasses
@@ -40,7 +46,7 @@ module NcsNavigator::Core::ResponseSetPopulator
     end
 
     def self.populator_for(survey)
-      populator = POPULATORS.find { |instrument, handler| instrument =~ survey.title }
+      populator = POPULATORS.find { |title_matcher, handler| title_matcher =~ survey.title }
       populator ? populator[1] : TracingModule
     end
 

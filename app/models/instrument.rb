@@ -420,6 +420,10 @@ class Instrument < ActiveRecord::Base
       .first
   end
 
+  def most_recent_response_set
+    response_sets.last
+  end
+
   # FIXME: This is temporary until we fix all places that call Instrument.response_set
   def response_set
     response_sets.first
