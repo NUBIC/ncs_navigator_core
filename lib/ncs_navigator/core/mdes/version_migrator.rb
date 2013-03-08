@@ -20,8 +20,7 @@ module NcsNavigator::Core::Mdes
     # @return [Array<#run,#to#from>]
     def self.default_migrations(options={})
       [
-        # No semantic differences 3.0 -> 3.2
-        VersionMigrations::Basic.new('3.0', '3.2', options)
+        VersionMigrations::ThreeZeroToThreeTwo.new(options)
       ]
     end
 
