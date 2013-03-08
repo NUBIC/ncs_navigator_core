@@ -502,7 +502,15 @@ class Participant < ActiveRecord::Base
       end
     when 10
       # Informed Consent
-      low_intensity_consent! if can_low_intensity_consent?
+      if NcsNavigatorCore.recruitment_strategy.pbs?
+        if (eligible_for_pbs? || eligible_for_birth_cohort?) && hospital?
+          birth_cohort!
+        else
+          completed_pbs_eligibility_screener!
+        end
+      else
+        low_intensity_consent! if can_low_intensity_consent?
+      end
     when 33
       # Lo I Quex
       follow_low_intensity! if can_follow_low_intensity?

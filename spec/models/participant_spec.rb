@@ -1866,6 +1866,32 @@ describe Participant do
             p.stub!(:eligible_for_pbs? => true)
           end
 
+          describe 'and completed the informed consent activity' do
+            let!(:ic) { Factory(:event, :participant => p, :event_type_code => 10, :event_end_date => Date.parse('2000-01-01')) }
+
+            let(:pairs) do
+              [
+                ['pregnancy_visit_1', Date.parse('2000-02-01')]
+              ]
+            end
+
+            before do
+              # Supply appropriate (event label, ideal date) pairs as a PSC
+              # scheduling result.
+              psc.stub!(:unique_label_ideal_date_pairs_for_scheduled_segment => pairs)
+            end
+
+            it 'schedules Pregnancy Visit 1' do
+              p.advance(psc)
+              latest_event.event_type_code.should == 13
+            end
+
+            it 'advances the participant state to pregnancy_one' do
+              p.advance(psc)
+              p.state.should == 'pregnancy_one'
+            end
+          end
+
           describe 'and was not enrolled at a birth hospital' do
             let(:pairs) do
               [
