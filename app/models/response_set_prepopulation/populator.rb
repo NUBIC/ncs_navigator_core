@@ -29,6 +29,9 @@ module ResponseSetPrepopulation
     def person
     end
 
+    def event
+    end
+
     def build_response_for_value(response_type, response_set, question, answer, value)
       if response_type == "answer"
         return if answer.nil?
@@ -66,6 +69,15 @@ module ResponseSetPrepopulation
     # @return [Answer]
     def answer_for(question, ri)
       question.answers.select { |a| a.reference_identifier == ri.to_s }.first
+    end
+
+    def valid_response_exists?(data_export_identifier, which_response = :first)
+      result = false
+      if response = person.responses_for(data_export_identifier).send(which_response)
+        reference_identifier = response.try(:answer).try(:reference_identifier).to_s
+        result = true unless %w(neg_1 neg_2 neg_8).include?(reference_identifier)
+      end
+      result
     end
   end
 end
