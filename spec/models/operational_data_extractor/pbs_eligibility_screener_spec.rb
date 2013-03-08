@@ -3,6 +3,8 @@
 
 require 'spec_helper'
 
+require File.expand_path('../../../shared/custom_recruitment_strategy', __FILE__)
+
 describe OperationalDataExtractor::PbsEligibilityScreener do
   include SurveyCompletion
 
@@ -289,6 +291,83 @@ describe OperationalDataExtractor::PbsEligibilityScreener do
     participant.ppg_details.first.ppg_first.local_code.should == 1
     participant.ppg_status.local_code.should == 1
     participant.p_type.should == p_type
+  end
+
+  describe "determine_pregnant_participant_type" do
+
+    let(:ppg1) {NcsCode.for_list_name_and_local_code("PPG_STATUS_CL2", 1)}
+    let(:survey) {create_pbs_eligibility_screener_survey_with_ppg_detail_operational_data}
+
+    context "for the PBS protocol" do
+
+      # TODO: determine why these MDES 3.2 codes are not in the code list when running the specs
+      before do
+        NcsCode.create!(:list_name => "PARTICIPANT_TYPE_CL1", :local_code => 14, :display_text => "PBS Provider Participant")
+        NcsCode.create!(:list_name => "PARTICIPANT_TYPE_CL1", :local_code => 15, :display_text => "PBS Hospital Participant")
+      end
+
+      include_context 'custom recruitment strategy'
+
+      let(:recruitment_strategy) { ProviderBasedSubsample.new }
+
+      let(:version) { NcsNavigator::Core::Mdes::Version.new('3.2') }
+
+      around do |example|
+        begin
+          old_version = NcsNavigatorCore.mdes_version
+          NcsNavigatorCore.mdes_version = version
+          example.call
+        ensure
+          NcsNavigatorCore.mdes_version = old_version
+        end
+      end
+
+      describe "for a participant whose provider is a hospital" do
+        it "sets the participant type to PBS Hospital Participant" do
+          person = Factory(:person)
+          participant = Factory(:participant)
+          participant.person = person
+          participant.save!
+
+          Participant.any_instance.stub(:birth_cohort?).and_return(true)
+
+          response_set, instrument = prepare_instrument(person, participant, survey)
+          response_set.save!
+          take_survey(survey, response_set) do |a|
+            a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.PREGNANT", ppg1
+          end
+          response_set.responses.reload
+          OperationalDataExtractor::PbsEligibilityScreener.new(response_set).extract_data
+          participant = Participant.find(participant.id)
+          # 15 PBS Hospital Participant
+          participant.p_type_code.should == 15
+        end
+      end
+
+      describe "for a participant whose provider is NOT a hospital" do
+        it "sets the participant type to PBS Hospital Participant" do
+          person = Factory(:person)
+          participant = Factory(:participant)
+          participant.person = person
+          participant.save!
+
+          Participant.any_instance.stub(:birth_cohort?).and_return(false)
+
+          response_set, instrument = prepare_instrument(person, participant, survey)
+          response_set.save!
+          take_survey(survey, response_set) do |a|
+            a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.PREGNANT", ppg1
+          end
+          response_set.responses.reload
+          OperationalDataExtractor::PbsEligibilityScreener.new(response_set).extract_data
+          participant = Participant.find(participant.id)
+          # 14 PBS Hospital Participant
+          participant.p_type_code.should == 14
+        end
+      end
+
+    end
+
 
   end
 
@@ -324,6 +403,8 @@ describe OperationalDataExtractor::PbsEligibilityScreener do
     participant.p_type.should == p_type
 
   end
+
+
 
   it "sets the ppg detail ppg status to 5 if the person responds that they are unable to become pregnant" do
 

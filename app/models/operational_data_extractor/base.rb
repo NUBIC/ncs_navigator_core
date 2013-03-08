@@ -231,27 +231,48 @@ module OperationalDataExtractor
     # 3 Pregnant eligible woman
     # 14 PBS Provider Participant
     # 15 PBS Hospital Participant
+    #
+    # @param [Participant]
+    # @param ppg_code [Integer]
+    # @return [NcsCode]
     def set_participant_type(participant, ppg_code)
+
       p_type_code = nil
       case ppg_code
       when 1
-        p_type_code = 3
-        # FIXME: temp conditional for Birth Cohort release - the setting of the participant type needs to
-        # be re-worked with the addition of p_type 14/15
-        if NcsNavigatorCore.mdes.version.to_f >= 3.2 && NcsNavigatorCore.recruitment_strategy.pbs?
-          p_type_code = participant.birth_cohort? ? 15 : 14
-        else
-          p_type_code = 3
-        end
+        p_type_code = determine_pregnant_participant_type(participant)
       when 2
         p_type_code = 2
       when 3,4
         p_type_code = 1
       end
+
       if p_type_code
         participant.p_type = NcsCode.for_attribute_name_and_local_code(:p_type_code, p_type_code)
       end
     end
+
+    ##
+    # With the introduction of the birth cohort in MDES 3.2, there are now three
+    # participant types for a pregnant participant. If the recruitment strategy is pbs,
+    # then the participant type is based on the way the Participant was recruited.
+    # Otherwise the Participant is simply a "pregnant eligible woman"
+    #
+    # PARTICIPANT_TYPE
+    # 3 Pregnant eligible woman
+    # 14 PBS Provider Participant
+    # 15 PBS Hospital Participant
+    #
+    # @param [Participant]
+    # @return [Integer]
+    def determine_pregnant_participant_type(participant)
+      if NcsNavigatorCore.mdes.version.to_f >= 3.2 && NcsNavigatorCore.recruitment_strategy.pbs?
+        participant.birth_cohort? ? 15 : 14
+      else
+        3
+      end
+    end
+    private :determine_pregnant_participant_type
 
     def primary_rank
       @primary_rank ||= NcsCode.for_list_name_and_local_code('COMMUNICATION_RANK_CL1', 1)
