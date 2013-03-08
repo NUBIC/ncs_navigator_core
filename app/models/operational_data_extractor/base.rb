@@ -229,11 +229,20 @@ module OperationalDataExtractor
     # 1 Age-eligible woman, ineligible for pre-pregnancy visit - being followed
     # 2 High-Trier - eligible for Pre-Pregnancy Visit
     # 3 Pregnant eligible woman
+    # 14 PBS Provider Participant
+    # 15 PBS Hospital Participant
     def set_participant_type(participant, ppg_code)
       p_type_code = nil
       case ppg_code
       when 1
         p_type_code = 3
+        # FIXME: temp conditional for Birth Cohort release - the setting of the participant type needs to
+        # be re-worked with the addition of p_type 14/15
+        if NcsNavigatorCore.mdes.version.to_f >= 3.2 && NcsNavigatorCore.recruitment_strategy.pbs?
+          p_type_code = participant.birth_cohort? ? 15 : 14
+        else
+          p_type_code = 3
+        end
       when 2
         p_type_code = 2
       when 3,4
@@ -716,7 +725,7 @@ module OperationalDataExtractor
 
     def process_institution(map, response_set, type = other_institute_type)
       unless type && type.local_code != -5
-        type = find_institution_type(map, type) 
+        type = find_institution_type(map, type)
       end
       institution = get_institution(response_set, type)
       map.each do |key, attribute|
