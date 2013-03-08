@@ -61,11 +61,9 @@ module ResponseSetPrepopulation
       response_set
     end
 
-    def is_arm_circ_given_in_anthropo?(question, response_set)
-      valid_response_exists?("CHILD_ANTHRO.AN_MID_UPPER_ARM_CIRC1", :last) ?
-          prepopulate_bp_mid_upper_arm_circ(question, response_set) : false
+    def is_event_completed?(code)
+      person.events.any? { |e| e.event_type_code == code && e.completed? }
     end
-
 
     def prepopulate_bp_mid_upper_arm_circ(question, response_set)
       bp_arm_circ = person.responses_for("CHILD_ANTHRO.AN_MID_UPPER_ARM_CIRC1"
@@ -79,6 +77,19 @@ module ResponseSetPrepopulation
       true
     end
       
+    def is_arm_circ_given_in_anthropo?(question, response_set)
+      valid_response_exists?("CHILD_ANTHRO.AN_MID_UPPER_ARM_CIRC1", :last) ?
+          prepopulate_bp_mid_upper_arm_circ(question, response_set) : false
+    end
+
+    def is_this_a_subsequent_father_interview?
+      person.events.any? do |e|
+        # Skip current event then try matching
+        e.id != event.id && e.event_type_code == Event::father_visit_code ||
+                            e.event_type_code == Event::father_visit_saq_code
+      end
+    end
+ 
     def check_event_type_for_con_reconsideration
       # List of all pregnancy visit events
       pregnancy_visits = [
@@ -94,18 +105,6 @@ module ResponseSetPrepopulation
       else
         "" 
       end
-    end
-
-    def is_this_a_subsequent_father_interview?
-      person.events.any? do |e|
-        # Skip current event then try matching
-        e.id != event.id && e.event_type_code == Event::father_visit_code ||
-                            e.event_type_code == Event::father_visit_saq_code
-      end
-    end
- 
-    def is_event_completed?(code)
-      person.events.any? { |e| e.event_type_code == code && e.completed? }
     end
   end
 end
