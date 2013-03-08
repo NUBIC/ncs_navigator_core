@@ -83,6 +83,7 @@ class Participant < ActiveRecord::Base
   def hospital?
     self.class.from_hospital_type_provider.exists?(self)
   end
+
   alias_method :birth_cohort?, :hospital?
   # validates_presence_of :person
 
