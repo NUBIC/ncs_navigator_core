@@ -1,5 +1,5 @@
 module ResponseSetPrepopulation
-  class ChildAndAdhoc
+  class ChildAndAdhoc < Populator
     def reference_identifiers
       [
         "prepopulated_should_show_upper_arm_length",

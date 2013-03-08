@@ -1,5 +1,5 @@
 module ResponseSetPrepopulation
-  class Birth
+  class Birth < Populator
     def reference_identifiers
       [
         "prepopulated_mode_of_contact",
