@@ -79,5 +79,12 @@ module ResponseSetPrepopulation
       end
       result
     end
+
+    ##
+    # Determine if the mode of contact is CATI, CAPI, or PAPI
+    # @return[Answer]
+    def prepopulated_mode_of_contact(question)
+      question.answers.select { |a| a.reference_identifier == mode_to_text }.first
+    end
   end
 end
