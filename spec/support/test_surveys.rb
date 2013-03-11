@@ -9,6 +9,7 @@ module TestSurveys
     instr = person.start_instrument(survey, participant, mode)
     instr.save!
 
+    instr.response_sets.first.responses.clear
     # TODO: update this method so that all response sets are returned - not just the first
     [instr.response_sets.first, instr]
   end
