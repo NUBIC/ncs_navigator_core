@@ -47,7 +47,11 @@ jQuery(document).ready(function(){
     }
   });
 
-  jQuery("form#survey_form input, form#survey_form select, form#survey_form textarea").change(function(){
+  jQuery("form#survey_form input:not(.hasDatepicker, .datetime), form#survey_form select, form#survey_form textarea").change(surveyor_submit_response);
+
+  jQuery("form#survey_form input.hasDatepicker, form#survey_form input.datetime").blur(surveyor_submit_response);
+
+  function surveyor_submit_response() {
     var elements = [$('[type="submit"]').parent(), $('[name="' + this.name +'"]').closest('li')];
 
     question_data = $(this).parents('fieldset[id^="q_"],tr[id^="q_"]').
@@ -62,7 +66,7 @@ jQuery(document).ready(function(){
         successfulSave(response);
       }
     });
-  });
+  }
 
   // http://www.filamentgroup.com/lab/update_jquery_ui_slider_from_a_select_element_now_with_aria_support/
   $('fieldset.q_slider select').each(function(i,e) {
