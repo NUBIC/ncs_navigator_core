@@ -163,6 +163,9 @@ module OperationalDataExtractor
           set_participant_type(participant, ppg_detail.ppg_first_code)
           ppg_detail.save!
 
+        # Set the participant type for a Birth Cohort Participant
+        elsif /_PBSampScreenHosp_/ =~ response_set.survey.title
+          set_participant_type(participant, 1)
         end
 
       end
