@@ -1,5 +1,11 @@
 module ResponseSetPrepopulation
   class PregnancyVisit < Populator
+    include OldAccessMethods
+
+    def self.applies_to?(rs)
+      %w(PregVisit1 PregVisit2).any? { |t| rs.survey.title.include?("_#{t}_") }
+    end
+
     def reference_identifiers
       [
         "prepopulated_mode_of_contact",
@@ -10,10 +16,6 @@ module ResponseSetPrepopulation
         "prepopulated_is_work_name_previously_collected_and_valid",
         "prepopulated_is_work_address_previously_collected_and_valid",
       ]
-    end
-
-    def self.applies_to?(rs)
-      %w(PregVisit1 PregVisit2).any? { |t| rs.survey.title.include?("_#{t}_") }
     end
 
     def run

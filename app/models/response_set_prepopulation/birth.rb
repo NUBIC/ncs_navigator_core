@@ -1,5 +1,11 @@
 module ResponseSetPrepopulation
   class Birth < Populator
+    include OldAccessMethods
+
+    def self.applies_to?(rs)
+      rs.survey.title.include?('_Birth_')
+    end
+
     def reference_identifiers
       [
         "prepopulated_mode_of_contact",
@@ -12,10 +18,6 @@ module ResponseSetPrepopulation
         "prepopulated_is_pv_two_complete",
         "prepopulated_is_p_type_fifteen"
       ]
-    end
-    
-    def self.applies_to?(rs)
-      rs.survey.title.include?('_Birth_')
     end
 
     def run

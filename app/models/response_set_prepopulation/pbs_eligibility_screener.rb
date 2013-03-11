@@ -1,5 +1,11 @@
 module ResponseSetPrepopulation
   class PbsEligibilityScreener < Populator
+    include OldAccessMethods
+
+    def self.applies_to?(rs)
+      rs.survey.title.include?('_PBSamplingScreen_')
+    end
+
     def reference_identifiers
       [
         "prepopulated_mode_of_contact",
@@ -8,10 +14,6 @@ module ResponseSetPrepopulation
         "prepopulated_provider_id",
         "prepopulated_name_practice"
       ]
-    end
-
-    def self.applies_to?(rs)
-      rs.survey.title.include?('_PBSamplingScreen_')
     end
 
     def run

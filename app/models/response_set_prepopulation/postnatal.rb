@@ -1,5 +1,11 @@
 module ResponseSetPrepopulation
   class Postnatal < Populator
+    include OldAccessMethods
+
+    def self.applies_to?(rs)
+      rs.survey.title =~ /_\d{1,2}M?Month/
+    end
+
     def reference_identifiers
       [
         "prepopulated_should_show_room_mold_child",
@@ -16,10 +22,6 @@ module ResponseSetPrepopulation
         "prepopulated_is_valid_work_name_provided",
         "prepopulated_is_valid_work_address_provided"
       ]
-    end
-    
-    def self.applies_to?(rs)
-      rs.survey.title =~ /_\d{1,2}M?Month/
     end
 
     def run

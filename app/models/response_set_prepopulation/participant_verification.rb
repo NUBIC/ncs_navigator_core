@@ -1,5 +1,11 @@
 module ResponseSetPrepopulation
   class ParticipantVerification < Populator
+    include OldAccessMethods
+
+    def self.applies_to?(rs)
+      rs.survey.title.include?('_ParticipantVerif_')
+    end
+
     def reference_identifiers
       [
         "prepopulated_mode_of_contact",
@@ -25,10 +31,6 @@ module ResponseSetPrepopulation
         "prepopulated_child_secondary_address_variables_previously_collected",
         "prepopulated_sa_phone_previously_collected",
       ]
-    end
-
-    def self.applies_to?(rs)
-      rs.survey.title.include?('_ParticipantVerif_')
     end
 
     def run
@@ -218,7 +220,6 @@ module ResponseSetPrepopulation
       answer_for(question, ri)
     end
 
-
     # Is the participant assciated with response set the first child
     def is_first_child?(question)
       answer_for(question, participant.person.is_first_child?)
@@ -266,7 +267,6 @@ module ResponseSetPrepopulation
     def ocare_child_previously_collected_and_equals_one?(question)
       answer_for(question, ocare_child_response_is_one?)
     end
-
 
     # PROGRAMMER INSTRUCTIONS:
     # - IF RESP_PCARE = 1, DISPLAY “yourself”.

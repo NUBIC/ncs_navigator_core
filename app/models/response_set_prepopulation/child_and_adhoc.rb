@@ -1,5 +1,18 @@
 module ResponseSetPrepopulation
   class ChildAndAdhoc < Populator
+    include OldAccessMethods
+
+    def self.applies_to?(rs)
+      [
+        /_PM_Child/,
+        /_BIO_Child/,
+        /_CON_Reconsideration/,
+        /_Father.*M2.1/,
+        /_InternetUseContact/,
+        /_MultiModeVisitInfo/
+      ].any?{ |regex| rs.survey.title =~ regex }
+    end
+
     def reference_identifiers
       [
         "prepopulated_should_show_upper_arm_length",
@@ -11,17 +24,6 @@ module ResponseSetPrepopulation
         "prepopulated_is_9_months_completed",
         "prepopulate_is_birth_or_subsequent_event"
       ]
-    end
-
-    def self.applies_to?(rs)
-      [
-        /_PM_Child/, 
-        /_BIO_Child/, 
-        /_CON_Reconsideration/, 
-        /_Father.*M2.1/, 
-        /_InternetUseContact/, 
-        /_MultiModeVisitInfo/
-      ].any?{ |regex| rs.survey.title =~ regex }
     end
 
     def run

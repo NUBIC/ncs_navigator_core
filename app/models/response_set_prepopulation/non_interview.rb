@@ -1,14 +1,16 @@
 module ResponseSetPrepopulation
   class NonInterview < Populator
+    include OldAccessMethods
+
+    def self.applies_to?(rs)
+      rs.survey.title.include?('_NonIntRespQues_')
+    end
+
     def reference_identifiers
       [
         "prepopulated_is_declined_participation_prior_to_enrollment",
         "prepopulated_study_center_type"
       ]
-    end
-
-    def self.applies_to?(rs)
-      rs.survey.title.include?('_NonIntRespQues_')
     end
 
     def run

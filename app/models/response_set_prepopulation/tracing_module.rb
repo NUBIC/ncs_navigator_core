@@ -1,5 +1,11 @@
 module ResponseSetPrepopulation
   class TracingModule < Populator
+    include OldAccessMethods
+
+    def self.applies_to?(rs)
+      rs.survey.title.include?('_Tracing_')
+    end
+
     def reference_identifiers
       [
         "prepopulated_mode_of_contact",
@@ -21,10 +27,6 @@ module ResponseSetPrepopulation
         "prepopulated_is_prev_city_provided",
         "prepopulated_valid_driver_license_provided"
       ]
-    end
-
-    def self.applies_to?(rs)
-      rs.survey.title.include?('_Tracing_')
     end
 
     def run
