@@ -35,6 +35,18 @@ module ResponseSetPrepopulation
       response_set.instrument.event
     end
 
+    def survey
+      response_set.survey
+    end
+
+    def mode
+      @mode ||= Instrument.capi
+    end
+    
+    def mode=(mode)
+      @mode = mode
+    end
+
     def build_response_for_value(response_type, response_set, question, answer, value)
       if response_type == "answer"
         return if answer.nil?
