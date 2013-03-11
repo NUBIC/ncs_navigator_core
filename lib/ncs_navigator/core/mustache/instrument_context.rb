@@ -4,6 +4,8 @@
 require 'ncs_navigator/core/mustache'
 require 'mustache'
 
+include ApplicationHelper
+
 module NcsNavigator::Core::Mustache
 
   ##
@@ -242,8 +244,14 @@ module NcsNavigator::Core::Mustache
 
     # {B_NAME/your baby}
     def b_fname
-      result = response_for("#{birth_baby_name_prefix}.BABY_FNAME")
-      result = 'your baby' if result.blank?
+      if mdes_version_is_after?(3.0)
+        result = c_fname
+      else
+        result = response_for("#{birth_baby_name_prefix}.BABY_FNAME")
+      end
+      if result.empty?
+        result = 'your baby'
+      end
       result
     end
 
@@ -368,7 +376,7 @@ module NcsNavigator::Core::Mustache
     end
 
     def c_fname
-      child_first_name("[CHILD'S FIRST NAME]")
+      child_first_name("your baby")
     end
 
     def child_first_name_the_child
@@ -392,7 +400,7 @@ module NcsNavigator::Core::Mustache
     end
 
     def child_first_name(txt)
-      return txt if participant.blank? 
+      return txt if participant.blank?
       if participant.child_participant?
         result = participant.person.first_name unless participant.person.try(:first_name).blank?
       else
