@@ -270,7 +270,7 @@ class Person < ActiveRecord::Base
     instrument.tap do |instr|
       rs = instr.response_sets.build(:survey => survey, :user_id => self.id)
       rs.participant = participant
-      rs.prepoulate
+      rs.prepopulate
     end
   end
 
