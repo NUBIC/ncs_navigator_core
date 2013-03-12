@@ -22,6 +22,7 @@ NcsNavigatorCore::Application.routes.draw do
       get :versions
       get :events
       get :start_instrument
+      get :start_consent
       get :responses_for
       put :responses_for
       get :provider_staff_member
@@ -43,6 +44,8 @@ NcsNavigatorCore::Application.routes.draw do
       put :register_with_psc
       put :schedule_next_event_with_psc
       put :schedule_informed_consent_event
+      put :schedule_reconsent_event
+      put :schedule_withdrawal_event
       get :schedule
       get :edit_ppg_status
       put :update_ppg_status

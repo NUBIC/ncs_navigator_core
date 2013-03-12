@@ -23,12 +23,6 @@ module NcsNavigator::Core::ResponseSetPopulator
     end
 
     ##
-    # Set values in the most recent response set for the instrument
-    def populate
-      prepopulate_response_set(instrument.response_sets.last)
-    end
-
-    ##
     # Creates responses for questions with reference identifiers
     # that are known values and should be prepopulated
     # @param [ResponseSet]
@@ -54,7 +48,7 @@ module NcsNavigator::Core::ResponseSetPopulator
               answer_for(question,
                          was_answer_to_mult_child_yes?("SIX_MTH_MOTHER"))
             when "prepopulated_is_three_months_interview_set_to_complete"
-              answer_for(question, 
+              answer_for(question,
                          is_event_completed?(Event::three_month_visit_code))
             when "prepopulated_is_child_qnum_one"
               answer_for(question, is_this_child_number_one?)
@@ -137,18 +131,18 @@ module NcsNavigator::Core::ResponseSetPopulator
       Response.includes([:answer, :question, :response_set]).where(
         "response_sets.user_id = ? AND questions.data_export_identifier like ?",
         person.id, "%.#{reference_id}").each do |response|
-          # Presense of an value implies selection of answer with 
+          # Presense of an value implies selection of answer with
           # ref_id "number", so no need to check.
           return true if response.try(:value)
         end
-        
+
       false
     end
 
     def was_household_number_collected?
       check_multiple_surveys_for_response("NUM_HH")
     end
-      
+
     def was_work_name_collected?
       check_multiple_surveys_for_response("WORK_NAME")
     end
@@ -156,6 +150,6 @@ module NcsNavigator::Core::ResponseSetPopulator
     def was_work_address_collected?
       check_multiple_surveys_for_response("WORK_ADDRESS_1")
     end
-    
+
   end
 end

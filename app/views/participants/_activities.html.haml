@@ -5,6 +5,9 @@
 
   - if recruitment_strategy.pbs? && @participant.ineligible?
     CANDIDATE DETERMINED INELIGIBLE.
+  - elsif @participant.withdrawn?
+    .important
+      Participant has withdrawn from the study
   - else
     - pending_event = @participant.pending_events.first
     - activities_for_event = []

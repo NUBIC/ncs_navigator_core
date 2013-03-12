@@ -17,17 +17,31 @@ class ScheduledActivity
   def parse_labels
     @labels.split.each do |lbl|
       vals = lbl.split(':')
-      case vals.first
+      v = vals.first
+      case v
       when "instrument"
         handle_instrument_label vals
       when "references"
         handle_references_label vals
       else
-        self.send("#{vals.first}=", vals.last)
+        if valid_setters.include?(v.to_sym)
+          self.send("#{v}=", vals.last)
+        end
       end
     end
   end
   private :parse_labels
+
+  ##
+  # Some labels do not match the instance_methods for this class.
+  # Determine the attributes that can be set.
+  def valid_setters
+    methods = ScheduledActivity.instance_methods
+    @valid_setters ||= methods.select do |m|
+      methods.include?(:"#{m}=")
+    end
+  end
+  private :valid_setters
 
   ##
   # Takes the instrument label values and adds

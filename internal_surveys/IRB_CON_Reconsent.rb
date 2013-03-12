@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-survey "IRB_CON_Informed_Consent", :instrument_type => 10, :description => "Informed Consent", :instrument_version => "1.0" do
+survey "IRB_CON_Reconsent", :instrument_type => 10, :description => "Informed Consent", :instrument_version => "1.0" do
   section "Informed Consent" do
     q_consent_form_type_code "Consent Form Type",
       :pick => :one,
@@ -18,6 +18,39 @@ survey "IRB_CON_Informed_Consent", :instrument_type => 10, :description => "Info
       :data_export_identifier => "PARTICIPANT_CONSENT.CONSENT_GIVEN_CODE"
       a_1 "YES"
       a_2 "NO"
+
+    q_consent_reconsent_code "Is this a reconsent?",
+      :pick => :one,
+      :data_export_identifier => "PARTICIPANT_CONSENT.CONSENT_RECONSENT_CODE"
+      a_1 "YES"
+      a_2 "NO"
+
+    q_consent_reconsent_reason_code "Reconsent reason",
+      :pick => :one,
+      :data_export_identifier => "PARTICIPANT_CONSENT.CONSENT_RECONSENT_REASON_CODE"
+      a_1 "Updated consent booklet, local IRB requirement"
+      a_2 "Updated signature page only, local IRB requirement"
+      a_3 "Moved into PSU"
+      a_4 "Later agreed to specimen or sample or genetic testing"
+      a_5 "Withdrew consent for specimen or sample or genetic testing"
+      a_6 "Child turned 6 months old"
+      a_7 "Child turned 18 years old/local age of majority"
+      a_8 "New caregiver re-consent for child"
+      a_9 "Rejoined study after withdrawal"
+      a_10 "Conversion from Low-intensity to High-intensity group"
+      a_11 "Transitioned to new data collection organization"
+      a_12 "Subsequent Pregnancy"
+      a_13 "Previously administered consent was not properly administered"
+      a_neg_5 "Other"
+      a_neg_7 "Not applicable"
+      dependency :rule => "A"
+      condition_A :q_consent_reconsent_code, "==", :a_1
+
+    q_consent_reconsent_reason_other "Reconsent Reason Other",
+      :data_export_identifier => "PARTICIPANT_CONSENT.CONSENT_RECONSENT_REASON_OTHER"
+      a_consent_reconsent_reason_other :string
+      dependency :rule => "A"
+      condition_A :q_consent_reconsent_reason_code, "==", :a_neg_5
 
     q_sample_consent_given_1 "Consent to collect environmental samples",
       :pick => :one,

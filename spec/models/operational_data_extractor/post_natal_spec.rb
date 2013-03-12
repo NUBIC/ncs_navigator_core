@@ -44,7 +44,6 @@ describe OperationalDataExtractor::PostNatal do
 
     before(:each) do
       @person = Factory(:person)
-      @responses_set = Factory(:response_set, :person => @person)
       @participant = Factory(:participant)
       @participant.person = @person
       @survey = create_six_month_mother_int_mother_detail_survey_with_operational_data
@@ -71,7 +70,6 @@ describe OperationalDataExtractor::PostNatal do
 
     before(:each) do
       @person = Factory(:person)
-      @responses_set = Factory(:response_set, :person => @person)
       @participant = Factory(:participant)
       @participant.person = @person
       @survey = create_six_month_mother_int_mother_detail_survey_with_operational_data
@@ -107,7 +105,6 @@ describe OperationalDataExtractor::PostNatal do
       @ppr_grandparent = NcsCode.for_list_name_and_local_code("PERSON_PARTCPNT_RELTNSHP_CL1", 10)
 
       @person = Factory(:person)
-      @responses_set = Factory(:response_set, :person => @person)
       @participant = Factory(:participant)
       @participant.person = @person
       @participant.save!

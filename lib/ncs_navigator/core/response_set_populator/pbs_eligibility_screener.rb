@@ -15,12 +15,6 @@ module NcsNavigator::Core::ResponseSetPopulator
     end
 
     ##
-    # Set values in the most recent response set for the instrument
-    def populate
-      prepopulate_response_set(instrument.response_sets.last)
-    end
-
-    ##
     # Creates responses for questions with reference identifiers
     # that are known values and should be prepopulated
     # @param [ResponseSet]

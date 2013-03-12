@@ -62,7 +62,7 @@ class Participant < ActiveRecord::Base
   has_many :participant_person_links, :order => 'participant_person_links.created_at'
   has_many :people, :through => :participant_person_links
   has_many :participant_staff_relationships
-  has_many :participant_consents
+  has_many :participant_consents, :order => "consent_date DESC"
   has_many :participant_consent_samples
   has_many :events
   has_many :response_sets, :inverse_of => :participant
@@ -641,28 +641,22 @@ class Participant < ActiveRecord::Base
   # @return [Boolean]
   def consented?(consent_type = nil)
     return false if participant_consents.empty?
-    if consent_type.nil?
-      consent_type = low_intensity? ? ParticipantConsent.low_intensity_consent_type_code : ParticipantConsent.general_consent_type_code
-    end
-    consents = consents_for_type(consent_type)
-    consents.select { |c| c.consent_given_code == 1 }.size > 0 && !withdrawn?
+    consents = consents_for_type(determine_consent_type(consent_type))
+    consents.select { |c| c.consented? }.size > 0 && !withdrawn?(consent_type)
   end
 
-  def consents_for_type(consent_type)
-    participant_consents.where(
-      "consent_type_code = ? OR consent_form_type_code = ?",
-        consent_type.local_code, consent_type.local_code).all
+  ##
+  # Returns true if a participant_consent record exists for the given consent type
+  # and consent_given_code is true and consent_withdraw_code is not true.
+  # If no consent type is given, then check if any consent record exists
+  # @param [NcsCode]
+  # @return [Boolean]
+  def reconsented?(consent_type = nil)
+    return false if participant_consents.empty?
+    consents = consents_for_type(determine_consent_type(consent_type))
+    consents.select { |c| c.reconsented? }.size > 0 && !withdrawn?(consent_type)
   end
 
-  def consent_for_type(consent_type)
-    current_consent = nil
-    cs = consents_for_type(consent_type)
-    current_consent = cs.first
-    if cs.size > 1
-      cs.each { |c| current_consent = c if c.phase_two? }
-    end
-    current_consent
-  end
 
   ##
   # Returns true if a participant_consent record exists for the given consent type
@@ -673,7 +667,41 @@ class Participant < ActiveRecord::Base
   def withdrawn?(consent_type = nil)
     return false if participant_consents.empty?
     consents = consent_type.nil? ? participant_consents : consents_for_type(consent_type)
-    consents.select { |c| c.consent_withdraw_code == 1 }.size > 0
+    consents.select { |c| c.withdrawn? }.size > 0
+  end
+
+  def determine_consent_type(consent_type)
+    if consent_type.nil?
+      consent_type = low_intensity? ? ParticipantConsent.low_intensity_consent_type_code : ParticipantConsent.general_consent_type_code
+    end
+    consent_type
+  end
+  private :determine_consent_type
+
+  ##
+  # Gets all ParticipantConsent records matching the given consent type
+  # ordered by consent date
+  # @param consent_type [NcsCode] The CONSENT_TYPE_CL* from the MDES Code List
+  # @return [Array<ParticipantConsent>]
+  def consents_for_type(consent_type)
+    participant_consents.where(
+      "consent_type_code = ? OR consent_form_type_code = ?",
+        consent_type.local_code, consent_type.local_code).order("consent_date").all
+  end
+
+  ##
+  # Gets the most recent ParticipantConsent record that matches
+  # the given consent type
+  # @param consent_type [NcsCode] The CONSENT_TYPE_CL* from the MDES Code List
+  # @return [ParticipantConsent]
+  def consent_for_type(consent_type)
+    current_consent = nil
+    cs = consents_for_type(consent_type)
+    current_consent = cs.first
+    if cs.size > 1
+      cs.each { |c| current_consent = c if c.phase_two? }
+    end
+    current_consent
   end
 
   ##
@@ -692,14 +720,12 @@ class Participant < ActiveRecord::Base
 
   ##
   # Unenrolling does the following:
-  # 1. Withdraws the participant from the Study
-  # 2. Sets the participant enroll status to No
-  # 3. Cancels all scheduled activities in PSC
-  # 4. Closes or Deletes all pending events
+  # 1. Sets the participant enroll status to No
+  # 2. Cancels all scheduled activities in PSC
+  # 3. Closes or Deletes all pending events
   # @param [PatientStudyCalendar]
   def unenroll(psc, reason = "Participant has been un-enrolled from the study.")
     self.enrollment_status_comment = reason
-    self.participant_consents.each { |c| c.withdraw! if c.consented? }
     self.enroll_status = NcsCode.for_attribute_name_and_local_code(:enroll_status_code, NcsCode::NO)
     self.pending_events.each { |e| e.cancel_and_close_or_delete!(psc, reason) }
     self.being_followed = false
