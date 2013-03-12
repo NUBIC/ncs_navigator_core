@@ -167,7 +167,7 @@ module NcsNavigator::Core::Mustache
     # BABY_NAME_LI_PREFIX = "BIRTH_VISIT_LI_BABY_NAME"
     # BIRTH_LI_PREFIX     = "BIRTH_VISIT_LI"
 
-    def multiple_birth_prefix
+    def multiple_release_birth_visit_prefix
       case @response_set.survey.title
       when /_PregVisit1_(.)*2/
         OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_2_INTERVIEW_PREFIX
@@ -208,7 +208,7 @@ module NcsNavigator::Core::Mustache
     ##
     # true if response to MULTIPLE is no or not yet responded
     def single_birth?
-      q = "#{multiple_birth_prefix}.#{multiple_identifier}"
+      q = "#{multiple_release_birth_visit_prefix}.#{multiple_identifier}"
       multiple = response_for(q).to_s.downcase
       multiple.blank? || (multiple.eql?("no") || multiple.eql?("singleton"))
     end
@@ -508,7 +508,7 @@ module NcsNavigator::Core::Mustache
     # IF BIRTH_DELIVER = 2, DISPLAY “BIRTHING CENTER” THROUGHOUT THE INSTRUMENT.
     # IF BIRTH_DELIVER = -5, DISPLAY “OTHER PLACE” THROUGHOUT THE INSTRUMENT.
     def birthing_place
-      result = response_for("BIRTH_VISIT_3.BIRTH_DELIVER")
+      result = response_for("#{multiple_release_birth_visit_prefix}.BIRTH_DELIVER")
       result.blank? ? result : result.downcase.gsub(/some\s+/i, '')
     end
 
@@ -553,22 +553,12 @@ module NcsNavigator::Core::Mustache
     # • IF MULTIPLE = 1 AND RELEASE = 2, DISPLAY “your babies leave”.
     # • IF MULTIPLE = 1, DISPLAY “they”.
     def do_when_will_live_with_you
-      result = "[Does [C_FNAME/your baby]]/[Do your babies]/[When [C_FNAME/your babies] leave the]/[When your baby leaves the] [hospital/ birthing center/ other place] will [he/she/they] live with you?",
+      result = "[Does [C_FNAME/your baby]]/[Do your babies]/[When [C_FNAME/your babies] leave the]/[When your baby leaves the] [hospital/ birthing center/ other place] will [he/she/they] live with you?"
 
-      surveyid = case @response_set.survey.title
-                 when "INS_QUE_Birth_INT_LI_M3.1_V2.0_PART_TWO"
-                   "BIRTH_VISIT_LI_2"
-                 when "INS_QUE_Birth_INT_M3.2_V3.1_PART_TWO"
-                   "BIRTH_VISIT_4"
-                 when "INS_QUE_Birth_INT_EHPBHIPBS_M3.0_V3.0"
-                   "BIRTH_VISIT_3"
-                 else
-                   nil
-                 end
-      return result unless surveyid
+      return result unless multiple_release_birth_visit_prefix
 
-      released = response_for("#{surveyid}.RELEASE") #a_1 "YES" a_2 "NO"
-      birth_deliver = response_for("#{surveyid}.BIRTH_DELIVER") #a_1 "HOSPITAL" a_2 "BIRTHING CENTER" a_3 "AT HOME" a_neg_5 "SOME OTHER PLACE"
+      released = response_for("#{multiple_release_birth_visit_prefix}.RELEASE") #a_1 "YES" a_2 "NO"
+      birth_deliver = response_for("#{multiple_release_birth_visit_prefix}.BIRTH_DELIVER") #a_1 "HOSPITAL" a_2 "BIRTHING CENTER" a_3 "AT HOME" a_neg_5 "SOME OTHER PLACE"
       if single_birth? #MULTIPLE = 2
         if ((released.upcase.eql? "YES") || (birth_deliver.upcase.eql? "AT HOME"))
           result = "Does " + child_first_name_through_participant("your baby") + " live with you?"
