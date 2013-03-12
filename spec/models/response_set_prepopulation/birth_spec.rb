@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 require 'spec_helper'
 
 require File.expand_path('../a_survey_title_acceptor', __FILE__)
