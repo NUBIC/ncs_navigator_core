@@ -13,8 +13,10 @@ module TestSurveys
   ##
   # Starts an Instrument for a {Person} person, {Participant} participant and {Survey} survey,
   # saves it, and returns the created ResponseSet along with the Instrument.
-  def prepare_instrument(person, participant, survey, mode = Instrument.capi)
-    instr = person.start_instrument(survey, participant, mode)
+  def prepare_instrument(person, participant, survey, mode = Instrument.capi, event = nil)
+    instr = person.build_instrument(survey, mode)
+    instr.event = event 
+    person.start_instrument(survey, participant, mode, instr)
     instr.save!
 
     instr.response_sets.first.responses.clear
