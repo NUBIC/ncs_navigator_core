@@ -29,7 +29,7 @@ class Response < ActiveRecord::Base
   include NcsNavigator::Core::Surveyor::ResponseValue
   include Surveyor::Models::ResponseMethods
 
-  default_scope reorder().includes(:answer, :question)
+  default_scope includes(:answer, :question)
 
   def self.for_merge
     includes(:answer, :question, :response_set)

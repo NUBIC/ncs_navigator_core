@@ -41,7 +41,11 @@ gem 'jquery-rails'
 
 gem 'ncs_mdes', '>= 0.11.0'
 # If you change surveyor, change the instruments project also
-gem 'surveyor', '~> 1.2.0'
+# gem 'surveyor', '~> 1.2.0'
+gem 'surveyor',
+  :git => 'git://github.com/NUBIC/surveyor.git',
+  :branch => 'ncs'
+
 gem 'psc'
 gem 'ncs_navigator_configuration', :git => 'https://github.com/NUBIC/ncs_navigator_configuration.git'
 gem 'sidekiq'
