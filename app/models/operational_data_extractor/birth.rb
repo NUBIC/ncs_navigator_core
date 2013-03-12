@@ -13,6 +13,8 @@ module OperationalDataExtractor
 
     BIRTH_VISIT_BABY_RACE_NEW_3_PREFIX = "BIRTH_VISIT_BABY_RACE_NEW_3"
     BIRTH_VISIT_BABY_RACE_1_3_PREFIX   = "BIRTH_VISIT_BABY_RACE_1_3"
+    BIRTH_VISIT_BABY_RACE_2_3_PREFIX   = "BIRTH_VISIT_BABY_RACE_2_3"
+    BIRTH_VISIT_BABY_RACE_3_3_PREFIX   = "BIRTH_VISIT_BABY_RACE_3_3"
 
     CHILD_PERSON_MAP = {
       "#{BABY_NAME_PREFIX}.BABY_FNAME"        => "first_name",
@@ -110,7 +112,9 @@ module OperationalDataExtractor
       "#{BIRTH_VISIT_BABY_RACE_NEW_3_PREFIX}.BABY_RACE_NEW"     => "race_code",
       "#{BIRTH_VISIT_BABY_RACE_NEW_3_PREFIX}.BABY_RACE_NEW_OTH" => "race_other",
       "#{BIRTH_VISIT_BABY_RACE_1_3_PREFIX}.BABY_RACE_1"         => "race_code",
-      "#{BIRTH_VISIT_BABY_RACE_1_3_PREFIX}.BABY_RACE_1_OTH"     => "race_other"
+      "#{BIRTH_VISIT_BABY_RACE_1_3_PREFIX}.BABY_RACE_1_OTH"     => "race_other",
+      "#{BIRTH_VISIT_BABY_RACE_2_3_PREFIX}.BABY_RACE_2"         => "race_code",
+      "#{BIRTH_VISIT_BABY_RACE_3_3_PREFIX}.BABY_RACE_3"         => "race_code"
     }
 
     def initialize(response_set)

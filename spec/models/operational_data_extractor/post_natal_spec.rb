@@ -182,7 +182,7 @@ describe OperationalDataExtractor::PostNatal do
         OperationalDataExtractor::PostNatal.new(@response_set).extract_data
       end
 
-      it "extracts two standard racial data" do
+      it "extracts three standard racial data" do
         @person.races.should have(2).races
       end
 
