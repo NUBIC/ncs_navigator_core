@@ -4,9 +4,29 @@ require 'spec_helper'
 
 require File.expand_path('../a_survey_title_acceptor', __FILE__)
 
-module ResponseSetPrepopulation
+module ResponseSetPrepopulation  
   describe ChildAndAdhoc do
     include SurveyCompletion
+
+    it_should_behave_like 'a survey title acceptor', '_PM_Child' do
+      let(:populator) { ChildAndAdhoc }
+    end
+
+    it_should_behave_like 'a survey title acceptor', '_BIO_Child' do
+      let(:populator) { ChildAndAdhoc }
+    end
+
+    it_should_behave_like 'a survey title acceptor', '_Father.*M2.1' do
+      let(:populator) { ChildAndAdhoc }
+    end
+
+    it_should_behave_like 'a survey title acceptor', '_InternetUseContact' do
+      let(:populator) { ChildAndAdhoc }
+    end
+
+    it_should_behave_like 'a survey title acceptor', '_MultiModeVisitInfo' do
+      let(:populator) { ChildAndAdhoc }
+    end
 
     def get_response(response_set, reference_identifier)
       response = response_set.responses.select { |r|
