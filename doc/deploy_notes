@@ -34,6 +34,8 @@
 [PSC]
 
 ** Update the PSC template to latest amended version **
+   (You may need to checkout the deploy branch locally to get the correct version
+    of the PSC Template if you have been developing on it locally.)
 
 1. Go to PSC url (https://deploy_site-navcal.nubic.northwestern.edu/)
 2. Click on Calendars tab
@@ -46,6 +48,12 @@
 
 
 !!!!IMPORTANT!!!! - If you are migrating to a new MDES version, do this here before running the cancellation scripts
+
+  $ ssh deploy_site
+
+  $ cd /var/www/apps/ncs_navigator_core/current/
+
+  $ bundle exec rake rake mdes:version:migrate[to_version]
 
 
 ** If template is updated with changes to existing activities, do the following: **
