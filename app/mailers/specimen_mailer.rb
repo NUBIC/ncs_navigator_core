@@ -1,14 +1,9 @@
 # -*- coding: utf-8 -*-
 class SpecimenMailer < ActionMailer::Base
-
   def manifest_email(params)
-    @recipients = "n-shurupova@northwestern.edu"
-    #hardcoded stuff is name, emaill address from- and to-
-    from_name = "Testing Manifest"
-    from_email = "n-shurupova@northwestern.edu"
+    from_email = params[:from_email]
+    to_email = NcsNavigatorCore.configuration.manifest_email_sent_to
 
-    to_name = "Nataliya Shurupova"
-    to_email = "n-shurupova@northwestern.edu"
     @shipper_id = params[:shipper_id]
     @psu_code = params[:psu_code]
     @specimen_processing_shipping_center_id = params[:specimen_processing_shipping_center_id]
@@ -24,14 +19,11 @@ class SpecimenMailer < ActionMailer::Base
     @total_number_of_containers = params[:total_number_of_containers]
     @total_number_of_samples = params[:total_number_of_samples]
 
-    @from = from_name + " <" + from_email + ">"
-
     # NCS-(BIO or ENV)-PSU ID-Carrier-Tracking Number
     @subject = "NCS-" + params[:kind] + "-" + @psu_code.to_s + "-" + @carrier + "-" + @shipment_tracking_number
-    @name = to_email
 
     content_type "text/html"
-    mail(:to => to_email, :subject => @subject, :from => @from) do |format|
+    mail(:to => to_email, :subject => @subject, :from => from_email) do |format|
       format.text
       format.html
     end

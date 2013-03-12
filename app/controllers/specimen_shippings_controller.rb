@@ -71,6 +71,7 @@ class SpecimenShippingsController < ApplicationController
   
   def extract_params(specimen_shipping)
     params
+    params[:from_email] = NcsNavigatorCore.configuration.specimen_processing_shipping_center_email
     params[:shipper_id] = specimen_shipping.shipper_id
     params[:specimen_processing_shipping_center_id] = specimen_shipping.specimen_processing_shipping_center.specimen_processing_shipping_center_id
     params[:sample_receipt_shipping_center_id] = ""
