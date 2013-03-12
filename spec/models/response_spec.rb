@@ -90,67 +90,6 @@ describe Response do
     end
   end
 
-  describe '#value=' do
-    describe 'given a String' do
-      let(:val) { 'foo' }
-
-      before do
-        subject.value = val
-      end
-
-      describe 'given an ISO8601 datetime' do
-        let(:val) { '2012-12-04T16:51-0600' }
-
-        it 'sets #datetime_value' do
-          subject.datetime_value.should == Time.parse('2012-12-04T16:51:00-0600')
-        end
-      end
-
-      describe 'given a date in the form YYYY-MM-DD' do
-        let(:val) { '2012-12-04' }
-
-        it 'roundtrips to JSON' do
-          subject.answer = Factory(:answer, :response_class => 'date')
-
-          subject.json_value.should == '2012-12-04'
-        end
-      end
-
-      describe 'given a time in the form HH:MM' do
-        let(:val) { '12:00' }
-
-        it 'roundtrips to JSON' do
-          subject.answer = Factory(:answer, :response_class => 'time')
-
-          subject.json_value.should == '12:00'
-        end
-      end
-
-      it 'sets #string_value' do
-        subject.string_value.should == val
-      end
-    end
-
-    describe 'given an Integer' do
-      let(:val) { 10 }
-
-      it 'sets #integer_value' do
-        subject.value = val
-
-        subject.integer_value.should == val
-      end
-    end
-
-    describe 'given a Float' do
-      let(:val) { 3.14 }
-
-      it 'sets #float_value' do
-        subject.value = val
-        subject.float_value.should == val
-      end
-    end
-  end
-
   describe '#reportable_value' do
     let(:questions_dsl) {
       <<-DSL
