@@ -67,6 +67,11 @@ module ResponseSetPrepopulation
       event
     end
 
+    def run_populator(event = nil)
+      init_instrument_and_response_set(event)
+      populator.run
+    end
+
     let(:populator) { ChildAndAdhoc.new(@response_set) }
 
     context "for ad-hoc prepopulators"
@@ -80,8 +85,7 @@ module ResponseSetPrepopulation
         it "should be TRUE if current event is birth" do
           event = Factory(:event, :event_type_code => Event::birth_code,
                           :participant => @participant)
-          init_instrument_and_response_set(event)
-          populator.run
+          run_populator(event)
           get_response_as_string(@response_set,
                   "prepopulate_is_birth_or_subsequent_event").should == "TRUE"
         end
@@ -89,8 +93,7 @@ module ResponseSetPrepopulation
         it "should be FALSE if current event is not birth" do
           event = Factory(:event, :event_type_code => Event::father_visit_code,
                           :participant => @participant)
-          init_instrument_and_response_set(event)
-          populator.run
+          run_populator(event)
           get_response_as_string(@response_set,
                   "prepopulate_is_birth_or_subsequent_event").should == "FALSE"
         end
@@ -105,31 +108,27 @@ module ResponseSetPrepopulation
 
         it "should be TRUE if 9-month event was completed" do
           event = make_contact(Event::nine_month_visit_code)
-          init_instrument_and_response_set(event)
-          populator.run
+          run_populator(event)
           get_response_as_string(@response_set,
                   "prepopulated_is_9_months_completed").should == "TRUE"
         end
 
         it "should be FALSE if 9-month event was started but not completed" do
           event = make_contact(Event::nine_month_visit_code, event_complete = false)
-          init_instrument_and_response_set(event)
-          populator.run
+          run_populator(event)
           get_response_as_string(@response_set,
                   "prepopulated_is_9_months_completed").should == "FALSE"
         end
 
         it "should be FALSE if other events but not 9-month were completed" do
           event = make_contact(Event::father_visit_saq_code) # Not 9-month
-          init_instrument_and_response_set(event)
-          populator.run
+          run_populator(event)
           get_response_as_string(@response_set,
                   "prepopulated_is_9_months_completed").should == "FALSE"
         end
 
         it "should be FALSE if no events were completed" do
-          init_instrument_and_response_set(nil)
-          populator.run
+          run_populator
           get_response_as_string(@response_set,
                   "prepopulated_is_9_months_completed").should == "FALSE"
         end
@@ -146,31 +145,27 @@ module ResponseSetPrepopulation
 
         it "should be TRUE if 3-month event was completed" do
           current = make_contact(Event::three_month_visit_code)
-          init_instrument_and_response_set(current)
-          populator.run
+          run_populator(current)
           get_response_as_string(@response_set,
                   "prepopulated_is_3_months_completed").should == "TRUE"
         end
 
         it "should be FALSE if 3-month event was started but not completed" do
           current = make_contact(Event::three_month_visit_code, event_complete = false)
-          init_instrument_and_response_set(current)
-          populator.run
+          run_populator(current)
           get_response_as_string(@response_set,
                   "prepopulated_is_3_months_completed").should == "FALSE"
         end
 
         it "should be FALSE if other events but not 3-month were completed" do
           current = make_contact(Event::father_visit_saq_code) # Not 3-month
-          init_instrument_and_response_set(current)
-          populator.run
+          run_populator(current)
           get_response_as_string(@response_set,
                   "prepopulated_is_3_months_completed").should == "FALSE"
         end
 
         it "should be FALSE if no events were completed" do
-          init_instrument_and_response_set(nil)
-          populator.run
+          run_populator
           get_response_as_string(@response_set,
                   "prepopulated_is_3_months_completed").should == "FALSE"
         end
@@ -188,8 +183,7 @@ module ResponseSetPrepopulation
         it "should be TRUE if a completed father interview took place before" do
           # Previous father event
           make_contact(Event::father_visit_code)
-          init_instrument_and_response_set(@event)
-          populator.run
+          run_populator(@event)
           get_response_as_string(@response_set,
                   "prepopulated_is_subsequent_father_interview"
                 ).should == "TRUE"
@@ -198,8 +192,7 @@ module ResponseSetPrepopulation
         it "should be TRUE if a incomplete father interview took place before" do
           # Previous father event
           make_contact(Event::father_visit_saq_code, event_complete = false)
-          init_instrument_and_response_set(@event)
-          populator.run
+          run_populator(@event)
           get_response_as_string(@response_set,
                   "prepopulated_is_subsequent_father_interview"
                 ).should == "TRUE"
@@ -207,16 +200,14 @@ module ResponseSetPrepopulation
 
         it "should be TRUE if father interview never took place before" do
           current = make_contact(Event::three_month_visit_code) # Not father
-          init_instrument_and_response_set(@event)
-          populator.run
+          run_populator(@event)
           get_response_as_string(@response_set,
                   "prepopulated_is_subsequent_father_interview"
                 ).should == "FALSE"
         end
 
         it "should be FALSE if no interviews ever took place before" do
-          init_instrument_and_response_set(@event)
-          populator.run
+          run_populator(@event)
           get_response_as_string(@response_set,
                   "prepopulated_is_subsequent_father_interview"
                 ).should == "FALSE"
@@ -231,46 +222,40 @@ module ResponseSetPrepopulation
         it "should be '12 MONTH' if EVENT_TYPE = 12_months" do
           event = Factory(:event, :event_type_code =>
                                               Event::twelve_month_visit_code)
-          init_instrument_and_response_set(event)
-          populator.run
+          run_populator(event)
           assert_match(@response_set, "prepopulated_event_type", "12 MONTH") 
         end
 
         it "should be 'PV1 or PV2' if EVENT_TYPE = pv1" do
           event = Factory(:event, :event_type_code =>
                                               Event::pregnancy_visit_1_code)
-          init_instrument_and_response_set(event)
-          populator.run
+          run_populator(event)
           assert_match(@response_set, "prepopulated_event_type", "PV1 or PV2") 
         end
         it "should be 'PV1 or PV2' if EVENT_TYPE = pv1 SAQ" do
           event = Factory(:event, :event_type_code =>
                                               Event::pregnancy_visit_1_saq_code)
-          init_instrument_and_response_set(event)
-          populator.run
+          run_populator(event)
           assert_match(@response_set, "prepopulated_event_type", "PV1 or PV2") 
         end
 
         it "should be 'PV1 or PV2' if EVENT_TYPE = pv2" do
           event = Factory(:event, :event_type_code =>
                                               Event::pregnancy_visit_2_code)
-          init_instrument_and_response_set(event)
-          populator.run
+          run_populator(event)
           assert_match(@response_set, "prepopulated_event_type", "PV1 or PV2") 
         end
         it "should be 'PV1 or PV2' if EVENT_TYPE = pv2 SQA" do
           event = Factory(:event, :event_type_code =>
                                               Event::pregnancy_visit_2_saq_code)
-          init_instrument_and_response_set(event)
-          populator.run
+          run_populator(event)
           assert_match(@response_set, "prepopulated_event_type", "PV1 or PV2") 
         end 
 
         it "should be nil if EVENT_TYPE is not 12-month, pv1 or pv2" do
           event = Factory(:event, :event_type_code =>
                                               Event::pregnancy_screener_code)
-          init_instrument_and_response_set(event)
-          populator.run
+          run_populator(event)
           assert_match(@response_set, "prepopulated_event_type", "") 
         end 
       end
@@ -284,16 +269,14 @@ module ResponseSetPrepopulation
         it "should be TRUE if EVENT_TYPE = 12_months" do
           event = Factory(:event, :event_type_code =>
                                               Event::twelve_month_visit_code)
-          init_instrument_and_response_set(event)
-          populator.run
+          run_populator(event)
           assert_match(@response_set, "prepopulated_is_12_month_visit", "TRUE") 
         end
 
         it "should be FALSE if EVENT_TYPE = 12_months" do
           event = Factory(:event, :event_type_code =>
                                 Event::pregnancy_screener_code) # Not 12 Months
-          init_instrument_and_response_set(event)
-          populator.run
+          run_populator(event)
           assert_match(@response_set, "prepopulated_is_12_month_visit", "FALSE") 
         end
       end
@@ -306,16 +289,14 @@ module ResponseSetPrepopulation
         it "should be TRUE if EVENT_TYPE = 6_months" do
           event = Factory(:event, :event_type_code =>
                                               Event::six_month_visit_code)
-          init_instrument_and_response_set(event)
-          populator.run
+          run_populator(event)
           assert_match(@response_set, "prepopulated_is_6_month_event", "TRUE") 
         end
 
         it "should be FALSE if EVENT_TYPE = 6_months" do
           event = Factory(:event, :event_type_code =>
                                 Event::pregnancy_screener_code) # Not 6 Months
-          init_instrument_and_response_set(event)
-          populator.run
+          run_populator(event)
           assert_match(@response_set, "prepopulated_is_6_month_event", "FALSE") 
         end
       end
@@ -344,8 +325,7 @@ module ResponseSetPrepopulation
 
         it "should set up previously collected AN_MID_UPPER_ARM_CIRC" do
           take_anthropo_survey("18.5")
-          init_instrument_and_response_set(nil)          
-          populator.run
+          run_populator
           assert_multiple_match(@response_set, {
               "prepopulated_should_show_upper_arm_length" => "TRUE",
               "BP_MID_UPPER_ARM_CIRC" => "18.5"
@@ -356,15 +336,13 @@ module ResponseSetPrepopulation
 
         it "should be FALSE if AN_MID_UPPER_ARM_CIRC was not collected" do
           take_anthropo_survey(nil)
-          init_instrument_and_response_set(nil)          
-          populator.run
+          run_populator
           assert_match(@response_set,
               "prepopulated_should_show_upper_arm_length", "FALSE")
         end
 
         it "should be FALSE if anthropometry survey wasn't completed" do
-          init_instrument_and_response_set(nil)          
-          populator.run
+          run_populator
           assert_match(@response_set,
               "prepopulated_should_show_upper_arm_length", "FALSE")
         end
