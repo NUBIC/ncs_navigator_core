@@ -221,9 +221,16 @@ class ScheduledActivity
     result = ScheduledActivity.new
     self.instance_variable_names.each do |v|
       key = v.sub('@','')
+      next if should_skip_copy(key)
       result.send("#{key}=", self.send("#{key}"))
     end
     result
+  end
+
+  ##
+  # Skip copying these instance_variable_names
+  def should_skip_copy(key)
+    key == "valid_setters"
   end
 
   ##
