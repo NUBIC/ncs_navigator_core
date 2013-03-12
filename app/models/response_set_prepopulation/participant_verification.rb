@@ -1,5 +1,5 @@
 module ResponseSetPrepopulation
-  class ParticipantVerification
+  class ParticipantVerification < NonInterview
   	def reference_identifiers
       [
         "prepopulated_mode_of_contact",
