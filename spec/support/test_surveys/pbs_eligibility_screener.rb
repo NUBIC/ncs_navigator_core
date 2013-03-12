@@ -77,11 +77,22 @@ module PbsEligibilityScreener
     a = Factory(:answer, :question_id => q.id, :text => "Black or African American", :response_class => "answer", :reference_identifier => "2")
     a = Factory(:answer, :question_id => q.id, :text => "Other", :response_class => "answer", :reference_identifier => "neg_5")
     a = Factory(:answer, :question_id => q.id, :text => "Asian", :response_class => "answer", :reference_identifier => "4")
+    a = Factory(:answer, :question_id => q.id, :text => "Native Hawaiian or other Pacific Islander", :response_class => "answer", :reference_identifier => "5")
 
     # Race One Other
     q = Factory(:question, :reference_identifier => "RACE_1_OTH", :data_export_identifier => "PBS_ELIG_SCREENER_RACE_1.RACE_1_OTH", :survey_section_id => survey_section.id)
     a = Factory(:answer, :question_id => q.id, :text => "Korean", :response_class => "string")
     a = Factory(:answer, :question_id => q.id, :text => "Aborigine", :response_class => "string")
+
+    # Race Two
+    q = Factory(:question, :reference_identifier => "RACE_2", :data_export_identifier => "PBS_ELIG_SCREENER_RACE_2.RACE_2", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "Filipino", :response_class => "answer", :reference_identifier => "3" )
+    a = Factory(:answer, :question_id => q.id, :text => "Asian Indian", :response_class => "answer", :reference_identifier => "1")
+
+    # Race Three
+    q = Factory(:question, :reference_identifier => "RACE_3", :data_export_identifier => "PBS_ELIG_SCREENER_RACE_3.RACE_3", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "Samoan", :response_class => "answer", :reference_identifier => "3")
+    a = Factory(:answer, :question_id => q.id, :text => "Native Hawaiian", :response_class => "answer", :reference_identifier => "1")
 
     survey
   end
