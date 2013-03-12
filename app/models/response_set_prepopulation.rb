@@ -15,6 +15,7 @@ module ResponseSetPrepopulation
 
   POPULATORS = [
     Birth,
+    ChildAndAdhoc,
     LowIntensity,
     ParticipantVerification,
     PbsEligibilityScreener,
