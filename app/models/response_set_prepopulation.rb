@@ -17,6 +17,7 @@ module ResponseSetPrepopulation
     Birth,
     ChildAndAdhoc,
     LowIntensity,
+    NonInterview,
     ParticipantVerification,
     PbsEligibilityScreener,
     PregnancyScreener,
