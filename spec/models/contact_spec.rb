@@ -40,8 +40,6 @@ require File.expand_path('../../shared/models/a_time_bounded_task', __FILE__)
 require File.expand_path('../../shared/models/an_optimistically_locked_record', __FILE__)
 
 describe Contact do
-  include SurveyCompletion
-
   it "should create a new instance given valid attributes" do
     c = Factory(:contact)
     c.should_not be_nil
