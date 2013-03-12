@@ -8,10 +8,6 @@ module NcsNavigator::Core::Mustache
   describe InstrumentContext do
     include SurveyCompletion
 
-    it "should be a child of Mustache" do
-      InstrumentContext.ancestors.should include(Mustache)
-    end
-
     let(:baby_fname) { "#{OperationalDataExtractor::Birth::BABY_NAME_PREFIX}.BABY_FNAME" }
     let(:baby_sex)   { "#{OperationalDataExtractor::Birth::BABY_NAME_PREFIX}.BABY_SEX" }
     let(:multiple)   { "#{OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX}.MULTIPLE" }
