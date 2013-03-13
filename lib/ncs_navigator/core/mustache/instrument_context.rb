@@ -4,7 +4,6 @@
 require 'ncs_navigator/core/mustache'
 require 'mustache'
 
-include ApplicationHelper
 
 module NcsNavigator::Core::Mustache
 
@@ -240,6 +239,10 @@ module NcsNavigator::Core::Mustache
 
     def has_baby_have_babies
       single_birth? ? "HAS THE BABY" : "HAVE THE BABIES"
+    end
+
+    def mdes_version_is_after?(version = 3.0)
+      NcsNavigatorCore.mdes.version.to_f >= version
     end
 
     # {B_NAME/your baby}
