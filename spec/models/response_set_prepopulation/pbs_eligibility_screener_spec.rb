@@ -9,16 +9,7 @@ module ResponseSetPrepopulation
     end
 
     context "with pbs eligibility screener instrument" do
-			
-			def init_instrument_and_response_set(event = nil)
-        @survey = create_pbs_eligibility_screener_survey_with_prepopulated_questions
-        @response_set, @instrument = prepare_instrument(@person, @participant, @survey)
-        # sanity check that there are no responses in response set
-        @response_set.responses.should be_empty
-			end
-
-			def run_populator(event = nil, mode = nil)
-	      init_instrument_and_response_set(event)
+			def run_populator(mode = nil)
 	      populator.mode = mode
 	      populator.run
 	    end
@@ -29,6 +20,11 @@ module ResponseSetPrepopulation
         @person = Factory(:person)
         @participant = Factory(:participant)
         @ppl = Factory(:participant_person_link, :participant => @participant, :person => @person, :relationship_code => 1)
+
+        @survey = create_pbs_eligibility_screener_survey_with_prepopulated_questions
+        @response_set, @instrument = prepare_instrument(@person, @participant, @survey)
+        # sanity check that there are no responses in response set
+        @response_set.responses.should be_empty
       end
 
       describe "contact type" do
@@ -42,7 +38,7 @@ module ResponseSetPrepopulation
 
         describe "telephone" do
           it "sets prepopulated_mode_of_contact to CATI" do
-            run_populator(nil, Instrument.cati)
+            run_populator(Instrument.cati)
             assert_response_value(@response_set, "prepopulated_mode_of_contact", "CATI")
           end
         end
