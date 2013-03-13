@@ -1,4 +1,4 @@
-- title "New Sample Receipt Confirmation"
+- page_title "New Sample Receipt Confirmation"
 
 = form_for @sample_receipt_confirmation do |f|
   %b
@@ -27,11 +27,11 @@
   %br
   %b
     = "Shipment Receipt Confirmed Code:"
-  = NcsCode.for_attribute_name_and_local_code(:shipment_receipt_confirmed_code, @sample_receipt_confirmation.shipment_receipt_confirmed_code)    
+  = NcsCode.for_attribute_name_and_local_code(:shipment_receipt_confirmed_code, @sample_receipt_confirmation.shipment_receipt_confirmed_code)
   %br
   %b
     = "Shipment Condition Code:"
-  = NcsCode.for_attribute_name_and_local_code(:shipment_condition_code, @sample_receipt_confirmation.shipment_condition_code)    
+  = NcsCode.for_attribute_name_and_local_code(:shipment_condition_code, @sample_receipt_confirmation.shipment_condition_code)
   %br
   %b
     = "Shipment Damaged Reason:"
@@ -43,7 +43,7 @@
   %br
   %b
     = "Sample Condition Code:"
-  = NcsCode.for_attribute_name_and_local_code(:sample_condition_code, @sample_receipt_confirmation.sample_condition_code)    
+  = NcsCode.for_attribute_name_and_local_code(:sample_condition_code, @sample_receipt_confirmation.sample_condition_code)
   %br
   %b
     = "Shipment Received By:"

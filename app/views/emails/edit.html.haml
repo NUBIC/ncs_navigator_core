@@ -1,6 +1,6 @@
 - lbl = "Edit Email"
 - lbl += " for #{@person}" if @person
-- title lbl
+- page_title lbl
 
 .page_section
   = form_for([@person, @email], :html => {:autocomplete => "off"}) do |f|
