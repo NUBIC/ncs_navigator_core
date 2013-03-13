@@ -7,9 +7,9 @@ module ApplicationHelper
     content_for(:head) { javascript_include_tag(*files) }
   end
 
-  def title(page_title, show_title = true)
+  def page_title(page_title, show_title = true)
     @show_title = show_title
-    content_for(:title) { page_title.to_s }
+    content_for(:page_title) { page_title.to_s }
   end
 
   def show_title?
@@ -117,10 +117,6 @@ module ApplicationHelper
   def sample_extenstion(value)
     dash = value.index("-") + 1
     value[dash, value.length]
-  end
-
-  def continuable?(event)
-    event.continuable?
   end
 
 ## Displaying the Staff name that is associated with the Participant(Initiated the Contact)

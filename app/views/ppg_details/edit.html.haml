@@ -1,6 +1,6 @@
 - lbl = "Edit Due Date"
 - lbl += " for #{@person}" if @person
-- title lbl
+- page_title lbl
 
 .page_section
   = form_for(@ppg_detail, :url => participant_ppg_detail_path(@participant.id, @ppg_detail.id), :html => {:autocomplete => "off", :method => :put}) do |f|

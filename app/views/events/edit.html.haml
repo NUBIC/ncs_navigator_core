@@ -1,4 +1,4 @@
-- title @close ? "Close Event" : "Edit Event"
+- page_title @close ? "Close Event" : "Edit Event"
 
 - participant = @event.participant
 - person = participant.try(:person)
@@ -22,7 +22,7 @@
 
     %p
       = f.submit "Submit", :disable_with => 'Submitting...'
-      - if person && @contact_link && continuable?(@event) && !participant.ineligible?
+      - if show_continue_action(person, @contact_link, @event, participant)
         %p
           = "- OR -"
         %p
