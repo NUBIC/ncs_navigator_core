@@ -8,23 +8,7 @@ module ResponseSetPrepopulation
   describe ChildAndAdhoc do
     include SurveyCompletion
 
-    it_should_behave_like 'a survey title acceptor', '_PM_Child' do
-      let(:populator) { ChildAndAdhoc }
-    end
-
-    it_should_behave_like 'a survey title acceptor', '_BIO_Child' do
-      let(:populator) { ChildAndAdhoc }
-    end
-
-    it_should_behave_like 'a survey title acceptor', '_Father.*M2.1' do
-      let(:populator) { ChildAndAdhoc }
-    end
-
-    it_should_behave_like 'a survey title acceptor', '_InternetUseContact' do
-      let(:populator) { ChildAndAdhoc }
-    end
-
-    it_should_behave_like 'a survey title acceptor', '_MultiModeVisitInfo' do
+    it_should_behave_like 'a survey title acceptor', '_PM_Child', '_BIO_Child', '_Father_M2.1', '_InternetUseContact', '_MultiModeVisitInfo' do
       let(:populator) { ChildAndAdhoc }
     end
 

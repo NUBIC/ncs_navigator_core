@@ -6,19 +6,7 @@ module ResponseSetPrepopulation
   describe Postnatal do
     include SurveyCompletion
 
-    it_should_behave_like 'a survey title acceptor', '_1Month' do
-      let(:populator) { Postnatal }
-    end
-
-    it_should_behave_like 'a survey title acceptor', '_12Month' do
-      let(:populator) { Postnatal }
-    end
-
-    it_should_behave_like 'a survey title acceptor', '_1MMonth' do
-      let(:populator) { Postnatal }
-    end
-
-    it_should_behave_like 'a survey title acceptor', '_12MMonth' do
+    it_should_behave_like 'a survey title acceptor', '_1Month', '_12Month', '_1MMonth', '_12MMonth' do
       let(:populator) { Postnatal }
     end
 
