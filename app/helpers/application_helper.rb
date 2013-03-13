@@ -7,9 +7,9 @@ module ApplicationHelper
     content_for(:head) { javascript_include_tag(*files) }
   end
 
-  def title(page_title, show_title = true)
+  def page_title(page_title, show_title = true)
     @show_title = show_title
-    content_for(:title) { page_title.to_s }
+    content_for(:page_title) { page_title.to_s }
   end
 
   def show_title?
@@ -123,6 +123,8 @@ module ApplicationHelper
     event.continuable?
   end
 
+  ## Displaying the Staff name that is associated with the Participant(Initiated the Contact)
+  #  Used in the Participants,Contact_Links excel reports to display the Originating Staff and Current Staff.
   def staff_name(staff_id)
     return "" if staff_id.blank?
     staff_list[staff_id]
