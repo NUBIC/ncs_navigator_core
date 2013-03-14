@@ -97,6 +97,7 @@ describe Person do
   it { should have_many(:telephones) }
   it { should have_many(:emails) }
   it { should have_many(:races) }
+  it { should have_many(:non_interview_reports) }
 
   it { should ensure_length_of(:person_dob).is_equal_to(10) }
   it { should ensure_length_of(:date_move).is_equal_to(7) }
