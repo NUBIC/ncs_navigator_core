@@ -10,9 +10,17 @@ module NcsNavigator::Core::Mdes
       end
 
       ##
+      # The unique survey titles from the instruments.
       # @return [Array<String>] Instrument Survey titles
       def instrument_survey_titles
-        self.instruments.collect{ |i| i.response_sets }.flatten.compact.collect{ |rs| rs.survey.title }.uniq
+        instrument_response_sets.collect{ |rs| rs.survey.title }.uniq
+      end
+
+      ##
+      # All the response sets associated with all the instruments.
+      # @return [Array<ResponseSet>]
+      def instrument_response_sets
+        self.instruments.collect{ |i| i.response_sets }.flatten.compact
       end
     end
 
