@@ -61,6 +61,29 @@ describe OperationalDataExtractor::InformedConsent do
         consent.reconsideration_script_use.should == no2
         consent.consent_comments.should == "comments"
       end
+
+      it "sets the ParticipantConsentSample attributes to the Response values" do
+        consent = prepare_consent(person, participant, survey, contact)
+        response_set = consent.response_set
+
+        take_survey(survey, response_set) do |a|
+          a.choice "PARTICIPANT_CONSENT_SAMPLE.SAMPLE_CONSENT_GIVEN_CODE_1", yes
+          a.choice "PARTICIPANT_CONSENT_SAMPLE.SAMPLE_CONSENT_GIVEN_CODE_2", no
+          a.choice "PARTICIPANT_CONSENT_SAMPLE.SAMPLE_CONSENT_GIVEN_CODE_3", yes
+        end
+
+        response_set.responses.reload
+        response_set.responses.size.should == 3
+
+        OperationalDataExtractor::InformedConsent.new(response_set).extract_data
+
+        consent = ParticipantConsent.find(consent.id)
+        [ [1, yes], [2, no], [3, yes] ].each do |code, val|
+          consent.participant_consent_samples.where(:sample_consent_type_code => code).all.each do |s|
+            s.sample_consent_given.should == val
+          end
+        end
+      end
     end
   end
 
