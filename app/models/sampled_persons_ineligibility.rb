@@ -33,27 +33,28 @@ class SampledPersonsIneligibility < ActiveRecord::Base
   belongs_to :provider
   belongs_to :person
 
-  def self.create_from_participant!(participant)
-    person = participant.person
-    spi = new(:person => person, :provider => person.provider)
-    spi.age_eligible_code = participant.age_eligible?(person) ? 1 : 2
-    spi.county_of_residence_code = participant.psu_county_eligible?(person) ? 1 : 2
-    spi.first_prenatal_visit_code = participant.first_visit?(person) ? 1 : 2
-    spi.pregnancy_eligible_code = participant.pbs_pregnant?(person) ? 1 : 2
-    spi.save!
-  end
-
   def self.create_from_person!(person)
     participant = person.participant
     code = lambda { |value| value ? NcsCode::YES : NcsCode::NO }
-    create!({
-      :person => person,
-      :provider => person.provider,
-      :age_eligible_code => code[participant.age_eligible?(person)],
-      :county_of_residence_code => code[participant.psu_county_eligible?(person)],
-      :first_prenatal_visit_code => code[participant.first_visit?(person)],
-      :pregnancy_eligible_code => code[participant.pbs_pregnant?(person)],
-    })
+    if participant.birth_cohort?
+      create!({
+        :person => person,
+        :provider => person.provider,
+        :age_eligible_code => code[participant.age_eligible?(person)],
+        :county_of_residence_code => code[participant.psu_county_eligible?(person)],
+        :first_prenatal_visit_code => NcsCode::UNKNOWN,
+        :pregnancy_eligible_code => NcsCode::UNKNOWN
+      })
+    else
+      create!({
+        :person => person,
+        :provider => person.provider,
+        :age_eligible_code => code[participant.age_eligible?(person)],
+        :county_of_residence_code => code[participant.psu_county_eligible?(person)],
+        :first_prenatal_visit_code => code[participant.first_visit?(person)],
+        :pregnancy_eligible_code => code[participant.pbs_pregnant?(person)]
+      })
+    end
   end
 
 end
