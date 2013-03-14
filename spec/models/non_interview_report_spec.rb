@@ -65,6 +65,8 @@ describe NonInterviewReport do
   it { should have_many(:refusal_non_interview_reports) }
   it { should have_many(:dwelling_unit_type_non_interview_reports) }
 
+  it { should have_one(:response_set) }
+
   context "as mdes record" do
 
     it "sets the public_id to a uuid" do
@@ -98,5 +100,62 @@ describe NonInterviewReport do
 
     end
   end
+
+  describe ".start!" do
+    let(:contact) { Factory(:contact) }
+    let(:person) { Factory(:person) }
+    let(:participant) { Factory(:participant) }
+    let(:survey) { Survey.last }
+
+    describe "for a new NonInterviewReport record" do
+
+      before do
+        f = "#{Rails.root}/internal_surveys/IRB_CON_NonInterviewReport.rb"
+        Surveyor::Parser.parse File.read(f)
+
+        NonInterviewReport.count.should == 0
+        NonInterviewReport.start!(person, participant, survey, contact)
+      end
+
+      it "creates a new NonInterviewReport record" do
+        NonInterviewReport.count.should == 1
+        nir = NonInterviewReport.first
+        nir.contact.should == contact
+        nir.response_set.survey.should == survey
+        nir.response_set.participant.should == participant
+        nir.response_set.person.should == person
+        nir.person.should == person
+      end
+
+      it "creates an associated ResponseSet" do
+        NonInterviewReport.first.response_set.should_not be_nil
+      end
+    end
+
+    describe "for a existing NonInterviewReport record" do
+
+      before do
+        f = "#{Rails.root}/internal_surveys/IRB_CON_Informed_Consent.rb"
+        Surveyor::Parser.parse File.read(f)
+      end
+
+      it "returns the NonInterviewReport associated with the survey, person, and contact" do
+        2.times do |i|
+          NonInterviewReport.count.should == i
+          NonInterviewReport.start!(person, participant, survey, contact)
+          NonInterviewReport.count.should == 1
+        end
+
+        nir = NonInterviewReport.last
+        nir.contact.should == contact
+        nir.response_set.survey.should == survey
+        nir.response_set.participant.should == participant
+        nir.response_set.person.should == person
+        nir.person.should == person
+      end
+
+    end
+  end
+
 end
 
