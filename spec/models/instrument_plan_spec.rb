@@ -437,6 +437,7 @@ describe InstrumentPlan do
       let!(:birth_response_set1) { Factory(:response_set, :survey => part_verif_part_1_in_birth_event_survey, :instrument => birth_instrument) }
       let!(:informed_consent_response_set1) { Factory(:response_set, :survey => part_verif_part_1_in_informed_consent_event_survey, :instrument => informed_consent_instrument) }
       let(:participant_consent_response_set) { Factory(:response_set, :participant_consent => Factory(:participant_consent)) }
+      let(:nir_response_set) { Factory(:response_set, :non_interview_report => Factory(:non_interview_report)) }
 
       it "returns false if, with a scoping event parameter, there a more scheduled activities for that event than there are response sets" do
         plan.final_survey_part?(birth_response_set1, birth_event).should be_false
@@ -449,6 +450,10 @@ describe InstrumentPlan do
 
       it "returns true if the ResponseSet is associated with a ParticipantConsent" do
         plan.final_survey_part?(participant_consent_response_set, birth_event).should be_true
+      end
+
+      it "returns true if the ResponseSet is associated with a NonInterviewReport" do
+        plan.final_survey_part?(nir_response_set, birth_event).should be_true
       end
 
     end
