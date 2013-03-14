@@ -841,7 +841,7 @@ module OperationalDataExtractor
 
     def process_person_race(person_race_map)
       person_race_map.each do |key, attribute|
-        collect_race_responses(key).each do |r|
+        collect_pick_any_responses(key).each do |r|
           person_race = get_person_race(r)
           if response_value(r)
             if key =~ /NEW/
@@ -856,11 +856,11 @@ module OperationalDataExtractor
 
     ##
     # Similar to data_export_identifier_indexed_responses, but since
-    # Race selection is a pick any, there can be more than one
-    # race response for any data_export_identifier
+    # some questions are pick any, there can be more than one
+    # response for any data_export_identifier
     # @param[String]
     # @return[Array<Response>]
-    def collect_race_responses(data_export_identifier)
+    def collect_pick_any_responses(data_export_identifier)
       result = Array.new
       sorted_responses.each do |r|
         dei = r.question.data_export_identifier
