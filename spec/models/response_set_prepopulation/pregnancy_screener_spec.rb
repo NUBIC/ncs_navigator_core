@@ -4,7 +4,7 @@ require File.expand_path('../a_survey_title_acceptor', __FILE__)
 
 module ResponseSetPrepopulation
   describe PregnancyScreener do
-  	include SurveyCompletion
+    include SurveyCompletion
 
     it_should_behave_like 'a survey title acceptor', '_PregScreen_' do
       let(:populator) { PregnancyScreener }
@@ -22,9 +22,9 @@ module ResponseSetPrepopulation
     end
 
     def run_populator(mode = nil)
-    	PregnancyVisit.new(@response_set).tap do |p|
-    		p.mode = mode
-    	end.run
+      PregnancyVisit.new(@response_set).tap do |p|
+        p.mode = mode
+      end.run
     end
 
     context "with pregnancy visit two instrument" do
@@ -45,7 +45,7 @@ module ResponseSetPrepopulation
       describe "prepopulated_is_work_name_previously_collected_and_valid" do
 
         it "should be FALSE if work name was not previously answered" do
-        	run_populator
+          run_populator
           assert_response_value(@response_set, "prepopulated_is_work_name_previously_collected_and_valid", "FALSE")
         end
 
@@ -57,7 +57,7 @@ module ResponseSetPrepopulation
             r.refused "PREG_VISIT_1_3.WORK_NAME"
           end
 
-					run_populator
+          run_populator
           assert_response_value(@response_set, "prepopulated_is_work_name_previously_collected_and_valid", "FALSE")
         end
 
@@ -69,7 +69,7 @@ module ResponseSetPrepopulation
             r.dont_know "PREG_VISIT_1_3.WORK_NAME"
           end
 
-					run_populator
+          run_populator
           assert_response_value(@response_set, "prepopulated_is_work_name_previously_collected_and_valid", "FALSE")
         end
 
@@ -90,7 +90,7 @@ module ResponseSetPrepopulation
       describe "prepopulated_is_work_address_previously_collected_and_valid" do
 
         it "should be FALSE if work address was not previously answered" do
-        	run_populator
+          run_populator
           assert_response_value(@response_set, "prepopulated_is_work_address_previously_collected_and_valid", "FALSE")
         end
 

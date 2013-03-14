@@ -4,7 +4,7 @@ require File.expand_path('../a_survey_title_acceptor', __FILE__)
 
 module ResponseSetPrepopulation
   describe TracingModule do
-  	include SurveyCompletion
+    include SurveyCompletion
 
     context 'class' do
       let(:populator) { TracingModule }
@@ -13,23 +13,23 @@ module ResponseSetPrepopulation
     end
 
     def init_instrument_and_response_set(event = nil)
-    	@survey = create_tracing_survey_with_prepopulated_fields
-    	# method can be invoked multiple times and survey access code must be unique
-    	@survey.access_code = SecureRandom.base64
-    	@survey.save!
+      @survey = create_tracing_survey_with_prepopulated_fields
+      # method can be invoked multiple times and survey access code must be unique
+      @survey.access_code = SecureRandom.base64
+      @survey.save!
       @response_set, @instrument = prepare_instrument(@person, @participant, @survey, nil, event)
       # sanity check that there are no responses in response set
       @response_set.responses.should be_empty
     end
 
     def run_populator(event = nil, mode = nil)
-    	init_instrument_and_response_set(event)
-    	TracingModule.new(@response_set).tap do |p|
-    		p.mode = mode
-    	end.run
+      init_instrument_and_response_set(event)
+      TracingModule.new(@response_set).tap do |p|
+        p.mode = mode
+      end.run
     end
 
-		context "with tracing instrument" do
+    context "with tracing instrument" do
 
       before(:each) do
         @person = Factory(:person)
@@ -162,7 +162,7 @@ module ResponseSetPrepopulation
           end
 
           it "should be provided if the question had previously been answered" do
-          	init_instrument_and_response_set
+            init_instrument_and_response_set
             take_survey(@survey, @response_set) do |r|
               r.dont_know "TRACING_INT.CELL_PHONE_2"
             end
@@ -181,7 +181,7 @@ module ResponseSetPrepopulation
           end
 
           it "should be provided if the question had previously been answered" do
-          	init_instrument_and_response_set
+            init_instrument_and_response_set
             take_survey(@survey, @response_set) do |r|
               r.dont_know "TRACING_INT.CELL_PHONE_3"
             end
@@ -200,7 +200,7 @@ module ResponseSetPrepopulation
           end
 
           it "should be provided if the question had previously been answered" do
-          	init_instrument_and_response_set
+            init_instrument_and_response_set
             take_survey(@survey, @response_set) do |r|
               r.dont_know "TRACING_INT.CELL_PHONE_4"
             end
@@ -246,7 +246,7 @@ module ResponseSetPrepopulation
           end
 
           it "should be provided if the question had previously been answered" do
-          	init_instrument_and_response_set
+            init_instrument_and_response_set
             take_survey(@survey, @response_set) do |r|
               r.dont_know "TRACING_INT.EMAIL_APPT"
             end
@@ -265,7 +265,7 @@ module ResponseSetPrepopulation
           end
 
           it "should be provided if the question had previously been answered" do
-          	init_instrument_and_response_set
+            init_instrument_and_response_set
             take_survey(@survey, @response_set) do |r|
               r.dont_know "TRACING_INT.EMAIL_QUEST"
             end
@@ -297,7 +297,7 @@ module ResponseSetPrepopulation
         describe "previously provided" do
 
           it "should know that all contacts have been provided if three contacts have previously been given" do
-          	init_instrument_and_response_set
+            init_instrument_and_response_set
             friend = mock(NcsCode, :local_code => 6)
             mother = mock(NcsCode, :local_code => 1)
             sister = mock(NcsCode, :local_code => 2)
@@ -318,7 +318,7 @@ module ResponseSetPrepopulation
           end
 
           it "should know that NOT all contacts have been provided if one contact has previously been given" do
-          	init_instrument_and_response_set
+            init_instrument_and_response_set
             mother = mock(NcsCode, :local_code => 1)
             take_survey(@survey, @response_set) do |r|
               r.a "TRACING_INT.CONTACT_RELATE_1", mother
@@ -328,7 +328,7 @@ module ResponseSetPrepopulation
           end
 
           it "should know that NOT all contacts have been provided if two contacts have previously been given" do
-						init_instrument_and_response_set
+            init_instrument_and_response_set
             friend = mock(NcsCode, :local_code => 6)
             mother = mock(NcsCode, :local_code => 1)
             take_survey(@survey, @response_set) do |r|
@@ -350,7 +350,7 @@ module ResponseSetPrepopulation
         end
 
         it "should be provided if the question had previously been answered" do
-        	init_instrument_and_response_set
+          init_instrument_and_response_set
           take_survey(@survey, @response_set) do |r|
             r.dont_know "TRACING_INT.PREV_CITY"
           end
@@ -369,7 +369,7 @@ module ResponseSetPrepopulation
         end
 
         it "should be provided if the question had previously been answered" do
-        	init_instrument_and_response_set
+          init_instrument_and_response_set
           take_survey(@survey, @response_set) do |r|
             r.dont_know "TRACING_INT.DR_LICENSE_NUM"
           end

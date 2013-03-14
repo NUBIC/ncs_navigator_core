@@ -4,7 +4,7 @@ require File.expand_path('../a_survey_title_acceptor', __FILE__)
 
 module ResponseSetPrepopulation
   describe PregnancyVisit do
-  	include SurveyCompletion
+    include SurveyCompletion
 
     context 'class' do
       let(:populator) { PregnancyVisit }
@@ -19,15 +19,15 @@ module ResponseSetPrepopulation
     end
 
     def init_instrument_and_response_set(event = nil)
-			@response_set, @instrument = prepare_instrument(person, participant, survey, nil, event)
+      @response_set, @instrument = prepare_instrument(person, participant, survey, nil, event)
       @response_set.responses.should be_empty
     end
 
     def run_populator(event = nil, mode = nil)
-    	init_instrument_and_response_set(event)
-			PregnancyVisit.new(@response_set).tap do |p|
-				p.mode = mode
-			end.run
+      init_instrument_and_response_set(event)
+      PregnancyVisit.new(@response_set).tap do |p|
+        p.mode = mode
+      end.run
     end
 
     context "with pregnancy visit two instrument" do
@@ -46,7 +46,7 @@ module ResponseSetPrepopulation
       describe "prepopulated_is_work_name_previously_collected_and_valid" do
 
         it "should be FALSE if work name was not previously answered" do
-        	run_populator
+          run_populator
           assert_response_value(@response_set, "prepopulated_is_work_name_previously_collected_and_valid", "FALSE")
         end
 
@@ -91,7 +91,7 @@ module ResponseSetPrepopulation
       describe "prepopulated_is_work_address_previously_collected_and_valid" do
 
         it "should be FALSE if work address was not previously answered" do
-        	run_populator
+          run_populator
           assert_response_value(@response_set, "prepopulated_is_work_address_previously_collected_and_valid", "FALSE")
         end
 
@@ -161,7 +161,7 @@ module ResponseSetPrepopulation
         describe "the first visit" do
 
           it "prepopulated_is_first_pregnancy_visit_one should be TRUE" do
-          	run_populator
+            run_populator
             assert_response_value(@response_set, "prepopulated_is_first_pregnancy_visit_one", "TRUE")
           end
 
@@ -274,7 +274,7 @@ module ResponseSetPrepopulation
 
         describe "in person" do
           it "prepopulated_mode_of_contact is set to CAPI" do
-          	run_populator(nil, Instrument.capi)
+            run_populator(nil, Instrument.capi)
             assert_response_value(@response_set, "prepopulated_mode_of_contact", "CAPI")
           end
         end

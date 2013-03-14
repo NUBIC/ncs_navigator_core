@@ -11,7 +11,7 @@ module ResponseSetPrepopulation
     end
 
     def run
-	      reference_identifiers.each do |reference_identifier|
+        reference_identifiers.each do |reference_identifier|
         if question = find_question_for_reference_identifier(reference_identifier)
           answer = question.answers.first
           value = case reference_identifier
