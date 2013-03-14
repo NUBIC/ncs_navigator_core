@@ -11,4 +11,4 @@
 - else
   - consents.each do |consent|
     - path = edit_participant_participant_consent_path(participant, consent, { :contact_link_id => contact_link.id })
-    = render "known_consent_instrument", :activity => activity, :survey => survey, :path => path, :obj => consent
+    = render "known_consent_instrument", :activity => activity, :survey => survey, :contact_link => contact_link, :path => path, :obj => consent
