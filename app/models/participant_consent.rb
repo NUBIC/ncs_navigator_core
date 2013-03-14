@@ -183,7 +183,8 @@ class ParticipantConsent < ActiveRecord::Base
   ##
   # Finds or creates a record to indicate that a person has begun taking a
   # survey for the Informed Consent. The ParticipantConsent returned will also
-  # have an associated ResponseSet.
+  # have an associated ResponseSet and ParticipantConsentSample records of each
+  # sample_consent_type.
   #
   # @param [Person] the person taking the survey
   # @param [Participant] the participant who the survey is about
@@ -199,6 +200,11 @@ class ParticipantConsent < ActiveRecord::Base
   def self.create_consent(person, participant, survey, contact)
     pc = participant.participant_consents.build(:contact => contact, :psu => participant.psu)
     pc.build_response_set(:survey_id => survey.id, :user_id => person.id, :participant_id => participant.id)
+
+    ParticipantConsentSample::SAMPLE_CONSENT_TYPE_CODES.each do |code|
+      pc.participant_consent_samples.build(:sample_consent_type_code => code, :participant => @participant)
+    end
+
     pc.save!
     pc
   end
