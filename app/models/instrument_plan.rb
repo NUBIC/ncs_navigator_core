@@ -165,7 +165,7 @@ class InstrumentPlan
   # @param [Event]
   # @return Boolean
   def final_survey_part?(response_set, event)
-    return true if response_set.participant_consent
+    return true if response_set.participant_consent || response_set.non_interview_report
     expected = scheduled_activities_for_survey(response_set.survey.title, event).size
     actual   = response_set.instrument.response_sets.size
     expected <= actual
