@@ -64,7 +64,6 @@ describe OperationalDataExtractor::InformedConsent do
     end
   end
 
-
   context "with a Withdrawal survey" do
 
     let(:wdraw1) { NcsCode.for_list_name_and_local_code("CONSENT_WITHDRAW_REASON_CL1", 1) }

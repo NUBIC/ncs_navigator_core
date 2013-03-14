@@ -48,6 +48,7 @@ module OperationalDataExtractor
     [/_Informed_Consent/,   OperationalDataExtractor::InformedConsent],
     [/_Withdrawal/,         OperationalDataExtractor::InformedConsent],
     [/_Reconsent/,          OperationalDataExtractor::InformedConsent],
+    [/_NonInterviewReport/, OperationalDataExtractor::NonInterviewReport],
   ]
 
 end
