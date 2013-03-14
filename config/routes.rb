@@ -23,6 +23,7 @@ NcsNavigatorCore::Application.routes.draw do
       get :events
       get :start_instrument
       get :start_consent
+      get :start_non_interview_report
       get :responses_for
       put :responses_for
       get :provider_staff_member
@@ -31,6 +32,7 @@ NcsNavigatorCore::Application.routes.draw do
     resources :contacts, :except => [:index]
     resources :telephones, :except => [:index, :destroy]
     resources :emails, :except => [:index, :destroy]
+    resources :non_interview_reports, :only => [:edit, :update]
   end
   resources :participants do
     collection do
