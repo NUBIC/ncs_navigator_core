@@ -20,6 +20,7 @@ class NcsCode < ActiveRecord::Base
   NO  = 2
   MISSING_IN_ERROR = -4
   OTHER = -5
+  UNKNOWN = -6
 
   ATTRIBUTE_MAPPING = {
 
