@@ -58,7 +58,7 @@ module ResponseSetPrepopulation
         end
 
         it "should be FALSE if participant declined after the enrollment" do
-        	@rsp.run
+          @rsp.run
           assert_match(@response_set,
               "prepopulated_is_declined_participation_prior_to_enrollment",
               "FALSE")
@@ -76,7 +76,7 @@ module ResponseSetPrepopulation
           end
 
           it "should be 'OVC AND EH STUDY CENTER' if OVC type" do
-          	@rsp.run
+            @rsp.run
             assert_match(@response_set,
                                   "prepopulated_study_center_type",
                                   "OVC AND EH STUDY CENTERS")
@@ -92,7 +92,7 @@ module ResponseSetPrepopulation
           end
 
           it "should be 'OVC AND EH STUDY CENTER' if EH type" do
-          	@rsp.run
+            @rsp.run
             assert_match(@response_set,
                                   "prepopulated_study_center_type",
                                   "OVC AND EH STUDY CENTERS")
@@ -108,21 +108,21 @@ module ResponseSetPrepopulation
           end
 
           it "should not be 'OVC AND EH STUDY CENTER' if not EH or OVC type" do
-          	@rsp.run
+            @rsp.run
             assert_miss(@response_set,
                                   "prepopulated_study_center_type",
                                   "OVC AND EH STUDY CENTERS")
           end
 
           it "should not be 'PB AND PBS STUDY CENTERS' if not PB or PBS type" do
-          	@rsp.run
+            @rsp.run
             assert_miss(@response_set,
                                   "prepopulated_study_center_type",
                                   "PB AND PBS STUDY CENTERS")
           end
 
           it "should be 'HILI STUDY CENTERS' if HILI type" do
-          	@rsp.run
+            @rsp.run
             assert_match(@response_set,
                                   "prepopulated_study_center_type",
                                   "HILI STUDY CENTERS")
@@ -138,7 +138,7 @@ module ResponseSetPrepopulation
           end
 
           it "should be 'PB AND PBS STUDY CENTERS' if PB type" do
-          	@rsp.run
+            @rsp.run
             assert_match(@response_set,
                                   "prepopulated_study_center_type",
                                   "PB AND PBS STUDY CENTERS")
@@ -155,14 +155,14 @@ module ResponseSetPrepopulation
           end
 
           it "should be 'PB AND PBS STUDY CENTERS' if PBS type" do
-          	@rsp.run
+            @rsp.run
             assert_match(@response_set,
                                   "prepopulated_study_center_type",
                                   "PB AND PBS STUDY CENTERS")
           end
 
           it "should not be 'HILI STUDY CENTERS' if not HILI type" do
-          	@rsp.run
+            @rsp.run
             assert_miss(@response_set,
                                   "prepopulated_study_center_type",
                                   "HILI STUDY CENTERS")

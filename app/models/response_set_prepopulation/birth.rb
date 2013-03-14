@@ -19,7 +19,7 @@ module ResponseSetPrepopulation
     end
 
     def run
-    	reference_identifiers.each do |reference_identifier|
+      reference_identifiers.each do |reference_identifier|
         if question = find_question_for_reference_identifier(reference_identifier)
           response_type = "answer"
 
@@ -49,7 +49,7 @@ module ResponseSetPrepopulation
                     nil
                   end
 
-        	build_response_for_value(response_type, response_set, question, answer, nil)
+          build_response_for_value(response_type, response_set, question, answer, nil)
         end
       end
     end

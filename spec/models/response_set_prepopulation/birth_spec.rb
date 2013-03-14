@@ -6,7 +6,7 @@ require File.expand_path('../a_survey_title_acceptor', __FILE__)
 
 module ResponseSetPrepopulation
   describe Birth do
-	  include SurveyCompletion
+    include SurveyCompletion
 
     def assert_response_value(response_set, reference_identifier, value)
       response = response_set.responses.select { |r| r.question.reference_identifier == reference_identifier }.first
@@ -109,7 +109,7 @@ module ResponseSetPrepopulation
       describe "prepopulated_is_valid_work_name_provided" do
 
         it "should be FALSE if work name was not previously answered" do
-        	@response_set_pt2.prepopulate
+          @response_set_pt2.prepopulate
 
           assert_response_value(@response_set_pt2, "prepopulated_is_valid_work_name_provided", "FALSE")
         end
@@ -152,7 +152,7 @@ module ResponseSetPrepopulation
       describe "prepopulated_is_valid_work_address_provided" do
 
         it "should be FALSE if work address was not previously answered" do
-        	@response_set_pt2.prepopulate
+          @response_set_pt2.prepopulate
 
           assert_response_value(@response_set_pt2, "prepopulated_is_valid_work_address_provided", "FALSE")
         end
@@ -281,7 +281,7 @@ module ResponseSetPrepopulation
 
       describe "in person" do
         it "sets prepopulated_mode_of_contact to CAPI" do
-        	Birth.new(@response_set).run
+          Birth.new(@response_set).run
           @response_set.responses.should_not be_empty
           @response_set.should == @response_set
           @response_set.responses.first.question.reference_identifier.should == "prepopulated_mode_of_contact"
@@ -291,10 +291,10 @@ module ResponseSetPrepopulation
 
       describe "telephone" do
         it "sets prepopulated_mode_of_contact to CATI" do
-        	Birth.new(@response_set).tap do |p|
-        		p.mode = Instrument.cati
-        		p.run
-        	end
+          Birth.new(@response_set).tap do |p|
+            p.mode = Instrument.cati
+            p.run
+          end
           @response_set.responses.should_not be_empty
           @response_set.should == @response_set
           @response_set.responses.first.question.reference_identifier.should == "prepopulated_mode_of_contact"

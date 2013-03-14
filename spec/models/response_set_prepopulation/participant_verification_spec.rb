@@ -10,7 +10,7 @@ module ResponseSetPrepopulation
       let(:populator) { ParticipantVerification }
     end
 
-	  def assert_response_value(response_set, reference_identifier, value)
+    def assert_response_value(response_set, reference_identifier, value)
       response = response_set.responses.detect { |r| r.question.reference_identifier == reference_identifier }
       response.should_not be_nil
       response.to_s.should == value
@@ -18,17 +18,17 @@ module ResponseSetPrepopulation
 
     context "with participant verification instrument pt one" do
 
-	    def init_instrument_and_response_set_pt1(event = nil)
-				@response_set_pt1, @instrument_pt1 = prepare_instrument(person, participant, survey_pt1, nil, event)
-	      @response_set_pt1.responses.should be_empty
-	    end
+      def init_instrument_and_response_set_pt1(event = nil)
+        @response_set_pt1, @instrument_pt1 = prepare_instrument(person, participant, survey_pt1, nil, event)
+        @response_set_pt1.responses.should be_empty
+      end
 
-	    def run_populator(event = nil)
-	      init_instrument_and_response_set_pt1(event)
-	      populator.run
-	    end
+      def run_populator(event = nil)
+        init_instrument_and_response_set_pt1(event)
+        populator.run
+      end
 
-			let(:populator) { ParticipantVerification.new(@response_set_pt1) }
+      let(:populator) { ParticipantVerification.new(@response_set_pt1) }
       let(:person) { Factory(:person) }
       let(:participant) { Factory(:participant).tap{ |p| p.person = person; p.save } }
       let(:survey_pt1) { create_participant_verification_part_one_survey_with_prepopulated_fields }
@@ -82,7 +82,7 @@ module ResponseSetPrepopulation
           Person.any_instance.stub(:middle_name).and_return(nil)
           person.middle_name.should be_nil
 
-					init_instrument_and_response_set_pt1
+          init_instrument_and_response_set_pt1
           none = mock(NcsCode, :local_code => '-7')
           take_survey(survey_pt1, @response_set_pt1) do |r|
             r.a "PARTICIPANT_VERIF.R_MNAME", none
@@ -94,7 +94,7 @@ module ResponseSetPrepopulation
 
         it "is TRUE if the person has responded previously" do
 
-					init_instrument_and_response_set_pt1
+          init_instrument_and_response_set_pt1
           take_survey(survey_pt1, @response_set_pt1) do |r|
             r.a "PARTICIPANT_VERIF.R_FNAME", :value => "fname"
             r.a "PARTICIPANT_VERIF.R_MNAME", :value => "mname"
@@ -155,7 +155,7 @@ module ResponseSetPrepopulation
         end
 
         it "is TRUE if the person has responded previously" do
-        	init_instrument_and_response_set_pt1
+          init_instrument_and_response_set_pt1
           take_survey(survey_pt1, @response_set_pt1) do |r|
             r.a "PARTICIPANT_VERIF.PERSON_DOB", :value => Date.new(2001,1,1)
           end
@@ -165,7 +165,7 @@ module ResponseSetPrepopulation
         end
 
         it "is FALSE if the person has responded refused previously" do
-        	init_instrument_and_response_set_pt1
+          init_instrument_and_response_set_pt1
           take_survey(survey_pt1, @response_set_pt1) do |r|
             r.refused "PARTICIPANT_VERIF.PERSON_DOB"
           end
@@ -175,7 +175,7 @@ module ResponseSetPrepopulation
         end
 
         it "is FALSE if the person has responded don't know previously" do
-        	init_instrument_and_response_set_pt1
+          init_instrument_and_response_set_pt1
           take_survey(survey_pt1, @response_set_pt1) do |r|
             r.dont_know "PARTICIPANT_VERIF.PERSON_DOB"
           end
@@ -185,7 +185,7 @@ module ResponseSetPrepopulation
         end
 
         it "is FALSE if the person has no dob and has not responded previously" do
-        	init_instrument_and_response_set_pt1
+          init_instrument_and_response_set_pt1
           person.stub(:person_dob_date).and_return(nil)
 
           run_populator
@@ -197,17 +197,17 @@ module ResponseSetPrepopulation
     end
 
     context "with participant verification instrument part two" do
-	    def init_instrument_and_response_set_pt2(event = nil)
-				@response_set_pt2, @instrument_pt2 = prepare_instrument(person, child, survey_pt2, nil, event)
-	      @response_set_pt2.responses.should be_empty
-	    end
+      def init_instrument_and_response_set_pt2(event = nil)
+        @response_set_pt2, @instrument_pt2 = prepare_instrument(person, child, survey_pt2, nil, event)
+        @response_set_pt2.responses.should be_empty
+      end
 
-	    def run_populator(event = nil)
-	      init_instrument_and_response_set_pt2(event)
-	      populator.run
-	    end
+      def run_populator(event = nil)
+        init_instrument_and_response_set_pt2(event)
+        populator.run
+      end
 
-	    let(:populator) { ParticipantVerification.new(@response_set_pt2) }
+      let(:populator) { ParticipantVerification.new(@response_set_pt2) }
       let(:person) { Factory(:person) }
       let(:mother) { Factory(:participant) }
       let(:child_person) { Factory(:person) }
@@ -259,7 +259,7 @@ module ResponseSetPrepopulation
           Person.any_instance.stub(:first_name).and_return(nil)
           Person.any_instance.stub(:last_name).and_return(nil)
 
-					init_instrument_and_response_set_pt2
+          init_instrument_and_response_set_pt2
           take_survey(survey_pt2, @response_set_pt2) do |r|
             r.a "PARTICIPANT_VERIF_CHILD.C_FNAME", :value => "cfname"
             r.a "PARTICIPANT_VERIF_CHILD.C_LNAME", :value => "clname"
@@ -332,7 +332,7 @@ module ResponseSetPrepopulation
         end
 
         it "is TRUE if the person has responded refused previously" do
-        	init_instrument_and_response_set_pt2
+          init_instrument_and_response_set_pt2
           take_survey(survey_pt2, @response_set_pt2) do |r|
             r.refused "PARTICIPANT_VERIF_CHILD.CHILD_DOB"
           end
@@ -342,7 +342,7 @@ module ResponseSetPrepopulation
         end
 
         it "is TRUE if the person has responded don't know previously" do
-        	init_instrument_and_response_set_pt2
+          init_instrument_and_response_set_pt2
           take_survey(survey_pt2, @response_set_pt2) do |r|
             r.dont_know "PARTICIPANT_VERIF_CHILD.CHILD_DOB"
           end
@@ -372,7 +372,7 @@ module ResponseSetPrepopulation
         it "is FALSE if the person has previously responded" do
           Person.any_instance.stub(:sex_code).and_return(-4)
 
-        	init_instrument_and_response_set_pt2
+          init_instrument_and_response_set_pt2
           take_survey(survey_pt2, @response_set_pt2) do |r|
             r.a "PARTICIPANT_VERIF_CHILD.CHILD_SEX", mock(NcsCode, :local_code => 1)
           end
@@ -437,7 +437,7 @@ module ResponseSetPrepopulation
         end
 
         it "is TRUE if there is a previous response for RESP_GUARD" do
-					init_instrument_and_response_set_pt2
+          init_instrument_and_response_set_pt2
           take_survey(survey_pt2, @response_set_pt2) do |r|
             r.yes "PARTICIPANT_VERIF.RESP_GUARD"
           end
@@ -495,7 +495,7 @@ module ResponseSetPrepopulation
         end
 
         it "is TRUE if there is only one previous response with a value of one" do
-        	init_instrument_and_response_set_pt2
+          init_instrument_and_response_set_pt2
           take_survey(survey_pt2, @response_set_pt2) do |r|
             r.yes "PARTICIPANT_VERIF.RESP_PCARE"
           end
@@ -504,7 +504,7 @@ module ResponseSetPrepopulation
         end
 
         it "is TRUE if there is any one previous response with a value of one" do
-        	init_instrument_and_response_set_pt2
+          init_instrument_and_response_set_pt2
           take_survey(survey_pt2, @response_set_pt2) do |r|
             r.dont_know "PARTICIPANT_VERIF.RESP_PCARE"
           end
@@ -526,7 +526,7 @@ module ResponseSetPrepopulation
         end
 
         it "is TRUE if there is a previous response for PCARE_REL" do
-        	init_instrument_and_response_set_pt2
+          init_instrument_and_response_set_pt2
           take_survey(survey_pt2, @response_set_pt2) do |r|
             r.a "PARTICIPANT_VERIF.PCARE_REL", mock(NcsCode, :local_code => 1)
           end
@@ -543,7 +543,7 @@ module ResponseSetPrepopulation
         end
 
         it "is TRUE if there is any one previous response with a value of one" do
-        	init_instrument_and_response_set_pt2
+          init_instrument_and_response_set_pt2
           take_survey(survey_pt2, @response_set_pt2) do |r|
             r.dont_know "PARTICIPANT_VERIF.OCARE_CHILD"
           end
@@ -614,7 +614,7 @@ module ResponseSetPrepopulation
         end
 
         it "is TRUE if there is a previous response for OCARE_REL" do
-        	init_instrument_and_response_set_pt2
+          init_instrument_and_response_set_pt2
           take_survey(survey_pt2, @response_set_pt2) do |r|
             r.a "PARTICIPANT_VERIF.OCARE_REL", mock(NcsCode, :local_code => 1)
           end
@@ -632,7 +632,7 @@ module ResponseSetPrepopulation
         end
 
         it "is TRUE if there is a previous response for CHILD_TIME" do
-        	init_instrument_and_response_set_pt2
+          init_instrument_and_response_set_pt2
           take_survey(survey_pt2, @response_set_pt2) do |r|
             r.a "PARTICIPANT_VERIF.CHILD_TIME", mock(NcsCode, :local_code => 1)
           end
@@ -650,7 +650,7 @@ module ResponseSetPrepopulation
         end
 
         it "is TRUE if there is a previous response for S_ADDRESS_1" do
-        	init_instrument_and_response_set_pt2
+          init_instrument_and_response_set_pt2
           take_survey(survey_pt2, @response_set_pt2) do |r|
             r.a "PARTICIPANT_VERIF.S_ADDRESS_1", :value => "caddr1"
           end
@@ -668,7 +668,7 @@ module ResponseSetPrepopulation
         end
 
         it "is TRUE if there is a previous response for SA_PHONE" do
-        	init_instrument_and_response_set_pt2
+          init_instrument_and_response_set_pt2
           take_survey(survey_pt2, @response_set_pt2) do |r|
             r.a "PARTICIPANT_VERIF.SA_PHONE", :value => "867-5309"
           end

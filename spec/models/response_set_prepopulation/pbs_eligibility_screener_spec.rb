@@ -9,12 +9,12 @@ module ResponseSetPrepopulation
     end
 
     context "with pbs eligibility screener instrument" do
-			def run_populator(mode = nil)
-	      populator.mode = mode
-	      populator.run
-	    end
+      def run_populator(mode = nil)
+        populator.mode = mode
+        populator.run
+      end
 
-			let(:populator) { PbsEligibilityScreener.new(@response_set) }
+      let(:populator) { PbsEligibilityScreener.new(@response_set) }
 
       before(:each) do
         @person = Factory(:person)

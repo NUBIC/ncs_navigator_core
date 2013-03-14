@@ -1,6 +1,6 @@
 module ResponseSetPrepopulation
   class TracingModule < Populator
-  	def reference_identifiers
+    def reference_identifiers
       [
         "prepopulated_mode_of_contact",
         "prepopulated_should_show_address_for_tracing",
@@ -28,7 +28,7 @@ module ResponseSetPrepopulation
     end
 
     def run
-    	reference_identifiers.each do |reference_identifier|
+      reference_identifiers.each do |reference_identifier|
         if question = find_question_for_reference_identifier(reference_identifier)
           response_type = "answer"
 
