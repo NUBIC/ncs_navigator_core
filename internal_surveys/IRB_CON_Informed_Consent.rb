@@ -100,6 +100,5 @@ survey "IRB_CON_Informed_Consent", :instrument_type => 10, :description => "Info
     q_consent_comments "Comments (optional)",
       :data_export_identifier => "PARTICIPANT_CONSENT.CONSENT_COMMENTS"
       a_consent_comments :text
-
   end
 end
