@@ -64,6 +64,8 @@ class NonInterviewReport < ActiveRecord::Base
   has_many :refusal_non_interview_reports
   has_many :dwelling_unit_type_non_interview_reports
 
+  has_one :response_set, :inverse_of => :non_interview_report
+
   accepts_nested_attributes_for :vacant_non_interview_reports, :allow_destroy => true
   accepts_nested_attributes_for :no_access_non_interview_reports, :allow_destroy => true
   accepts_nested_attributes_for :refusal_non_interview_reports, :allow_destroy => true
@@ -85,6 +87,31 @@ class NonInterviewReport < ActiveRecord::Base
   ncs_coded_attribute :reason_unavailable,        'UNAVAILABLE_REASON_CL1'
   ncs_coded_attribute :moved_unit,                'TIME_UNIT_PAST_CL1'
   ncs_coded_attribute :moved_inform_relation,     'MOVED_INFORM_RELATION_CL1'
+
+
+  ##
+  # Finds or creates a record to indicate that a person has begun taking a
+  # survey for the NIR. The NonInterviewReport returned will also
+  # have an associated ResponseSet.
+  #
+  # @param [Person] the person taking the survey
+  # @param [Participant] the participant who the survey is about
+  # @param [Survey] Survey with title matching PSC activity instrument label
+  # @param [Contact]
+  # @return[NonInterviewReport]
+  def self.start!(person, participant, survey, contact)
+    where_clause = "response_sets.survey_id = ? AND response_sets.user_id = ? and non_interview_reports.contact_id = ?"
+    rs = ResponseSet.includes(:non_interview_report).where(where_clause, survey.id, person.id, contact.id).first
+    rs.nil? ? create_nir(person, participant, survey, contact) : rs.non_interview_report
+  end
+
+  def self.create_nir(person, participant, survey, contact)
+    nir = person.non_interview_reports.build(:contact => contact, :psu => participant.psu)
+    nir.build_response_set(:survey_id => survey.id, :user_id => person.id, :participant_id => participant.id)
+    nir.save!
+    nir
+  end
+
 
 end
 
