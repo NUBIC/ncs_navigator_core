@@ -13,9 +13,10 @@ module OperationalDataExtractor
       "NON_INTERVIEW_REPORT.REFUSAL_ACTION_CODE"        => "refusal_action_code",
     }
 
-    # TODO: REFUSAL_NON_INTERVIEW_REPORT
-    # "REFUSAL_NON_INTERVIEW_REPORT.REFUSAL_REASON_CODE"                     => "REFUSAL_REASON_OTHER",
-    # "REFUSAL_NON_INTERVIEW_REPORT.REFUSAL_REASON_OTHER"                  => "WHO_REFUSED_OTHER",
+    REFUSAL_NON_INTERVIEW_REPORT_MAP = {
+      "REFUSAL_NON_INTERVIEW_REPORT.REFUSAL_REASON_CODE"  => "refusal_reason_code",
+      "REFUSAL_NON_INTERVIEW_REPORT.REFUSAL_REASON_OTHER" => "refusal_reason_other",
+    }
 
 
     def initialize(response_set)
@@ -23,7 +24,10 @@ module OperationalDataExtractor
     end
 
     def maps
-      [NON_INTERVIEW_REPORT_MAP]
+      [
+        NON_INTERVIEW_REPORT_MAP,
+        REFUSAL_NON_INTERVIEW_REPORT_MAP,
+      ]
     end
 
     def extract_data
@@ -39,10 +43,24 @@ module OperationalDataExtractor
         end
       end
 
-      # WIP
-      # REFUSAL_NON_INTERVIEW_REPORT_MAP.each do |key, attribute|
-      #   nir.build_refusal_non_interview_report(ATTRIBUTES GO HERE)
-      # end
+      refusal_reason_responses = collect_pick_any_responses("REFUSAL_NON_INTERVIEW_REPORT.REFUSAL_REASON_CODE")
+      refusal_reason_other_responses = collect_pick_any_responses("REFUSAL_NON_INTERVIEW_REPORT.REFUSAL_REASON_OTHER")
+
+      refusal_reason_responses.each do |r|
+        value = response_value(r)
+        unless value.blank?
+          attrs = {:refusal_reason_code => value, :psu => nir.psu}
+          # determine the associated "other" response value for refusal reason code "other"
+          if value == -5
+            oth_resp = refusal_reason_other_responses.find { |rror| rror.response_group == r.response_group }
+            oth_val = response_value(oth_resp)
+            unless oth_val.blank?
+              attrs[:refusal_reason_other] = oth_val
+            end
+          end
+          nir.refusal_non_interview_reports.build(attrs)
+        end
+      end
 
       nir.save!
     end
