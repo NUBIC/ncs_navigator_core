@@ -13,7 +13,7 @@ class PeopleController < ApplicationController
     params[:page] ||= 1
 
     @q, @people = ransack_paginate(Person)
-    
+
     respond_to do |format|
       format.html # index.html.haml
     end
@@ -186,6 +186,25 @@ class PeopleController < ApplicationController
 
     # redirect
     rs_access_code = consent.response_set.try(:access_code)
+    redirect_to(edit_my_survey_path(:survey_code => params[:survey_access_code], :response_set_code => rs_access_code))
+  end
+
+  # GET /people/1/start_non_interview_report
+  def start_non_interview_report
+    # get information from params
+    person = Person.find(params[:id])
+    participant = Participant.find(params[:participant_id])
+    survey = Survey.most_recent_for_access_code(params[:survey_access_code])
+
+    # determine contact
+    cl = person.contact_links.includes(:event, :contact).find(params[:contact_link_id])
+    contact = cl.contact
+
+    # start nir
+    nir = NonInterviewReport.start!(person, participant, survey, contact)
+
+    # redirect
+    rs_access_code = nir.response_set.try(:access_code)
     redirect_to(edit_my_survey_path(:survey_code => params[:survey_access_code], :response_set_code => rs_access_code))
   end
 
