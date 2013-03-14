@@ -181,9 +181,9 @@ class ParticipantConsent < ActiveRecord::Base
   end
 
   ##
-  # Finds or builds a record to indicate that a person has begun taking a
+  # Finds or creates a record to indicate that a person has begun taking a
   # survey for the Informed Consent. The ParticipantConsent returned will also
-  # have an unpersisted associated ResponseSet.
+  # have an associated ResponseSet.
   #
   # @param [Person] the person taking the survey
   # @param [Participant] the participant who the survey is about
