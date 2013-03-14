@@ -10,4 +10,4 @@
 - else
   - nirs.each do |nir|
     - path = edit_person_non_interview_report_path(person, nir, { :contact_link_id => contact_link.id })
-    = render "known_consent_instrument", :activity => activity, :survey => survey, :path => path, :obj => nir
+    = render "known_consent_instrument", :activity => activity, :survey => survey, :contact_link => contact_link, :path => path, :obj => nir
