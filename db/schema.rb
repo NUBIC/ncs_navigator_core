@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130306200153) do
+ActiveRecord::Schema.define(:version => 20130314152336) do
 
   create_table "addresses", :force => true do |t|
     t.integer  "psu_code",                                                :null => false
@@ -1182,8 +1182,8 @@ ActiveRecord::Schema.define(:version => 20130306200153) do
     t.integer  "instrument_id"
     t.string   "api_id"
     t.integer  "participant_id"
-    t.integer  "event_id"
     t.integer  "participant_consent_id"
+    t.integer  "non_interview_report_id"
   end
 
   add_index "response_sets", ["access_code"], :name => "response_sets_ac_idx", :unique => true
