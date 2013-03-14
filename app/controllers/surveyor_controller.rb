@@ -56,9 +56,7 @@ class SurveyorController < ApplicationController
         @participant = core_participant
       end
     end
-    @instrument           = @response_set.instrument
-    @participant_consent  = @response_set.participant_consent
-    @event                = @instrument.nil? ? @participant_consent.contact.contact_links.first.event : @instrument.contact_link.event
+    @event = @response_set.event
     @activities_for_event = []
     if @participant
       @activity_plan        = psc.build_activity_plan(@participant)
