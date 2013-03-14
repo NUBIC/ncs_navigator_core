@@ -634,6 +634,13 @@ class Participant < ActiveRecord::Base
   end
 
   ##
+  # Returns true if the participant is not ineligible and
+  # has not withdrawn
+  def in_study?
+    !ineligible? && !withdrawn?
+  end
+
+  ##
   # Returns true if a participant_consent record exists for the given consent type
   # and consent_given_code is true and consent_withdraw_code is not true.
   # If no consent type is given, then check if any consent record exists
@@ -656,7 +663,6 @@ class Participant < ActiveRecord::Base
     consents = consents_for_type(determine_consent_type(consent_type))
     consents.select { |c| c.reconsented? }.size > 0 && !withdrawn?(consent_type)
   end
-
 
   ##
   # Returns true if a participant_consent record exists for the given consent type

@@ -1,0 +1,14 @@
+- participant = contact_link.event.participant
+-# find those consent records that are associated with a response_set
+-# this is done to handle consents prior to change to using a Survey for consent
+- survey_consents = participant.participant_consents.select{ |pc| !pc.response_set.nil? }
+-# then match the consent to the current survey
+- consents = survey_consents.select { |pc| pc.response_set.survey.title == survey.title }
+- if consents.blank?
+  -# if there are no existing consents this activity has not been done
+  -# cf. the contact_links/_activity.html.haml to see how current activity acts differently
+  = render "future_activity", :activity => activity, :survey => survey
+- else
+  - consents.each do |consent|
+    - path = edit_participant_participant_consent_path(participant, consent, { :contact_link_id => contact_link.id })
+    = render "known_consent_instrument", :activity => activity, :survey => survey, :path => path, :obj => consent
