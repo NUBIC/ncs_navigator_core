@@ -135,7 +135,6 @@ describe OperationalDataExtractor::InformedConsent do
         end
       end
 
-
     end
   end
 

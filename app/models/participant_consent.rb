@@ -225,7 +225,8 @@ class ParticipantConsent < ActiveRecord::Base
   ##
   # Finds or creates a record to indicate that a person has begun taking a
   # survey for the Informed Consent. The ParticipantConsent returned will also
-  # have an associated ResponseSet.
+  # have an associated ResponseSet and ParticipantConsentSample records of each
+  # sample_consent_type.
   #
   # @param [Person] the person taking the survey
   # @param [Participant] the participant who the survey is about
