@@ -13,6 +13,7 @@ class EligibilityAdjudicator
   def make_ineligible
     ActiveRecord::Base.transaction do
       creates_ineligibility_record(@person)
+      remove_ppg_details(@participant)
       delete_participant_person_links(@participant)
       disassociates_participant_from_all_events(@participant)
       disassociates_participant_from_response_sets(@participant)
@@ -22,6 +23,11 @@ class EligibilityAdjudicator
 
   def creates_ineligibility_record(person)
     SampledPersonsIneligibility.create_from_person!(person)
+  end
+
+  def remove_ppg_details(participant)
+    PpgStatusHistory.where(:participant_id => participant).destroy_all
+    PpgDetail.where(:participant_id => participant).destroy_all
   end
 
   def delete_participant_person_links(participant)
