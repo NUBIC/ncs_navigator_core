@@ -48,6 +48,7 @@ module ResponseSetPrepopulation
         end
 
         it "should be TRUE if participant declined prior to enrollment" do
+          pending
           pc = Factory(:participant_consent, :consent_given => @yes,
                        :consent_withdraw => @no, :consent_type => @general,
                        :participant => @participant)

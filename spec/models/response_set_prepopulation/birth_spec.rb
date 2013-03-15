@@ -14,11 +14,270 @@ module ResponseSetPrepopulation
       response.to_s.should == value
     end
 
-    context "for responses from part one prepopulated in part two" do
+    def run_populator
+      Birth.new(@response_set_pt2).run
+    end
+
+    context "for version dependent responses from part one prepopulated in part two" do
 
       let(:person) { Factory(:person) }
-      let(:survey_pt1) { create_birth_part_one_survey_with_prepopulated_fields_for_part_two }
-      let(:survey_pt2) { create_birth_part_two_survey_with_prepopulated_fields_from_part_one }
+      let(:participant) { Factory(:participant) }
+      let(:pv1_survey) { create_pv1_with_fields_for_birth_prepopulation }
+
+      def prepare_surveys(survey1_name, survey1_table, survey2_name)
+          @survey_pt1 = create_birth_part_one_survey_with_prepopulated_fields_for_part_two(survey1_name, survey1_table)
+          @response_set_pt1, @instrument_pt1 = prepare_instrument(person, participant, @survey_pt1)
+
+          @survey_pt2 = create_birth_part_two_survey_with_prepopulated_fields_from_part_one(survey2_name)
+          @response_set_pt2, @instrument_pt2 = prepare_instrument(person, participant, @survey_pt2)
+      end
+
+      before(:each) do
+        participant.person = person
+        participant.save!
+      end
+
+
+      describe "BIRTH_DELIVER" do
+
+        it "response should not exist if the question has not previously been answered for instrument MDES version 3.0" do
+          prepare_surveys("INS_QUE_Birth_INT_EHPBHIPBS_M3.0_V3.0_PART_ONE", "BIRTH_VISIT_3", "INS_QUE_Birth_INT_EHPBHIPBS_M3.0_V3.0_PART_TWO")
+          params = { :person => person, :instrument => @instrument_pt2, :survey => @survey_pt2 }
+          run_populator
+          responses = @response_set_pt2.responses.select do |r|
+            r.question.reference_identifier == "prepopulated_birth_deliver_from_birth_visit_part_one"
+          end
+
+          responses.should be_empty
+        end
+
+        it "should be set to the response from part_one for instrument MDES version 3.0" do
+          prepare_surveys("INS_QUE_Birth_INT_EHPBHIPBS_M3.0_V3.0_PART_ONE", "BIRTH_VISIT_3", "INS_QUE_Birth_INT_EHPBHIPBS_M3.0_V3.0_PART_TWO")
+          some_other_place = mock(NcsCode, :local_code => 'some_other_place')
+          take_survey(@survey_pt1, @response_set_pt1) do |r|
+            r.a "BIRTH_VISIT_3.BIRTH_DELIVER", some_other_place
+          end
+          run_populator
+
+          assert_response_value(@response_set_pt2, "prepopulated_birth_deliver_from_birth_visit_part_one", "SOME OTHER PLACE")
+        end
+
+        it "response should not exist if the question has not previously been answered for instrument MDES version 3.1" do
+          prepare_surveys("INS_QUE_Birth_INT_LI_M3.1_V2.0_PART_ONE", "BIRTH_VISIT_LI_2", "INS_QUE_Birth_INT_LI_M3.1_V2.0_PART_TWO")
+          params = { :person => person, :instrument => @instrument_pt2, :survey => @survey_pt2 }
+          run_populator
+          responses = @response_set_pt2.responses.select do |r|
+            r.question.reference_identifier == "prepopulated_birth_deliver_from_birth_visit_part_one"
+          end
+
+          responses.should be_empty
+        end
+
+        it "should be set to the response from part_one for instrument MDES version 3.1" do
+          prepare_surveys("INS_QUE_Birth_INT_LI_M3.1_V2.0_PART_ONE", "BIRTH_VISIT_LI_2", "INS_QUE_Birth_INT_LI_M3.1_V2.0_PART_TWO")
+          some_other_place = mock(NcsCode, :local_code => 'some_other_place')
+          take_survey(@survey_pt1, @response_set_pt1) do |r|
+            r.a "BIRTH_VISIT_LI_2.BIRTH_DELIVER", some_other_place
+          end
+          run_populator
+
+          assert_response_value(@response_set_pt2, "prepopulated_birth_deliver_from_birth_visit_part_one", "SOME OTHER PLACE")
+        end
+
+        it "response should not exist if the question has not previously been answered for instrument MDES version 3.2" do
+          prepare_surveys("INS_QUE_Birth_INT_M3.2_V3.1_PART_ONE", "BIRTH_VISIT_4", "INS_QUE_Birth_INT_M3.2_V3.1_PART_TWO")
+          params = { :person => person, :instrument => @instrument_pt2, :survey => @survey_pt2 }
+          run_populator
+          responses = @response_set_pt2.responses.select do |r|
+            r.question.reference_identifier == "prepopulated_birth_deliver_from_birth_visit_part_one"
+          end
+
+          responses.should be_empty
+        end
+
+        it "should be set to the response from part_one for instrument MDES version 3.2" do
+          prepare_surveys("INS_QUE_Birth_INT_M3.2_V3.1_PART_ONE", "BIRTH_VISIT_4", "INS_QUE_Birth_INT_M3.2_V3.1_PART_TWO")
+          some_other_place = mock(NcsCode, :local_code => 'some_other_place')
+          take_survey(@survey_pt1, @response_set_pt1) do |r|
+            r.a "BIRTH_VISIT_4.BIRTH_DELIVER", some_other_place
+          end
+          run_populator
+
+          assert_response_value(@response_set_pt2, "prepopulated_birth_deliver_from_birth_visit_part_one", "SOME OTHER PLACE")
+        end
+      end
+
+      describe "RELEASE" do
+        it "response should not exist if the question has not previously been answered for instrument MDES version prior to 3.0" do
+          prepare_surveys("INS_QUE_Birth_INT_LI_P2_V10_PART_ONE", "BIRTH_VISIT_LI", "INS_QUE_Birth_INT_LI_P2_V10_PART_TWO")
+          params = { :person => person, :instrument => @instrument_pt2, :survey => @survey_pt2 }
+          run_populator
+          responses = @response_set_pt2.responses.select do |r|
+            r.question.reference_identifier == "prepopulated_release_from_birth_visit_part_one"
+          end
+          responses.should be_empty
+        end
+
+        it "should be set to the response from part_one for instrument MDES version prior to 3.0" do
+          prepare_surveys("INS_QUE_Birth_INT_LI_P2_V10_PART_ONE", "BIRTH_VISIT_LI", "INS_QUE_Birth_INT_LI_P2_V10_PART_TWO")
+          take_survey(@survey_pt1, @response_set_pt1) do |a|
+            a.yes "BIRTH_VISIT_LI.RELEASE"
+          end
+          run_populator
+
+          assert_response_value(@response_set_pt2, "prepopulated_release_from_birth_visit_part_one", "YES")
+        end
+
+        it "response should not exist if the question has not previously been answered for instrument MDES version 3.0" do
+          prepare_surveys("INS_QUE_Birth_INT_EHPBHIPBS_M3.0_V3.0_PART_ONE", "BIRTH_VISIT_3", "INS_QUE_Birth_INT_EHPBHIPBS_M3.0_V3.0_PART_TWO")
+          params = { :person => person, :instrument => @instrument_pt2, :survey => @survey_pt2 }
+          run_populator
+          responses = @response_set_pt2.responses.select do |r|
+            r.question.reference_identifier == "prepopulated_release_from_birth_visit_part_one"
+          end
+          responses.should be_empty
+        end
+
+        it "should be set to the response from part_one for instrument MDES version 3.0" do
+          prepare_surveys("INS_QUE_Birth_INT_EHPBHIPBS_M3.0_V3.0_PART_ONE", "BIRTH_VISIT_3", "INS_QUE_Birth_INT_EHPBHIPBS_M3.0_V3.0_PART_TWO")
+          take_survey(@survey_pt1, @response_set_pt1) do |r|
+            r.yes "BIRTH_VISIT_3.RELEASE"
+          end
+          run_populator
+
+          assert_response_value(@response_set_pt2, "prepopulated_release_from_birth_visit_part_one", "YES")
+        end
+
+        it "response should not exist if the question has not previously been answered for instrument MDES version 3.1" do
+          prepare_surveys("INS_QUE_Birth_INT_LI_M3.1_V2.0_PART_ONE", "BIRTH_VISIT_LI_2", "INS_QUE_Birth_INT_LI_M3.1_V2.0_PART_TWO")
+          params = { :person => person, :instrument => @instrument_pt2, :survey => @survey_pt2 }
+          run_populator
+          responses = @response_set_pt2.responses.select do |r|
+            r.question.reference_identifier == "prepopulated_release_from_birth_visit_part_one"
+          end
+          responses.should be_empty
+        end
+
+        it "should be set to the response from part_one for instrument MDES version 3.1" do
+          prepare_surveys("INS_QUE_Birth_INT_LI_M3.1_V2.0_PART_ONE", "BIRTH_VISIT_LI_2", "INS_QUE_Birth_INT_LI_M3.1_V2.0_PART_TWO")
+          take_survey(@survey_pt1, @response_set_pt1) do |a|
+            a.yes "BIRTH_VISIT_LI_2.RELEASE"
+          end
+          run_populator
+
+          assert_response_value(@response_set_pt2, "prepopulated_release_from_birth_visit_part_one", "YES")
+        end
+
+        it "response should not exist if the question has not previously been answered for instrument MDES version 3.2" do
+          prepare_surveys("INS_QUE_Birth_INT_M3.2_V3.1_PART_ONE", "BIRTH_VISIT_4", "INS_QUE_Birth_INT_M3.2_V3.1_PART_TWO")
+          params = { :person => person, :instrument => @instrument_pt2, :survey => @survey_pt2 }
+          run_populator
+          responses = @response_set_pt2.responses.select do |r|
+            r.question.reference_identifier == "prepopulated_release_from_birth_visit_part_one"
+          end
+          responses.should be_empty
+        end
+
+        it "should be set to the response from part_one for instrument MDES version 3.2" do
+          prepare_surveys("INS_QUE_Birth_INT_M3.2_V3.1_PART_ONE", "BIRTH_VISIT_4", "INS_QUE_Birth_INT_M3.2_V3.1_PART_TWO")
+          take_survey(@survey_pt1, @response_set_pt1) do |a|
+            a.yes "BIRTH_VISIT_4.RELEASE"
+          end
+          run_populator
+
+          assert_response_value(@response_set_pt2, "prepopulated_release_from_birth_visit_part_one", "YES")
+        end
+
+      end
+
+      describe "MULTIPLE" do
+
+        it "should be set to the response from part_one for instrument MDES version prior to 3.0" do
+          prepare_surveys("INS_QUE_Birth_INT_LI_P2_V10_PART_ONE", "BIRTH_VISIT_LI", "INS_QUE_Birth_INT_LI_P2_V10_PART_TWO")
+          params = { :person => person, :instrument => @instrument_pt2, :survey => @survey_pt2 }
+          run_populator
+          responses = @response_set_pt2.responses.select do |r|
+            r.question.reference_identifier == "prepopulated_multiple_from_birth_visit_part_one"
+          end
+          responses.should be_empty
+        end
+
+        it "should be set to the response from part_one for instrument MDES version prior ot 3.0" do
+          prepare_surveys("INS_QUE_Birth_INT_LI_P2_V10_PART_ONE", "BIRTH_VISIT_LI", "INS_QUE_Birth_INT_LI_P2_V10_PART_TWO")
+          take_survey(@survey_pt1, @response_set_pt1) do |a|
+            a.no "BIRTH_VISIT_LI.MULTIPLE"
+          end
+          run_populator
+          fail
+        end
+
+        it "response should not exist if the question has not previously been answered for instrument MDES version 3.0" do
+          prepare_surveys("INS_QUE_Birth_INT_EHPBHIPBS_M3.0_V3.0_PART_ONE", "BIRTH_VISIT_3", "INS_QUE_Birth_INT_EHPBHIPBS_M3.0_V3.0_PART_TWO")
+          params = { :person => person, :instrument => @instrument_pt2, :survey => @survey_pt2 }
+          run_populator
+          responses = @response_set_pt2.responses.select do |r|
+            r.question.reference_identifier == "prepopulated_multiple_from_birth_visit_part_one"
+          end
+
+          responses.should be_empty
+        end
+
+        it "should be set to the response from part_one for instrument MDES version 3.0" do
+          prepare_surveys("INS_QUE_Birth_INT_EHPBHIPBS_M3.0_V3.0_PART_ONE", "BIRTH_VISIT_3", "INS_QUE_Birth_INT_EHPBHIPBS_M3.0_V3.0_PART_TWO")
+          take_survey(@survey_pt1, @response_set_pt1) do |r|
+            r.no "BIRTH_VISIT_3.MULTIPLE"
+          end
+          run_populator
+
+          assert_response_value(@response_set_pt2, "prepopulated_multiple_from_birth_visit_part_one", "NO")
+        end
+
+        it "response should not exist if the question has not previously been answered for instrument MDES version 3.1" do
+          prepare_surveys("INS_QUE_Birth_INT_LI_M3.1_V2.0_PART_ONE", "BIRTH_VISIT_LI_2", "INS_QUE_Birth_INT_LI_M3.1_V2.0_PART_TWO")
+          params = { :person => person, :instrument => @instrument_pt2, :survey => @survey_pt2 }
+          run_populator
+          responses = @response_set_pt2.responses.select do |r|
+            r.question.reference_identifier == "prepopulated_multiple_from_birth_visit_part_one"
+          end
+          responses.should be_empty
+        end
+
+        it "should be set to the response from part_one for instrument MDES version 3.1" do
+          prepare_surveys("INS_QUE_Birth_INT_LI_M3.1_V2.0_PART_ONE", "BIRTH_VISIT_LI_2", "INS_QUE_Birth_INT_LI_M3.1_V2.0_PART_TWO")
+          take_survey(@survey_pt1, @response_set_pt1) do |a|
+            a.no "BIRTH_VISIT_LI_2.MULTIPLE"
+          end
+          run_populator
+
+          assert_response_value(@response_set_pt2, "prepopulated_multiple_from_birth_visit_part_one", "NO")
+        end
+
+        it "response should not exist if the question has not previously been answered for instrument MDES version 3.2" do
+          prepare_surveys("INS_QUE_Birth_INT_M3.2_V3.1_PART_ONE", "BIRTH_VISIT_4", "INS_QUE_Birth_INT_M3.2_V3.1_PART_TWO")
+          params = { :person => person, :instrument => @instrument_pt2, :survey => @survey_pt2 }
+          run_populator
+          responses = @response_set_pt2.responses.select do |r|
+            r.question.reference_identifier == "prepopulated_multiple_from_birth_visit_part_one"
+          end
+          responses.should be_empty
+        end
+
+        it "should be set to the response from part_one for instrument MDES version 3.2" do
+          prepare_surveys("INS_QUE_Birth_INT_M3.2_V3.1_PART_ONE", "BIRTH_VISIT_4", "INS_QUE_Birth_INT_M3.2_V3.1_PART_TWO")
+          take_survey(@survey_pt1, @response_set_pt1) do |a|
+            a.no "BIRTH_VISIT_4.MULTIPLE"
+          end
+          run_populator
+
+          assert_response_value(@response_set_pt2, "prepopulated_multiple_from_birth_visit_part_one", "NO")
+        end
+      end
+    end
+
+    context "for responses from part one prepopulated in part two" do
+      let(:person) { Factory(:person) }
+      let(:survey_pt1) { create_birth_part_one_survey_with_prepopulated_fields_for_part_two("INS_QUE_Birth_INT_EHPBHIPBS_M3.0_V3.0_PART_ONE", "BIRTH_VISIT_3") }
+      let(:survey_pt2) { create_birth_part_two_survey_with_prepopulated_fields_from_part_one("INS_QUE_Birth_INT_EHPBHIPBS_M3.0_V3.0_PART_TWO") }
       let(:participant) { Factory(:participant) }
       let(:pv1_survey) { create_pv1_with_fields_for_birth_prepopulation }
 
@@ -28,89 +287,15 @@ module ResponseSetPrepopulation
 
         @response_set_pt1, @instrument_pt1 = prepare_instrument(person, participant, survey_pt1)
         @response_set_pt1.responses.should be_empty
-
         # Yes this should be the same instrument - bypassing the PSC reference connection for now
         @response_set_pt2, @instrument_pt2 = prepare_instrument(person, participant, survey_pt2)
         @response_set_pt2.responses.should be_empty
-
-        @rsp = Birth.new(@response_set_pt2)
       end
-
-
-      describe "BIRTH_DELIVER" do
-
-        it "response should not exist if the question has not previously been answered" do
-          params = { :person => person, :instrument => @instrument_pt2, :survey => survey_pt2 }
-          responses = @response_set_pt2.responses.select do |r|
-            r.question.reference_identifier == "prepopulated_birth_deliver_from_birth_visit_part_one"
-          end
-          @response_set_pt2.prepopulate
-
-          responses.should be_empty
-        end
-
-        it "should be set to the response from part_one" do
-          some_other_place = mock(NcsCode, :local_code => 'some_other_place')
-          take_survey(survey_pt1, @response_set_pt1) do |r|
-            r.a "BIRTH_VISIT_3.BIRTH_DELIVER", some_other_place
-          end
-          @response_set_pt2.prepopulate
-
-          assert_response_value(@response_set_pt2, "prepopulated_birth_deliver_from_birth_visit_part_one", "SOME OTHER PLACE")
-        end
-
-      end
-
-      describe "RELEASE" do
-
-        it "response should not exist if the question has not previously been answered" do
-          params = { :person => person, :instrument => @instrument_pt2, :survey => survey_pt2 }
-          responses = @response_set_pt2.responses.select do |r|
-            r.question.reference_identifier == "prepopulated_release_from_birth_visit_part_one"
-          end
-          @response_set_pt2.prepopulate
-
-          responses.should be_empty
-        end
-
-        it "should be set to the response from part_one" do
-          take_survey(survey_pt1, @response_set_pt1) do |r|
-            r.yes "BIRTH_VISIT_3.RELEASE"
-          end
-          @response_set_pt2.prepopulate
-
-          assert_response_value(@response_set_pt2, "prepopulated_release_from_birth_visit_part_one", "YES")
-        end
-
-      end
-
-      describe "MULTIPLE" do
-        it "response should not exist if the question has not previously been answered" do
-          params = { :person => person, :instrument => @instrument_pt2, :survey => survey_pt2 }
-          responses = @response_set_pt2.responses.select do |r|
-            r.question.reference_identifier == "prepopulated_multiple_from_birth_visit_part_one"
-          end
-          @response_set_pt2.prepopulate
-
-          responses.should be_empty
-        end
-
-        it "should be set to the response from part_one" do
-          take_survey(survey_pt1, @response_set_pt1) do |r|
-            r.no "BIRTH_VISIT_3.MULTIPLE"
-          end
-          @response_set_pt2.prepopulate
-
-          assert_response_value(@response_set_pt2, "prepopulated_multiple_from_birth_visit_part_one", "NO")
-        end
-
-      end
-
+      
       describe "prepopulated_is_valid_work_name_provided" do
 
         it "should be FALSE if work name was not previously answered" do
-          @response_set_pt2.prepopulate
-
+          run_populator
           assert_response_value(@response_set_pt2, "prepopulated_is_valid_work_name_provided", "FALSE")
         end
 
@@ -120,7 +305,7 @@ module ResponseSetPrepopulation
           take_survey(pv1_survey, pv1_response_set) do |r|
             r.refused "PREG_VISIT_1_3.WORK_NAME"
           end
-          @response_set_pt2.prepopulate
+          run_populator
 
           assert_response_value(@response_set_pt2, "prepopulated_is_valid_work_name_provided", "FALSE")
         end
@@ -131,7 +316,7 @@ module ResponseSetPrepopulation
           take_survey(pv1_survey, pv1_response_set) do |r|
             r.dont_know "PREG_VISIT_1_3.WORK_NAME"
           end
-          @response_set_pt2.prepopulate
+          run_populator
 
           assert_response_value(@response_set_pt2, "prepopulated_is_valid_work_name_provided", "FALSE")
         end
@@ -142,8 +327,9 @@ module ResponseSetPrepopulation
           take_survey(pv1_survey, pv1_response_set) do |r|
             r.a "PREG_VISIT_1_3.WORK_NAME", "work_name"
           end
-          @response_set_pt2.prepopulate
+          run_populator
 
+          puts @response_set_pt2.responses.map{|r| [r.question.reference_identifier, r.answer.reference_identifier] }
           assert_response_value(@response_set_pt2, "prepopulated_is_valid_work_name_provided", "TRUE")
         end
 
@@ -152,8 +338,7 @@ module ResponseSetPrepopulation
       describe "prepopulated_is_valid_work_address_provided" do
 
         it "should be FALSE if work address was not previously answered" do
-          @response_set_pt2.prepopulate
-
+          run_populator
           assert_response_value(@response_set_pt2, "prepopulated_is_valid_work_address_provided", "FALSE")
         end
 
@@ -163,7 +348,7 @@ module ResponseSetPrepopulation
           take_survey(pv1_survey, pv1_response_set) do |r|
             r.refused "PREG_VISIT_1_3.WORK_ADDRESS_1"
           end
-          @response_set_pt2.prepopulate
+          run_populator
 
           assert_response_value(@response_set_pt2, "prepopulated_is_valid_work_address_provided", "FALSE")
         end
@@ -174,7 +359,7 @@ module ResponseSetPrepopulation
           take_survey(pv1_survey, pv1_response_set) do |r|
             r.dont_know "PREG_VISIT_1_3.WORK_ADDRESS_1"
           end
-          @response_set_pt2.prepopulate
+          run_populator
 
           assert_response_value(@response_set_pt2, "prepopulated_is_valid_work_address_provided", "FALSE")
         end
@@ -185,7 +370,7 @@ module ResponseSetPrepopulation
           take_survey(pv1_survey, pv1_response_set) do |r|
             r.a "PREG_VISIT_1_3.WORK_ADDRESS_1", "work_address"
           end
-          @response_set_pt2.prepopulate
+          run_populator
 
           assert_response_value(@response_set_pt2, "prepopulated_is_valid_work_address_provided", "TRUE")
         end
@@ -195,13 +380,13 @@ module ResponseSetPrepopulation
       describe "prepopulated_is_pv_one_complete" do
         it "should be TRUE if the pv1 event was completed" do
           Participant.any_instance.stub(:completed_event?).and_return(true)
-          @response_set_pt2.prepopulate
+          run_populator
           assert_response_value(@response_set_pt2, "prepopulated_is_pv_one_complete", "TRUE")
         end
 
         it "should be FALSE if the pv1 event was NOT completed" do
           Participant.any_instance.stub(:completed_event?).and_return(false)
-          @response_set_pt2.prepopulate
+          run_populator
           assert_response_value(@response_set_pt2, "prepopulated_is_pv_one_complete", "FALSE")
         end
       end
@@ -209,13 +394,13 @@ module ResponseSetPrepopulation
       describe "prepopulated_is_pv_two_complete" do
         it "should be TRUE if the pv2 event was completed" do
           Participant.any_instance.stub(:completed_event?).and_return(true)
-          @response_set_pt2.prepopulate
+          run_populator
           assert_response_value(@response_set_pt2, "prepopulated_is_pv_two_complete", "TRUE")
         end
 
         it "should be FALSE if the pv2 event was NOT completed" do
           Participant.any_instance.stub(:completed_event?).and_return(false)
-          @response_set_pt2.prepopulate
+          run_populator
           assert_response_value(@response_set_pt2, "prepopulated_is_pv_two_complete", "FALSE")
         end
       end
