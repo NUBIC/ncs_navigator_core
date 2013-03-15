@@ -49,7 +49,7 @@ module ResponseSetPrepopulation
               answer_for(question,
                          is_event_completed?(Event::nine_month_visit_code))
             when "prepopulate_is_birth_or_subsequent_event"
-              answer_for(question, Event::birth_code == event.event_type_code) 
+              answer_for(question, Event::birth_code == event.event_type_code)
             else
               nil
             end
@@ -76,7 +76,7 @@ module ResponseSetPrepopulation
                                prepop_answer, bp_arm_circ)
       true
     end
-      
+
     def is_arm_circ_given_in_anthropo?(question, response_set)
       valid_response_exists?("CHILD_ANTHRO.AN_MID_UPPER_ARM_CIRC1", :last) ?
           prepopulate_bp_mid_upper_arm_circ(question, response_set) : false
@@ -89,7 +89,7 @@ module ResponseSetPrepopulation
                             e.event_type_code == Event::father_visit_saq_code
       end
     end
- 
+
     def check_event_type_for_con_reconsideration
       # List of all pregnancy visit events
       pregnancy_visits = [
@@ -103,7 +103,7 @@ module ResponseSetPrepopulation
       elsif event.twelve_month_visit?
         "twelve_mns"
       else
-        "" 
+        ""
       end
     end
   end

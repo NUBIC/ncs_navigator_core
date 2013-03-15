@@ -19,7 +19,7 @@ module ResponseSetPrepopulation
           answer =
             case reference_identifier
             when "prepopulated_is_declined_participation_prior_to_enrollment"
-              general_consent_given?(question)
+              consent_given?(question)
             when "prepopulated_study_center_type"
               what_study_center_type?(question)
             else
@@ -33,10 +33,8 @@ module ResponseSetPrepopulation
       response_set
     end
 
-    def general_consent_given?(question)
-      general_consent = NcsCode.for_list_name_and_local_code(
-                                                "CONSENT_TYPE_CL1", 1)
-      answer_for(question, participant.consented?(general_consent))
+    def consent_given?(question)
+      answer_for(question, participant.consented?)
     end
 
     def what_study_center_type?(question)

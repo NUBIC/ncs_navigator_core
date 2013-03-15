@@ -56,15 +56,6 @@ module ResponseSetPrepopulation
         response_set.responses.build(:question => question, :answer => answer, response_type.to_sym => value)
       end
     end
-    def build_response_for_value(response_type, response_set, question, answer, value)
-      if response_type == "answer"
-        return if answer.nil?
-        response_set.responses.build(:question => question, :answer => answer)
-      else
-        return if value.nil?
-        response_set.responses.build(:question => question, :answer => answer, response_type.to_sym => value)
-      end
-    end
 
     def find_question_for_reference_identifier(reference_identifier)
       question = nil

@@ -27,13 +27,16 @@ module ResponseSetPrepopulation
                   when "prepopulated_mode_of_contact"
                     prepopulated_mode_of_contact(question)
                   when "prepopulated_birth_deliver_from_birth_visit_part_one"
-                    dei =  response_set.survey.title.include?("LI") ? "BIRTH_VISIT_LI.BIRTH_DELIVER" : "BIRTH_VISIT_3.BIRTH_DELIVER"
+                    dei = birth_visit_part_one_export_id(response_set,
+                                                         "BIRTH_DELIVER")
                     answer_equal_to_response_from_part_one_for(question, dei)
                   when "prepopulated_release_from_birth_visit_part_one"
-                    dei =  response_set.survey.title.include?("LI") ? "BIRTH_VISIT_LI.RELEASE" : "BIRTH_VISIT_3.RELEASE"
+                    dei =  dei = birth_visit_part_one_export_id(response_set,
+                                                                "RELEASE")
                     answer_equal_to_response_from_part_one_for(question, dei)
                   when "prepopulated_multiple_from_birth_visit_part_one"
-                    dei =  response_set.survey.title.include?("LI") ? "BIRTH_VISIT_LI.MULTIPLE" : "BIRTH_VISIT_3.MULTIPLE"
+                    dei =  birth_visit_part_one_export_id(response_set,
+                                                          "MULTIPLE")
                     answer_equal_to_response_from_part_one_for(question, dei)
                   when "prepopulated_is_valid_work_name_provided"
                     is_valid_work_name_provided?(question)
@@ -51,6 +54,18 @@ module ResponseSetPrepopulation
 
           build_response_for_value(response_type, response_set, question, answer, nil)
         end
+      end
+    end
+
+    def birth_visit_part_one_export_id(response_set, data_ref)
+      if response_set.survey.title.include?("M3.0")
+        "BIRTH_VISIT_3.#{data_ref}"
+      elsif response_set.survey.title.include?("M3.1")
+        "BIRTH_VISIT_LI_2.#{data_ref}"
+      elsif response_set.survey.title.include?("M3.2")
+        "BIRTH_VISIT_4.#{data_ref}"
+      else
+        "BIRTH_VISIT_LI.#{data_ref}"
       end
     end
 

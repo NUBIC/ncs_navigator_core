@@ -201,13 +201,13 @@ module BirthVisit
 
     # RELEASE
     q = Factory(:question, :reference_identifier => "RELEASE", :data_export_identifier => "#{mdes_table}.RELEASE", :survey_section_id => survey_section.id)
-    a = Factory(:answer, :question_id => q.id, :text => "YES", :response_class => "answer", :reference_identifier => "yes")
-    a = Factory(:answer, :question_id => q.id, :text => "NO", :response_class => "answer", :reference_identifier => "no")
+    a = Factory(:answer, :question_id => q.id, :text => "YES", :response_class => "answer", :reference_identifier => "1")
+    a = Factory(:answer, :question_id => q.id, :text => "NO", :response_class => "answer", :reference_identifier => "2")
 
     # MULTIPLE
     q = Factory(:question, :reference_identifier => "MULTIPLE", :data_export_identifier => "#{mdes_table}.MULTIPLE", :survey_section_id => survey_section.id)
-    a = Factory(:answer, :question_id => q.id, :text => "YES", :response_class => "answer", :reference_identifier => "yes")
-    a = Factory(:answer, :question_id => q.id, :text => "NO", :response_class => "answer", :reference_identifier => "no")
+    a = Factory(:answer, :question_id => q.id, :text => "YES", :response_class => "answer", :reference_identifier => "1")
+    a = Factory(:answer, :question_id => q.id, :text => "NO", :response_class => "answer", :reference_identifier => "2")
 
     survey
   end
