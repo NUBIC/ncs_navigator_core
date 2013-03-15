@@ -1,5 +1,5 @@
 # == Schema Information
-# Schema version: 20130129202515
+# Schema version: 20130301164426
 #
 # Table name: response_sets
 #
@@ -9,6 +9,7 @@
 #  created_at                                :datetime
 #  id                                        :integer          not null, primary key
 #  instrument_id                             :integer
+#  participant_consent_id                    :integer
 #  participant_id                            :integer
 #  processed_for_operational_data_extraction :boolean
 #  started_at                                :datetime

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130226172617) do
+ActiveRecord::Schema.define(:version => 20130301164426) do
 
   create_table "addresses", :force => true do |t|
     t.integer  "psu_code",                                                :null => false
@@ -640,17 +640,18 @@ ActiveRecord::Schema.define(:version => 20130226172617) do
   add_index "participant_low_intensity_state_transitions", ["participant_id"], :name => "participant_low_intensity_state_idx"
 
   create_table "participant_person_links", :force => true do |t|
-    t.integer  "psu_code",                         :null => false
-    t.integer  "person_id",                        :null => false
-    t.integer  "participant_id",                   :null => false
-    t.integer  "relationship_code",                :null => false
+    t.integer  "psu_code",                                                  :null => false
+    t.integer  "person_id",                                                 :null => false
+    t.integer  "participant_id",                                            :null => false
+    t.integer  "relationship_code",                                         :null => false
     t.string   "relationship_other"
-    t.integer  "is_active_code",                   :null => false
-    t.string   "transaction_type",   :limit => 36
-    t.string   "person_pid_id",      :limit => 36, :null => false
+    t.integer  "is_active_code",                                            :null => false
+    t.string   "transaction_type",            :limit => 36
+    t.string   "person_pid_id",               :limit => 36,                 :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "response_set_id"
+    t.integer  "primary_caregiver_flag_code",               :default => -4, :null => false
   end
 
   create_table "participant_staff_relationships", :force => true do |t|
@@ -1181,6 +1182,8 @@ ActiveRecord::Schema.define(:version => 20130226172617) do
     t.integer  "instrument_id"
     t.string   "api_id"
     t.integer  "participant_id"
+    t.integer  "event_id"
+    t.integer  "participant_consent_id"
   end
 
   add_index "response_sets", ["access_code"], :name => "response_sets_ac_idx", :unique => true

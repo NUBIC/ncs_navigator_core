@@ -48,13 +48,14 @@ class ParticipantConsent < ActiveRecord::Base
   belongs_to :person_who_consented,  :class_name => "Person", :foreign_key => :person_who_consented_id
   belongs_to :person_wthdrw_consent, :class_name => "Person", :foreign_key => :person_wthdrw_consent_id
 
-  has_many :participant_consent_samples
+  has_many :participant_consent_samples, :order => "sample_consent_type_code"
+  has_one :response_set, :inverse_of => :participant_consent
 
   accepts_nested_attributes_for :participant_consent_samples, :allow_destroy => false
 
   ncs_coded_attribute :psu,                        'PSU_CL1'
   ncs_coded_attribute :consent_type,               'CONSENT_TYPE_CL1'
-  ncs_coded_attribute :consent_form_type,          'CONSENT_TYPE_CL1'
+  ncs_coded_attribute :consent_form_type,          'CONSENT_TYPE_CL3'
   ncs_coded_attribute :consent_given,              'CONFIRM_TYPE_CL2'
   ncs_coded_attribute :consent_withdraw,           'CONFIRM_TYPE_CL2'
   ncs_coded_attribute :consent_withdraw_type,      'CONSENT_WITHDRAW_REASON_CL1'
@@ -73,7 +74,6 @@ class ParticipantConsent < ActiveRecord::Base
   GENERAL          = 1
   CHILD            = 6
   LOW_INTENSITY    = 7
-  MISSING_IN_ERROR = -4
 
   def self.consent_types
     NcsNavigatorCore.mdes.types.find { |t| t.name == 'consent_type_cl1' }.
@@ -119,30 +119,88 @@ class ParticipantConsent < ActiveRecord::Base
   # and has not withdrawn that consent
   # @return [Boolean]
   def consented?
-    consent_given_code == 1 && consent_withdraw_code != 1
+    consent_given_code == NcsCode::YES
   end
 
   ##
-  # Sets the consent_withdraw to Yes (1)
-  # and sets the withdraw type code to the given
-  # (defaulting to Involuntary withdrawal initiated by the Study)
-  # @param [Integer] cf. CONSENT_WITHDRAW_REASON_CL1
-  def withdraw(withdraw_type_code = 2)
-    self.consent_withdraw_code = 1
-    self.consent_withdraw_type_code = withdraw_type_code
+  # True if this consent is a reconsent
+  # @return [Boolean]
+  def reconsent?
+    consent_reconsent_code == NcsCode::YES
   end
 
-  def withdraw!(withdraw_type_code = 2)
-    self.withdraw
-    self.save!
+  ##
+  # True if this consent is a reconsent and the
+  # participant gave consent in the affirmative
+  # @return [Boolean]
+  def reconsented?
+    reconsent? && consented?
+  end
+
+  ##
+  # True if the participant withdrew consent in the affirmative
+  # @return [Boolean]
+  def withdrawn?
+    consent_withdraw_code == NcsCode::YES
   end
 
   def phase_one?
-    consent_type_code && consent_type_code != -4
+    consent_type_code && consent_type_code != NcsCode::MISSING_IN_ERROR
   end
 
   def phase_two?
     !phase_one?
+  end
+
+  def description
+    if withdrawn?
+      "Withdrawal"
+    elsif phase_one?
+      consent_type.display_text
+    else
+      consent_form_type.display_text
+    end
+  end
+
+  ##
+  # Finds the first associated Informed Consent Event
+  # through the ParticipantConsent.contact
+  # @return [Event]
+  def consent_event
+    return nil unless contact
+
+    events = contact.contact_links.map(&:event).sort_by do |e|
+      e.try(:event_start_date)
+    end
+
+    return events.first if events.size == 1
+
+    events.detect do |e|
+      e.event_type_code == Event.informed_consent_code
+    end
+  end
+
+  ##
+  # Finds or builds a record to indicate that a person has begun taking a
+  # survey for the Informed Consent. The ParticipantConsent returned will also
+  # have an unpersisted associated ResponseSet.
+  #
+  # @param [Person] the person taking the survey
+  # @param [Participant] the participant who the survey is about
+  # @param [Survey] Survey with title matching PSC activity instrument label
+  # @param [Contact]
+  # @return[ParticipantConsent]
+  def self.start!(person, participant, survey, contact)
+    where_clause = "response_sets.survey_id = ? AND response_sets.user_id = ? and participant_consents.contact_id = ?"
+    rs = ResponseSet.includes(:participant_consent).where(where_clause, survey.id, person.id, contact.id).first
+    rs.nil? ? create_consent(person, participant, survey, contact) : rs.participant_consent
+  end
+
+  def self.create_consent(person, participant, survey, contact)
+    pc = participant.participant_consents.build(:contact => contact, :psu => participant.psu)
+    pc.build_response_set(:survey_id => survey.id, :user_id => person.id, :participant_id => participant.id)
+    pc.save!
+    pc
   end
 
 end

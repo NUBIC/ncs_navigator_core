@@ -40,6 +40,9 @@ module NcsNavigator::Core
       study_center_phone_number
       with_specimens
       sync_log_level
+      sample_receipt_shipping_center_email
+      specimen_processing_shipping_center_email
+      manifest_email_sent_to
     ).each do |attr|
       class_eval <<-RUBY
         def #{attr}

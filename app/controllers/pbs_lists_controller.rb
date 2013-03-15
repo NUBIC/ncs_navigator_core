@@ -32,7 +32,7 @@ class PbsListsController < ApplicationController
     @pbs_list = PbsList.find(params[:id])
     @provider = @pbs_list.provider
     @staff = []
-    @contact_links = @provider.contact_links.sort_by{ |cl| [cl.contact.contact_date, cl.created_at] }.reverse
+    @contact_links = @provider.contact_links.joins(:contact).order(:contact_date, :created_at).reverse_order
     PersonnelProviderLink.where(:provider_id => @provider).all.each { |ppl| @staff << ppl.person }
     respond_to do |format|
       format.html

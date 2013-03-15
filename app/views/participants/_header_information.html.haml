@@ -7,6 +7,6 @@
     %b
       = "::"
   = participant.ppg_status
-  - if participant.ppg_status.blank? && participant.eligible?
+  - if participant.ppg_status.blank? && !participant.ineligible?
     %span.warning
       No PPG Assigned

@@ -70,6 +70,7 @@ describe ParticipantConsent do
   it { should ensure_length_of(:consent_version).is_at_most(9) }
 
   it { should have_many(:participant_consent_samples) }
+  it { should have_one(:response_set) }
 
   context "as mdes record" do
 
@@ -100,6 +101,40 @@ describe ParticipantConsent do
       obj.consent_translate.local_code.should == -4
       obj.consent_reconsent.local_code.should == -4
       obj.consent_reconsent_reason.local_code.should == -4
+    end
+  end
+
+  describe "withdrawn?" do
+    it "returns true if the consent_withdraw_code is Yes (1)" do
+      Factory(:participant_consent, :consent_withdraw_code => NcsCode::YES).should be_withdrawn
+    end
+
+    it "returns false if the consent_withdraw_code is No (2)" do
+      Factory(:participant_consent, :consent_withdraw_code => NcsCode::NO).should_not be_withdrawn
+    end
+  end
+
+  describe "reconsent?" do
+    it "returns true if the consent_reconsent_code is Yes (1)" do
+      Factory(:participant_consent, :consent_reconsent_code => NcsCode::YES).should be_reconsent
+    end
+
+    it "returns false if the consent_reconsent_code is No (2)" do
+      Factory(:participant_consent, :consent_reconsent_code => NcsCode::NO).should_not be_reconsent
+    end
+
+    it "returns false if the consent_reconsent_code is nil" do
+      Factory(:participant_consent, :consent_reconsent_code => nil).should_not be_reconsent
+    end
+  end
+
+  describe "reconsented?" do
+    it "returns true if the consent_reconsent_code is Yes (1) and consent_given_code is Yes" do
+      Factory(:participant_consent, :consent_reconsent_code => NcsCode::YES, :consent_given_code => NcsCode::YES).should be_reconsented
+    end
+
+    it "returns false if the consent_reconsent_code is Yes (1) and consent_given_code is No" do
+      Factory(:participant_consent, :consent_reconsent_code => NcsCode::YES, :consent_given_code => NcsCode::NO).should_not be_reconsented
     end
   end
 
@@ -198,7 +233,6 @@ describe ParticipantConsent do
       ParticipantConsent.low_intensity_consent_type_code.should ==
         NcsCode.for_list_name_and_local_code("CONSENT_TYPE_CL1", 7)
     end
-
   end
 
   context "phase 1 versus phase 2 consents" do
@@ -243,5 +277,122 @@ describe ParticipantConsent do
     end
   end
 
-end
+  describe "#consent_event" do
+    let(:participant_consent) { Factory(:participant_consent, :contact => contact) }
 
+    context "without a contact" do
+      let(:contact) { nil }
+      it "returns nil" do
+        participant_consent.consent_event.should be_nil
+      end
+    end
+
+    context "with a contact" do
+      let(:contact) { Factory(:contact) }
+
+      context "not associated with an Event" do
+        let!(:contact_link) { Factory(:contact_link, :event => nil, :contact => contact) }
+        it "returns nil" do
+          participant_consent.consent_event.should be_nil
+        end
+      end
+
+      context "associated with Events through ContactLink" do
+        describe "with only one event" do
+          let(:event) { Factory(:event, :event_type_code => Event.pregnancy_screener_code) }
+          let!(:contact_link) { Factory(:contact_link, :event => event, :contact => contact) }
+
+          it "returns that event" do
+            participant_consent.consent_event.should == event
+          end
+        end
+
+        describe "with more than one event" do
+          let(:ic_event) { Factory(:event, :event_type_code => Event.informed_consent_code) }
+          let(:ps_event) { Factory(:event, :event_type_code => Event.pregnancy_screener_code) }
+          before do
+            Factory(:contact_link, :event => ic_event, :contact => contact)
+            Factory(:contact_link, :event => ps_event, :contact => contact)
+          end
+
+          it "returns the InformedConsent event" do
+            participant_consent.consent_event.should == ic_event
+          end
+        end
+
+        describe "with more than one InformedConsent event" do
+          # This should not happen but is being seen in some SC data
+          # There is one contact for two IC events that happen on different dates
+          let(:event1) { Factory(:event, :event_type_code => Event.informed_consent_code, :event_start_date => Date.parse("2012-01-01")) }
+          let(:event2) { Factory(:event, :event_type_code => Event.informed_consent_code, :event_start_date => Date.parse("2012-10-10")) }
+          before do
+            Factory(:contact_link, :event => event1, :contact => contact)
+            Factory(:contact_link, :event => event2, :contact => contact)
+          end
+
+          it "returns the first chronological event" do
+            participant_consent.consent_event.should == event1
+          end
+        end
+      end
+    end
+
+  end
+
+  describe ".start!" do
+    let(:contact) { Factory(:contact) }
+    let(:person) { Factory(:person) }
+    let(:participant) { Factory(:participant) }
+    let(:survey) { Survey.last }
+
+    describe "for a new ParticipantConsent record" do
+
+      before do
+        f = "#{Rails.root}/internal_surveys/IRB_CON_Informed_Consent.rb"
+        Surveyor::Parser.parse File.read(f)
+
+        ParticipantConsent.count.should == 0
+        ParticipantConsent.start!(person, participant, survey, contact)
+      end
+
+      it "creates a new ParticipantConsent record" do
+        ParticipantConsent.count.should == 1
+        pc = ParticipantConsent.first
+        pc.contact.should == contact
+        pc.response_set.survey.should == survey
+        pc.response_set.participant.should == participant
+        pc.response_set.person.should == person
+        pc.participant.should == participant
+      end
+
+      it "creates an associated ResponseSet" do
+        ParticipantConsent.first.response_set.should_not be_nil
+      end
+    end
+
+    describe "for a existing ParticipantConsent record" do
+
+      before do
+        f = "#{Rails.root}/internal_surveys/IRB_CON_Informed_Consent.rb"
+        Surveyor::Parser.parse File.read(f)
+      end
+
+      it "returns the ParticipantConsent associated with the survey, person, and contact" do
+        2.times do |i|
+          ParticipantConsent.count.should == i
+          ParticipantConsent.start!(person, participant, survey, contact)
+          ParticipantConsent.count.should == 1
+        end
+
+        pc = ParticipantConsent.last
+        pc.contact.should == contact
+        pc.response_set.survey.should == survey
+        pc.response_set.participant.should == participant
+        pc.response_set.person.should == person
+        pc.participant.should == participant
+      end
+
+    end
+  end
+
+end

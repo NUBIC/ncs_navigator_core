@@ -56,8 +56,8 @@ class EventsController < ApplicationController
           # do not set participant
         else
           participant = @event.participant
-          if participant.pending_events.blank? && participant.eligible?
-            resp = Event.schedule_and_create_placeholder(psc, participant)
+          unless participant.ineligible?
+            resp = participant.advance(psc)
             notice += " Could not schedule next event [#{participant.next_study_segment}]" unless resp
           end
         end

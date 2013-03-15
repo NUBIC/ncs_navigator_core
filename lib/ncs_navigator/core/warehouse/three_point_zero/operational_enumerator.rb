@@ -93,7 +93,7 @@ module NcsNavigator::Core::Warehouse::ThreePointZero
         :relationship_code => :relation,
         :relationship_other => :relation_oth,
       },
-      :ignored_columns => %w(response_set_id)
+      :ignored_columns => %w(response_set_id primary_caregiver_flag_code)
     )
 
     produce_one_for_one(:ppg_details, :PpgDetails,

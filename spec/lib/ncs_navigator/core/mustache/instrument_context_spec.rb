@@ -209,9 +209,9 @@ module NcsNavigator::Core::Mustache
 
       let(:instrument_context) { InstrumentContext.new(@response_set) }
 
-      describe ".multiple_birth_prefix" do
+      describe ".multiple_release_birth_visit_prefix" do
         it "returns OperationalDataExtractor::Birth::BIRTH_LI_PREFIX" do
-          instrument_context.multiple_birth_prefix.should ==
+          instrument_context.multiple_release_birth_visit_prefix.should ==
             OperationalDataExtractor::Birth::BIRTH_LI_PREFIX
         end
       end
@@ -238,9 +238,9 @@ module NcsNavigator::Core::Mustache
 
       let(:instrument_context) { InstrumentContext.new(@response_set) }
 
-      describe ".multiple_birth_prefix" do
+      describe ".multiple_release_birth_visit_prefix" do
         it "returns OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX" do
-          instrument_context.multiple_birth_prefix.should ==
+          instrument_context.multiple_release_birth_visit_prefix.should ==
             OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX
         end
       end
@@ -259,13 +259,51 @@ module NcsNavigator::Core::Mustache
       end
 
       describe ".b_fname" do
-        it "returns the entered first name of the baby" do
-          set_first_name 'Mary'
-          instrument_context.b_fname.should == 'Mary'
+
+        context "instrument prior to MDES 3.0" do
+          before do
+            NcsNavigatorCore.stub_chain("mdes.version.to_f").and_return(2.2)
+          end
+
+          it "returns the entered first name of the baby" do
+            set_first_name 'Mary'
+            instrument_context.b_fname.should == 'Mary'
+          end
+
+          it "returns the generic 'your baby' if there is no response for the BABY_FNAME" do
+            instrument_context.b_fname.should == 'your baby'
+          end
         end
 
-        it "returns the generic 'your baby' if there is no response for the BABY_FNAME" do
-          instrument_context.b_fname.should == 'your baby'
+        context "instrument at and after MDES 3.0" do
+          before do
+            NcsNavigatorCore.stub_chain("mdes.version.to_f").and_return(3.0)
+            @part = Factory(:participant)
+            @child = Factory(:person, :first_name => "Billy")
+          end
+
+          it "returns the childs first name if its a child participant" do
+            @part.person = @child
+            @part.stub(:child_participant? => true)
+            @response_set.participant = @part
+            instrument_context.b_fname.should == 'Billy'
+          end
+
+          it "returns the parents first child's first name if its not a child participant" do
+            parent = Factory(:person)
+            @part.person = parent
+            child_link = Factory(:participant_person_link,
+                                 :person => @child,
+                                 :participant => @part,
+                                 :relationship_code => 8)
+            @part.participant_person_links <<  child_link
+            @response_set.participant = @part
+            instrument_context.b_fname.should == 'Billy'
+          end
+
+          it "returns the generic 'your baby' if there is no response for the BABY_FNAME" do
+            instrument_context.b_fname.should == 'your baby'
+          end
         end
       end
 
@@ -339,6 +377,7 @@ module NcsNavigator::Core::Mustache
         end
 
         it "returns entered first name if single birth" do
+          NcsNavigatorCore.stub_chain("mdes.version.to_f").and_return(2.2)
           create_single_birth
           set_first_name 'Mary'
           instrument_context.b_fname_or_babies.should == "Mary"
@@ -1137,9 +1176,9 @@ module NcsNavigator::Core::Mustache
 
       let(:instrument_context) { InstrumentContext.new(@response_set) }
 
-      describe ".multiple_birth_prefix" do
+      describe ".multiple_release_birth_visit_prefix" do
         it "returns OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_2_INTERVIEW_PREFIX" do
-          instrument_context.multiple_birth_prefix.should ==
+          instrument_context.multiple_release_birth_visit_prefix.should ==
             OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_2_INTERVIEW_PREFIX
         end
       end

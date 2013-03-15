@@ -22,6 +22,7 @@ module OperationalDataExtractor
     [/_ParticipantVerif_/,  OperationalDataExtractor::ParticipantVerification],
     [/_Tracing_/,           OperationalDataExtractor::TracingModule],
     [/_PBSamplingScreen_/,  OperationalDataExtractor::PbsEligibilityScreener],
+    [/_PBSampScreenHosp_/,  OperationalDataExtractor::PbsEligibilityScreener],
     [/_PregScreen_/,        OperationalDataExtractor::PregnancyScreener],
     [/_PPGFollUp_/,         OperationalDataExtractor::PpgFollowUp],
     [/_PrePreg_/,           OperationalDataExtractor::PrePregnancy],
@@ -44,7 +45,9 @@ module OperationalDataExtractor
     [/_ChildUrineColl_/,    OperationalDataExtractor::Specimen],
     [/_BreastMilkColl_/,    OperationalDataExtractor::Specimen],
     [/_SampleDistrib_/,     OperationalDataExtractor::Sample],
-
+    [/_Informed_Consent/,   OperationalDataExtractor::InformedConsent],
+    [/_Withdrawal/,         OperationalDataExtractor::InformedConsent],
+    [/_Reconsent/,          OperationalDataExtractor::InformedConsent],
   ]
 
 end

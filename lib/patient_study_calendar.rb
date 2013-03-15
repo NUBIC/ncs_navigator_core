@@ -63,10 +63,14 @@ class PatientStudyCalendar
   # Informed Consent Segments
   INFORMED_CONSENT = "Informed Consent"
   PARENTAL_PERMISSION_FOR_CHILD_PARTICIPATION = "Parental Permission for Child Participation"
+  WITHDRAWAL = "Withdrawal"
+  RECONSENT = "Reconsent"
 
   # Informed Consent Epoch and Segments
   INFORMED_CONSENT_GENERAL_CONSENT = "#{INFORMED_CONSENT_EPOCH}: #{INFORMED_CONSENT}"
   INFORMED_CONSENT_PARENTAL_PERMISSION_FOR_CHILD_PARTICIPATION = "#{INFORMED_CONSENT_EPOCH}: #{PARENTAL_PERMISSION_FOR_CHILD_PARTICIPATION}"
+  INFORMED_CONSENT_WITHDRAWAL= "#{INFORMED_CONSENT_EPOCH}: #{WITHDRAWAL}"
+  INFORMED_CONSENT_RECONSENT = "#{INFORMED_CONSENT_EPOCH}: #{RECONSENT}"
 
   # CAS
   CAS_SECURITY_SUFFIX = "/auth/cas_security_check"
@@ -367,10 +371,10 @@ class PatientStudyCalendar
   ##
   # Gets information about all activities for a participant
   # (cf. ScheduledActivity Struct) that match the given
-  # Event.scheduled_study_segment_identifier
-  # pending events.
-  # @param [Participant]
-  # @param [String] - segment id
+  # Event.scheduled_study_segment_identifier.
+  #
+  # @param participant [Participant]
+  # @param scheduled_study_segment_identifier [String] the unique segment id
   # @return [Array<ScheduledActivity>]
   def activities_for_scheduled_segment(participant, scheduled_study_segment_identifier)
     result = []
@@ -491,6 +495,14 @@ class PatientStudyCalendar
     schedule_segment(participant, INFORMED_CONSENT_GENERAL_CONSENT, date)
   end
 
+  def schedule_reconsent(participant, date = Date.today.to_s)
+    schedule_segment(participant, INFORMED_CONSENT_RECONSENT, date)
+  end
+
+  def schedule_withdrawal(participant, date = Date.today.to_s)
+    schedule_segment(participant, INFORMED_CONSENT_WITHDRAWAL, date)
+  end
+
   def schedule_parental_permission_informed_consent(participant, date = Date.today.to_s)
     schedule_segment(participant, INFORMED_CONSENT_PARENTAL_PERMISSION_FOR_CHILD_PARTICIPATION, date)
   end
@@ -603,6 +615,40 @@ class PatientStudyCalendar
         update_activity_state(a.activity_id, participant, Psc::ScheduledActivity::CANCELED, date, reason)
       end
     end
+  end
+
+  ##
+  # Cancels all consent activities in segments that are not the Informed Consent Epoch.
+  # The Informed Consent Epoch segment is scheduled explicitly for the Participant and should
+  # be performed whether the Participant had previously consented or not. Other non Informed
+  # Consent Epoch consent activities are scheduled in consort with other activities and, if the
+  # Participant has already consented, those activities do not need to remain scheduled.
+  # @param participant [Participant]
+  # @param scheduled_study_segment_identifier [String]
+  # @param date [String]
+  # @param reason [String]
+  def cancel_consent_activities(participant, scheduled_study_segment_identifier, date, reason)
+    return unless participant.consented?
+    activities_for_scheduled_segment(participant, scheduled_study_segment_identifier).each do |a|
+      if should_cancel_consent_activity?(a)
+        update_activity_state(a.activity_id, participant, Psc::ScheduledActivity::CANCELED, date, reason)
+      end
+    end
+  end
+
+  ##
+  # True if the activity is a consent activity, but is not a child consent activity
+  # and is not a part of the Informed Consent Epoch
+  # @param activity [ScheduledActivity]
+  # @return [Boolean]
+  def should_cancel_consent_activity?(activity)
+    skippable_segments = [
+      INFORMED_CONSENT_GENERAL_CONSENT,
+      INFORMED_CONSENT_PARENTAL_PERMISSION_FOR_CHILD_PARTICIPATION,
+      INFORMED_CONSENT_WITHDRAWAL,
+      INFORMED_CONSENT_RECONSENT,
+    ]
+    activity.consent_activity? && !activity.child_consent? && !skippable_segments.include?(activity.study_segment)
   end
 
   ##

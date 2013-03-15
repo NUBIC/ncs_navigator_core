@@ -12,8 +12,8 @@ class ContactLinksController < ApplicationController
 
     respond_to do |format|
       format.html # index.html.haml
-      format.json { render :json => result.all }
-      format.csv { render :csv => result.all, :force_quotes => true, :filename => 'contact_links' }
+      format.json { render :json => @q.result.all }
+      format.csv { render :csv => @q.result.all, :force_quotes => true, :filename => 'contact_links' }
     end
   end
 
@@ -145,7 +145,8 @@ class ContactLinksController < ApplicationController
     @survey       = @response_set.survey if @response_set
     set_instrument_time_and_date(@contact_link.contact)
 
-    @instrument.instrument_repeat_key = @person.instrument_repeat_key(@instrument.survey)
+    repeat_key = @survey.nil? ? 0 : @person.instrument_repeat_key(@survey)
+    @instrument.instrument_repeat_key = repeat_key
     @instrument.set_instrument_breakoff(@response_set)
     if @instrument.instrument_type.blank? || @instrument.instrument_type_code <= 0
       @instrument.instrument_type = @survey.instrument_type
@@ -251,15 +252,10 @@ class ContactLinksController < ApplicationController
     end
 
     def mark_activity_occurred
-      activities = psc.activities_for_event(@contact_link.event)
-
-      activity = nil
-      activities.each do |a|
-        activity = a if @contact_link.instrument.survey.access_code == Instrument.surveyor_access_code(a.labels)
-      end
-
-      if activity
-        psc.update_activity_state(activity.activity_id, @contact_link.person.participant, Psc::ScheduledActivity::OCCURRED)
+      psc.activities_for_event(@contact_link.event).each do |a|
+        if @contact_link.instrument.survey.access_code == Instrument.surveyor_access_code(a.labels)
+          psc.update_activity_state(a.activity_id, @contact_link.event.participant, Psc::ScheduledActivity::OCCURRED)
+        end
       end
     end
 

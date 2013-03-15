@@ -2364,6 +2364,33 @@
 - list_name: CONSENT_TYPE_CL2
   local_code: 3
   display_text: Consent to collect genetic material
+- list_name: CONSENT_TYPE_CL3
+  local_code: -7
+  display_text: Not applicable
+- list_name: CONSENT_TYPE_CL3
+  local_code: -4
+  display_text: Missing in Error
+- list_name: CONSENT_TYPE_CL3
+  local_code: 1
+  display_text: Pregnant Woman Consent
+- list_name: CONSENT_TYPE_CL3
+  local_code: 2
+  display_text: Non-Pregnant Woman Consent
+- list_name: CONSENT_TYPE_CL3
+  local_code: 3
+  display_text: Father Consent
+- list_name: CONSENT_TYPE_CL3
+  local_code: 4
+  display_text: Child Consent Birth to 6-Months
+- list_name: CONSENT_TYPE_CL3
+  local_code: 5
+  display_text: Child Consent 6-Months to Age of Majority
+- list_name: CONSENT_TYPE_CL3
+  local_code: 6
+  display_text: New Adult Consent
+- list_name: CONSENT_TYPE_CL3
+  local_code: 7
+  display_text: Low Intensity Consent
 - list_name: CONSENT_WITHDRAW_REASON_CL1
   local_code: -4
   display_text: Missing in Error

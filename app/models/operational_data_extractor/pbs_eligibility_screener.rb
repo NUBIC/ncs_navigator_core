@@ -12,6 +12,8 @@ module OperationalDataExtractor
     HOSPITAL_INTERVIEW_PREFIX = "PBS_ELIG_SCREENER_HOSP"
     PBS_ELIG_SCREENER_RACE_NEW_PREFIX = "PBS_ELIG_SCREENER_RACE_NEW"
     PBS_ELIG_SCREENER_RACE_1_PREFIX = "PBS_ELIG_SCREENER_RACE_1"
+    PBS_ELIG_SCREENER_RACE_2_PREFIX = "PBS_ELIG_SCREENER_RACE_2"
+    PBS_ELIG_SCREENER_RACE_3_PREFIX = "PBS_ELIG_SCREENER_RACE_3"
 
     ENGLISH               = "#{INTERVIEW_PREFIX}.ENGLISH"
     CONTACT_LANG          = "#{INTERVIEW_PREFIX}.CONTACT_LANG_NEW"
@@ -88,7 +90,9 @@ module OperationalDataExtractor
       "#{PBS_ELIG_SCREENER_RACE_NEW_PREFIX}.RACE_NEW" => "race_code",
       "#{PBS_ELIG_SCREENER_RACE_NEW_PREFIX}.RACE_NEW_OTH" => "race_other",
       "#{PBS_ELIG_SCREENER_RACE_1_PREFIX}.RACE_1" => "race_code",
-      "#{PBS_ELIG_SCREENER_RACE_1_PREFIX}.RACE_1_OTH" => "race_other"
+      "#{PBS_ELIG_SCREENER_RACE_1_PREFIX}.RACE_1_OTH" => "race_other",
+      "#{PBS_ELIG_SCREENER_RACE_2_PREFIX}.RACE_2" => "race_code",
+      "#{PBS_ELIG_SCREENER_RACE_3_PREFIX}.RACE_3" => "race_code"
     }
 
     def maps
@@ -163,6 +167,9 @@ module OperationalDataExtractor
           set_participant_type(participant, ppg_detail.ppg_first_code)
           ppg_detail.save!
 
+        # Set the participant type for a Birth Cohort Participant
+        elsif /_PBSampScreenHosp_/ =~ response_set.survey.title
+          set_participant_type(participant, 1)
         end
 
       end

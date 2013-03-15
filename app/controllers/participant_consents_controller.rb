@@ -154,8 +154,14 @@ class ParticipantConsentsController < ApplicationController
     # Updates activities associated with this event
     # that are known to be consent activities
     # in PSC as 'occurred'
+    #
+    # TODO: this method should be removed as part of #3260
+    #       all consents are now surveys and at the end of the
+    #       completion of the survey is the activity marked occurred
+    #
     def mark_activity_occurred
-	    psc.activities_for_event(@contact_link.event).each do |a|
+      return unless @contact_link
+      psc.activities_for_event(@contact_link.event).each do |a|
         if a.consent_activity?
 	        psc.update_activity_state(a.activity_id,
                                     @contact_link.person.participant,

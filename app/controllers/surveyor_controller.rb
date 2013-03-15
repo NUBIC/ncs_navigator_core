@@ -13,7 +13,7 @@ class SurveyorController < ApplicationController
   def surveyor_finish
     set_activity_plan_for_participant
 
-    contact_link = @response_set.instrument.contact_link
+    contact_link = @response_set.contact_link
     activity = @activity_plan.current_scheduled_activity(contact_link.event, @response_set)
 
     if @activity_plan.final_survey_part?(@response_set, @event) || params[:breakoff] || activity.instruments.empty?
@@ -22,10 +22,11 @@ class SurveyorController < ApplicationController
         psc.update_activity_state(a.activity_id, @participant, Psc::ScheduledActivity::OCCURRED)
       end
 
-      # go to contact_link.edit_instrument
-      update_participant_based_on_survey(@response_set)
-      edit_instrument_contact_link_path(contact_link.id)
+      # judge eligibility then go to contact_link.edit_instrument
+      EligibilityAdjudicator.adjudicate_eligibility(@response_set.person)
 
+      # determine redirect action - whether consent survey or instrument survey
+      @response_set.instrument_associated? ?  edit_instrument_contact_link_path(contact_link.id) : decision_page_contact_link_path(contact_link)
     else
       # go to next part of the survey
       access_code = Survey.to_normalized_string(activity.instrument)
@@ -56,7 +57,8 @@ class SurveyorController < ApplicationController
       end
     end
     @instrument           = @response_set.instrument
-    @event                = @instrument.contact_link.event
+    @participant_consent  = @response_set.participant_consent
+    @event                = @instrument.nil? ? @participant_consent.contact.contact_links.first.event : @instrument.contact_link.event
     @activities_for_event = []
     if @participant
       @activity_plan        = psc.build_activity_plan(@participant)
@@ -84,14 +86,5 @@ class SurveyorController < ApplicationController
         raise e
       end
     end
-  end
-
-  private
-
-  # TODO: ensure that the state transitions are based on the responses in the response set
-  #       and that the disposition of the instrument was completed
-  def update_participant_based_on_survey(response_set)
-    EligibilityAdjudicator.adjudicate_eligibility(response_set)
-    response_set.participant.update_state_after_survey(response_set, psc) if response_set.participant
   end
 end

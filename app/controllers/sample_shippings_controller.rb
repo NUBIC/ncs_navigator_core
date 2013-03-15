@@ -63,6 +63,7 @@ class SampleShippingsController < ApplicationController
   
   def extract_params(sample_shipping)
     params
+    params[:from_email] = NcsNavigatorCore.configuration.sample_receipt_shipping_center_email
     params[:shipper_id] = sample_shipping.shipper_id
     params[:psu_code] = NcsCode.for_list_name_and_local_code("PSU_CL1", @psu_code) 
     params[:sample_receipt_shipping_center_id] = sample_shipping.sample_receipt_shipping_center.sample_receipt_shipping_center_id

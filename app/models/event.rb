@@ -686,7 +686,6 @@ class Event < ActiveRecord::Base
   # @param[Date] (optional)
   # @return[Response]
   def self.schedule_and_create_placeholder(psc, participant, date = nil)
-    return nil unless participant.eligible?
     return nil unless participant.next_scheduled_event
 
     date ||= participant.next_scheduled_event.date.to_s
@@ -709,6 +708,40 @@ class Event < ActiveRecord::Base
   # @return[Response]
   def self.schedule_general_informed_consent(psc, participant, date = nil)
     resp = psc.schedule_general_informed_consent(participant, date)
+    create_event_placeholder_and_cancel_activities(psc, participant, date, resp)
+    resp
+  end
+
+  ##
+  # Schedule the Reconsent Segment in PSC.
+  # If successful, create a corresponding, pending Event record
+  #
+  # @see PatientStudyCalendar#schedule_reconsent
+  # @see Event#create_event_placeholder_and_cancel_activities
+  #
+  # @param[PatientStudyCalendar]
+  # @param[Participant]
+  # @param[Date] (optional)
+  # @return[Response]
+  def self.schedule_reconsent(psc, participant, date = nil)
+    resp = psc.schedule_reconsent(participant, date)
+    create_event_placeholder_and_cancel_activities(psc, participant, date, resp)
+    resp
+  end
+
+  ##
+  # Schedule the Withdrawal Segment in PSC.
+  # If successful, create a corresponding, pending Event record
+  #
+  # @see PatientStudyCalendar#schedule_withdrawal
+  # @see Event#create_event_placeholder_and_cancel_activities
+  #
+  # @param[PatientStudyCalendar]
+  # @param[Participant]
+  # @param[Date] (optional)
+  # @return[Response]
+  def self.schedule_withdrawal(psc, participant, date = nil)
+    resp = psc.schedule_withdrawal(participant, date)
     create_event_placeholder_and_cancel_activities(psc, participant, date, resp)
     resp
   end
@@ -744,9 +777,12 @@ class Event < ActiveRecord::Base
         psc.cancel_non_matching_mdes_version_instruments(participant, study_segment_identifier, date,
           "Does not include an instrument for MDES version #{NcsNavigatorCore.mdes.version}.")
       end
+      if participant.consented?
+        psc.cancel_consent_activities(participant, study_segment_identifier, date,
+          "Participant has already consented.")
+      end
     end
   end
-
 
   def self.create_placeholder_record(participant, date, event_type_code, study_segment_identifier)
     begin

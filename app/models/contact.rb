@@ -58,10 +58,12 @@ class Contact < ActiveRecord::Base
 
   has_many :contact_links
   has_many :instruments, :through => :contact_links
+  has_many :events, :through => :contact_links
   has_many :non_interview_reports
   has_one :non_interview_provider
   has_one :participant_visit_record
   has_many :participant_visit_consents
+  has_many :participant_consents
 
   validates_format_of :contact_start_time, :with => mdes_time_pattern, :allow_blank => true
   validates_format_of :contact_end_time,   :with => mdes_time_pattern, :allow_blank => true

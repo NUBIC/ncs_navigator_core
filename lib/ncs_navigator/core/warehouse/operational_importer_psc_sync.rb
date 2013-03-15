@@ -177,6 +177,11 @@ module NcsNavigator::Core::Warehouse
         selected_segment = possible_segments.inject({}) { |h, seg|
           h[seg['name'] == 'Postnatal' ? 'post' : 'pre'] = seg; h
         }[pre_or_post]
+      elsif segment_selectable_by_birth_cohort?(possible_segments)
+        birth_cohort = (event_details['pbs_birth_cohort'] == 'true')
+        selected_segment = possible_segments.inject({}) { |h, seg|
+          h[seg['name'] == 'Birth Cohort' ? true : false] = seg; h
+        }[birth_cohort]
       else
         say_subtask_message("deferring due to multiple segment options")
         log.debug("Deferring #{event_id} to #{opts[:defer_key]} due to multiple possible segments:")
@@ -219,12 +224,21 @@ module NcsNavigator::Core::Warehouse
       # "there are two different epochs and one of them is LO-Intensity"
       epoch_names.size == 2 && epoch_names.include?('LO-Intensity') && epoch_names.uniq.size == 2
     end
+    private :segment_selectable_by_hi_v_lo?
 
     def segment_selectable_by_pre_post_natal?(possible_segments)
       segment_names = possible_segments.collect { |seg| seg['name'] }
       # "there are two segments and one of them is Postnatal"
       possible_segments.size == 2 && segment_names.include?('Postnatal') && segment_names.uniq.size == 2
     end
+    private :segment_selectable_by_pre_post_natal?
+
+    def segment_selectable_by_birth_cohort?(possible_segments)
+      segment_names = possible_segments.collect { |seg| seg['name'] }
+      # "there are two segments and one of them is Birth Cohort"
+      possible_segments.size == 2 && segment_names.include?('Birth Cohort') && segment_names.uniq.size == 2
+    end
+    private :segment_selectable_by_birth_cohort?
 
     ###### CONTACT LINK SA HISTORY UPDATES
 

@@ -229,20 +229,50 @@ module OperationalDataExtractor
     # 1 Age-eligible woman, ineligible for pre-pregnancy visit - being followed
     # 2 High-Trier - eligible for Pre-Pregnancy Visit
     # 3 Pregnant eligible woman
+    # 14 PBS Provider Participant
+    # 15 PBS Hospital Participant
+    #
+    # @param [Participant]
+    # @param ppg_code [Integer]
+    # @return [NcsCode]
     def set_participant_type(participant, ppg_code)
+
       p_type_code = nil
       case ppg_code
       when 1
-        p_type_code = 3
+        p_type_code = determine_pregnant_participant_type(participant)
       when 2
         p_type_code = 2
       when 3,4
         p_type_code = 1
       end
+
       if p_type_code
         participant.p_type = NcsCode.for_attribute_name_and_local_code(:p_type_code, p_type_code)
       end
     end
+
+    ##
+    # With the introduction of the birth cohort in MDES 3.2, there are now three
+    # participant types for a pregnant participant. If the recruitment strategy is pbs,
+    # then the participant type is based on the way the Participant was recruited.
+    # Otherwise the Participant is simply a "pregnant eligible woman"
+    #
+    # PARTICIPANT_TYPE
+    # 3 Pregnant eligible woman
+    # 14 PBS Provider Participant
+    # 15 PBS Hospital Participant
+    #
+    # @param [Participant]
+    # @return [Integer]
+    def determine_pregnant_participant_type(participant)
+      if NcsNavigatorCore.mdes.version.to_f >= 3.2 && NcsNavigatorCore.recruitment_strategy.pbs?
+        participant.birth_cohort? ? 15 : 14
+      else
+        3
+      end
+    end
+    private :determine_pregnant_participant_type
 
     def primary_rank
       @primary_rank ||= NcsCode.for_list_name_and_local_code('COMMUNICATION_RANK_CL1', 1)
@@ -716,7 +746,7 @@ module OperationalDataExtractor
 
     def process_institution(map, response_set, type = other_institute_type)
       unless type && type.local_code != -5
-        type = find_institution_type(map, type) 
+        type = find_institution_type(map, type)
       end
       institution = get_institution(response_set, type)
       map.each do |key, attribute|
@@ -807,12 +837,12 @@ module OperationalDataExtractor
     def process_person_race(person_race_map)
       person_race_map.each do |key, attribute|
         collect_race_responses(key).each do |r|
-          person_race = get_person_race
-          if value = response_value(r)
+          person_race = get_person_race(r)
+          if response_value(r)
             if key =~ /NEW/
               process_new_type_race(person_race, attribute, r)
             else
-              process_standard_race(person_race, attribute, value)
+              process_standard_race(person_race, attribute, r)
             end
           end
         end
@@ -859,14 +889,27 @@ module OperationalDataExtractor
 
     ##
     # Creates a PersonRace record using the RACE_CL1 code list
-    def process_standard_race(person_race, attribute, value)
-      set_value(person_race, attribute, value)
+    def process_standard_race(person_race, attribute, response)
+      value = response_value(response)
+      ref_id = response.question.reference_identifier
+
+      if standard_person_race_codes.include?(value) && ref_id =~ /RACE(?!_\d)|RACE_1$/
+        set_value(person_race, attribute, value)
+      elsif response.answer.response_class == "answer"
+        person_race.race_code = NcsCode::OTHER
+        person_race.race_other = response.answer.text
+      else
+        person_race.race_other = value
+      end
       person_race.save!
     end
 
-    def get_person_race
-      person_race = person.races.where(:race_code => NcsCode::OTHER, :race_other => nil).first
-      person_race = person.races.build if person_race.nil?
+    def get_person_race(r)
+      race_text = r.answer.text
+      racial_code = r.answer.reference_identifier
+      person_race = PersonRace.where(:person_id => person.id, :race_code => NcsCode::OTHER, :race_other => nil).first
+      person_race = PersonRace.where(:person_id => person.id, :race_code => NcsCode::OTHER, :race_other => race_text).first if person_race.nil?
+      person_race = PersonRace.find_or_initialize_by_person_id_and_race_code(person.id, racial_code) if person_race.nil?
       person_race
     end
 

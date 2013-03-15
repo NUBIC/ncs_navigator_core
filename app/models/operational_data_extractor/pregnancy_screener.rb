@@ -132,7 +132,7 @@ module OperationalDataExtractor
 
       if participant
         ppg_detail = process_ppg_details(participant, PPG_DETAILS_MAP, INTERVIEW_PREFIX)
-        process_due_date(ppg_detail, DUE_DATE_DETERMINER_MAP) if ppg_detail
+        process_due_date(participant, ppg_detail, DUE_DATE_DETERMINER_MAP) if ppg_detail
       end
 
       finalize_email(email)
@@ -143,7 +143,7 @@ module OperationalDataExtractor
       person.save!
     end
 
-    def process_due_date(ppg_detail, map)
+    def process_due_date(participant, ppg_detail, map)
       map.each do |key, attribute|
         if r = data_export_identifier_indexed_responses[key]
           if due_date = determine_due_date(attribute, r)

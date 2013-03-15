@@ -143,8 +143,25 @@ class ParticipantsController < ApplicationController
   ##
   # Schedule an Informed Consent segment in PSC
   def schedule_informed_consent_event
-    Event.schedule_general_informed_consent(psc, @participant, params[:date])
-    redirect_to(participant_path(@participant), :notice => 'Informed Consent event scheduled for Participant.')
+    resp = Event.schedule_general_informed_consent(psc, @participant, params[:date])
+    msg = resp.success? ? 'Informed Consent event scheduled for Participant.' : 'Could not schedule informed consent'
+    redirect_to(participant_path(@participant), :notice => msg)
+  end
+
+  ##
+  # Schedule a Reconsent segment in PSC
+  def schedule_reconsent_event
+    resp = Event.schedule_reconsent(psc, @participant, params[:date])
+    msg = resp.success? ? 'Reconsent event scheduled for Participant.' : 'Could not schedule informed consent'
+    redirect_to(participant_path(@participant), :notice => msg)
+  end
+
+  ##
+  # Schedule a Withdrawal segment in PSC
+  def schedule_withdrawal_event
+    resp = Event.schedule_withdrawal(psc, @participant, params[:date])
+    msg = resp.success? ? 'Withdrawal event scheduled for Participant.' : 'Could not schedule informed consent'
+    redirect_to(participant_path(@participant), :notice => msg)
   end
 
   # GET /participants/new

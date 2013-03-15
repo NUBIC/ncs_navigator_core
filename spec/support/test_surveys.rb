@@ -3,6 +3,14 @@
 module TestSurveys
 
   ##
+  # Creates a ParticipantConsent for a {Person} person, {Participant} participant and {Survey} survey,
+  # saves it, and returns it along with the associated ResponseSet.
+  # @see ParticipantConsent.start!
+  def prepare_consent(person, participant, survey, contact)
+    ParticipantConsent.start!(person, participant, survey, contact)
+  end
+
+  ##
   # Starts an Instrument for a {Person} person, {Participant} participant and {Survey} survey,
   # saves it, and returns the created ResponseSet along with the Instrument.
   def prepare_instrument(person, participant, survey, mode = Instrument.capi, event = nil)

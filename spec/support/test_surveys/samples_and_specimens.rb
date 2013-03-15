@@ -33,6 +33,16 @@ module SamplesAndSpecimens
       a = Factory(:answer, :question_id => q.id, :text => "Tube barcode", :response_class => "string")
     end
 
+    3.times do |x|
+      q = Factory(:question, :reference_identifier => "SPECIMEN_ID", :data_export_identifier => "SPEC_CORD_BLOOD_SPECIMEN_2[collection_type=#{x+1}].SPECIMEN_ID", :survey_section_id => survey_section.id)
+      a = Factory(:answer, :question_id => q.id, :text => "Tube barcode", :response_class => "string")
+    end
+
+    3.times do |x|
+      q = Factory(:question, :reference_identifier => "SPECIMEN_ID", :data_export_identifier => "SPEC_CORD_BLOOD_SPECIMEN_3[collection_type=#{x+1}].SPECIMEN_ID", :survey_section_id => survey_section.id)
+      a = Factory(:answer, :question_id => q.id, :text => "Tube barcode", :response_class => "string")
+    end
+
     survey
   end
 

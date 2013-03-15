@@ -223,6 +223,64 @@ describe OperationalDataExtractor::Specimen do
         end
 
       end
+      
+      it "creates up to 3 specimens from the instrument response for MDES 2.1" do
+        survey = create_cord_blood_survey_with_specimen_operational_data
+        response_set, instrument = prepare_instrument(person, participant, survey)
+        specimen_ids = [
+          "AA123456-CL02",
+          "AA123456-CS02",
+          "AA123456-CB02",
+        ]
+
+        take_survey(survey, response_set) do |a|
+          a.str "SPEC_CORD_BLOOD_SPECIMEN_2[collection_type=1].SPECIMEN_ID", specimen_ids[0]
+          a.str "SPEC_CORD_BLOOD_SPECIMEN_2[collection_type=2].SPECIMEN_ID", specimen_ids[1]
+          a.str "SPEC_CORD_BLOOD_SPECIMEN_2[collection_type=3].SPECIMEN_ID", specimen_ids[2]
+        end
+
+        response_set.responses.reload
+        response_set.responses.size.should == 3
+
+        OperationalDataExtractor::Specimen.new(response_set).extract_data
+
+        instrument.specimens.reload
+        instrument.specimens.count.should == 3
+
+        specimen_ids.each do |specimen_id|
+          instrument.specimens.where(:specimen_id => specimen_id).first.should_not be_nil
+        end
+
+      end
+      
+      it "creates up to 3 specimens from the instrument response for MDES 2.2" do
+        survey = create_cord_blood_survey_with_specimen_operational_data
+        response_set, instrument = prepare_instrument(person, participant, survey)
+        specimen_ids = [
+          "AA123456-CL03",
+          "AA123456-CS03",
+          "AA123456-CB03",
+        ]
+
+        take_survey(survey, response_set) do |a|
+          a.str "SPEC_CORD_BLOOD_SPECIMEN_3[collection_type=1].SPECIMEN_ID", specimen_ids[0]
+          a.str "SPEC_CORD_BLOOD_SPECIMEN_3[collection_type=2].SPECIMEN_ID", specimen_ids[1]
+          a.str "SPEC_CORD_BLOOD_SPECIMEN_3[collection_type=3].SPECIMEN_ID", specimen_ids[2]
+        end
+
+        response_set.responses.reload
+        response_set.responses.size.should == 3
+
+        OperationalDataExtractor::Specimen.new(response_set).extract_data
+
+        instrument.specimens.reload
+        instrument.specimens.count.should == 3
+
+        specimen_ids.each do |specimen_id|
+          instrument.specimens.where(:specimen_id => specimen_id).first.should_not be_nil
+        end
+
+      end
 
       it "creates only the number of specimens as there are related responses" do
         survey = create_cord_blood_survey_with_specimen_operational_data

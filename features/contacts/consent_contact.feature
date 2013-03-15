@@ -4,6 +4,7 @@ Feature: Obtaining participant consent
   As a user
   I want to initiate a contact for a participant to obtain consent
 
+  @wip
   Scenario: Obtaining low intensity consent
     And an authenticated user
     And a registered unconsented trying participant

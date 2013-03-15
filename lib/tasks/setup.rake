@@ -1,15 +1,17 @@
 namespace :setup do
-  desc "Load all surveys in Rails.root/surveys"
+  desc "Load all surveys in Rails.root/surveys and Rails.root/internal_surveys"
   task :surveys => :environment do
-    if File.exists? "#{Rails.root}/surveys/"
-      Dir["#{Rails.root}/surveys/*.rb"].each do |f|
-        puts "---   Parsing survey #{f}"
-        Surveyor::Parser.parse File.read(f)
-        puts "--- Completed survey #{f}"
+    %w(surveys internal_surveys).each do |dir|
+      if File.exists? "#{Rails.root}/#{dir}/"
+        Dir["#{Rails.root}/#{dir}/*.rb"].each do |f|
+          puts "---   Parsing survey #{f}"
+          Surveyor::Parser.parse File.read(f)
+          puts "--- Completed survey #{f}"
+        end
+      else
+        puts "WARNING: #{Rails.root}/#{dir}/ directory does not exist."
+        puts "         Please place NCS surveys in #{Rails.root}/#{dir}/ directory."
       end
-    else
-      puts "WARNING: #{Rails.root}/surveys/ directory does not exist."
-      puts "         Please place NCS surveys in #{Rails.root}/surveys/ directory."
     end
   end
 

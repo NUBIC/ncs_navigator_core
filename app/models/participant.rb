@@ -62,7 +62,7 @@ class Participant < ActiveRecord::Base
   has_many :participant_person_links, :order => 'participant_person_links.created_at'
   has_many :people, :through => :participant_person_links
   has_many :participant_staff_relationships
-  has_many :participant_consents
+  has_many :participant_consents, :order => "consent_date DESC"
   has_many :participant_consent_samples
   has_many :events
   has_many :response_sets, :inverse_of => :participant
@@ -83,7 +83,7 @@ class Participant < ActiveRecord::Base
   def hospital?
     self.class.from_hospital_type_provider.exists?(self)
   end
-
+  alias_method :birth_cohort?, :hospital?
   # validates_presence_of :person
 
   accepts_nested_attributes_for :ppg_details, :allow_destroy => true
@@ -267,89 +267,6 @@ class Participant < ActiveRecord::Base
     else
       self.high_intensity_state = state
     end
-  end
-
-  ##
-  # After a survey has been completed the participant would move through the states as
-  # defined in the state machine
-  # @param [ResponseSet] - used to determine survey taken
-  # @param [PatientStudyCalendar] - cf. ApplicationController#psc
-  def update_state_after_survey(response_set, psc)
-
-    # TODO: ensure that the response_set has been completed
-
-    survey_title = response_set.survey.title
-
-    if /_PregScreen_/ =~ survey_title
-      psc.update_subject(self)
-      assign_to_pregnancy_probability_group! if can_assign_to_pregnancy_probability_group?
-    end
-
-    if /_PBSamplingScreen_/ =~ survey_title
-      psc.update_subject(self)
-      assign_to_pregnancy_probability_group! if can_assign_to_pregnancy_probability_group?
-    end
-
-    if /_PBSampScreenHosp_/ =~ survey_title
-      psc.update_subject(self)
-      assign_to_pregnancy_probability_group! if can_assign_to_pregnancy_probability_group?
-      birth_cohort!
-    end
-
-    if /_LIPregNotPreg_/ =~ survey_title && can_follow_low_intensity?
-      follow_low_intensity!
-    end
-
-    if /_LIHIConversion_/ =~ survey_title
-      enroll_in_high_intensity_arm! if can_enroll_in_high_intensity_arm?
-      high_intensity_conversion!
-    end
-
-    if /_PPGFollUp_/ =~ survey_title
-      follow! if can_follow? && high_intensity?
-    end
-
-    if known_to_be_pregnant?
-      if low_intensity? &&
-         can_impregnate_low? &&
-         !due_date_is_greater_than_follow_up_interval(most_recent_contact.contact_date_date)
-         impregnate_low!
-      end
-
-      if high_intensity? &&
-         can_impregnate?
-         impregnate!
-      end
-    end
-
-    if /_PrePreg_/ =~ survey_title
-      non_pregnant_informed_consent! if can_non_pregnant_informed_consent?
-      follow! if can_follow?
-    end
-
-    if /_PregVisit1_/ =~ survey_title && can_pregnancy_one_visit?
-      pregnancy_one_visit!
-    end
-
-    if /_PregVisit2_/ =~ survey_title && can_pregnancy_two_visit?
-      pregnancy_two_visit!
-    end
-
-    if /_Birth_/ =~ survey_title
-      if low_intensity?
-        birth_event_low! if can_birth_event_low?
-      else
-        birth_event! if can_birth_event?
-      end
-    end
-
-    # TODO: move this to a method that can be called after Contact or Event
-    #       has been updated cf. #2524
-    if known_to_have_experienced_child_loss? && can_lose_child?
-      lose_child!
-    end
-
-    self.update_attribute(:being_followed, true) unless self.being_followed?
   end
 
   ##
@@ -570,21 +487,33 @@ class Participant < ActiveRecord::Base
   ##
   def update_state_to_next_event(event)
     case event.event_type.local_code
-    when 4, 5, 6, 9, 29, 34
-      # Pregnancy Screener Events or PBS Eligibility Screener
+    when 34
       if NcsNavigatorCore.recruitment_strategy.pbs?
-        completed_pbs_eligibility_screener!
-      elsif can_assign_to_pregnancy_probability_group?
+        if (eligible_for_pbs? || eligible_for_birth_cohort?) && hospital?
+          birth_cohort!
+        else
+          completed_pbs_eligibility_screener!
+        end
+      end
+    when 4, 5, 6, 9, 29
+      # Pregnancy Screener Events or PBS Eligibility Screener
+      if can_assign_to_pregnancy_probability_group?
         assign_to_pregnancy_probability_group!
       end
     when 10
       # Informed Consent
-      low_intensity_consent! if can_low_intensity_consent?
-
+      if NcsNavigatorCore.recruitment_strategy.pbs?
+        if (eligible_for_pbs? || eligible_for_birth_cohort?) && hospital?
+          birth_cohort!
+        else
+          completed_pbs_eligibility_screener!
+        end
+      else
+        low_intensity_consent! if can_low_intensity_consent?
+      end
     when 33
       # Lo I Quex
       follow_low_intensity! if can_follow_low_intensity?
-
     when 7,8
       # Pregnancy Probability
       follow! if can_follow? && high_intensity?
@@ -712,28 +641,22 @@ class Participant < ActiveRecord::Base
   # @return [Boolean]
   def consented?(consent_type = nil)
     return false if participant_consents.empty?
-    if consent_type.nil?
-      consent_type = low_intensity? ? ParticipantConsent.low_intensity_consent_type_code : ParticipantConsent.general_consent_type_code
-    end
-    consents = consents_for_type(consent_type)
-    consents.select { |c| c.consent_given_code == 1 }.size > 0 && !withdrawn?
+    consents = consents_for_type(determine_consent_type(consent_type))
+    consents.select { |c| c.consented? }.size > 0 && !withdrawn?(consent_type)
   end
 
-  def consents_for_type(consent_type)
-    participant_consents.where(
-      "consent_type_code = ? OR consent_form_type_code = ?",
-        consent_type.local_code, consent_type.local_code).all
+  ##
+  # Returns true if a participant_consent record exists for the given consent type
+  # and consent_given_code is true and consent_withdraw_code is not true.
+  # If no consent type is given, then check if any consent record exists
+  # @param [NcsCode]
+  # @return [Boolean]
+  def reconsented?(consent_type = nil)
+    return false if participant_consents.empty?
+    consents = consents_for_type(determine_consent_type(consent_type))
+    consents.select { |c| c.reconsented? }.size > 0 && !withdrawn?(consent_type)
   end
 
-  def consent_for_type(consent_type)
-    current_consent = nil
-    cs = consents_for_type(consent_type)
-    current_consent = cs.first
-    if cs.size > 1
-      cs.each { |c| current_consent = c if c.phase_two? }
-    end
-    current_consent
-  end
 
   ##
   # Returns true if a participant_consent record exists for the given consent type
@@ -744,7 +667,41 @@ class Participant < ActiveRecord::Base
   def withdrawn?(consent_type = nil)
     return false if participant_consents.empty?
     consents = consent_type.nil? ? participant_consents : consents_for_type(consent_type)
-    consents.select { |c| c.consent_withdraw_code == 1 }.size > 0
+    consents.select { |c| c.withdrawn? }.size > 0
+  end
+
+  def determine_consent_type(consent_type)
+    if consent_type.nil?
+      consent_type = low_intensity? ? ParticipantConsent.low_intensity_consent_type_code : ParticipantConsent.general_consent_type_code
+    end
+    consent_type
+  end
+  private :determine_consent_type
+
+  ##
+  # Gets all ParticipantConsent records matching the given consent type
+  # ordered by consent date
+  # @param consent_type [NcsCode] The CONSENT_TYPE_CL* from the MDES Code List
+  # @return [Array<ParticipantConsent>]
+  def consents_for_type(consent_type)
+    participant_consents.where(
+      "consent_type_code = ? OR consent_form_type_code = ?",
+        consent_type.local_code, consent_type.local_code).order("consent_date").all
+  end
+
+  ##
+  # Gets the most recent ParticipantConsent record that matches
+  # the given consent type
+  # @param consent_type [NcsCode] The CONSENT_TYPE_CL* from the MDES Code List
+  # @return [ParticipantConsent]
+  def consent_for_type(consent_type)
+    current_consent = nil
+    cs = consents_for_type(consent_type)
+    current_consent = cs.first
+    if cs.size > 1
+      cs.each { |c| current_consent = c if c.phase_two? }
+    end
+    current_consent
   end
 
   ##
@@ -763,14 +720,12 @@ class Participant < ActiveRecord::Base
 
   ##
   # Unenrolling does the following:
-  # 1. Withdraws the participant from the Study
-  # 2. Sets the participant enroll status to No
-  # 3. Cancels all scheduled activities in PSC
-  # 4. Closes or Deletes all pending events
+  # 1. Sets the participant enroll status to No
+  # 2. Cancels all scheduled activities in PSC
+  # 3. Closes or Deletes all pending events
   # @param [PatientStudyCalendar]
   def unenroll(psc, reason = "Participant has been un-enrolled from the study.")
     self.enrollment_status_comment = reason
-    self.participant_consents.each { |c| c.withdraw! if c.consented? }
     self.enroll_status = NcsCode.for_attribute_name_and_local_code(:enroll_status_code, NcsCode::NO)
     self.pending_events.each { |e| e.cancel_and_close_or_delete!(psc, reason) }
     self.being_followed = false
@@ -1161,20 +1116,6 @@ class Participant < ActiveRecord::Base
 
   end
 
-  def eligible?
-    NcsNavigatorCore.recruitment_strategy.pbs? ? eligible_for_pbs? : has_eligible_ppg_status?
-  end
-
-  def eligible?
-    if NcsNavigatorCore.recruitment_strategy.pbs? && !hospital?
-      eligible_for_pbs?
-    elsif NcsNavigatorCore.recruitment_strategy.pbs? && hospital?
-      eligible_for_birth_cohort?
-    else
-      has_eligible_ppg_status?
-    end
-  end
-
   def eligible_for_pbs?
     eligible = []
     person = ParticipantPersonLink.where(:participant_id => self.id, :relationship_code => 1).first.person
@@ -1199,7 +1140,17 @@ class Participant < ActiveRecord::Base
     self.send(:no_preceding_providers_in_frame?, person, providers_in_frame_prefix)
   end
 
-  def pbs_eligbility_prefix
+  def has_eligible_ppg_status?(date = Date.today)
+    ppg_status(date).try(:local_code).to_i < 5
+  end
+
+  def ineligible?
+    ( birth_cohort? && !eligible_for_birth_cohort?) ||
+    ( pbs? && !birth_cohort? && !eligible_for_pbs? ) ||
+    ( !pbs? && !has_eligible_ppg_status? )
+  end
+
+  def pbs_eligibility_prefix
     hospital? ? "#{OperationalDataExtractor::PbsEligibilityScreener::HOSPITAL_INTERVIEW_PREFIX}" : "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}"
   end
 
@@ -1227,7 +1178,7 @@ class Participant < ActiveRecord::Base
   # @param[String] data_export_identifier for question
   # @return[Boolean]
   def eligible_for?(person, reference_identifier)
-    data_export_identifier = pbs_eligbility_prefix + "." + reference_identifier
+    data_export_identifier = pbs_eligibility_prefix + "." + reference_identifier
     most_recent_response = person.responses_for(data_export_identifier).last
     most_recent_response.try(:answer).try(:reference_identifier) == "1"
   end
@@ -1243,11 +1194,11 @@ class Participant < ActiveRecord::Base
     answers.any? { |a| a == "1" } ? false : true
   end
 
-  def has_eligible_ppg_status?(date = Date.today)
-    ppg_status(date).try(:local_code).to_i < 5
-  end
-
   private
+
+    def pbs?
+      NcsNavigatorCore.recruitment_strategy.pbs?
+    end
 
     def relationships(code)
       participant_person_links.
@@ -1438,4 +1389,3 @@ class Participant < ActiveRecord::Base
       end
     end
 end
-

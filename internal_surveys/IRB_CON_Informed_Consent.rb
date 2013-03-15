@@ -1,10 +1,6 @@
 # -*- coding: utf-8 -*-
 survey "IRB_CON_Informed_Consent", :instrument_type => 10, :description => "Informed Consent", :instrument_version => "1.0" do
   section "Informed Consent" do
-    q_prepopulated_psu_id "PSU#",
-      :custom_class => "prepopulated"
-      a_psu_id :string
-
     q_consent_form_type_code "Consent Form Type",
       :pick => :one,
       :data_export_identifier => "PARTICIPANT_CONSENT.CONSENT_FORM_TYPE_CODE"
@@ -43,15 +39,15 @@ survey "IRB_CON_Informed_Consent", :instrument_type => 10, :description => "Info
 
     q_consent_date "Consent Date",
       :data_export_identifier => "PARTICIPANT_CONSENT.CONSENT_DATE"
-      a_consent_date :date, :custom_class => "date"
+      a_consent_date :string, :custom_class => "date"
 
     q_consent_version "Consent Version",
       :data_export_identifier => "PARTICIPANT_CONSENT.CONSENT_VERSION"
-      a_consent_versino :string
+      a_consent_version :string
 
     q_consent_expiration "Consent Expiration Date",
       :data_export_identifier => "PARTICIPANT_CONSENT.CONSENT_EXPIRATION"
-      a_consent_expiration :date, :custom_class => "date"
+      a_consent_expiration :string, :custom_class => "date"
 
     q_who_consented_code "Who Consented?",
       :pick => :one,
