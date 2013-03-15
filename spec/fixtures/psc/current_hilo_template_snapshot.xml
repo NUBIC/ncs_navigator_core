@@ -1697,6 +1697,15 @@
             <label id="d732a62f-242d-46f7-86dd-4176aee7539a" name="participant_type:mother"/>
             <activity-reference code="NIRQ" source="NCS"/>
           </planned-activity>
+          <planned-activity id="1ade4638-6e80-431f-8454-0a2b2d5654f5" day="1">
+            <label id="9fc7cd0d-205a-47cf-8e8b-bb14e68ab71e" name="event:informed_consent"/>
+            <label id="9f4d1549-2e3c-4826-93b9-246ab96e2b11" name="instrument:3.0:irb_con_noninterviewreport"/>
+            <label id="10987649-a845-41a1-8ee1-a7057e855d38" name="instrument:3.1:irb_con_noninterviewreport"/>
+            <label id="759c66e5-b176-435d-99e2-1e8c6e9d9aa3" name="instrument:3.2:irb_con_noninterviewreport"/>
+            <label id="80386ff4-806b-4cc5-b51f-7e793790c609" name="order:91_02"/>
+            <label id="7d6f7a62-e455-494c-8c80-a974f74a9364" name="participant_type:mother"/>
+            <activity-reference code="NIR" source="NCS"/>
+          </planned-activity>
         </period>
       </study-segment>
       <study-segment id="c9bd6beb-7861-4eab-958e-cad971eb8647" name="Parental Permission for Child Participation">
@@ -1762,6 +1771,15 @@
             <label id="a7e2da86-174b-4971-9d18-30b88ecf651c" name="participant_type:mother"/>
             <activity-reference code="NIRQ" source="NCS"/>
           </planned-activity>
+          <planned-activity id="0349950b-40f7-4fbd-9dce-cdb2fdb6a7ea" day="1">
+            <label id="f88ae736-bcd8-4fd0-912b-31ffddb398cd" name="event:informed_consent"/>
+            <label id="4c8620be-1440-400f-8d78-4f7d0cd96f6a" name="instrument:3.0:irb_con_noninterviewreport"/>
+            <label id="a5af5dc6-6ddd-46d1-983c-a31a391d265c" name="instrument:3.1:irb_con_noninterviewreport"/>
+            <label id="2c90ba79-9467-4fa2-9d8e-1e54107c6210" name="instrument:3.2:irb_con_noninterviewreport"/>
+            <label id="efcfd6d3-17e1-4f06-806c-12be0e5ca228" name="order:91_02"/>
+            <label id="ee1acd17-37a2-4ffd-96de-8afec54f1d1f" name="participant_type:mother"/>
+            <activity-reference code="NIR" source="NCS"/>
+          </planned-activity>
         </period>
       </study-segment>
       <study-segment id="e97cf97c-6855-4a4b-8abc-c7599fc43c9b" name="Reconsent">
@@ -1795,6 +1813,15 @@
             <label id="dc0a03dc-f8e7-45fe-8852-0b5123211fb7" name="order:91_01"/>
             <label id="4b67ab8e-fa69-49f5-ac72-846645be4de4" name="participant_type:mother"/>
             <activity-reference code="NIRQ" source="NCS"/>
+          </planned-activity>
+          <planned-activity id="0a5a0ca9-bf89-4033-b371-2c797027bbf7" day="1">
+            <label id="3b4cfc07-1803-435a-a498-62d2ef7a422e" name="event:informed_consent"/>
+            <label id="6ea9e67a-cd2a-4eae-bf39-7d25f0881a99" name="instrument:3.0:irb_con_noninterviewreport"/>
+            <label id="1f2250ab-323f-4501-9abd-90f72c6ec9f5" name="instrument:3.1:irb_con_noninterviewreport"/>
+            <label id="6baa5193-d6ea-4de8-b302-b501f4d20a37" name="instrument:3.2:irb_con_noninterviewreport"/>
+            <label id="1280b9b2-9af2-46c5-b921-b2a77d8c9e3c" name="order:91_02"/>
+            <label id="7a745aeb-6196-4d5f-bb80-ee7cd5cf098f" name="participant_type:mother"/>
+            <activity-reference code="NIR" source="NCS"/>
           </planned-activity>
         </period>
       </study-segment>
@@ -1893,6 +1920,7 @@
       <activity name="Low-Intensity Birth Interview Part Two" code="LIBI B2" description="Low-Intensity Birth Interview Part Two" type="Instrument"/>
       <activity name="Pregnancy Probability Group Follow-Up SAQ" code="PPGFUSAQ" description="Pregnancy Probability Group Follow-Up SAQ" type="Instrument"/>
       <activity name="30 Month Ages And Stages-3 SAQ" code="30MAS3SAQ" description="30 Month Ages And Stages-3 SAQ" type="Instrument"/>
+      <activity name="Non-Interview Report" code="NIR" description="Non-Interview Report" type="Consent"/>
       <activity name="Tracing Module" code="TM" description="Tracing Module" type="Instrument"/>
       <activity name="Low-Intensity Interview" code="LII" description="Low-Intensity Interview" type="Instrument"/>
       <activity name="Low-Intensity Consent" code="LIC" description="Low-Intensity Consent" type="Consent"/>
