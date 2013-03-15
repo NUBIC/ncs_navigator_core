@@ -202,13 +202,13 @@ module ResponseSetPrepopulation
           responses.should be_empty
         end
 
-        it "should be set to the response from part_one for instrument MDES version prior ot 3.0" do
+        it "should be set to the response from part_one for instrument MDES version prior to 3.0" do
           prepare_surveys("INS_QUE_Birth_INT_LI_P2_V10_PART_ONE", "BIRTH_VISIT_LI", "INS_QUE_Birth_INT_LI_P2_V10_PART_TWO")
           take_survey(@survey_pt1, @response_set_pt1) do |a|
             a.no "BIRTH_VISIT_LI.MULTIPLE"
           end
           run_populator
-          fail
+          assert_response_value(@response_set_pt2, "prepopulated_multiple_from_birth_visit_part_one", "NO")
         end
 
         it "response should not exist if the question has not previously been answered for instrument MDES version 3.0" do
