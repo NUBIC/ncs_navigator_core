@@ -241,13 +241,9 @@ module NcsNavigator::Core::Mustache
       single_birth? ? "HAS THE BABY" : "HAVE THE BABIES"
     end
 
-    def mdes_version_is_after?(version = 3.0)
-      NcsNavigatorCore.mdes.version.to_f >= version
-    end
-
     # {B_NAME/your baby}
     def b_fname
-      if mdes_version_is_after?(3.0)
+      if NcsNavigatorCore.mdes.version.to_f >= 3.0
         result = c_fname
       else
         result = response_for("#{birth_baby_name_prefix}.BABY_FNAME")
