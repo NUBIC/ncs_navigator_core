@@ -6,76 +6,18 @@ require 'spec_helper'
 describe PeopleController do
 
   context "with an authenticated, authorized user" do
+    let(:provider) { Factory(:provider) }
     before(:each) do
       login(admin_login) # authorized user
       @person1 = Factory(:person, :first_name => "Jane",  :last_name => "Doe")
       @person2 = Factory(:person, :first_name => "Alice", :last_name => "Doe")
+
       @person3 = Factory(:person, :first_name => "Annie", :last_name => "Hall")
-    end
+      Factory(:person_provider_link, :provider => provider, :person => @person3)
 
-    describe "GET index" do
-
-      before(:each) do
-        Person.count.should == 3
-      end
-
-      # id sort for paginate
-      it "defaults to sorting people by id" do
-        get :index
-        assigns(:q).sorts[0].name.should == "id"
-      end
-
-      it "performs user selected sort first; id second" do
-        get :index, :q => { :s => "last_name asc" }
-        assigns(:q).sorts[0].name.should == "last_name"
-        assigns(:q).sorts[1].name.should == "id"
-      end
-
-      describe "without search parameters" do
-        it "assigns all people as @people" do
-          get :index
-          assigns[:people].count.should equal(3)
-          assigns[:people].should include @person1
-          assigns[:people].should include @person2
-          assigns[:people].should include @person3
-        end
-      end
-
-      describe "searching by last name" do
-        it "returns complete matches" do
-          get :index, :q => { :last_name_start => "Doe" }
-          assigns[:people].count.should equal(2)
-          assigns[:people].should include @person1
-          assigns[:people].should include @person2
-          assigns[:people].should_not include @person3
-        end
-
-        it "returns partial matches" do
-          get :index, :q => { :last_name_start => "Do" }
-          assigns[:people].count.should equal(2)
-          assigns[:people].should include @person1
-          assigns[:people].should include @person2
-          assigns[:people].should_not include @person3
-        end
-      end
-
-      describe "searching by first name" do
-        it "returns complete matches" do
-          get :index, :q => { :first_name_start => "Jane" }
-          assigns[:people].count.should equal(1)
-          assigns[:people].should include @person1
-          assigns[:people].should_not include @person2
-          assigns[:people].should_not include @person3
-        end
-
-        it "returns partial matches" do
-          get :index, :q => { :first_name_start => "Ja" }
-          assigns[:people].count.should equal(1)
-          assigns[:people].should include @person1
-          assigns[:people].should_not include @person2
-          assigns[:people].should_not include @person3
-        end
-      end
+      @batch1  = Factory(:person)
+      Factory(:person_provider_link, :ineligibility_batch_identifier => "UUID",
+              :provider => provider, :person => @batch1)
     end
 
     describe "GET new" do
@@ -262,25 +204,107 @@ describe PeopleController do
       end
     end
 
-  end
-
-  context "with an authenticated yet unauthorized user"  do
-    before(:each) do
-      login(user_login) # unauthorized user
-      @person1 = Factory(:person, :first_name => "Jane",  :last_name => "Doe")
-    end
-
-    describe "GET index" do
-      before(:each) do
-        Person.count.should == 1
+    context "batch handling" do
+      before :each do
+        @params = {
+          "people"=>{"number"=>"5"},
+          "person"=>
+            {"person_provider_links_attributes"=>
+              {"0"=>
+                {"provider_id"=>"#{provider.id}",
+                "pre_screening_status_code"=>"2",
+                "sampled_person_code"=>"1",
+                "date_first_visit"=>"2013-03-12",
+                "provider_intro_outcome_code"=>"-5",
+                "provider_intro_outcome_other"=>"asdf"}},
+            "sampled_persons_ineligibilities_attributes"=>
+              {"0"=>
+                {"provider_id"=>"#{provider.id}",
+                "age_eligible_code"=>"1",
+                "county_of_residence_code"=>"1",
+                "pregnancy_eligible_code"=>"2",
+                "first_prenatal_visit_code"=>"2",
+                "ineligible_by_code"=>"1"}}},
+          "commit"=>"Submit",
+          "action"=>"create_batch",
+          "controller"=>"people",
+          "provider_id"=>"#{provider.id}"
+        }
       end
 
-      describe "unauthorized attempt to access" do
-        it "gives a forbidden status code for attempted at unauthorized access" do
-          expect { get :index }.should raise_exception("uncaught throw :warden")
+      describe "POST create_batch" do
+        before do
+          @batch1.destroy
+        end
+
+        describe "with html request" do
+          it "creates 5 new ineligibility_batch people" do
+            expect {
+              post :create_batch, @params
+            }.to change(Person, :count).by(5)
+            Person.in_ineligibility_batch.count.should == 5
+          end
+
+          it "creates ineligibilities records" do
+            post :create_batch, @params
+            ineligibilities = Person.in_ineligibility_batch.first.sampled_persons_ineligibilities.first
+            ineligibilities.age_eligible_code.should == 1
+            ineligibilities.county_of_residence_code.should == 1
+            ineligibilities.pregnancy_eligible_code.should == 2
+            ineligibilities.first_prenatal_visit_code.should == 2
+            ineligibilities.ineligible_by_code.should == 1
+          end
+
+          it "creates provider records" do
+            post :create_batch, @params
+            ppl= Person.in_ineligibility_batch.first.person_provider_links.first
+            ppl.ineligibility_batch_identifier.should_not be_blank
+            ppl.provider_id.should == provider.id
+            ppl.pre_screening_status_code.should == 2
+            ppl.sampled_person_code.should == 1
+            ppl.date_first_visit.should == "2013-03-12"
+            ppl.provider_intro_outcome_code.should == -5
+            ppl.provider_intro_outcome_other.should == "asdf"
+          end
+
+          it "doesn't create ineligibilities if no related arguments passed" do
+            @params["person"]["sampled_persons_ineligibilities_attributes"][
+                    "0"] = {
+                            "provider_id"=>"#{provider.id}",
+                            "age_eligible_code"=>"",
+                            "county_of_residence_code"=>"",
+                            "pregnancy_eligible_code"=>"",
+                            "first_prenatal_visit_code"=>"",
+                            "ineligible_by_code"=>""
+            }
+            post :create_batch, @params
+            Person.in_ineligibility_batch.first.sampled_persons_ineligibilities.should be_blank
+          end
         end
       end
+
+      describe "DELETE delete_batch" do
+        describe "with html request" do
+          it "deletes 5 people created by #create_batch, leaves others alone" do
+            post :create_batch, @params
+            Person.in_ineligibility_batch.count.should == 6
+            Person.all.count.should == 9
+            uuid = PersonProviderLink.where("ineligibility_batch_identifier != ?",
+              @batch1.person_provider_links.first.ineligibility_batch_identifier
+                                           ).first.ineligibility_batch_identifier
+
+            expect {
+              delete :delete_batch, :ineligibility_batch_identifier => uuid,
+                     :provider_id => provider.id
+            }.to change(Person, :count).by(-5)
+            Person.in_ineligibility_batch.count.should == 1
+            Person.all.count.should == 4
+          end
+        end
+      end
+
     end
+
   end
 
 end

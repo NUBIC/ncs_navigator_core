@@ -123,6 +123,56 @@ class Person < ActiveRecord::Base
     self.age = self.computed_age if self.age.blank?
   end
 
+  def self.in_ineligibility_batch
+    joins(:person_provider_links).where(
+          "person_provider_links.ineligibility_batch_identifier IS NOT NULL")
+  end
+
+  def self.in_ineligibility_batch_by_uuid(batch_uuid)
+    in_ineligibility_batch.where(
+    "person_provider_links.ineligibility_batch_identifier = ?",
+     batch_uuid)
+  end
+
+  def self.not_in_ineligibility_batch
+    joins(%Q|
+      LEFT OUTER JOIN person_provider_links ON
+          people.id = person_provider_links.person_id
+    |).where("person_provider_links.ineligibility_batch_identifier IS NULL")
+  end
+
+  def self.not_in_ineligibility_batch_by_provider(provider)
+    not_in_ineligibility_batch.where("person_provider_links.provider_id = ?",
+                                provider)
+  end
+
+  ##
+  # Select people grouped by a non-empty ineligibility_batch_identifier attribute
+  # for a specific provider
+  # @param [Integer]
+  # @return [ActiveRecord::Relation]
+  def self.in_ineligibility_batch_grouped(provider_id)
+    @ineligible_patients = Person.select(%Q|
+          count(*), date_first_visit_date, age_eligible_code,
+          county_of_residence_code, pregnancy_eligible_code,
+          first_prenatal_visit_code, ineligible_by_code,
+          pre_screening_status_code, sampled_person_code,
+          provider_intro_outcome_code, ineligibility_batch_identifier|).
+      joins(:person_provider_links).
+      joins(%Q|
+          LEFT OUTER JOIN sampled_persons_ineligibilities
+          ON people.id = sampled_persons_ineligibilities.person_id|).
+      where(:person_provider_links => { :provider_id => provider_id }).
+      where("person_provider_links.ineligibility_batch_identifier IS NOT NULL").
+      group(%Q|
+          date_first_visit_date, age_eligible_code,
+          county_of_residence_code, pregnancy_eligible_code,
+          first_prenatal_visit_code, ineligible_by_code,
+          pre_screening_status_code, sampled_person_code,
+          provider_intro_outcome_code, ineligibility_batch_identifier|).
+      order("date_first_visit_date DESC, count(*) DESC")
+  end
+
   ##
   # How to format the date_move attribute
   # cf. MdesRecord

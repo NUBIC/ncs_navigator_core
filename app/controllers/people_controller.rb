@@ -9,12 +9,23 @@ class PeopleController < ApplicationController
 
   before_filter :set_participant, :only => [:new, :edit, :create, :update]
 
+  def people_ransack_paginate
+    @q = Person.search(params[:q])
+    @q.sorts = 'id'
+    @people = @q.result(:distinct => true)
+    @people = Person.not_in_ineligibility_batch
+    @people = WillPaginate::Collection.create(params[:page], 20) do |pager|
+      pager.replace(@people[pager.offset, pager.per_page])
+      pager.total_entries = @people.count
+    end
+  end
+  private :people_ransack_paginate
+
   # GET /people
   # GET /people.json
   def index
     params[:page] ||= 1
-
-    @q, @people = ransack_paginate(Person)
+    people_ransack_paginate
 
     respond_to do |format|
       format.html # index.html.haml
@@ -87,6 +98,49 @@ class PeopleController < ApplicationController
         format.json { render :json => @person.errors }
       end
     end
+  end
+
+  def delete_batch
+
+    @provider = Provider.find(params[:provider_id])
+    respond_to do |format|
+      path = provider_path(@provider)
+      if Person.in_ineligibility_batch_by_uuid(
+                params[:ineligibility_batch_identifier]).destroy_all
+        msg  = "Deleted batch-patient records for #{@provider}."
+        flash[:notice] = msg
+      else
+        msg  = "Couldn't delete batch-patient records for #{@provider}."
+        flash[:error] = msg
+      end
+      format.html { redirect_to(path, :notice => msg) }
+    end
+  end
+
+  def create_batch
+    filter_sampled_persons_ineligibilties
+
+    @provider = Provider.find(params[:provider_id])
+    path = provider_path(@provider)
+
+    params[:person][:person_provider_links_attributes]["0"][
+                            :ineligibility_batch_identifier] = SecureRandom.uuid
+    record_nr = params[:people][:number].to_i
+    if record_nr > 500
+      flash[:error] = "Too many records to create, limit is 500."
+      return redirect_to(path)
+    end
+
+    record_nr.times do
+      person = Person.new(params[:person])
+      unless person.save
+        flash[:error] = "Couldn't create #{params[:people][:number]} batch patient records for #{@provider}."
+        return redirect_to(path)
+      end
+    end
+
+    flash[:notice] = "OK. Created #{params[:people][:number]} batch patient records for #{@provider}."
+    redirect_to(path)
   end
 
   def filter_sampled_persons_ineligibilties
