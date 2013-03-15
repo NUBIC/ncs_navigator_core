@@ -21,6 +21,8 @@ class EligibilityAdjudicator
     end
   end
 
+  private
+
   def creates_ineligibility_record(person)
     SampledPersonsIneligibility.create_from_person!(person)
   end
