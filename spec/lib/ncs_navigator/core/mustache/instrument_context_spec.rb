@@ -209,9 +209,9 @@ module NcsNavigator::Core::Mustache
 
       let(:instrument_context) { InstrumentContext.new(@response_set) }
 
-      describe ".multiple_birth_prefix" do
+      describe ".multiple_release_birth_visit_prefix" do
         it "returns OperationalDataExtractor::Birth::BIRTH_LI_PREFIX" do
-          instrument_context.multiple_birth_prefix.should ==
+          instrument_context.multiple_release_birth_visit_prefix.should ==
             OperationalDataExtractor::Birth::BIRTH_LI_PREFIX
         end
       end
@@ -238,9 +238,9 @@ module NcsNavigator::Core::Mustache
 
       let(:instrument_context) { InstrumentContext.new(@response_set) }
 
-      describe ".multiple_birth_prefix" do
+      describe ".multiple_release_birth_visit_prefix" do
         it "returns OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX" do
-          instrument_context.multiple_birth_prefix.should ==
+          instrument_context.multiple_release_birth_visit_prefix.should ==
             OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX
         end
       end
@@ -1176,9 +1176,9 @@ module NcsNavigator::Core::Mustache
 
       let(:instrument_context) { InstrumentContext.new(@response_set) }
 
-      describe ".multiple_birth_prefix" do
+      describe ".multiple_release_birth_visit_prefix" do
         it "returns OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_2_INTERVIEW_PREFIX" do
-          instrument_context.multiple_birth_prefix.should ==
+          instrument_context.multiple_release_birth_visit_prefix.should ==
             OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_2_INTERVIEW_PREFIX
         end
       end
