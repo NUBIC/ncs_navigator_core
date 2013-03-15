@@ -15,6 +15,7 @@ describe EligibilityAdjudicator do
       Factory(:person_provider_link, :person => @person, :provider => provider)
       Factory(:participant_person_link, :person => father, :participant=> @participant, :relationship_code => 4)
       Factory(:participant_person_link, :person => grandparent,:participant => @participant, :relationship_code => 10)
+      Factory(:ppg_detail, :participant => @participant)
       @person.participant = @participant
       @person.save!
       screener_survey = Factory(:survey, :title => "INS_QUE_PBSamplingScreen_INT_PBS_M3.0_V1.0")
@@ -28,6 +29,11 @@ describe EligibilityAdjudicator do
 
       before do
         @participant.stub!(:ineligible? => true)
+      end
+
+      it "removes ppg_details from the participant" do
+        EligibilityAdjudicator.adjudicate_eligibility(@person)
+        PpgDetail.where(:participant_id => @response_set.participant).count.should == 0
       end
 
       it "deletes all participant_person_links for a participant" do
@@ -66,6 +72,11 @@ describe EligibilityAdjudicator do
     context "when eligible" do
       before do
         @participant.stub!(:eligible? => true)
+      end
+
+      it "does not remove ppg_details from the participant" do
+        EligibilityAdjudicator.adjudicate_eligibility(@person)
+        PpgDetail.where(:participant_id => @response_set.participant).count.should == 1
       end
 
       it "does not delete participant_person_links for a participant" do
