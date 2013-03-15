@@ -1,7 +1,48 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<study xmlns="http://bioinformatics.northwestern.edu/ns/psc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" assigned-identifier="NCS Hi-Lo" last-modified-date="2013-03-08T15:28:14.618Z" xsi:schemaLocation="http://bioinformatics.northwestern.edu/ns/psc http://bioinformatics.northwestern.edu/ns/psc/psc.xsd">
+<study xmlns="http://bioinformatics.northwestern.edu/ns/psc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" assigned-identifier="NCS Hi-Lo" last-modified-date="2013-03-14T10:03:17.100Z" xsi:schemaLocation="http://bioinformatics.northwestern.edu/ns/psc http://bioinformatics.northwestern.edu/ns/psc/psc.xsd">
   <planned-calendar id="80f00ffd-5454-4193-aca5-23f289a22e9a"/>
+  <amendment name="Rev 43" date="2013-03-14" mandatory="true" released-date="2013-03-14T10:03:17.100Z" previous-amendment-key="2013-03-08~Rev 42">
+    <period-delta id="c77da44c-cf63-47c3-928e-effd4752e7fa" node-id="1dc689b8-1798-4189-88a2-b76f23324294">
+      <add id="53947ebf-336f-4f0e-8188-91eab7a182e0">
+        <planned-activity id="1ade4638-6e80-431f-8454-0a2b2d5654f5" day="1">
+          <label id="9fc7cd0d-205a-47cf-8e8b-bb14e68ab71e" name="event:informed_consent"/>
+          <label id="9f4d1549-2e3c-4826-93b9-246ab96e2b11" name="instrument:3.0:irb_con_noninterviewreport"/>
+          <label id="10987649-a845-41a1-8ee1-a7057e855d38" name="instrument:3.1:irb_con_noninterviewreport"/>
+          <label id="759c66e5-b176-435d-99e2-1e8c6e9d9aa3" name="instrument:3.2:irb_con_noninterviewreport"/>
+          <label id="80386ff4-806b-4cc5-b51f-7e793790c609" name="order:91_02"/>
+          <label id="7d6f7a62-e455-494c-8c80-a974f74a9364" name="participant_type:mother"/>
+          <activity-reference code="NIR" source="NCS"/>
+        </planned-activity>
+      </add>
+    </period-delta>
+    <period-delta id="445a164e-cab4-4240-a095-e0393e05fc80" node-id="6771334b-1155-4ea9-9780-d4edf72dee89">
+      <add id="6e1addb1-25c0-4168-9adc-4c80b658d125">
+        <planned-activity id="0349950b-40f7-4fbd-9dce-cdb2fdb6a7ea" day="1">
+          <label id="f88ae736-bcd8-4fd0-912b-31ffddb398cd" name="event:informed_consent"/>
+          <label id="4c8620be-1440-400f-8d78-4f7d0cd96f6a" name="instrument:3.0:irb_con_noninterviewreport"/>
+          <label id="a5af5dc6-6ddd-46d1-983c-a31a391d265c" name="instrument:3.1:irb_con_noninterviewreport"/>
+          <label id="2c90ba79-9467-4fa2-9d8e-1e54107c6210" name="instrument:3.2:irb_con_noninterviewreport"/>
+          <label id="efcfd6d3-17e1-4f06-806c-12be0e5ca228" name="order:91_02"/>
+          <label id="ee1acd17-37a2-4ffd-96de-8afec54f1d1f" name="participant_type:mother"/>
+          <activity-reference code="NIR" source="NCS"/>
+        </planned-activity>
+      </add>
+    </period-delta>
+    <period-delta id="3670d3b8-f774-4838-b1eb-de7d013ec0b6" node-id="e06ae8ff-a8e0-4792-8570-dceb3c34af22">
+      <add id="c1838be0-86ed-4602-a10b-fc39b47c6854">
+        <planned-activity id="0a5a0ca9-bf89-4033-b371-2c797027bbf7" day="1">
+          <label id="3b4cfc07-1803-435a-a498-62d2ef7a422e" name="event:informed_consent"/>
+          <label id="6ea9e67a-cd2a-4eae-bf39-7d25f0881a99" name="instrument:3.0:irb_con_noninterviewreport"/>
+          <label id="1f2250ab-323f-4501-9abd-90f72c6ec9f5" name="instrument:3.1:irb_con_noninterviewreport"/>
+          <label id="6baa5193-d6ea-4de8-b302-b501f4d20a37" name="instrument:3.2:irb_con_noninterviewreport"/>
+          <label id="1280b9b2-9af2-46c5-b921-b2a77d8c9e3c" name="order:91_02"/>
+          <label id="7a745aeb-6196-4d5f-bb80-ee7cd5cf098f" name="participant_type:mother"/>
+          <activity-reference code="NIR" source="NCS"/>
+        </planned-activity>
+      </add>
+    </period-delta>
+  </amendment>
   <amendment name="Rev 42" date="2013-03-08" mandatory="true" released-date="2013-03-08T15:28:14.618Z" updated-date="2013-03-08T15:27:46.746Z" previous-amendment-key="2013-03-07~Rev 41">
     <planned-activity-delta id="c40b975d-1653-450c-83bd-a0db51c64c32" node-id="55b60d95-b490-4aba-86cb-8b679326e812">
       <property-change id="13a533a3-d60a-481e-9f06-fdb924482a95" property-name="day" old-value="1" new-value="1"/>
@@ -7304,6 +7345,7 @@
       <activity name="Non-interview Respondent Questionnaire" code="NIRQ" description="Non-interview Respondent Questionnaire" type="Consent"/>
       <activity name="Pregnancy 2 Record of VIS" code="PR 2" description="Pregnancy 2 Record of VIS" type="Consent"/>
       <activity name="Pregnancy 1 Record of VIS" code="PR 1" description="Pregnancy 1 Record of VIS" type="Consent"/>
+      <activity name="Non-Interview Report" code="NIR" description="Non-Interview Report" type="Consent"/>
       <activity name="Tracing Module" code="TM" description="Tracing Module" type="Instrument"/>
       <activity name="Low-Intensity Interview" code="LII" description="Low-Intensity Interview" type="Instrument"/>
       <activity name="Low-Intensity Consent" code="LIC" description="Low-Intensity Consent" type="Consent"/>
