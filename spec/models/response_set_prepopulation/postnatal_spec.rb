@@ -58,6 +58,7 @@ module ResponseSetPrepopulation
                               :contact => contact, :event => event)
       ncs_code = NcsCode::for_list_name_and_local_code('EVENT_TYPE_CL1',
                                                         event_type_code)
+      event
     end
 
     def take_num_hh_surveys(survey_type, valid_answers)
@@ -487,27 +488,55 @@ module ResponseSetPrepopulation
           init_common_vars
         end
 
-        it "should be TRUE when a complete birth record exists" do
-          make_contact(Event::birth_code)
+        it "should be TRUE when last is an incomplete birth record" do
+          make_contact(Event::birth_code, event_complete = false)
           run_populator
           get_response_as_string(@response_set,
             "prepopulated_is_prev_event_birth_li_and_set_to_complete"
           ).should == "TRUE"
         end
 
-        it "should be FALSE when an incomplete birth record exists" do
-          make_contact(Event::birth_code, event_complete = false)
+        it "should be TRUE when no birth record exists" do
+          run_populator
+          get_response_as_string(@response_set,
+            "prepopulated_is_prev_event_birth_li_and_set_to_complete"
+          ).should == "TRUE"
+        end
+
+        it "should be FALSE when last is a complete birth record" do
+          make_contact(Event::birth_code)
           run_populator
           get_response_as_string(@response_set,
             "prepopulated_is_prev_event_birth_li_and_set_to_complete"
           ).should == "FALSE"
         end
-        it "should be FALSE when no birth record exists" do
+
+        it "should be TRUE when last is an incomplete birth record when multiple births" do
+          e = make_contact(Event::birth_code)
+          e.event_start_date = '2010-12-01'
+          e.save!
+          e = make_contact(Event::birth_code, event_complete = false)
+          e.event_start_date = '2011-12-01'
+          e.save!
           run_populator
           get_response_as_string(@response_set,
-            "prepopulated_is_prev_event_birth_li_and_set_to_complete"
+                "prepopulated_is_prev_event_birth_li_and_set_to_complete"
+          ).should == "TRUE"
+        end
+
+        it "should be FALSE when last is a complete birth record when multiple births" do
+          e = make_contact(Event::birth_code, event_complete = false)
+          e.event_start_date = '2010-12-01'
+          e.save!
+          e = make_contact(Event::birth_code)
+          e.event_start_date = '2011-12-01'
+          e.save!
+          run_populator
+          get_response_as_string(@response_set,
+                "prepopulated_is_prev_event_birth_li_and_set_to_complete"
           ).should == "FALSE"
         end
+
       end
 
       describe "prepopulated_is_multiple_child" do
