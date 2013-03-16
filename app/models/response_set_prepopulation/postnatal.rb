@@ -3,7 +3,7 @@ module ResponseSetPrepopulation
     include OldAccessMethods
 
     def self.applies_to?(rs)
-      rs.survey.title =~ /_\d{1,2}M?Month/
+      rs.survey.title =~ /_(?:Core|\d{1,2}(?:Month|MMother))_/
     end
 
     def self.reference_identifiers
@@ -145,7 +145,9 @@ module ResponseSetPrepopulation
     end
 
     def was_work_address_collected?
-      check_multiple_surveys_for_response("WORK_ADDRESS_1")
+      check_multiple_surveys_for_response("WORK_ADDRESS_1") ||
+              check_multiple_surveys_for_response("CWORK_ADDRESS_1") ||
+              check_multiple_surveys_for_response("WORK_ADDRESS1")
     end
   end
 end
