@@ -32,7 +32,13 @@ module NcsNavigator::Core::Warehouse
 
     def each
       progress = ProgressTracker.new(@wh_config, Instrument.count)
-      Instrument.find_each do |ins|
+      # The small batch size is so that the loaded instrument instances become
+      # eligible for GC quickly. (All the records in a batch have strong refs
+      # within ActiveRecord's batching infrastructure.)
+      # #to_mdes_warehouse_records retains a lot of information within the
+      # instrument instance, so having them be GC'd is necessary to keep process
+      # memory requirements down. See #3589 for more discussion.
+      Instrument.find_each(:batch_size => 5) do |ins|
         progress.increment_instruments
 
         unless ins.enumerable_to_warehouse?
