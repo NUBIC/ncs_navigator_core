@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-
 require 'spec_helper'
 
 describe OperationalDataExtractor::PregnancyScreener do
@@ -34,15 +33,15 @@ describe OperationalDataExtractor::PregnancyScreener do
       response_set, instrument = prepare_instrument(@person, @participant, @survey)
       response_set.save!
 
-      take_survey(@survey, response_set) do |a|
-        a.str "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.R_FNAME", 'Jo'
-        a.str "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.R_LNAME", 'Stafford'
-        a.date "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.PERSON_DOB", '01/01/1981'
-        a.int "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.AGE", entered_age
-        a.choice "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.AGE_RANGE", age_range
-        a.choice "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.ETHNICITY", ethnic_group
-        a.choice "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.PERSON_LANG", language
-        a.choice "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.AGE_ELIG", age_eligible
+      take_survey(@survey, response_set) do |r|
+        r.a "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.R_FNAME", 'Jo'
+        r.a "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.R_LNAME", 'Stafford'
+        r.a "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.PERSON_DOB", '1981-01-01'
+        r.a "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.AGE", entered_age
+        r.a "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.AGE_RANGE", age_range
+        r.a "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.ETHNICITY", ethnic_group
+        r.a "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.PERSON_LANG", language
+        r.a "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.AGE_ELIG", age_eligible
       end
 
       response_set.responses.reload
@@ -66,54 +65,6 @@ describe OperationalDataExtractor::PregnancyScreener do
       person.participant.pid_age_eligibility.display_text.should == age_eligible.display_text
       person.participant.pid_age_eligibility.local_code.should == age_eligible.local_code
     end
-
-    describe "parsing datetime values" do
-
-      it "handles YYYY-MM-DD" do
-        entered_dob = "1981-01-11"
-        response_set, instrument = prepare_instrument(@person, @participant, @survey)
-        response_set.save!
-
-        take_survey(@survey, response_set) do |a|
-          a.date "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.PERSON_DOB", entered_dob
-        end
-
-        response_set.responses.reload
-        response_set.responses.size.should == 1
-
-        OperationalDataExtractor::PregnancyScreener.new(response_set).extract_data
-
-        person = Person.find(@person.id)
-        person.person_dob.should == Date.parse(entered_dob).to_s
-        person.person_dob_date.should == Date.parse(entered_dob)
-      end
-
-      it "handles YYYYMMDD"
-
-      it "handles MM/DD/YYYY" do
-        entered_dob = "01/11/1981"
-        response_set, instrument = prepare_instrument(@person, @participant, @survey)
-        response_set.save!
-
-        take_survey(@survey, response_set) do |a|
-          a.date "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.PERSON_DOB", entered_dob
-        end
-
-        response_set.responses.reload
-        response_set.responses.size.should == 1
-
-        OperationalDataExtractor::PregnancyScreener.new(response_set).extract_data
-
-        person = Person.find(@person.id)
-        person.person_dob.class.should == String
-        person.person_dob.should == Date.parse(entered_dob).to_s
-        person.person_dob_date.should == Date.parse(entered_dob)
-      end
-
-      it "handles MM/DD/YY"
-
-    end
-
   end
 
   # ADDRESS_1             Address.address_one
@@ -134,14 +85,14 @@ describe OperationalDataExtractor::PregnancyScreener do
     response_set, instrument = prepare_instrument(person, participant, survey)
     response_set.save!
 
-    take_survey(survey, response_set) do |a|
-      a.str "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.ADDRESS_1", '123 Easy St.'
-      a.str "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.ADDRESS_2", ''
-      a.str "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.UNIT", ''
-      a.str "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.CITY", 'Chicago'
-      a.choice "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.STATE", state
-      a.str "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.ZIP", '65432'
-      a.str "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.ZIP4", '1234'
+    take_survey(survey, response_set) do |r|
+      r.a "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.ADDRESS_1", '123 Easy St.'
+      r.a "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.ADDRESS_2", ''
+      r.a "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.UNIT", ''
+      r.a "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.CITY", 'Chicago'
+      r.a "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.STATE", state
+      r.a "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.ZIP", '65432'
+      r.a "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.ZIP4", '1234'
     end
 
     response_set.responses.reload
@@ -170,14 +121,14 @@ describe OperationalDataExtractor::PregnancyScreener do
     response_set, instrument = prepare_instrument(person, participant, survey)
     response_set.save!
 
-    take_survey(survey, response_set) do |a|
-      a.str "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.MAIL_ADDRESS_1", '123 Easy St.'
-      a.str "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.MAIL_ADDRESS_2", ''
-      a.str "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.MAIL_UNIT", ''
-      a.str "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.MAIL_CITY", 'Chicago'
-      a.choice "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.MAIL_STATE", state
-      a.str "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.MAIL_ZIP", '65432'
-      a.str "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.MAIL_ZIP4", '1234'
+    take_survey(survey, response_set) do |r|
+      r.a "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.MAIL_ADDRESS_1", '123 Easy St.'
+      r.a "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.MAIL_ADDRESS_2", ''
+      r.a "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.MAIL_UNIT", ''
+      r.a "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.MAIL_CITY", 'Chicago'
+      r.a "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.MAIL_STATE", state
+      r.a "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.MAIL_ZIP", '65432'
+      r.a "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.MAIL_ZIP4", '1234'
     end
 
     response_set.responses.reload
@@ -214,15 +165,15 @@ describe OperationalDataExtractor::PregnancyScreener do
       response_set, instrument = prepare_instrument(@person, @participant, @survey)
       response_set.save!
 
-      take_survey(@survey, response_set) do |a|
-        a.str "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.PHONE_NBR", '3125551234'
-        a.str "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.PHONE_NBR_OTH", ''
-        a.choice "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.PHONE_TYPE", cell
-        a.str "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.PHONE_TYPE_OTH", ''
-        a.str "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.HOME_PHONE", '3125554321'
-        a.yes "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.CELL_PHONE_2"
-        a.yes "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.CELL_PHONE_4"
-        a.str "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.CELL_PHONE", '3125557890'
+      take_survey(@survey, response_set) do |r|
+        r.a "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.PHONE_NBR", '3125551234'
+        r.a "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.PHONE_NBR_OTH", ''
+        r.a "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.PHONE_TYPE", cell
+        r.a "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.PHONE_TYPE_OTH", ''
+        r.a "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.HOME_PHONE", '3125554321'
+        r.yes "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.CELL_PHONE_2"
+        r.yes "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.CELL_PHONE_4"
+        r.a "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.CELL_PHONE", '3125557890'
       end
 
       response_set.responses.reload
@@ -246,8 +197,8 @@ describe OperationalDataExtractor::PregnancyScreener do
         response_set, instrument = prepare_instrument(@person, @participant, @survey)
         response_set.save!
 
-        take_survey(@survey, response_set) do |a|
-          a.str "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.PHONE_NBR", '312.555.1234'
+        take_survey(@survey, response_set) do |r|
+          r.a "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.PHONE_NBR", '312.555.1234'
         end
 
         response_set.responses.reload
@@ -268,8 +219,8 @@ describe OperationalDataExtractor::PregnancyScreener do
         response_set, instrument = prepare_instrument(@person, @participant, @survey)
         response_set.save!
 
-        take_survey(@survey, response_set) do |a|
-          a.str "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.PHONE_NBR", '(312) 555-1234'
+        take_survey(@survey, response_set) do |r|
+          r.a "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.PHONE_NBR", '(312) 555-1234'
         end
 
         response_set.responses.reload
@@ -290,8 +241,8 @@ describe OperationalDataExtractor::PregnancyScreener do
         response_set, instrument = prepare_instrument(@person, @participant, @survey)
         response_set.save!
 
-        take_survey(@survey, response_set) do |a|
-          a.str "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.PHONE_NBR", '(312) 5551234'
+        take_survey(@survey, response_set) do |r|
+          r.a "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.PHONE_NBR", '(312) 5551234'
         end
 
         response_set.responses.reload
@@ -312,8 +263,8 @@ describe OperationalDataExtractor::PregnancyScreener do
         response_set, instrument = prepare_instrument(@person, @participant, @survey)
         response_set.save!
 
-        take_survey(@survey, response_set) do |a|
-          a.str "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.PHONE_NBR", '312-555-1234'
+        take_survey(@survey, response_set) do |r|
+          r.a "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.PHONE_NBR", '312-555-1234'
         end
 
         response_set.responses.reload
@@ -346,9 +297,9 @@ describe OperationalDataExtractor::PregnancyScreener do
     response_set, instrument = prepare_instrument(person, participant, survey)
     response_set.save!
 
-    take_survey(survey, response_set) do |a|
-      a.str "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.EMAIL", 'email@dev.null'
-      a.choice "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.EMAIL_TYPE", home
+    take_survey(survey, response_set) do |r|
+      r.a "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.EMAIL", 'email@dev.null'
+      r.a "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.EMAIL_TYPE", home
     end
 
     response_set.responses.reload
@@ -390,9 +341,9 @@ describe OperationalDataExtractor::PregnancyScreener do
     response_set, instrument = prepare_instrument(person, participant, survey)
     response_set.save!
 
-    take_survey(survey, response_set) do |a|
-      a.choice "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.PREGNANT", ppg1
-      a.date "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE", '2011-12-25'
+    take_survey(survey, response_set) do |r|
+      r.a "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.PREGNANT", ppg1
+      r.a "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE", '2011-12-25'
     end
 
     response_set.responses.reload
@@ -424,8 +375,8 @@ describe OperationalDataExtractor::PregnancyScreener do
     response_set, instrument = prepare_instrument(person, participant, survey)
     response_set.save!
 
-    take_survey(survey, response_set) do |a|
-      a.yes "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.TRYING"
+    take_survey(survey, response_set) do |r|
+      r.yes "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.TRYING"
     end
 
     response_set.responses.reload
@@ -455,8 +406,8 @@ describe OperationalDataExtractor::PregnancyScreener do
     response_set, instrument = prepare_instrument(person, participant, survey)
     response_set.save!
 
-    take_survey(survey, response_set) do |a|
-      a.yes "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.HYSTER"
+    take_survey(survey, response_set) do |r|
+      r.yes "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.HYSTER"
     end
 
     response_set.responses.reload
@@ -497,9 +448,9 @@ describe OperationalDataExtractor::PregnancyScreener do
 
       due_date = "2012-02-29"
 
-      take_survey(@survey, @response_set) do |a|
-        a.choice "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.PREGNANT", ppg1
-        a.date "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE", due_date
+      take_survey(@survey, @response_set) do |r|
+        r.a "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.PREGNANT", ppg1
+        r.a "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE", due_date
       end
 
       @response_set.responses.reload
@@ -518,10 +469,10 @@ describe OperationalDataExtractor::PregnancyScreener do
 
       last_period = 20.weeks.ago
 
-      take_survey(@survey, @response_set) do |a|
-        a.choice "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.PREGNANT", ppg1
-        a.choice "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE", neg_2
-        a.date "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.DATE_PERIOD", last_period
+      take_survey(@survey, @response_set) do |r|
+        r.a "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.PREGNANT", ppg1
+        r.a "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE", neg_2
+        r.a "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.DATE_PERIOD", last_period.strftime('%Y-%m-%d')
       end
 
       @response_set.responses.reload
@@ -540,11 +491,11 @@ describe OperationalDataExtractor::PregnancyScreener do
 
       weeks_pregnant = 8
 
-      take_survey(@survey, @response_set) do |a|
-        a.choice "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.PREGNANT", ppg1
-        a.choice "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE", neg_2
-        a.choice "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.DATE_PERIOD", neg_2
-        a.int "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.WEEKS_PREG", weeks_pregnant
+      take_survey(@survey, @response_set) do |r|
+        r.a "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.PREGNANT", ppg1
+        r.a "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE", neg_2
+        r.a "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.DATE_PERIOD", neg_2
+        r.a "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.WEEKS_PREG", weeks_pregnant
       end
 
       @response_set.responses.reload
@@ -562,12 +513,12 @@ describe OperationalDataExtractor::PregnancyScreener do
     it "calculates the due date based on the number of months pregnant" do
       months_pregnant = 4
 
-      take_survey(@survey, @response_set) do |a|
-        a.choice "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.PREGNANT", ppg1
-        a.choice "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE", neg_2
-        a.choice "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.DATE_PERIOD", neg_2
-        a.choice "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.WEEKS_PREG", neg_2
-        a.int "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.MONTH_PREG", months_pregnant
+      take_survey(@survey, @response_set) do |r|
+        r.a "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.PREGNANT", ppg1
+        r.a "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE", neg_2
+        r.a "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.DATE_PERIOD", neg_2
+        r.a "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.WEEKS_PREG", neg_2
+        r.a"#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.MONTH_PREG", months_pregnant
       end
 
       @response_set.responses.reload
@@ -586,13 +537,13 @@ describe OperationalDataExtractor::PregnancyScreener do
     # 3RD TRIMESTER:      ORIG_DUE_DATE = TODAY’S DATE + (280 DAYS – 235 DAYS).
     # DON’T KNOW/REFUSED: ORIG_DUE_DATE = TODAY’S DATE + (280 DAYS – 140 DAYS)
     it "calculates the due date based on the 1st trimester" do
-      take_survey(@survey, @response_set) do |a|
-        a.choice "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.PREGNANT", ppg1
-        a.choice "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE", neg_2
-        a.choice "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.DATE_PERIOD", neg_2
-        a.choice "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.WEEKS_PREG", neg_2
-        a.choice "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.MONTH_PREG", neg_2
-        a.choice "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.TRIMESTER", tri1
+      take_survey(@survey, @response_set) do |r|
+        r.a "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.PREGNANT", ppg1
+        r.a "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE", neg_2
+        r.a "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.DATE_PERIOD", neg_2
+        r.a "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.WEEKS_PREG", neg_2
+        r.a "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.MONTH_PREG", neg_2
+        r.a "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.TRIMESTER", tri1
       end
 
       @response_set.responses.reload
@@ -607,13 +558,13 @@ describe OperationalDataExtractor::PregnancyScreener do
     end
 
     it "calculates the due date based on the 2nd trimester" do
-      take_survey(@survey, @response_set) do |a|
-        a.choice "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.PREGNANT", ppg1
-        a.choice "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE", neg_2
-        a.choice "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.DATE_PERIOD", neg_2
-        a.choice "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.WEEKS_PREG", neg_2
-        a.choice "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.MONTH_PREG", neg_2
-        a.choice "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.TRIMESTER", tri2
+      take_survey(@survey, @response_set) do |r|
+        r.a "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.PREGNANT", ppg1
+        r.a "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE", neg_2
+        r.a "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.DATE_PERIOD", neg_2
+        r.a "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.WEEKS_PREG", neg_2
+        r.a "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.MONTH_PREG", neg_2
+        r.a "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.TRIMESTER", tri2
       end
 
       @response_set.responses.reload
@@ -627,13 +578,13 @@ describe OperationalDataExtractor::PregnancyScreener do
     end
 
     it "calculates the due date based on the 3rd trimester" do
-      take_survey(@survey, @response_set) do |a|
-        a.choice "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.PREGNANT", ppg1
-        a.choice "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE", neg_2
-        a.choice "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.DATE_PERIOD", neg_2
-        a.choice "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.WEEKS_PREG", neg_2
-        a.choice "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.MONTH_PREG", neg_2
-        a.choice "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.TRIMESTER", tri3
+      take_survey(@survey, @response_set) do |r|
+        r.a "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.PREGNANT", ppg1
+        r.a "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE", neg_2
+        r.a "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.DATE_PERIOD", neg_2
+        r.a "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.WEEKS_PREG", neg_2
+        r.a "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.MONTH_PREG", neg_2
+        r.a "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.TRIMESTER", tri3
       end
 
       @response_set.responses.reload
@@ -647,13 +598,13 @@ describe OperationalDataExtractor::PregnancyScreener do
     end
 
     it "calculates the due date when refused" do
-      take_survey(@survey, @response_set) do |a|
-        a.choice "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.PREGNANT", ppg1
-        a.choice "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE", neg_2
-        a.choice "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.DATE_PERIOD", neg_2
-        a.choice "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.WEEKS_PREG", neg_2
-        a.choice "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.MONTH_PREG", neg_2
-        a.choice "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.TRIMESTER", neg_2
+      take_survey(@survey, @response_set) do |r|
+        r.a "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.PREGNANT", ppg1
+        r.a "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE", neg_2
+        r.a "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.DATE_PERIOD", neg_2
+        r.a "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.WEEKS_PREG", neg_2
+        r.a "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.MONTH_PREG", neg_2
+        r.a "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.TRIMESTER", neg_2
       end
 
       @response_set.responses.reload
@@ -667,13 +618,13 @@ describe OperationalDataExtractor::PregnancyScreener do
     end
 
     it "calculates the due date when don't know" do
-      take_survey(@survey, @response_set) do |a|
-        a.choice "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.PREGNANT", ppg1
-        a.choice "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE", neg_2
-        a.choice "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.DATE_PERIOD", neg_2
-        a.choice "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.WEEKS_PREG", neg_2
-        a.choice "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.MONTH_PREG", neg_2
-        a.choice "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.TRIMESTER", neg_1
+      take_survey(@survey, @response_set) do |r|
+        r.a "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.PREGNANT", ppg1
+        r.a "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE", neg_2
+        r.a "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.DATE_PERIOD", neg_2
+        r.a "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.WEEKS_PREG", neg_2
+        r.a "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.MONTH_PREG", neg_2
+        r.a "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.TRIMESTER", neg_1
       end
 
       @response_set.responses.reload
@@ -719,12 +670,12 @@ describe OperationalDataExtractor::PregnancyScreener do
     describe "#data_export_identifier_indexed_responses" do
       it "collects all the responses and maps them to their associated data_export_identifier" do
         months_pregnant = 2
-        take_survey(@survey, @response_set) do |a|
-          a.int "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.MONTH_PREG", months_pregnant
-          a.choice "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.DATE_PERIOD", neg_2
-          a.choice "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.PREGNANT", ppg1
-          a.choice "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.WEEKS_PREG", neg_2
-          a.choice "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE", neg_2
+        take_survey(@survey, @response_set) do |r|
+          r.a "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.MONTH_PREG", months_pregnant
+          r.a "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.DATE_PERIOD", neg_2
+          r.a "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.PREGNANT", ppg1
+          r.a "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.WEEKS_PREG", neg_2
+          r.a "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE", neg_2
         end
 
         @response_set.responses.reload
@@ -741,12 +692,12 @@ describe OperationalDataExtractor::PregnancyScreener do
     it "calculates the due date based on the number of months pregnant" do
       months_pregnant = 4
 
-      take_survey(@survey, @response_set) do |a|
-        a.int "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.MONTH_PREG", months_pregnant
-        a.choice "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.DATE_PERIOD", neg_2
-        a.choice "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.PREGNANT", ppg1
-        a.choice "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.WEEKS_PREG", neg_2
-        a.choice "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE", neg_2
+      take_survey(@survey, @response_set) do |r|
+        r.a "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.MONTH_PREG", months_pregnant
+        r.a "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.DATE_PERIOD", neg_2
+        r.a "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.PREGNANT", ppg1
+        r.a "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.WEEKS_PREG", neg_2
+        r.a "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE", neg_2
       end
 
       @response_set.responses.reload
@@ -778,10 +729,10 @@ describe OperationalDataExtractor::PregnancyScreener do
 
     describe "processing racial data" do
       before do
-        take_survey(@survey, @response_set) do |a|
-          a.choice "#{OperationalDataExtractor::PregnancyScreener::PREG_SCREEN_HI_RACE_2_PREFIX}.RACE", black_race
-          a.choice "#{OperationalDataExtractor::PregnancyScreener::PREG_SCREEN_HI_RACE_2_PREFIX}.RACE", other_race
-          a.str "#{OperationalDataExtractor::PregnancyScreener::PREG_SCREEN_HI_RACE_2_PREFIX}.RACE_OTH", "Aborigine"
+        take_survey(@survey, @response_set) do |r|
+          r.a "#{OperationalDataExtractor::PregnancyScreener::PREG_SCREEN_HI_RACE_2_PREFIX}.RACE", black_race
+          r.a "#{OperationalDataExtractor::PregnancyScreener::PREG_SCREEN_HI_RACE_2_PREFIX}.RACE", other_race
+          r.a "#{OperationalDataExtractor::PregnancyScreener::PREG_SCREEN_HI_RACE_2_PREFIX}.RACE_OTH", "Aborigine"
         end
 
         OperationalDataExtractor::PregnancyScreener.new(@response_set).extract_data

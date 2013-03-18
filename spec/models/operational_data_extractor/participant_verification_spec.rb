@@ -30,11 +30,11 @@ describe OperationalDataExtractor::ParticipantVerification do
     it "updates the person (Child) record" do
       response_set, instrument = prepare_instrument(@person, @child_participant, survey)
 
-      take_survey(survey, response_set) do |a|
-        a.str "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_CHILD_PREFIX}.C_FNAME", 'Baby'
-        a.str "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_CHILD_PREFIX}.C_LNAME", 'James'
-        a.date "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_CHILD_PREFIX}.CHILD_DOB", '01/01/2013'
-        a.choice "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_CHILD_PREFIX}.CHILD_SEX", @female
+      take_survey(survey, response_set) do |r|
+        r.a "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_CHILD_PREFIX}.C_FNAME", 'Baby'
+        r.a "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_CHILD_PREFIX}.C_LNAME", 'James'
+        r.a "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_CHILD_PREFIX}.CHILD_DOB", '01/01/2013'
+        r.a "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_CHILD_PREFIX}.CHILD_SEX", @female
       end
 
       response_set.responses.reload
@@ -66,16 +66,15 @@ describe OperationalDataExtractor::ParticipantVerification do
     it "creates an address record and associates it with the child" do
       response_set, instrument = prepare_instrument(@person, @child_participant, survey)
 
-      take_survey(survey, response_set) do |a|
-        a.str "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_CHILD_PREFIX}.C_FNAME", 'Baby'
-        a.str "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_CHILD_PREFIX}.C_LNAME", 'James'
-        a.str "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_PREFIX}.C_ADDRESS_1", '123 Easy St.'
-        a.str "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_PREFIX}.C_ADDRESS_2", ''
-        a.str "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_PREFIX}.C_CITY", 'Chicago'
-        a.choice "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_PREFIX}.C_STATE", state
-        a.str "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_PREFIX}.C_ZIP", '65432'
-        a.str "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_PREFIX}.C_ZIP4", '1234'
-
+      take_survey(survey, response_set) do |r|
+        r.a "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_CHILD_PREFIX}.C_FNAME", 'Baby'
+        r.a "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_CHILD_PREFIX}.C_LNAME", 'James'
+        r.a "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_PREFIX}.C_ADDRESS_1", '123 Easy St.'
+        r.a "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_PREFIX}.C_ADDRESS_2", ''
+        r.a "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_PREFIX}.C_CITY", 'Chicago'
+        r.a "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_PREFIX}.C_STATE", state
+        r.a "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_PREFIX}.C_ZIP", '65432'
+        r.a "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_PREFIX}.C_ZIP4", '1234'
       end
 
       response_set.responses.reload
@@ -95,16 +94,15 @@ describe OperationalDataExtractor::ParticipantVerification do
     it "creates a 2ndary address record and associates it with the child" do
       response_set, instrument = prepare_instrument(@person, @child_participant, survey)
 
-      take_survey(survey, response_set) do |a|
-        a.str "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_CHILD_PREFIX}.C_FNAME", 'Baby'
-        a.str "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_CHILD_PREFIX}.C_LNAME", 'James'
-        a.str "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_PREFIX}.S_ADDRESS_1", '444 Easy St.'
-        a.str "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_PREFIX}.S_ADDRESS_2", 'Apt 2D'
-        a.str "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_PREFIX}.S_CITY", 'Chicago'
-        a.choice "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_PREFIX}.S_STATE", state
-        a.str "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_PREFIX}.S_ZIP", '65432'
-        a.str "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_PREFIX}.S_ZIP4", '6789'
-
+      take_survey(survey, response_set) do |r|
+        r.a "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_CHILD_PREFIX}.C_FNAME", 'Baby'
+        r.a "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_CHILD_PREFIX}.C_LNAME", 'James'
+        r.a "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_PREFIX}.S_ADDRESS_1", '444 Easy St.'
+        r.a "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_PREFIX}.S_ADDRESS_2", 'Apt 2D'
+        r.a "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_PREFIX}.S_CITY", 'Chicago'
+        r.a "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_PREFIX}.S_STATE", state
+        r.a "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_PREFIX}.S_ZIP", '65432'
+        r.a "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_PREFIX}.S_ZIP4", '6789'
       end
 
       response_set.responses.reload
@@ -125,10 +123,10 @@ describe OperationalDataExtractor::ParticipantVerification do
     it "creates a telephone record and associates it with the child" do
       response_set, instrument = prepare_instrument(@person, @child_participant, survey)
 
-      take_survey(survey, response_set) do |a|
-        a.str "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_CHILD_PREFIX}.C_FNAME", 'Baby'
-        a.str "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_CHILD_PREFIX}.C_LNAME", 'James'
-        a.str "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_PREFIX}.PA_PHONE", '312-555-1212'
+      take_survey(survey, response_set) do |r|
+        r.a "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_CHILD_PREFIX}.C_FNAME", 'Baby'
+        r.a "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_CHILD_PREFIX}.C_LNAME", 'James'
+        r.a "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_PREFIX}.PA_PHONE", '312-555-1212'
       end
 
       response_set.responses.reload
@@ -144,10 +142,10 @@ describe OperationalDataExtractor::ParticipantVerification do
     it "creates a 2ndary telephone record and associates it with the child" do
       response_set, instrument = prepare_instrument(@person, @child_participant, survey)
 
-      take_survey(survey, response_set) do |a|
-        a.str "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_CHILD_PREFIX}.C_FNAME", 'Baby'
-        a.str "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_CHILD_PREFIX}.C_LNAME", 'James'
-        a.str "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_PREFIX}.SA_PHONE", '312-555-4444'
+      take_survey(survey, response_set) do |r|
+        r.a "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_CHILD_PREFIX}.C_FNAME", 'Baby'
+        r.a "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_CHILD_PREFIX}.C_LNAME", 'James'
+        r.a "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_PREFIX}.SA_PHONE", '312-555-4444'
       end
 
       response_set.responses.reload
@@ -175,12 +173,12 @@ describe OperationalDataExtractor::ParticipantVerification do
       response_set, instrument = prepare_instrument(@person, @participant, survey)
       response_set.save!
 
-      take_survey(survey, response_set) do |a|
-        a.str "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_PREFIX}.R_FNAME", 'Jo'
-        a.str "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_PREFIX}.R_MNAME", 'Anna'
-        a.str "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_PREFIX}.R_LNAME", 'Stafford'
-        a.str "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_PREFIX}.MAIDEN_NAME", 'Hitler'
-        a.date "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_PREFIX}.PERSON_DOB", '01/01/1981'
+      take_survey(survey, response_set) do |r|
+        r.a "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_PREFIX}.R_FNAME", 'Jo'
+        r.a "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_PREFIX}.R_MNAME", 'Anna'
+        r.a "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_PREFIX}.R_LNAME", 'Stafford'
+        r.a "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_PREFIX}.MAIDEN_NAME", 'Hitler'
+        r.a "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_PREFIX}.PERSON_DOB", '1981-01-01'
       end
 
       response_set.responses.reload
@@ -210,28 +208,27 @@ describe OperationalDataExtractor::ParticipantVerification do
     end
 
     it "sets the mode to CAPI" do
-      take_survey(survey, @response_set) do |a|
-        a.choice "prepopulated_mode_of_contact", mock(NcsCode, :local_code => "capi")
+      take_survey(survey, @response_set) do |r|
+        r.a "prepopulated_mode_of_contact", :reference_identifier => 'capi'
       end
       OperationalDataExtractor::ParticipantVerification.new(@response_set).extract_data
       Instrument.find(@instrument.id).instrument_mode_code.should == Instrument.capi
     end
 
     it "sets the mode to CATI" do
-      take_survey(survey, @response_set) do |a|
-        a.choice "prepopulated_mode_of_contact", mock(NcsCode, :local_code => "cati")
+      take_survey(survey, @response_set) do |r|
+        r.a "prepopulated_mode_of_contact", :reference_identifier => 'cati'
       end
       OperationalDataExtractor::ParticipantVerification.new(@response_set).extract_data
       Instrument.find(@instrument.id).instrument_mode_code.should == Instrument.cati
     end
 
     it "sets the mode to PAPI" do
-      take_survey(survey, @response_set) do |a|
-        a.choice "prepopulated_mode_of_contact", mock(NcsCode, :local_code => "papi")
+      take_survey(survey, @response_set) do |r|
+        r.a "prepopulated_mode_of_contact", :reference_identifier => 'papi'
       end
       OperationalDataExtractor::ParticipantVerification.new(@response_set).extract_data
       Instrument.find(@instrument.id).instrument_mode_code.should == Instrument.papi
     end
-
   end
 end

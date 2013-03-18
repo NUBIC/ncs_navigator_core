@@ -194,8 +194,8 @@ module NcsNavigator::Core::Mustache
 
       describe ".response_for" do
         it "returns the value of the response for the given data_export_identifier" do
-          take_survey(@survey, @response_set) do |a|
-            a.str baby_fname, 'Mary'
+          take_survey(@survey, @response_set) do |r|
+            r.a baby_fname, 'Mary'
           end
           instrument_context.response_for(baby_fname).should == 'Mary'
         end
@@ -600,25 +600,25 @@ module NcsNavigator::Core::Mustache
         let(:birth_deliver) { "BIRTH_VISIT_3.BIRTH_DELIVER" }
 
         it "returns 'Hospital' as the most recent response for BIRTH_VISIT_3.BIRTH_DELIVER" do
-          take_survey(@survey, @response_set) do |a|
+          take_survey(@survey, @response_set) do |r|
             at_home = mock(NcsCode, :local_code => 1)
-            a.choice birth_deliver, at_home
+            r.a birth_deliver, at_home
           end
           instrument_context.birthing_place.should == 'hospital'
         end
 
         it "returns 'Birthing center' as the most recent response for BIRTH_VISIT_3.BIRTH_DELIVER" do
-          take_survey(@survey, @response_set) do |a|
+          take_survey(@survey, @response_set) do |r|
             at_home = mock(NcsCode, :local_code => 2)
-            a.choice birth_deliver, at_home
+            r.a birth_deliver, at_home
           end
           instrument_context.birthing_place.should == 'birthing center'
         end
 
         it "returns 'Other place' as the most recent response for BIRTH_VISIT_3.BIRTH_DELIVER" do
-          take_survey(@survey, @response_set) do |a|
+          take_survey(@survey, @response_set) do |r|
             at_home = mock(NcsCode, :local_code => -5)
-            a.choice birth_deliver, at_home
+            r.a birth_deliver, at_home
           end
           instrument_context.birthing_place.should == 'other place'
         end
@@ -679,10 +679,10 @@ module NcsNavigator::Core::Mustache
           end
 
           it "returns 'Does' and name or baby if single birth, released is 'yes' and delivered 'at home'"  do
-            take_survey(@survey, @response_set) do |a|
-              a.yes release
+            take_survey(@survey, @response_set) do |r|
+              r.yes release
               at_home = mock(NcsCode, :local_code => 3)
-              a.choice birth_deliver, at_home
+              r.a birth_deliver, at_home
             end
             mom = @response_set.person
             mom.participant.p_type_code = 1 # 1 age eligilble woman
@@ -698,8 +698,8 @@ module NcsNavigator::Core::Mustache
           end
 
           it "returns 'When' and 'name or baby' if single birth, released is 'no'"  do
-            take_survey(@survey, @response_set) do |a|
-              a.no release
+            take_survey(@survey, @response_set) do |r|
+              r.no release
             end
             mom = @response_set.person
 
@@ -717,18 +717,18 @@ module NcsNavigator::Core::Mustache
           end
 
           it "returns 'Do your babies' if multiple birth, released is 'yes' and delivered 'at home'"  do
-            take_survey(@survey, @response_set) do |a|
-              a.yes release
+            take_survey(@survey, @response_set) do |r|
+              r.yes release
               at_home = mock(NcsCode, :local_code => 3)
-              a.choice birth_deliver, at_home
+              r.a birth_deliver, at_home
             end
             create_multiple_birth
             instrument_context.do_when_will_live_with_you.should == "Do your babies live with you?"
           end
 
           it "returns 'When your babies leave the' if multiple birth, and released is 'no'"  do
-            take_survey(@survey, @response_set) do |a|
-              a.no release
+            take_survey(@survey, @response_set) do |r|
+              r.no release
             end
             create_multiple_birth
             instrument_context.do_when_will_live_with_you.should == "When your babies leave the "+ instrument_context.birthing_place + " will " + instrument_context.he_she_they + " live with you?"
@@ -752,10 +752,10 @@ module NcsNavigator::Core::Mustache
           end
 
           it "returns 'Does' and name or baby if single birth, released is 'yes' and delivered 'at home'"  do
-            take_survey(@survey, @response_set) do |a|
-              a.yes release
+            take_survey(@survey, @response_set) do |r|
+              r.yes release
               at_home = mock(NcsCode, :local_code => 3)
-              a.choice birth_deliver, at_home
+              r.a birth_deliver, at_home
             end
             mom = @response_set.person
             mom.participant.p_type_code = 1 # 1 age eligilble woman
@@ -771,8 +771,8 @@ module NcsNavigator::Core::Mustache
           end
 
           it "returns 'When' and 'name or baby' if single birth, released is 'no'"  do
-            take_survey(@survey, @response_set) do |a|
-              a.no release
+            take_survey(@survey, @response_set) do |r|
+              r.no release
             end
             mom = @response_set.person
 
@@ -790,18 +790,18 @@ module NcsNavigator::Core::Mustache
           end
 
           it "returns 'Do your babies' if multiple birth, released is 'yes' and delivered 'at home'"  do
-            take_survey(@survey, @response_set) do |a|
-              a.yes release
+            take_survey(@survey, @response_set) do |r|
+              r.yes release
               at_home = mock(NcsCode, :local_code => 3)
-              a.choice birth_deliver, at_home
+              r.a birth_deliver, at_home
             end
             create_multiple_birth
             instrument_context.do_when_will_live_with_you.should == "Do your babies live with you?"
           end
 
           it "returns 'When your babies leave the' if multiple birth, and released is 'no'"  do
-            take_survey(@survey, @response_set) do |a|
-              a.no release
+            take_survey(@survey, @response_set) do |r|
+              r.no release
             end
             create_multiple_birth
             instrument_context.do_when_will_live_with_you.should == "When your babies leave the "+ instrument_context.birthing_place + " will " + instrument_context.he_she_they + " live with you?"
@@ -825,10 +825,10 @@ module NcsNavigator::Core::Mustache
           end
 
           it "returns 'Does' and name or baby if single birth, released is 'yes' and delivered 'at home'"  do
-            take_survey(@survey, @response_set) do |a|
-              a.yes release
+            take_survey(@survey, @response_set) do |r|
+              r.yes release
               at_home = mock(NcsCode, :local_code => 3)
-              a.choice birth_deliver, at_home
+              r.a birth_deliver, at_home
             end
             mom = @response_set.person
             mom.participant.p_type_code = 1 # 1 age eligilble woman
@@ -844,8 +844,8 @@ module NcsNavigator::Core::Mustache
           end
 
           it "returns 'When' and 'name or baby' if single birth, released is 'no'"  do
-            take_survey(@survey, @response_set) do |a|
-              a.no release
+            take_survey(@survey, @response_set) do |r|
+              r.no release
             end
             mom = @response_set.person
 
@@ -863,18 +863,18 @@ module NcsNavigator::Core::Mustache
           end
 
           it "returns 'Do your babies' if multiple birth, released is 'yes' and delivered 'at home'"  do
-            take_survey(@survey, @response_set) do |a|
-              a.yes release
+            take_survey(@survey, @response_set) do |r|
+              r.yes release
               at_home = mock(NcsCode, :local_code => 3)
-              a.choice birth_deliver, at_home
+              r.a birth_deliver, at_home
             end
             create_multiple_birth
             instrument_context.do_when_will_live_with_you.should == "Do your babies live with you?"
           end
 
           it "returns 'When your babies leave the' if multiple birth, and released is 'no'"  do
-            take_survey(@survey, @response_set) do |a|
-              a.no release
+            take_survey(@survey, @response_set) do |r|
+              r.no release
             end
             create_multiple_birth
             instrument_context.do_when_will_live_with_you.should == "When your babies leave the "+ instrument_context.birthing_place + " will " + instrument_context.he_she_they + " live with you?"
@@ -1155,8 +1155,8 @@ module NcsNavigator::Core::Mustache
 
       describe ".f_fname" do
         it "returns the entered father's first name" do
-          take_survey(@survey, @response_set) do |a|
-            a.str "PREG_VISIT_1_SAQ_2.FATHER_NAME", 'Fred Sanford'
+          take_survey(@survey, @response_set) do |r|
+            r.a "PREG_VISIT_1_SAQ_2.FATHER_NAME", 'Fred Sanford'
           end
           instrument_context.f_fname.should == "Fred"
         end
@@ -1400,8 +1400,8 @@ module NcsNavigator::Core::Mustache
         let(:work_name) { "PREG_VISIT_1_3.WORK_NAME" }
 
         it "returns work name as the most recent response for PREG_VISIT_1_3.WORK_NAME" do
-          take_survey(@survey, @response_set) do |a|
-            a.str work_name, 'NWU'
+          take_survey(@survey, @response_set) do |r|
+            r.a work_name, 'work_name', :value => 'NWU'
           end
           # @response_set.instrument.event = Factory(:event, :event_type_code => 15)
           instrument_context.work_place_name.should == 'NWU'
@@ -1419,8 +1419,8 @@ module NcsNavigator::Core::Mustache
 
 
         it "returns work name as the most recent response for PREG_VISIT_2_3.WORK_NAME" do
-          take_survey(@survey, @response_set) do |a|
-            a.str work_name, 'NUBIC'
+          take_survey(@survey, @response_set) do |r|
+            r.a work_name, 'work_name', :value => 'NUBIC'
           end
           # @response_set.instrument.event = Factory(:event, :event_type_code => 18)
           instrument_context.work_place_name.should == 'NUBIC'
@@ -1636,8 +1636,8 @@ module NcsNavigator::Core::Mustache
 
       it "returns if child's date of birth" do
         dob = Date.parse("2012-12-25")
-        take_survey(@survey, @response_set) do |a|
-          a.date('PARTICIPANT_VERIF_CHILD.CHILD_DOB', "2012-12-25")
+        take_survey(@survey, @response_set) do |r|
+          r.a('PARTICIPANT_VERIF_CHILD.CHILD_DOB', "2012-12-25")
         end
         @response_set.completed_at = "2013-01-25"
         @response_set.save!
@@ -1757,32 +1757,32 @@ module NcsNavigator::Core::Mustache
 
       describe ".boys_girls" do
         it "returns 'boys' if CHILD_SEX set to MALE (1)" do
-          take_survey(@survey, @response_set) do |a|
+          take_survey(@survey, @response_set) do |r|
             male = mock(NcsCode, :local_code => 1)
-            a.choice("PARTICIPANT_VERIF_CHILD.CHILD_SEX", male)
+            r.a("PARTICIPANT_VERIF_CHILD.CHILD_SEX", male)
           end
           instrument_context.boys_girls.should == "boys"
         end
 
         it "returns 'girls' if CHILD_SEX set to FEMALE (2)" do
-          take_survey(@survey, @response_set) do |a|
+          take_survey(@survey, @response_set) do |r|
             female = mock(NcsCode, :local_code => 2)
-            a.choice("PARTICIPANT_VERIF_CHILD.CHILD_SEX", female)
+            r.a("PARTICIPANT_VERIF_CHILD.CHILD_SEX", female)
           end
           instrument_context.boys_girls.should == "girls"
         end
 
         it "returns 'boys/girls' if CHILD_SEX set to REFUSED" do
-          take_survey(@survey, @response_set) do |a|
-            a.refused("PARTICIPANT_VERIF_CHILD.CHILD_SEX")
+          take_survey(@survey, @response_set) do |r|
+            r.refused("PARTICIPANT_VERIF_CHILD.CHILD_SEX")
           end
           instrument_context.boys_girls.should == "boys/girls"
         end
 
         it "returns 'boys/girls' if CHILD_SEX set to DON'T KNOW" do
-          take_survey(@survey, @response_set) do |a|
+          take_survey(@survey, @response_set) do |r|
             could_not_obtain= mock(NcsCode, :local_code => "neg_2")
-            a.choice("PARTICIPANT_VERIF_CHILD.CHILD_SEX", could_not_obtain)
+            r.a("PARTICIPANT_VERIF_CHILD.CHILD_SEX", could_not_obtain)
           end
           instrument_context.boys_girls.should == "boys/girls"
         end
@@ -1796,61 +1796,61 @@ module NcsNavigator::Core::Mustache
 
 
     def create_single_birth
-      take_survey(@survey, @response_set) do |a|
-        a.no multiple
+      take_survey(@survey, @response_set) do |r|
+        r.no multiple
       end
     end
 
     def create_multiple_birth
-      take_survey(@survey, @response_set) do |a|
-        a.yes multiple
+      take_survey(@survey, @response_set) do |r|
+        r.yes multiple
       end
     end
 
     def create_singleton_gestation
       @singleton = NcsCode.for_list_name_and_local_code("GESTATION_TYPE_CL1", 1)
-      take_survey(@survey, @response_set) do |a|
-        a.choice(multiple_gestation, @singleton)
+      take_survey(@survey, @response_set) do |r|
+        r.a(multiple_gestation, @singleton)
       end
     end
 
     def create_twin_gestation
       @twin = NcsCode.for_list_name_and_local_code("GESTATION_TYPE_CL1", 2)
-      take_survey(@survey, @response_set) do |a|
-        a.choice(multiple_gestation, @twin)
+      take_survey(@survey, @response_set) do |r|
+        r.a(multiple_gestation, @twin)
       end
     end
 
     def set_multiple_num mult_num
-      take_survey(@survey, @response_set) do |a|
-        a.str multiple_num, mult_num
+      take_survey(@survey, @response_set) do |r|
+        r.a multiple_num, mult_num
       end
     end
 
     def create_triplet_gestation
       @triplet = NcsCode.for_list_name_and_local_code("GESTATION_TYPE_CL1", 3)
-      take_survey(@survey, @response_set) do |a|
-        a.choice(multiple_gestation, @triplet)
+      take_survey(@survey, @response_set) do |r|
+        r.a(multiple_gestation, @triplet)
       end
     end
 
     def create_male_response
       @male = NcsCode.for_list_name_and_local_code("GENDER_CL1", 1)
-      take_survey(@survey, @response_set) do |a|
-        a.choice(baby_sex, @male)
+      take_survey(@survey, @response_set) do |r|
+        r.a(baby_sex, @male)
       end
     end
 
     def create_female_response
       @female = NcsCode.for_list_name_and_local_code("GENDER_CL1", 2)
-      take_survey(@survey, @response_set) do |a|
-        a.choice(baby_sex, @female)
+      take_survey(@survey, @response_set) do |r|
+        r.a(baby_sex, @female)
       end
     end
 
     def set_first_name first_name
-      take_survey(@survey, @response_set) do |a|
-        a.str baby_fname, first_name
+      take_survey(@survey, @response_set) do |r|
+        r.a baby_fname, first_name
       end
     end
 

@@ -56,9 +56,9 @@ describe OperationalDataExtractor::LowIntensityPregnancyVisit do
     end
 
     it "updates the ppg status to 1 if the person responds that they are pregnant" do
-      take_survey(@survey, @response_set) do |a|
-        a.yes "#{OperationalDataExtractor::LowIntensityPregnancyVisit::PREGNANCY_VISIT_LI_2_INTERVIEW_PREFIX}.PREGNANT"
-        a.date "#{OperationalDataExtractor::LowIntensityPregnancyVisit::PREGNANCY_VISIT_LI_2_INTERVIEW_PREFIX}.DUE_DATE", '2011-12-25'
+      take_survey(@survey, @response_set) do |r|
+        r.yes "#{OperationalDataExtractor::LowIntensityPregnancyVisit::PREGNANCY_VISIT_LI_2_INTERVIEW_PREFIX}.PREGNANT"
+        r.a "#{OperationalDataExtractor::LowIntensityPregnancyVisit::PREGNANCY_VISIT_LI_2_INTERVIEW_PREFIX}.DUE_DATE", '2011-12-25'
       end
 
       @response_set.responses.reload
@@ -76,8 +76,8 @@ describe OperationalDataExtractor::LowIntensityPregnancyVisit do
     end
 
     it "updates the ppg status to 3 if the person responds that they recently lost their child during pregnancy" do
-      take_survey(@survey, @response_set) do |a|
-        a.choice "#{OperationalDataExtractor::LowIntensityPregnancyVisit::PREGNANCY_VISIT_LI_2_INTERVIEW_PREFIX}.PREGNANT", @ppg3
+      take_survey(@survey, @response_set) do |r|
+        r.a "#{OperationalDataExtractor::LowIntensityPregnancyVisit::PREGNANCY_VISIT_LI_2_INTERVIEW_PREFIX}.PREGNANT", @ppg3
       end
 
       @response_set.responses.reload
@@ -95,8 +95,8 @@ describe OperationalDataExtractor::LowIntensityPregnancyVisit do
     end
 
     it "updates the ppg status to 2 if the person responds that they are trying" do
-      take_survey(@survey, @response_set) do |a|
-        a.choice "#{OperationalDataExtractor::LowIntensityPregnancyVisit::PREGNANCY_VISIT_LI_2_INTERVIEW_PREFIX}.PREGNANT", @ppg2
+      take_survey(@survey, @response_set) do |r|
+        r.a "#{OperationalDataExtractor::LowIntensityPregnancyVisit::PREGNANCY_VISIT_LI_2_INTERVIEW_PREFIX}.PREGNANT", @ppg2
       end
 
       @response_set.responses.reload
@@ -114,8 +114,8 @@ describe OperationalDataExtractor::LowIntensityPregnancyVisit do
     end
 
     it "updates the ppg status to 4 if the person responds that they recently gave birth" do
-      take_survey(@survey, @response_set) do |a|
-        a.choice "#{OperationalDataExtractor::LowIntensityPregnancyVisit::PREGNANCY_VISIT_LI_2_INTERVIEW_PREFIX}.PREGNANT", @ppg4
+      take_survey(@survey, @response_set) do |r|
+        r.a "#{OperationalDataExtractor::LowIntensityPregnancyVisit::PREGNANCY_VISIT_LI_2_INTERVIEW_PREFIX}.PREGNANT", @ppg4
       end
 
       @response_set.responses.reload
@@ -133,8 +133,8 @@ describe OperationalDataExtractor::LowIntensityPregnancyVisit do
     end
 
     it "updates the ppg status to 5 if the person responds that they are medically unable to become pregnant" do
-      take_survey(@survey, @response_set) do |a|
-        a.choice "#{OperationalDataExtractor::LowIntensityPregnancyVisit::PREGNANCY_VISIT_LI_2_INTERVIEW_PREFIX}.PREGNANT", @ppg5
+      take_survey(@survey, @response_set) do |r|
+        r.a "#{OperationalDataExtractor::LowIntensityPregnancyVisit::PREGNANCY_VISIT_LI_2_INTERVIEW_PREFIX}.PREGNANT", @ppg5
       end
 
       @response_set.responses.reload
@@ -167,14 +167,14 @@ describe OperationalDataExtractor::LowIntensityPregnancyVisit do
       response_set, instrument = prepare_instrument(@person, @participant, survey)
       response_set.save!
 
-      take_survey(survey, response_set) do |a|
-        a.choice "#{OperationalDataExtractor::LowIntensityPregnancyVisit::PREGNANCY_VISIT_LI_2_INTERVIEW_PREFIX}.BIRTH_PLAN", @hospital
-        a.str "#{OperationalDataExtractor::LowIntensityPregnancyVisit::PREGNANCY_VISIT_LI_2_INTERVIEW_PREFIX}.BIRTH_PLACE", "FAKE HOSPITAL MEMORIAL"
-        a.str "#{OperationalDataExtractor::LowIntensityPregnancyVisit::PREGNANCY_VISIT_LI_2_INTERVIEW_PREFIX}.B_ADDRESS_1", '123 Hospital Way'
-        a.str "#{OperationalDataExtractor::LowIntensityPregnancyVisit::PREGNANCY_VISIT_LI_2_INTERVIEW_PREFIX}.B_ADDRESS_2", ''
-        a.str "#{OperationalDataExtractor::LowIntensityPregnancyVisit::PREGNANCY_VISIT_LI_2_INTERVIEW_PREFIX}.B_CITY", 'Chicago'
-        a.choice "#{OperationalDataExtractor::LowIntensityPregnancyVisit::PREGNANCY_VISIT_LI_2_INTERVIEW_PREFIX}.B_STATE", @state
-        a.str "#{OperationalDataExtractor::LowIntensityPregnancyVisit::PREGNANCY_VISIT_LI_2_INTERVIEW_PREFIX}.B_ZIPCODE", '65432'
+      take_survey(survey, response_set) do |r|
+        r.a "#{OperationalDataExtractor::LowIntensityPregnancyVisit::PREGNANCY_VISIT_LI_2_INTERVIEW_PREFIX}.BIRTH_PLAN", @hospital
+        r.a "#{OperationalDataExtractor::LowIntensityPregnancyVisit::PREGNANCY_VISIT_LI_2_INTERVIEW_PREFIX}.BIRTH_PLACE", "FAKE HOSPITAL MEMORIAL"
+        r.a "#{OperationalDataExtractor::LowIntensityPregnancyVisit::PREGNANCY_VISIT_LI_2_INTERVIEW_PREFIX}.B_ADDRESS_1", '123 Hospital Way'
+        r.a "#{OperationalDataExtractor::LowIntensityPregnancyVisit::PREGNANCY_VISIT_LI_2_INTERVIEW_PREFIX}.B_ADDRESS_2", ''
+        r.a "#{OperationalDataExtractor::LowIntensityPregnancyVisit::PREGNANCY_VISIT_LI_2_INTERVIEW_PREFIX}.B_CITY", 'Chicago'
+        r.a "#{OperationalDataExtractor::LowIntensityPregnancyVisit::PREGNANCY_VISIT_LI_2_INTERVIEW_PREFIX}.B_STATE", @state
+        r.a "#{OperationalDataExtractor::LowIntensityPregnancyVisit::PREGNANCY_VISIT_LI_2_INTERVIEW_PREFIX}.B_ZIPCODE", '65432'
       end
 
       response_set.responses.reload

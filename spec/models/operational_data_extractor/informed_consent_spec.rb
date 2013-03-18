@@ -32,16 +32,16 @@ describe OperationalDataExtractor::InformedConsent do
         consent = prepare_consent(person, participant, survey, contact)
         response_set = consent.response_set
 
-        take_survey(survey, response_set) do |a|
-          a.choice "PARTICIPANT_CONSENT.CONSENT_FORM_TYPE_CODE", consent_form_type
-          a.choice "PARTICIPANT_CONSENT.CONSENT_GIVEN_CODE", yes
-          a.str "PARTICIPANT_CONSENT.CONSENT_DATE", date
-          a.str "PARTICIPANT_CONSENT.CONSENT_VERSION", "version"
-          a.choice "PARTICIPANT_CONSENT.WHO_CONSENTED_CODE", who
-          a.choice "PARTICIPANT_CONSENT.CONSENT_LANGUAGE_CODE", en
-          a.choice "PARTICIPANT_CONSENT.CONSENT_TRANSLATE_CODE", no_trans
-          a.choice "PARTICIPANT_CONSENT.RECONSIDERATION_SCRIPT_USE_CODE", no2
-          a.txt "PARTICIPANT_CONSENT.CONSENT_COMMENTS", "comments"
+        take_survey(survey, response_set) do |r|
+          r.a "PARTICIPANT_CONSENT.CONSENT_FORM_TYPE_CODE", consent_form_type
+          r.a "PARTICIPANT_CONSENT.CONSENT_GIVEN_CODE", yes
+          r.a "PARTICIPANT_CONSENT.CONSENT_DATE", "consent_date", :value => date
+          r.a "PARTICIPANT_CONSENT.CONSENT_VERSION", "consent_version", :value => "version"
+          r.a "PARTICIPANT_CONSENT.WHO_CONSENTED_CODE", who
+          r.a "PARTICIPANT_CONSENT.CONSENT_LANGUAGE_CODE", en
+          r.a "PARTICIPANT_CONSENT.CONSENT_TRANSLATE_CODE", no_trans
+          r.a "PARTICIPANT_CONSENT.RECONSIDERATION_SCRIPT_USE_CODE", no2
+          r.a "PARTICIPANT_CONSENT.CONSENT_COMMENTS", "consent_comments", :value => "comments"
         end
 
         response_set.responses.reload
@@ -81,11 +81,11 @@ describe OperationalDataExtractor::InformedConsent do
         consent = prepare_consent(person, participant, survey, contact)
         response_set = consent.response_set
 
-        take_survey(survey, response_set) do |a|
-          a.choice "PARTICIPANT_CONSENT.CONSENT_WITHDRAW_CODE", yes
-          a.choice "PARTICIPANT_CONSENT.CONSENT_WITHDRAW_TYPE_CODE", wdraw1
-          a.choice "PARTICIPANT_CONSENT.CONSENT_WITHDRAW_REASON_CODE", wdraw2
-          a.str "PARTICIPANT_CONSENT.CONSENT_WITHDRAW_DATE", date
+        take_survey(survey, response_set) do |r|
+          r.a "PARTICIPANT_CONSENT.CONSENT_WITHDRAW_CODE", yes
+          r.a "PARTICIPANT_CONSENT.CONSENT_WITHDRAW_TYPE_CODE", wdraw1
+          r.a "PARTICIPANT_CONSENT.CONSENT_WITHDRAW_REASON_CODE", wdraw2
+          r.a "PARTICIPANT_CONSENT.CONSENT_WITHDRAW_DATE", "consent_date", :value => date
         end
 
         response_set.responses.reload
@@ -117,10 +117,10 @@ describe OperationalDataExtractor::InformedConsent do
         consent = prepare_consent(person, participant, survey, contact)
         response_set = consent.response_set
 
-        take_survey(survey, response_set) do |a|
-          a.choice "PARTICIPANT_CONSENT.CONSENT_RECONSENT_CODE", yes
-          a.choice "PARTICIPANT_CONSENT.CONSENT_RECONSENT_REASON_CODE", reason
-          a.str "PARTICIPANT_CONSENT.CONSENT_RECONSENT_REASON_OTHER", "other"
+        take_survey(survey, response_set) do |r|
+          r.a "PARTICIPANT_CONSENT.CONSENT_RECONSENT_CODE", yes
+          r.a "PARTICIPANT_CONSENT.CONSENT_RECONSENT_REASON_CODE", reason
+          r.a "PARTICIPANT_CONSENT.CONSENT_RECONSENT_REASON_OTHER", "consent_reconsent_reason_other", :value => "other"
         end
 
         response_set.responses.reload

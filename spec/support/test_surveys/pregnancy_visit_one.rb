@@ -267,7 +267,7 @@ module PregnancyVisitOne
 
     # Race New Other
     q = Factory(:question, :reference_identifier => "RACE_NEW_OTH", :data_export_identifier => "PREG_VISIT_1_RACE_NEW_3.RACE_NEW_OTH", :survey_section_id => survey_section.id)
-    a = Factory(:answer, :question_id => q.id, :text => "Chinese", :response_class => "string")
+    a = Factory(:answer, :question_id => q.id, :response_class => 'string', :text => 'SPECIFY')
 
     # Race One
     q = Factory(:question, :reference_identifier => "RACE_1", :data_export_identifier => "PREG_VISIT_1_RACE_1_3.RACE_1", :survey_section_id => survey_section.id)
@@ -277,8 +277,7 @@ module PregnancyVisitOne
 
     # Race One Other
     q = Factory(:question, :reference_identifier => "RACE_1_OTH", :data_export_identifier => "PREG_VISIT_1_RACE_1_3.RACE_1_OTH", :survey_section_id => survey_section.id)
-    a = Factory(:answer, :question_id => q.id, :text => "Korean", :response_class => "string")
-    a = Factory(:answer, :question_id => q.id, :text => "Aborigine", :response_class => "string")
+    a = Factory(:answer, :question_id => q.id, :response_class => 'string', :text => 'SPECIFY')
 
     survey
   end

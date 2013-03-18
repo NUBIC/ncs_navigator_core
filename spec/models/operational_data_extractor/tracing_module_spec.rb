@@ -17,14 +17,14 @@ describe OperationalDataExtractor::TracingModule do
     response_set, instrument = prepare_instrument(person, participant, survey)
     response_set.save!
 
-    take_survey(survey, response_set) do |a|
-      a.str "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.ADDRESS_1", '123 Easy St.'
-      a.str "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.ADDRESS_2", ''
-      a.str "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.UNIT", ''
-      a.str "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.CITY", 'Chicago'
-      a.choice "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.STATE", state
-      a.str "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.ZIP", '65432'
-      a.str "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.ZIP4", '1234'
+    take_survey(survey, response_set) do |r|
+      r.a "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.ADDRESS_1", '123 Easy St.'
+      r.a "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.ADDRESS_2", ''
+      r.a "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.UNIT", ''
+      r.a "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.CITY", 'Chicago'
+      r.a "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.STATE", state
+      r.a "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.ZIP", '65432'
+      r.a "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.ZIP4", '1234'
     end
 
     response_set.responses.reload
@@ -52,14 +52,14 @@ describe OperationalDataExtractor::TracingModule do
     response_set, instrument = prepare_instrument(person, participant, survey)
     response_set.save!
 
-    take_survey(survey, response_set) do |a|
-      a.str "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.NEW_ADDRESS1", '345 Easy St.'
-      a.str "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.NEW_ADDRESS2", ''
-      a.str "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.NEW_UNIT", ''
-      a.str "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.NEW_CITY", 'Chicago'
-      a.choice "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.NEW_STATE", state
-      a.str "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.NEW_ZIP", '60666'
-      a.str "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.NEW_ZIP4", '1234'
+    take_survey(survey, response_set) do |r|
+      r.a "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.NEW_ADDRESS1", '345 Easy St.'
+      r.a "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.NEW_ADDRESS2", ''
+      r.a "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.NEW_UNIT", ''
+      r.a "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.NEW_CITY", 'Chicago'
+      r.a "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.NEW_STATE", state
+      r.a "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.NEW_ZIP", '60666'
+      r.a "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.NEW_ZIP4", '1234'
     end
 
     response_set.responses.reload
@@ -92,11 +92,11 @@ describe OperationalDataExtractor::TracingModule do
       response_set, instrument = prepare_instrument(@person, @participant, @survey)
       response_set.save!
 
-      take_survey(@survey, response_set) do |a|
-        a.str "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.HOME_PHONE", '3125554321'
-        a.yes "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.CELL_PHONE_2"
-        a.yes "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.CELL_PHONE_4"
-        a.str "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.CELL_PHONE", '3125557890'
+      take_survey(@survey, response_set) do |r|
+        r.a "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.HOME_PHONE", '3125554321'
+        r.yes "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.CELL_PHONE_2"
+        r.yes "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.CELL_PHONE_4"
+        r.a "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.CELL_PHONE", '3125557890'
       end
 
       response_set.responses.reload
@@ -126,8 +126,8 @@ describe OperationalDataExtractor::TracingModule do
     response_set, instrument = prepare_instrument(person, participant, survey)
     response_set.save!
 
-    take_survey(survey, response_set) do |a|
-      a.str "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.EMAIL", 'email@dev.null'
+    take_survey(survey, response_set) do |r|
+      r.a "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.EMAIL", 'email@dev.null'
     end
 
     response_set.responses.reload
@@ -175,19 +175,19 @@ describe OperationalDataExtractor::TracingModule do
 
     it "creates a new person record and associates it with the particpant" do
 
-      take_survey(@survey, @response_set) do |a|
-        a.str "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.CONTACT_FNAME_1", 'Donna'
-        a.str "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.CONTACT_LNAME_1", 'Noble'
-        a.choice "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.CONTACT_RELATE_1", @contact_friend
-        a.str "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.C_ADDR1_1", '123 Easy St.'
-        a.str "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.C_ADDR2_1", ''
-        a.str "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.C_UNIT_1", ''
-        a.str "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.C_CITY_1", 'Chicago'
-        a.choice "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.C_STATE_1", state
-        a.str "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.C_ZIPCODE_1", '65432'
-        a.str "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.C_ZIP4_1", '1234'
-        a.str "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.CONTACT_PHONE_1", '3125551212'
-        a.choice "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.CONTACT_PHONE1_TYPE_1", home
+      take_survey(@survey, @response_set) do |r|
+        r.a "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.CONTACT_FNAME_1", 'Donna'
+        r.a "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.CONTACT_LNAME_1", 'Noble'
+        r.a "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.CONTACT_RELATE_1", @contact_friend
+        r.a "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.C_ADDR1_1", '123 Easy St.'
+        r.a "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.C_ADDR2_1", ''
+        r.a "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.C_UNIT_1", ''
+        r.a "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.C_CITY_1", 'Chicago'
+        r.a "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.C_STATE_1", state
+        r.a "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.C_ZIPCODE_1", '65432'
+        r.a "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.C_ZIP4_1", '1234'
+        r.a "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.CONTACT_PHONE_1", '3125551212'
+        r.a "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.CONTACT_PHONE1_TYPE_1", home
       end
 
       @response_set.responses.reload
@@ -212,21 +212,21 @@ describe OperationalDataExtractor::TracingModule do
 
     it "creates another new person record and associates it with the particpant" do
 
-      take_survey(@survey, @response_set) do |a|
-        a.str "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.CONTACT_FNAME_2", 'Carole'
-        a.str "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.CONTACT_LNAME_2", 'King'
-        a.choice "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.CONTACT_RELATE_2", @contact_neighbor
-        a.str "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.C_ADDR1_2", '123 Tapestry St.'
-        a.str "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.C_ADDR_2_2", ''
-        a.str "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.C_UNIT_2", ''
-        a.str "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.C_CITY_2", 'Chicago'
-        a.choice "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.C_STATE_2", state
-        a.str "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.C_ZIPCODE_2", '65432'
-        a.str "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.C_ZIP4_2", '1234'
-        a.str "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.CONTACT_PHONE_2", '3125551212'
-        a.choice "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.CONTACT_PHONE1_TYPE_2", home
-        a.str "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.CONTACT_PHONE_2_2", '3125556789'
-        a.choice "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.CONTACT_PHONE2_TYPE_2", cell
+      take_survey(@survey, @response_set) do |r|
+        r.a "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.CONTACT_FNAME_2", 'Carole'
+        r.a "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.CONTACT_LNAME_2", 'King'
+        r.a "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.CONTACT_RELATE_2", @contact_neighbor
+        r.a "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.C_ADDR1_2", '123 Tapestry St.'
+        r.a "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.C_ADDR_2_2", ''
+        r.a "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.C_UNIT_2", ''
+        r.a "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.C_CITY_2", 'Chicago'
+        r.a "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.C_STATE_2", state
+        r.a "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.C_ZIPCODE_2", '65432'
+        r.a "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.C_ZIP4_2", '1234'
+        r.a "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.CONTACT_PHONE_2", '3125551212'
+        r.a "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.CONTACT_PHONE1_TYPE_2", home
+        r.a "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.CONTACT_PHONE_2_2", '3125556789'
+        r.a "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.CONTACT_PHONE2_TYPE_2", cell
       end
 
       @response_set.responses.reload
@@ -251,21 +251,21 @@ describe OperationalDataExtractor::TracingModule do
 
     it "creates a third person record and associates it with the particpant" do
 
-      take_survey(@survey, @response_set) do |a|
-        a.str "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.CONTACT_FNAME_2", 'Jaka'
-        a.str "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.CONTACT_LNAME_2", 'Cerebus'
-        a.choice "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.CONTACT_RELATE_2", @contact_aunt_uncle
-        a.str "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.C_ADDR1_2", '123 Regency St.'
-        a.str "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.C_ADDR_2_2", ''
-        a.str "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.C_UNIT_2", ''
-        a.str "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.C_CITY_2", 'Chicago'
-        a.choice "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.C_STATE_2", state
-        a.str "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.C_ZIPCODE_2", '65432'
-        a.str "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.C_ZIP4_2", '1234'
-        a.str "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.CONTACT_PHONE_2", '3125551212'
-        a.choice "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.CONTACT_PHONE1_TYPE_2", home
-        a.str "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.CONTACT_PHONE_2_2", '3125556789'
-        a.choice "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.CONTACT_PHONE2_TYPE_2", cell
+      take_survey(@survey, @response_set) do |r|
+        r.a "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.CONTACT_FNAME_2", 'Jaka'
+        r.a "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.CONTACT_LNAME_2", 'Cerebus'
+        r.a "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.CONTACT_RELATE_2", @contact_aunt_uncle
+        r.a "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.C_ADDR1_2", '123 Regency St.'
+        r.a "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.C_ADDR_2_2", ''
+        r.a "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.C_UNIT_2", ''
+        r.a "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.C_CITY_2", 'Chicago'
+        r.a "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.C_STATE_2", state
+        r.a "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.C_ZIPCODE_2", '65432'
+        r.a "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.C_ZIP4_2", '1234'
+        r.a "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.CONTACT_PHONE_2", '3125551212'
+        r.a "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.CONTACT_PHONE1_TYPE_2", home
+        r.a "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.CONTACT_PHONE_2_2", '3125556789'
+        r.a "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.CONTACT_PHONE2_TYPE_2", cell
       end
 
       @response_set.responses.reload
@@ -303,24 +303,24 @@ describe OperationalDataExtractor::TracingModule do
     end
 
     it "sets the mode to CAPI" do
-      take_survey(survey, @response_set) do |a|
-        a.choice "prepopulated_mode_of_contact", mock(NcsCode, :local_code => "capi")
+      take_survey(survey, @response_set) do |r|
+        r.a "prepopulated_mode_of_contact", mock(NcsCode, :local_code => "capi")
       end
       OperationalDataExtractor::TracingModule.new(@response_set).extract_data
       Instrument.find(@instrument.id).instrument_mode_code.should == Instrument.capi
     end
 
     it "sets the mode to CATI" do
-      take_survey(survey, @response_set) do |a|
-        a.choice "prepopulated_mode_of_contact", mock(NcsCode, :local_code => "cati")
+      take_survey(survey, @response_set) do |r|
+        r.a "prepopulated_mode_of_contact", mock(NcsCode, :local_code => "cati")
       end
       OperationalDataExtractor::TracingModule.new(@response_set).extract_data
       Instrument.find(@instrument.id).instrument_mode_code.should == Instrument.cati
     end
 
     it "sets the mode to PAPI" do
-      take_survey(survey, @response_set) do |a|
-        a.choice "prepopulated_mode_of_contact", mock(NcsCode, :local_code => "papi")
+      take_survey(survey, @response_set) do |r|
+        r.a "prepopulated_mode_of_contact", mock(NcsCode, :local_code => "papi")
       end
       OperationalDataExtractor::TracingModule.new(@response_set).extract_data
       Instrument.find(@instrument.id).instrument_mode_code.should == Instrument.papi

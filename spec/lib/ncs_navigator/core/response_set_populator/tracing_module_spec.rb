@@ -146,8 +146,8 @@ module NcsNavigator::Core
 
           it "should be provided if the question had previously been answered" do
 
-            take_survey(@survey, @response_set) do |a|
-              a.dont_know "TRACING_INT.CELL_PHONE_2"
+            take_survey(@survey, @response_set) do |r|
+              r.dont_know "TRACING_INT.CELL_PHONE_2"
             end
 
             rsp = ResponseSetPopulator::TracingModule.new(@person, @instrument, @survey)
@@ -165,8 +165,8 @@ module NcsNavigator::Core
 
           it "should be provided if the question had previously been answered" do
 
-            take_survey(@survey, @response_set) do |a|
-              a.dont_know "TRACING_INT.CELL_PHONE_3"
+            take_survey(@survey, @response_set) do |r|
+              r.dont_know "TRACING_INT.CELL_PHONE_3"
             end
 
             rsp = ResponseSetPopulator::TracingModule.new(@person, @instrument, @survey)
@@ -184,8 +184,8 @@ module NcsNavigator::Core
 
           it "should be provided if the question had previously been answered" do
 
-            take_survey(@survey, @response_set) do |a|
-              a.dont_know "TRACING_INT.CELL_PHONE_4"
+            take_survey(@survey, @response_set) do |r|
+              r.dont_know "TRACING_INT.CELL_PHONE_4"
             end
 
             rsp = ResponseSetPopulator::TracingModule.new(@person, @instrument, @survey)
@@ -230,8 +230,8 @@ module NcsNavigator::Core
 
           it "should be provided if the question had previously been answered" do
 
-            take_survey(@survey, @response_set) do |a|
-              a.dont_know "TRACING_INT.EMAIL_APPT"
+            take_survey(@survey, @response_set) do |r|
+              r.dont_know "TRACING_INT.EMAIL_APPT"
             end
 
             rsp = ResponseSetPopulator::TracingModule.new(@person, @instrument, @survey)
@@ -249,8 +249,8 @@ module NcsNavigator::Core
 
           it "should be provided if the question had previously been answered" do
 
-            take_survey(@survey, @response_set) do |a|
-              a.dont_know "TRACING_INT.EMAIL_QUEST"
+            take_survey(@survey, @response_set) do |r|
+              r.dont_know "TRACING_INT.EMAIL_QUEST"
             end
 
             rsp = ResponseSetPopulator::TracingModule.new(@person, @instrument, @survey)
@@ -284,10 +284,10 @@ module NcsNavigator::Core
             friend = mock(NcsCode, :local_code => 6)
             mother = mock(NcsCode, :local_code => 1)
             sister = mock(NcsCode, :local_code => 2)
-            take_survey(@survey, @response_set) do |a|
-              a.choice "TRACING_INT.CONTACT_RELATE_1", mother
-              a.choice "TRACING_INT.CONTACT_RELATE_2", sister
-              a.choice "TRACING_INT.CONTACT_RELATE_3", friend
+            take_survey(@survey, @response_set) do |r|
+              r.a "TRACING_INT.CONTACT_RELATE_1", mother
+              r.a "TRACING_INT.CONTACT_RELATE_2", sister
+              r.a "TRACING_INT.CONTACT_RELATE_3", friend
             end
 
 
@@ -303,8 +303,8 @@ module NcsNavigator::Core
           it "should know that NOT all contacts have been provided if one contact has previously been given" do
 
             mother = mock(NcsCode, :local_code => 1)
-            take_survey(@survey, @response_set) do |a|
-              a.choice "TRACING_INT.CONTACT_RELATE_1", mother
+            take_survey(@survey, @response_set) do |r|
+              r.a "TRACING_INT.CONTACT_RELATE_1", mother
             end
             rsp = ResponseSetPopulator::TracingModule.new(@person, @instrument, @survey)
             assert_response_value(rsp.populate, "prepopulated_is_valid_contact_for_all_provided", "FALSE")
@@ -314,9 +314,9 @@ module NcsNavigator::Core
 
             friend = mock(NcsCode, :local_code => 6)
             mother = mock(NcsCode, :local_code => 1)
-            take_survey(@survey, @response_set) do |a|
-              a.choice "TRACING_INT.CONTACT_RELATE_1", mother
-              a.choice "TRACING_INT.CONTACT_RELATE_2", friend
+            take_survey(@survey, @response_set) do |r|
+              r.a "TRACING_INT.CONTACT_RELATE_1", mother
+              r.a "TRACING_INT.CONTACT_RELATE_2", friend
             end
 
             rsp = ResponseSetPopulator::TracingModule.new(@person, @instrument, @survey)
@@ -334,8 +334,8 @@ module NcsNavigator::Core
 
         it "should be provided if the question had previously been answered" do
 
-          take_survey(@survey, @response_set) do |a|
-            a.dont_know "TRACING_INT.PREV_CITY"
+          take_survey(@survey, @response_set) do |r|
+            r.dont_know "TRACING_INT.PREV_CITY"
           end
 
           rsp = ResponseSetPopulator::TracingModule.new(@person, @instrument, @survey)
@@ -353,8 +353,8 @@ module NcsNavigator::Core
 
         it "should be provided if the question had previously been answered" do
 
-          take_survey(@survey, @response_set) do |a|
-            a.dont_know "TRACING_INT.DR_LICENSE_NUM"
+          take_survey(@survey, @response_set) do |r|
+            r.dont_know "TRACING_INT.DR_LICENSE_NUM"
           end
 
           rsp = ResponseSetPopulator::TracingModule.new(@person, @instrument, @survey)
