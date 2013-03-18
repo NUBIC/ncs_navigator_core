@@ -416,11 +416,11 @@ module ResponseSetPrepopulation
       end
 
     context "for 3MM child habits prepopulators"
-      describe "q_prepopulated_is_birth_deliver_collected_and_set_to_one" do
+      describe "prepopulated_is_birth_deliver_collected_and_set_to_one" do
         before(:each) do
           @survey = create_generic_true_false_prepopulator_survey(
                       "INS_QUE_3Month_INT_EHPBHILIPBS_M3.1_V2.0_CHILD_HABITS",
-                      "q_prepopulated_is_birth_deliver_collected_and_set_to_one")
+                      "prepopulated_is_birth_deliver_collected_and_set_to_one")
           init_common_vars
         end
 
@@ -429,7 +429,7 @@ module ResponseSetPrepopulation
                                   1, :create_birth_part_one_birth_deliver)
           run_populator
           get_response_as_string(@response_set,
-            "q_prepopulated_is_birth_deliver_collected_and_set_to_one"
+            "prepopulated_is_birth_deliver_collected_and_set_to_one"
           ).should == "TRUE"
         end
         it "should be FALSE when a birth was not given at a hospital" do
@@ -437,13 +437,13 @@ module ResponseSetPrepopulation
                                   2, :create_birth_part_one_birth_deliver)
           run_populator
           get_response_as_string(@response_set,
-            "q_prepopulated_is_birth_deliver_collected_and_set_to_one"
+            "prepopulated_is_birth_deliver_collected_and_set_to_one"
           ).should == "FALSE"
         end
         it "should be FALSE when information about birth was not collected" do
           run_populator
           get_response_as_string(@response_set,
-            "q_prepopulated_is_birth_deliver_collected_and_set_to_one"
+            "prepopulated_is_birth_deliver_collected_and_set_to_one"
           ).should == "FALSE"
         end
       end

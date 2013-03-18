@@ -12,7 +12,7 @@ module ResponseSetPrepopulation
         "prepopulated_should_show_demographics",
         "prepopulated_is_prev_event_birth_li_and_set_to_complete",
         "prepopulated_is_multiple_child",
-        "q_prepopulated_is_birth_deliver_collected_and_set_to_one",
+        "prepopulated_is_birth_deliver_collected_and_set_to_one",
         "prepopulated_mult_child_answer_from_part_one_for_6MM",
         "prepopulated_is_three_months_interview_set_to_complete",
         "prepopulated_is_child_qnum_one",
@@ -39,7 +39,7 @@ module ResponseSetPrepopulation
               answer_for(question, is_event_completed?(Event::birth_code))
             when "prepopulated_is_multiple_child"
               answer_for(question, prepopulated_is_multiple_child?(question))
-            when "q_prepopulated_is_birth_deliver_collected_and_set_to_one"
+            when "prepopulated_is_birth_deliver_collected_and_set_to_one"
               answer_for(question, was_birth_given_at_hospital?)
             when "prepopulated_mult_child_answer_from_part_one_for_6MM"
               answer_for(question,
