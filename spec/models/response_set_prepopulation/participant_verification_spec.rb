@@ -219,7 +219,6 @@ module ResponseSetPrepopulation
       let(:third_child_person) { Factory(:person) }
       let(:third_child) { Factory(:participant) }
 
-
       let(:survey_pt2) { create_participant_verification_part_two_survey_with_prepopulated_fields }
 
       before(:each) do
@@ -468,7 +467,7 @@ module ResponseSetPrepopulation
 
         it "is TRUE if the person has responded don't know previously" do
           Person.any_instance.stub(:sex_code).and_return(-4)
-          
+
           init_instrument_and_response_set_pt2
           take_survey(survey_pt2, @response_set_pt2) do |r|
             r.dont_know "PARTICIPANT_VERIF.RESP_PCARE"
@@ -570,7 +569,6 @@ module ResponseSetPrepopulation
           run_populator
           assert_response_value(@response_set_pt2, "prepopulated_ocare_child_equal_one_and_other_caregiver_name_previously_collected", "FALSE")
         end
-
 
         it "is FALSE if the person has NOT previously responded OCARE_CHILD = 1 && other caregiver name not valid" do
           Person.any_instance.stub(:first_name).and_return(nil)

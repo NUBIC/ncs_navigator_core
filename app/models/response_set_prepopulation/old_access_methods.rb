@@ -22,7 +22,7 @@ module ResponseSetPrepopulation
     def mode
       @mode ||= Instrument.capi
     end
-    
+
     def mode=(mode)
       @mode = mode
     end

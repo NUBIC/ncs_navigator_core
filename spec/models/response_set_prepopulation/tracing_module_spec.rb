@@ -276,7 +276,6 @@ module ResponseSetPrepopulation
 
         end
 
-
       end
 
       describe "contacts" do
@@ -293,7 +292,6 @@ module ResponseSetPrepopulation
           assert_response_value(@response_set, "prepopulated_should_show_contact_for_tracing", "FALSE")
         end
 
-
         describe "previously provided" do
 
           it "should know that all contacts have been provided if three contacts have previously been given" do
@@ -306,7 +304,6 @@ module ResponseSetPrepopulation
               r.a "TRACING_INT.CONTACT_RELATE_2", sister
               r.a "TRACING_INT.CONTACT_RELATE_3", friend
             end
-
 
             run_populator
             assert_response_value(@response_set, "prepopulated_is_valid_contact_for_all_provided", "TRUE")
@@ -379,7 +376,6 @@ module ResponseSetPrepopulation
         end
 
       end
-
 
     end
 

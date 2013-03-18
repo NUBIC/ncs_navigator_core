@@ -4,7 +4,7 @@ require 'spec_helper'
 
 require File.expand_path('../a_survey_title_acceptor', __FILE__)
 
-module ResponseSetPrepopulation  
+module ResponseSetPrepopulation
   describe ChildAndAdhoc do
     include SurveyCompletion
 
@@ -227,41 +227,41 @@ module ResponseSetPrepopulation
           event = Factory(:event, :event_type_code =>
                                               Event::twelve_month_visit_code)
           run_populator(event)
-          assert_match(@response_set, "prepopulated_event_type", "12 MONTH") 
+          assert_match(@response_set, "prepopulated_event_type", "12 MONTH")
         end
 
         it "should be 'PV1 or PV2' if EVENT_TYPE = pv1" do
           event = Factory(:event, :event_type_code =>
                                               Event::pregnancy_visit_1_code)
           run_populator(event)
-          assert_match(@response_set, "prepopulated_event_type", "PV1 or PV2") 
+          assert_match(@response_set, "prepopulated_event_type", "PV1 or PV2")
         end
         it "should be 'PV1 or PV2' if EVENT_TYPE = pv1 SAQ" do
           event = Factory(:event, :event_type_code =>
                                               Event::pregnancy_visit_1_saq_code)
           run_populator(event)
-          assert_match(@response_set, "prepopulated_event_type", "PV1 or PV2") 
+          assert_match(@response_set, "prepopulated_event_type", "PV1 or PV2")
         end
 
         it "should be 'PV1 or PV2' if EVENT_TYPE = pv2" do
           event = Factory(:event, :event_type_code =>
                                               Event::pregnancy_visit_2_code)
           run_populator(event)
-          assert_match(@response_set, "prepopulated_event_type", "PV1 or PV2") 
+          assert_match(@response_set, "prepopulated_event_type", "PV1 or PV2")
         end
         it "should be 'PV1 or PV2' if EVENT_TYPE = pv2 SQA" do
           event = Factory(:event, :event_type_code =>
                                               Event::pregnancy_visit_2_saq_code)
           run_populator(event)
-          assert_match(@response_set, "prepopulated_event_type", "PV1 or PV2") 
-        end 
+          assert_match(@response_set, "prepopulated_event_type", "PV1 or PV2")
+        end
 
         it "should be nil if EVENT_TYPE is not 12-month, pv1 or pv2" do
           event = Factory(:event, :event_type_code =>
                                               Event::pregnancy_screener_code)
           run_populator(event)
-          assert_match(@response_set, "prepopulated_event_type", "") 
-        end 
+          assert_match(@response_set, "prepopulated_event_type", "")
+        end
       end
 
     context "for child prepopulators"
@@ -274,14 +274,14 @@ module ResponseSetPrepopulation
           event = Factory(:event, :event_type_code =>
                                               Event::twelve_month_visit_code)
           run_populator(event)
-          assert_match(@response_set, "prepopulated_is_12_month_visit", "TRUE") 
+          assert_match(@response_set, "prepopulated_is_12_month_visit", "TRUE")
         end
 
         it "should be FALSE if EVENT_TYPE = 12_months" do
           event = Factory(:event, :event_type_code =>
                                 Event::pregnancy_screener_code) # Not 12 Months
           run_populator(event)
-          assert_match(@response_set, "prepopulated_is_12_month_visit", "FALSE") 
+          assert_match(@response_set, "prepopulated_is_12_month_visit", "FALSE")
         end
       end
 
@@ -294,14 +294,14 @@ module ResponseSetPrepopulation
           event = Factory(:event, :event_type_code =>
                                               Event::six_month_visit_code)
           run_populator(event)
-          assert_match(@response_set, "prepopulated_is_6_month_event", "TRUE") 
+          assert_match(@response_set, "prepopulated_is_6_month_event", "TRUE")
         end
 
         it "should be FALSE if EVENT_TYPE = 6_months" do
           event = Factory(:event, :event_type_code =>
                                 Event::pregnancy_screener_code) # Not 6 Months
           run_populator(event)
-          assert_match(@response_set, "prepopulated_is_6_month_event", "FALSE") 
+          assert_match(@response_set, "prepopulated_is_6_month_event", "FALSE")
         end
       end
 
@@ -335,7 +335,7 @@ module ResponseSetPrepopulation
               "BP_MID_UPPER_ARM_CIRC" => "18.5"
             }
           )
-          
+
         end
 
         it "should be FALSE if AN_MID_UPPER_ARM_CIRC was not collected" do

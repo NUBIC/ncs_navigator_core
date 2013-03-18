@@ -37,7 +37,6 @@ module ResponseSetPrepopulation
         participant.save!
       end
 
-
       describe "BIRTH_DELIVER" do
 
         it "response should not exist if the question has not previously been answered for instrument MDES version 3.0" do
@@ -291,7 +290,7 @@ module ResponseSetPrepopulation
         @response_set_pt2, @instrument_pt2 = prepare_instrument(person, participant, survey_pt2)
         @response_set_pt2.responses.should be_empty
       end
-      
+
       describe "prepopulated_is_valid_work_name_provided" do
 
         it "should be FALSE if work name was not previously answered" do

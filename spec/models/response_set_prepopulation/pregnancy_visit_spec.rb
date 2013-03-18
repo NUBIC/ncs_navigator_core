@@ -266,7 +266,6 @@ module ResponseSetPrepopulation
 
       end
 
-
       describe "for a contact that is" do
 
         let(:in_person) { NcsCode.for_list_name_and_local_code('CONTACT_TYPE_CL1', 1) }

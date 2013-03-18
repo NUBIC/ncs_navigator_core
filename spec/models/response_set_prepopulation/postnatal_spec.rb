@@ -22,7 +22,7 @@ module ResponseSetPrepopulation
       @person = Factory(:person)
       @participant.person = @person
       @participant.save!
-      @response_set, @instrument = prepare_instrument(@person, @participant, 
+      @response_set, @instrument = prepare_instrument(@person, @participant,
                                                       @survey)
       @response_set.responses.should be_empty
     end
@@ -43,7 +43,7 @@ module ResponseSetPrepopulation
     end
 
     def complete_event(event)
-      event.event_disposition_category_code = 3 # General Study Visit Event Code 
+      event.event_disposition_category_code = 3 # General Study Visit Event Code
       event.event_disposition = 60 # Completed Consent/Interview in English
       event.save!
     end
@@ -54,7 +54,7 @@ module ResponseSetPrepopulation
       complete_event(event) if event_complete
 
       contact = Factory(:contact)
-      contact_link = Factory(:contact_link, :person => @person, 
+      contact_link = Factory(:contact_link, :person => @person,
                               :contact => contact, :event => event)
       ncs_code = NcsCode::for_list_name_and_local_code('EVENT_TYPE_CL1',
                                                         event_type_code)
@@ -87,7 +87,7 @@ module ResponseSetPrepopulation
           if valid_answers
             prepare_and_take_survey(nil, nil, nil, survey) do |r|
               r.a data_export_id, 'work_name', :value => "work_name"
-            end 
+            end
           else
             prepare_and_take_survey(nil, nil, nil, survey) do |r|
               r.refused(data_export_id)
@@ -248,7 +248,7 @@ module ResponseSetPrepopulation
         end
       end
 
-    context "for 6Month part two prepopulators" 
+    context "for 6Month part two prepopulators"
       describe "prepopulated_is_resp_rel_new" do
         before(:each) do
           @survey = create_generic_true_false_prepopulator_survey(
@@ -500,7 +500,7 @@ module ResponseSetPrepopulation
             child.save!
           end
         end
-          
+
         before(:each) do
           @survey = create_generic_true_false_prepopulator_survey(
                       "INS_QUE_3Month_INT_EHPBHILIPBS_M3.1_V2.0_CHILD_HABITS",

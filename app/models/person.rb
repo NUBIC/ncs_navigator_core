@@ -49,8 +49,6 @@
 #  when_move_code                 :integer          not null
 #
 
-
-
 # A Person is an individual who may provide information on a participant.
 # All individuals contacted are Persons, including those who may also be Participants.
 require 'ncs_navigator/configuration'
@@ -268,7 +266,6 @@ class Person < ActiveRecord::Base
 
     instrument = build_instrument(survey, mode) if instrument.nil?
     instrument.tap do |instr|
-
       rs = instr.response_sets.build(:survey => survey, :user_id => self.id)
       rs.participant = participant
       rs.prepopulate
