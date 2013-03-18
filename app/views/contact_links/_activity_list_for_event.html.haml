@@ -2,4 +2,5 @@
   = render "manage_children", :contact_link => @contact_link
 - activities_for_event.each_with_index do |sa, ind|
   - next unless sa.scheduled? or sa.occurred? or sa.conditional?
+  - next if ind > 0 && sa.child_consent?
   = render "instrument_for_activity", :activity => sa, :person => @person, :contact_link => @contact_link

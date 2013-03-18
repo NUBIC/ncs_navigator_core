@@ -1,5 +1,8 @@
 %div{ :id => "activity_#{activity.activity_id}", :class => "activity_link" }
-  - if instrument_exists_for_survey?(contact_link, survey)
+  - if activity.child_consent?
+    = render "parental_permission_for_child_participation", :event => @event, :contact_link => @contact_link
+    = render "activity_psc_action", :activity => activity
+  - elsif instrument_exists_for_survey?(contact_link, survey)
     = render "previous_activity", :activity => activity, :survey => survey, :contact_link => contact_link
   - elsif @saq_activities.try(:include?, activity)
     = render "saq_activity", :activity => activity, :survey => survey, :event => @event
