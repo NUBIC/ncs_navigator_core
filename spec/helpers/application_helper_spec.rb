@@ -16,6 +16,24 @@ describe ApplicationHelper do
     end
   end
 
+  context "sample root" do
+    it "returns UKNOWN when sample does not satisfy the format with dash" do
+      helper.sample_root_id('0').should == "UNKNOWN"
+    end
+    it "returns the prefix before dash" do
+      helper.sample_root_id('AB1234567-AB10').should == "AB1234567"
+    end
+  end
+
+  context "sample extenstion" do
+    it "returns UKNOWN when sample does not satisfy the format with dash" do
+      helper.sample_extenstion('0').should == "UNKNOWN"
+    end
+    it "returns the prefix after dash" do
+      helper.sample_extenstion('AB1234567-AB10').should == "AB10"
+    end
+  end
+
   context "text" do
     describe ".blank_safe" do
       it "returns ___ if blank" do
