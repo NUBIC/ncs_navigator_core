@@ -74,7 +74,7 @@ class Instrument < ActiveRecord::Base
   # to Instrument administration.
   #
   # @see Person.start_instrument
-  # @see NcsNavigator::Core::ResponseSetPopulator::Base.process
+  # @see ResponseSet#prepopulate
   #
   # @param [Person]  - person
   #                  - the person taking the survey
