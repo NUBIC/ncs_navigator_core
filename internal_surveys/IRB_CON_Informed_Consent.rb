@@ -148,11 +148,7 @@ survey "IRB_CON_Informed_Consent", :instrument_type => "-5", :description => "In
       a_2 "NO"
       dependency :rule => "A and B"
       condition_A :q_consent_type, "!=", :a_3
-<<<<<<< HEAD
       condition_B :q_consent_given_code, "==", :a_1
-=======
-      condition_B :q_consent_given_code, "==", :a_2
->>>>>>> Combine all internal surveys #3260
 
     group "Specimen/Sample Consent" do
       dependency :rule => "A"

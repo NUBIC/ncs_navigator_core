@@ -153,15 +153,13 @@ describe OperationalDataExtractor::InformedConsent do
       let!(:consent) { prepare_consent(person, participant, survey, contact) }
       let(:response_set) { consent.response_set }
 
-      it "sets the ParticipantConsent attributes to the Response values" do
-        consent = prepare_consent(person, participant, survey, contact)
-        response_set = consent.response_set
-
-        take_survey(survey, response_set) do |r|
-          r.a "PARTICIPANT_CONSENT.CONSENT_WITHDRAW_CODE", yes
-          r.a "PARTICIPANT_CONSENT.CONSENT_WITHDRAW_TYPE_CODE", wdraw1
-          r.a "PARTICIPANT_CONSENT.CONSENT_WITHDRAW_REASON_CODE", wdraw2
-          r.a "PARTICIPANT_CONSENT.CONSENT_WITHDRAW_DATE", "consent_date", :value => date
+      before do
+        take_survey(survey, response_set) do |a|
+          a.choice "PARTICIPANT_CONSENT.CONSENT_WITHDRAW_CODE", yes
+          a.choice "PARTICIPANT_CONSENT.CONSENT_WITHDRAW_TYPE_CODE", wdraw1
+          a.choice "PARTICIPANT_CONSENT.CONSENT_WITHDRAW_REASON_CODE", wdraw2
+          a.choice "PARTICIPANT_CONSENT.WHO_WITHDREW_CONSENT", who
+          a.str "PARTICIPANT_CONSENT.CONSENT_WITHDRAW_DATE", date
         end
         response_set.responses.reload
         response_set.responses.size.should == 5
