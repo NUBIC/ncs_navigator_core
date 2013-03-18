@@ -91,9 +91,10 @@ describe OperationalDataExtractor::InformedConsent do
 
     let(:wdraw1) { NcsCode.for_list_name_and_local_code("CONSENT_WITHDRAW_REASON_CL1", 1) }
     let(:wdraw2) { NcsCode.for_list_name_and_local_code("CONSENT_WITHDRAW_REASON_CL2", 7) }
+    let(:who) { NcsCode.for_list_name_and_local_code("AGE_STATUS_CL3", 2) }
 
     before do
-      f = "#{Rails.root}/internal_surveys/IRB_CON_Withdrawal.rb"
+      f = "#{Rails.root}/internal_surveys/IRB_CON_Informed_Consent.rb"
       Surveyor::Parser.parse File.read(f)
     end
 
@@ -103,15 +104,16 @@ describe OperationalDataExtractor::InformedConsent do
         consent = prepare_consent(person, participant, survey, contact)
         response_set = consent.response_set
 
-        take_survey(survey, response_set) do |r|
-          r.a "PARTICIPANT_CONSENT.CONSENT_WITHDRAW_CODE", yes
-          r.a "PARTICIPANT_CONSENT.CONSENT_WITHDRAW_TYPE_CODE", wdraw1
-          r.a "PARTICIPANT_CONSENT.CONSENT_WITHDRAW_REASON_CODE", wdraw2
-          r.a "PARTICIPANT_CONSENT.CONSENT_WITHDRAW_DATE", "consent_date", :value => date
+        take_survey(survey, response_set) do |a|
+          a.choice "PARTICIPANT_CONSENT.CONSENT_WITHDRAW_CODE", yes
+          a.choice "PARTICIPANT_CONSENT.CONSENT_WITHDRAW_TYPE_CODE", wdraw1
+          a.choice "PARTICIPANT_CONSENT.CONSENT_WITHDRAW_REASON_CODE", wdraw2
+          a.choice "PARTICIPANT_CONSENT.WHO_WITHDREW_CONSENT", who
+          a.str "PARTICIPANT_CONSENT.CONSENT_WITHDRAW_DATE", date
         end
 
         response_set.responses.reload
-        response_set.responses.size.should == 4
+        response_set.responses.size.should == 5
 
         OperationalDataExtractor::InformedConsent.new(response_set).extract_data
 
@@ -120,6 +122,7 @@ describe OperationalDataExtractor::InformedConsent do
         consent.consent_withdraw_type.should == wdraw1
         consent.consent_withdraw_reason.should == wdraw2
         consent.consent_withdraw_date.should == Date.parse(date)
+        consent.who_wthdrw_consent.should == who
       end
     end
   end
@@ -129,7 +132,7 @@ describe OperationalDataExtractor::InformedConsent do
     let(:reason) { NcsCode.for_list_name_and_local_code("CONSENT_RECONSENT_REASON_CL1", 9) }
 
     before do
-      f = "#{Rails.root}/internal_surveys/IRB_CON_Reconsent.rb"
+      f = "#{Rails.root}/internal_surveys/IRB_CON_Informed_Consent.rb"
       Surveyor::Parser.parse File.read(f)
     end
 

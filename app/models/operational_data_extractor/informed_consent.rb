@@ -18,6 +18,7 @@ module OperationalDataExtractor
       "PARTICIPANT_CONSENT.CONSENT_WITHDRAW_TYPE_CODE"          => "consent_withdraw_type_code",
       "PARTICIPANT_CONSENT.CONSENT_WITHDRAW_REASON_CODE"        => "consent_withdraw_reason_code",
       "PARTICIPANT_CONSENT.CONSENT_WITHDRAW_DATE"               => "consent_withdraw_date",
+      "PARTICIPANT_CONSENT.WHO_WITHDREW_CONSENT"                => "who_wthdrw_consent_code",
       "PARTICIPANT_CONSENT.CONSENT_RECONSENT_CODE"              => "consent_reconsent_code",
       "PARTICIPANT_CONSENT.CONSENT_RECONSENT_REASON_CODE"       => "consent_reconsent_reason_code",
       "PARTICIPANT_CONSENT.CONSENT_RECONSENT_REASON_OTHER"      => "consent_reconsent_reason_other",
