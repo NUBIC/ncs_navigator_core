@@ -329,7 +329,6 @@ describe ParticipantConsent do
         end
       end
     end
-
   end
 
   describe ".start!" do

@@ -26,6 +26,6 @@
         %p
           = "- OR -"
         %p
-          = "Continue onto #{upcoming_events_for(person)} during the same contact."
+          = "Continue onto the next Event during the same Contact."
           %br
-          = f.submit "Continue", :confirm => "Are you sure you would like to continue to #{upcoming_events_for(person)}?\n\nHave you closed this event? (i.e. set the event end date)\nIf the event end date is not set you will not be able to continue to #{upcoming_events_for(person)}"
+          = f.submit "Continue", :confirm => "Are you sure you would like to continue to the next Event during this Contact?\n\nWill you perform at least one activity for the next Event.\n\nHave you closed this event? (i.e. set the event end date)\nIf the event end date is not set you will not be able to continue."
