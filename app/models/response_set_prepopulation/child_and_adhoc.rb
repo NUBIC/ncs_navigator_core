@@ -13,7 +13,7 @@ module ResponseSetPrepopulation
       ].any?{ |regex| rs.survey.title =~ regex }
     end
 
-    def reference_identifiers
+    def self.reference_identifiers
       [
         "prepopulated_should_show_upper_arm_length",
         "prepopulated_is_6_month_event",
@@ -27,7 +27,7 @@ module ResponseSetPrepopulation
     end
 
     def run
-      reference_identifiers.each do |reference_identifier|
+      self.class.reference_identifiers.each do |reference_identifier|
         if question = find_question_for_reference_identifier(
                                               reference_identifier)
           response_type = "answer"

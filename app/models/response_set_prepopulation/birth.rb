@@ -6,7 +6,7 @@ module ResponseSetPrepopulation
       rs.survey.title.include?('_Birth_')
     end
 
-    def reference_identifiers
+    def self.reference_identifiers
       [
         "prepopulated_mode_of_contact",
         "prepopulated_birth_deliver_from_birth_visit_part_one",
@@ -21,7 +21,7 @@ module ResponseSetPrepopulation
     end
 
     def run
-      reference_identifiers.each do |reference_identifier|
+      self.class.reference_identifiers.each do |reference_identifier|
         if question = find_question_for_reference_identifier(reference_identifier)
           response_type = "answer"
 

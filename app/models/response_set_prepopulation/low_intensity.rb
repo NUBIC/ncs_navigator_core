@@ -6,14 +6,14 @@ module ResponseSetPrepopulation
       rs.survey.title.include?('_QUE_LI')
     end
 
-    def reference_identifiers
+    def self.reference_identifiers
       [
         "prepopulated_ppg_status",
       ]
     end
 
     def run
-      reference_identifiers.each do |reference_identifier|
+      self.class.reference_identifiers.each do |reference_identifier|
         if question = find_question_for_reference_identifier(reference_identifier)
           answer = question.answers.first
           value = case reference_identifier

@@ -6,7 +6,7 @@ module ResponseSetPrepopulation
       rs.survey.title.include?('_PBSamplingScreen_')
     end
 
-    def reference_identifiers
+    def self.reference_identifiers
       [
         "prepopulated_mode_of_contact",
         "prepopulated_psu_id",
@@ -17,7 +17,7 @@ module ResponseSetPrepopulation
     end
 
     def run
-      reference_identifiers.each do |reference_identifier|
+      self.class.reference_identifiers.each do |reference_identifier|
         response_type = "string_value"
 
         if question = find_question_for_reference_identifier(reference_identifier)

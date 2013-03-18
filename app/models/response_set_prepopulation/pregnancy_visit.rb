@@ -6,7 +6,7 @@ module ResponseSetPrepopulation
       %w(PregVisit1 PregVisit2).any? { |t| rs.survey.title.include?("_#{t}_") }
     end
 
-    def reference_identifiers
+    def self.reference_identifiers
       [
         "prepopulated_mode_of_contact",
         "prepopulated_should_show_height",
@@ -19,7 +19,7 @@ module ResponseSetPrepopulation
     end
 
     def run
-      reference_identifiers.each do |reference_identifier|
+      self.class.reference_identifiers.each do |reference_identifier|
         if question = find_question_for_reference_identifier(reference_identifier)
           response_type = "answer"
           answer = case reference_identifier

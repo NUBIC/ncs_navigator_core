@@ -6,7 +6,7 @@ module ResponseSetPrepopulation
       rs.survey.title.include?('_NonIntRespQues_')
     end
 
-    def reference_identifiers
+    def self.reference_identifiers
       [
         "prepopulated_is_declined_participation_prior_to_enrollment",
         "prepopulated_study_center_type"
@@ -14,7 +14,7 @@ module ResponseSetPrepopulation
     end
 
     def run
-      reference_identifiers.each do |reference_identifier|
+      self.class.reference_identifiers.each do |reference_identifier|
         if question = find_question_for_reference_identifier(
                                               reference_identifier)
           response_type = "answer"

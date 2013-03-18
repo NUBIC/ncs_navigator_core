@@ -6,6 +6,10 @@ module ResponseSetPrepopulation
       rs.survey.title.include?('_PregScreen_')
     end
 
+    def self.reference_identifiers
+      []
+    end
+
     def run
     end
   end
