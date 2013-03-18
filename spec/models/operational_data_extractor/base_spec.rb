@@ -283,13 +283,13 @@ describe OperationalDataExtractor::Base do
           hospital = NcsCode.for_list_name_and_local_code("ORGANIZATION_TYPE_CL1", 1)
           state = NcsCode.for_list_name_and_local_code("STATE_CL1", 14)
 
-          take_survey(@survey, @response_set) do |a|
-            a.choice "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.BIRTH_PLAN", hospital
-            a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.BIRTH_PLACE", "FAKE HOSPITAL MEMORIAL"
-            a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.B_ADDRESS_1", "123 Any Street"
-            a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.B_CITY", "Springfield"
-            a.choice "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.B_STATE", state
-            a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.B_ZIPCODE", "65445"
+          take_survey(@survey, @response_set) do |r|
+            r.a "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.BIRTH_PLAN", hospital
+            r.a "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.BIRTH_PLACE", "FAKE HOSPITAL MEMORIAL"
+            r.a "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.B_ADDRESS_1", "123 Any Street"
+            r.a "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.B_CITY", "Springfield"
+            r.a "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.B_STATE", state
+            r.a "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.B_ZIPCODE", "65445"
           end
           @response_set.save!
 
@@ -557,13 +557,13 @@ describe OperationalDataExtractor::Base do
       @hospital = NcsCode.for_list_name_and_local_code("ORGANIZATION_TYPE_CL1", 1)
       state = NcsCode.for_list_name_and_local_code("STATE_CL1", 14)
 
-      take_survey(@survey, @response_set) do |a|
-        a.choice "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.BIRTH_PLAN", @hospital
-        a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.BIRTH_PLACE", "FAKE HOSPITAL MEMORIAL"
-        a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.B_ADDRESS_1", "123 Any Street"
-        a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.B_CITY", "Springfield"
-        a.choice "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.B_STATE", state
-        a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.B_ZIPCODE", "65445"
+      take_survey(@survey, @response_set) do |r|
+        r.a "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.BIRTH_PLAN", @hospital
+        r.a "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.BIRTH_PLACE", "FAKE HOSPITAL MEMORIAL"
+        r.a "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.B_ADDRESS_1", "123 Any Street"
+        r.a "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.B_CITY", "Springfield"
+        r.a "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.B_STATE", state
+        r.a "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.B_ZIPCODE", "65445"
       end
       @response_set.save!
 
@@ -658,11 +658,11 @@ describe OperationalDataExtractor::Base do
       @survey = create_birth_survey_with_person_race_operational_data
       @response_set, instrument = prepare_instrument(@person, @participant, @survey)
 
-      take_survey(@survey, @response_set) do |a|
-        a.choice "#{OperationalDataExtractor::Birth::BIRTH_VISIT_BABY_RACE_NEW_3_PREFIX}.BABY_RACE_NEW", white_race
-        a.str "#{OperationalDataExtractor::Birth::BIRTH_VISIT_BABY_RACE_NEW_3_PREFIX}.BABY_RACE_NEW_OTH", "Chinese"
-        a.choice "#{OperationalDataExtractor::Birth::BIRTH_VISIT_BABY_RACE_1_3_PREFIX}.BABY_RACE_1", black_race
-        a.str "#{OperationalDataExtractor::Birth::BIRTH_VISIT_BABY_RACE_1_3_PREFIX}.BABY_RACE_1_OTH", "Korean"
+      take_survey(@survey, @response_set) do |r|
+        r.a "#{OperationalDataExtractor::Birth::BIRTH_VISIT_BABY_RACE_NEW_3_PREFIX}.BABY_RACE_NEW", white_race
+        r.a "#{OperationalDataExtractor::Birth::BIRTH_VISIT_BABY_RACE_NEW_3_PREFIX}.BABY_RACE_NEW_OTH", "Chinese"
+        r.a "#{OperationalDataExtractor::Birth::BIRTH_VISIT_BABY_RACE_1_3_PREFIX}.BABY_RACE_1", black_race
+        r.a "#{OperationalDataExtractor::Birth::BIRTH_VISIT_BABY_RACE_1_3_PREFIX}.BABY_RACE_1_OTH", "Korean"
       end
 
       @response_set.save!
@@ -687,10 +687,10 @@ describe OperationalDataExtractor::Base do
         before do
           @response_set_multiple_responses, instrument = prepare_instrument(@person, @participant, @survey)
 
-          take_survey(@survey, @response_set_multiple_responses) do |a|
-            a.choice "#{OperationalDataExtractor::Birth::BIRTH_VISIT_BABY_RACE_NEW_3_PREFIX}.BABY_RACE_NEW", white_race
-            a.choice "#{OperationalDataExtractor::Birth::BIRTH_VISIT_BABY_RACE_NEW_3_PREFIX}.BABY_RACE_NEW", black_race
-            a.choice "#{OperationalDataExtractor::Birth::BIRTH_VISIT_BABY_RACE_NEW_3_PREFIX}.BABY_RACE_NEW", asian_race
+          take_survey(@survey, @response_set_multiple_responses) do |r|
+            r.a "#{OperationalDataExtractor::Birth::BIRTH_VISIT_BABY_RACE_NEW_3_PREFIX}.BABY_RACE_NEW", white_race
+            r.a "#{OperationalDataExtractor::Birth::BIRTH_VISIT_BABY_RACE_NEW_3_PREFIX}.BABY_RACE_NEW", black_race
+            r.a "#{OperationalDataExtractor::Birth::BIRTH_VISIT_BABY_RACE_NEW_3_PREFIX}.BABY_RACE_NEW", asian_race
           end
           @response_set_multiple_responses.save!
 
@@ -713,9 +713,9 @@ describe OperationalDataExtractor::Base do
         before do
           @response_set_multiple_mixed_type, instrument = prepare_instrument(@person, @participant, @survey)
 
-          take_survey(@survey, @response_set_multiple_mixed_type) do |a|
-            a.choice "#{OperationalDataExtractor::Birth::BIRTH_VISIT_BABY_RACE_NEW_3_PREFIX}.BABY_RACE_NEW", white_race
-            a.choice "#{OperationalDataExtractor::Birth::BIRTH_VISIT_BABY_RACE_1_3_PREFIX}.BABY_RACE_1", black_race
+          take_survey(@survey, @response_set_multiple_mixed_type) do |r|
+            r.a "#{OperationalDataExtractor::Birth::BIRTH_VISIT_BABY_RACE_NEW_3_PREFIX}.BABY_RACE_NEW", white_race
+            r.a "#{OperationalDataExtractor::Birth::BIRTH_VISIT_BABY_RACE_1_3_PREFIX}.BABY_RACE_1", black_race
           end
           @response_set_multiple_mixed_type.save!
 
@@ -738,9 +738,9 @@ describe OperationalDataExtractor::Base do
         before do
           @response_set_on_and_off_code_list, instrument = prepare_instrument(@person, @participant, @survey)
 
-          take_survey(@survey, @response_set_on_and_off_code_list) do |a|
-            a.choice "#{OperationalDataExtractor::Birth::BIRTH_VISIT_BABY_RACE_NEW_3_PREFIX}.BABY_RACE_NEW", white_race
-            a.choice "#{OperationalDataExtractor::Birth::BIRTH_VISIT_BABY_RACE_NEW_3_PREFIX}.BABY_RACE_NEW", vietnamese_race
+          take_survey(@survey, @response_set_on_and_off_code_list) do |r|
+            r.a "#{OperationalDataExtractor::Birth::BIRTH_VISIT_BABY_RACE_NEW_3_PREFIX}.BABY_RACE_NEW", white_race
+            r.a "#{OperationalDataExtractor::Birth::BIRTH_VISIT_BABY_RACE_NEW_3_PREFIX}.BABY_RACE_NEW", vietnamese_race
           end
           @response_set_on_and_off_code_list.save!
 
@@ -777,9 +777,9 @@ describe OperationalDataExtractor::Base do
         before do
           @response_set_other_race_type, instrument = prepare_instrument(@person, @participant, @survey)
 
-          take_survey(@survey, @response_set_other_race_type) do |a|
-            a.choice "#{OperationalDataExtractor::Birth::BIRTH_VISIT_BABY_RACE_1_3_PREFIX}.BABY_RACE_1", other_race
-            a.str "#{OperationalDataExtractor::Birth::BIRTH_VISIT_BABY_RACE_1_3_PREFIX}.BABY_RACE_1_OTH", "Aborigine"
+          take_survey(@survey, @response_set_other_race_type) do |r|
+            r.a "#{OperationalDataExtractor::Birth::BIRTH_VISIT_BABY_RACE_1_3_PREFIX}.BABY_RACE_1", other_race
+            r.a "#{OperationalDataExtractor::Birth::BIRTH_VISIT_BABY_RACE_1_3_PREFIX}.BABY_RACE_1_OTH", "Aborigine"
           end
           @response_set_other_race_type.save!
 
@@ -899,10 +899,10 @@ describe OperationalDataExtractor::Base do
     describe "#collect_race_responses" do
       before do
         @response_set2, instrument = prepare_instrument(@person, @participant, @survey)
-        take_survey(@survey, @response_set2) do |a|
-          a.choice "#{OperationalDataExtractor::Birth::BIRTH_VISIT_BABY_RACE_NEW_3_PREFIX}.BABY_RACE_NEW", white_race
-          a.choice "#{OperationalDataExtractor::Birth::BIRTH_VISIT_BABY_RACE_NEW_3_PREFIX}.BABY_RACE_NEW", black_race
-          a.choice "#{OperationalDataExtractor::Birth::BIRTH_VISIT_BABY_RACE_NEW_3_PREFIX}.BABY_RACE_NEW", asian_race
+        take_survey(@survey, @response_set2) do |r|
+          r.a "#{OperationalDataExtractor::Birth::BIRTH_VISIT_BABY_RACE_NEW_3_PREFIX}.BABY_RACE_NEW", white_race
+          r.a "#{OperationalDataExtractor::Birth::BIRTH_VISIT_BABY_RACE_NEW_3_PREFIX}.BABY_RACE_NEW", black_race
+          r.a "#{OperationalDataExtractor::Birth::BIRTH_VISIT_BABY_RACE_NEW_3_PREFIX}.BABY_RACE_NEW", asian_race
         end
         @response_set2.save!
         @birth_extractor2 = OperationalDataExtractor::Birth.new(@response_set2)

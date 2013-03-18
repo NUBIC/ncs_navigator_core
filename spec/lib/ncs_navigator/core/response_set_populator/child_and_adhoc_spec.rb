@@ -342,12 +342,12 @@ module NcsNavigator::Core
                                                         survey)
           response_set.responses.should be_empty
 
-          take_survey(survey, response_set) do |a|
+          take_survey(survey, response_set) do |r|
             if !answer
               neg_8 = mock(NcsCode, :local_code => 'neg_8')
-              a.choice("CHILD_ANTHRO.AN_MID_UPPER_ARM_CIRC1", neg_8)
+              r.a "CHILD_ANTHRO.AN_MID_UPPER_ARM_CIRC1", neg_8
             else
-              a.str("CHILD_ANTHRO.AN_MID_UPPER_ARM_CIRC1", answer)
+              r.a "CHILD_ANTHRO.AN_MID_UPPER_ARM_CIRC1", '1', :value => answer
             end
           end
         end

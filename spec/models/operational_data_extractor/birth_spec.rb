@@ -28,11 +28,11 @@ describe OperationalDataExtractor::Birth do
       survey = create_birth_survey_with_child_operational_data
       response_set, instrument = prepare_instrument(@person, @child_participant, survey)
 
-      take_survey(survey, response_set) do |a|
-        a.str "#{OperationalDataExtractor::Birth::BABY_NAME_PREFIX}.BABY_FNAME", 'Mary'
-        a.str "#{OperationalDataExtractor::Birth::BABY_NAME_PREFIX}.BABY_MNAME", 'Jane'
-        a.str "#{OperationalDataExtractor::Birth::BABY_NAME_PREFIX}.BABY_LNAME", 'Williams'
-        a.choice "#{OperationalDataExtractor::Birth::BABY_NAME_PREFIX}.BABY_SEX", @female
+      take_survey(survey, response_set) do |r|
+        r.a "#{OperationalDataExtractor::Birth::BABY_NAME_PREFIX}.BABY_FNAME", 'Mary'
+        r.a "#{OperationalDataExtractor::Birth::BABY_NAME_PREFIX}.BABY_MNAME", 'Jane'
+        r.a "#{OperationalDataExtractor::Birth::BABY_NAME_PREFIX}.BABY_LNAME", 'Williams'
+        r.a "#{OperationalDataExtractor::Birth::BABY_NAME_PREFIX}.BABY_SEX", @female
       end
 
       response_set.responses.reload
@@ -82,9 +82,9 @@ describe OperationalDataExtractor::Birth do
     it "extracts person operational data from the survey responses" do
       response_set, instrument = prepare_instrument(@person, @participant, @survey)
 
-      take_survey(@survey, response_set) do |a|
-        a.str "#{OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX}.R_FNAME", 'Jocelyn'
-        a.str "#{OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX}.R_LNAME", 'Goldsmith'
+      take_survey(@survey, response_set) do |r|
+        r.a "#{OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX}.R_FNAME", 'Jocelyn'
+        r.a "#{OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX}.R_LNAME", 'Goldsmith'
       end
 
       response_set.responses.reload
@@ -106,14 +106,14 @@ describe OperationalDataExtractor::Birth do
 
         response_set, instrument = prepare_instrument(@person, @participant, @survey)
 
-        take_survey(@survey, response_set) do |a|
-          a.str "#{OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX}.MAIL_ADDRESS1", '123 Easy St.'
-          a.str "#{OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX}.MAIL_ADDRESS2", ''
-          a.str "#{OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX}.MAIL_UNIT", ''
-          a.str "#{OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX}.MAIL_CITY", 'Chicago'
-          a.choice "#{OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX}.MAIL_STATE", state
-          a.str "#{OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX}.MAIL_ZIP", '65432'
-          a.str "#{OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX}.MAIL_ZIP4", '1234'
+        take_survey(@survey, response_set) do |r|
+          r.a "#{OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX}.MAIL_ADDRESS1", '123 Easy St.'
+          r.a "#{OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX}.MAIL_ADDRESS2", ''
+          r.a "#{OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX}.MAIL_UNIT", ''
+          r.a "#{OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX}.MAIL_CITY", 'Chicago'
+          r.a "#{OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX}.MAIL_STATE", state
+          r.a "#{OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX}.MAIL_ZIP", '65432'
+          r.a "#{OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX}.MAIL_ZIP4", '1234'
         end
 
         response_set.responses.reload
@@ -134,14 +134,14 @@ describe OperationalDataExtractor::Birth do
 
         response_set, instrument = prepare_instrument(@person, @participant, @survey)
 
-        take_survey(@survey, response_set) do |a|
-          a.str "#{OperationalDataExtractor::Birth::BIRTH_VISIT_3_PREFIX}.WORK_ADDRESS1", '123 Easy St.'
-          a.str "#{OperationalDataExtractor::Birth::BIRTH_VISIT_3_PREFIX}.WORK_ADDRESS2", ''
-          a.str "#{OperationalDataExtractor::Birth::BIRTH_VISIT_3_PREFIX}.WORK_UNIT", ''
-          a.str "#{OperationalDataExtractor::Birth::BIRTH_VISIT_3_PREFIX}.WORK_CITY", 'Chicago'
-          a.choice "#{OperationalDataExtractor::Birth::BIRTH_VISIT_3_PREFIX}.WORK_STATE", state
-          a.str "#{OperationalDataExtractor::Birth::BIRTH_VISIT_3_PREFIX}.WORK_ZIP", '65432'
-          a.str "#{OperationalDataExtractor::Birth::BIRTH_VISIT_3_PREFIX}.WORK_ZIP4", '1234'
+        take_survey(@survey, response_set) do |r|
+          r.a "#{OperationalDataExtractor::Birth::BIRTH_VISIT_3_PREFIX}.WORK_ADDRESS1", '123 Easy St.'
+          r.a "#{OperationalDataExtractor::Birth::BIRTH_VISIT_3_PREFIX}.WORK_ADDRESS2", ''
+          r.a "#{OperationalDataExtractor::Birth::BIRTH_VISIT_3_PREFIX}.WORK_UNIT", ''
+          r.a "#{OperationalDataExtractor::Birth::BIRTH_VISIT_3_PREFIX}.WORK_CITY", 'Chicago'
+          r.a "#{OperationalDataExtractor::Birth::BIRTH_VISIT_3_PREFIX}.WORK_STATE", state
+          r.a "#{OperationalDataExtractor::Birth::BIRTH_VISIT_3_PREFIX}.WORK_ZIP", '65432'
+          r.a "#{OperationalDataExtractor::Birth::BIRTH_VISIT_3_PREFIX}.WORK_ZIP4", '1234'
         end
 
         response_set.responses.reload
@@ -162,22 +162,22 @@ describe OperationalDataExtractor::Birth do
 
         response_set, instrument = prepare_instrument(@person, @participant, @survey)
 
-        take_survey(@survey, response_set) do |a|
-          a.str "#{OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX}.MAIL_ADDRESS1", '123 Easy St.'
-          a.str "#{OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX}.MAIL_ADDRESS2", ''
-          a.str "#{OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX}.MAIL_UNIT", ''
-          a.str "#{OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX}.MAIL_CITY", 'Chicago'
-          a.choice "#{OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX}.MAIL_STATE", state
-          a.str "#{OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX}.MAIL_ZIP", '65432'
-          a.str "#{OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX}.MAIL_ZIP4", '1234'
+        take_survey(@survey, response_set) do |r|
+          r.a "#{OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX}.MAIL_ADDRESS1", '123 Easy St.'
+          r.a "#{OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX}.MAIL_ADDRESS2", ''
+          r.a "#{OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX}.MAIL_UNIT", ''
+          r.a "#{OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX}.MAIL_CITY", 'Chicago'
+          r.a "#{OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX}.MAIL_STATE", state
+          r.a "#{OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX}.MAIL_ZIP", '65432'
+          r.a "#{OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX}.MAIL_ZIP4", '1234'
 
-          a.str "#{OperationalDataExtractor::Birth::BIRTH_VISIT_3_PREFIX}.WORK_ADDRESS1", '312 Hard St.'
-          a.str "#{OperationalDataExtractor::Birth::BIRTH_VISIT_3_PREFIX}.WORK_ADDRESS2", ''
-          a.str "#{OperationalDataExtractor::Birth::BIRTH_VISIT_3_PREFIX}.WORK_UNIT", ''
-          a.str "#{OperationalDataExtractor::Birth::BIRTH_VISIT_3_PREFIX}.WORK_CITY", 'Chicago'
-          a.choice "#{OperationalDataExtractor::Birth::BIRTH_VISIT_3_PREFIX}.WORK_STATE", state
-          a.str "#{OperationalDataExtractor::Birth::BIRTH_VISIT_3_PREFIX}.WORK_ZIP", '65432'
-          a.str "#{OperationalDataExtractor::Birth::BIRTH_VISIT_3_PREFIX}.WORK_ZIP4", '1234'
+          r.a "#{OperationalDataExtractor::Birth::BIRTH_VISIT_3_PREFIX}.WORK_ADDRESS1", '312 Hard St.'
+          r.a "#{OperationalDataExtractor::Birth::BIRTH_VISIT_3_PREFIX}.WORK_ADDRESS2", ''
+          r.a "#{OperationalDataExtractor::Birth::BIRTH_VISIT_3_PREFIX}.WORK_UNIT", ''
+          r.a "#{OperationalDataExtractor::Birth::BIRTH_VISIT_3_PREFIX}.WORK_CITY", 'Chicago'
+          r.a "#{OperationalDataExtractor::Birth::BIRTH_VISIT_3_PREFIX}.WORK_STATE", state
+          r.a "#{OperationalDataExtractor::Birth::BIRTH_VISIT_3_PREFIX}.WORK_ZIP", '65432'
+          r.a "#{OperationalDataExtractor::Birth::BIRTH_VISIT_3_PREFIX}.WORK_ZIP4", '1234'
         end
 
         response_set.responses.reload
@@ -198,15 +198,15 @@ describe OperationalDataExtractor::Birth do
       response_set, instrument = prepare_instrument(@person, @participant, @survey)
       @person.telephones.size.should == 0
 
-      take_survey(@survey, response_set) do |a|
-        a.str "#{OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX}.PHONE_NBR", '3125551234'
-        a.str "#{OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX}.PHONE_NBR_OTH", ''
-        a.choice "#{OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX}.PHONE_TYPE", cell
-        a.str "#{OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX}.PHONE_TYPE_OTH", ''
-        a.str "#{OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX}.HOME_PHONE", '3125554321'
-        a.yes "#{OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX}.CELL_PHONE_2"
-        a.yes "#{OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX}.CELL_PHONE_4"
-        a.str "#{OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX}.CELL_PHONE", '3125557890'
+      take_survey(@survey, response_set) do |r|
+        r.a "#{OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX}.PHONE_NBR", '3125551234'
+        r.a "#{OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX}.PHONE_NBR_OTH", ''
+        r.a "#{OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX}.PHONE_TYPE", cell
+        r.a "#{OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX}.PHONE_TYPE_OTH", ''
+        r.a "#{OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX}.HOME_PHONE", '3125554321'
+        r.yes "#{OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX}.CELL_PHONE_2"
+        r.yes "#{OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX}.CELL_PHONE_4"
+        r.a "#{OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX}.CELL_PHONE", '3125557890'
       end
 
       response_set.responses.reload
@@ -232,9 +232,9 @@ describe OperationalDataExtractor::Birth do
 
       response_set, instrument = prepare_instrument(@person, @participant, @survey)
 
-      take_survey(@survey, response_set) do |a|
-        a.str "#{OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX}.EMAIL", 'email@dev.null'
-        a.choice "#{OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX}.EMAIL_TYPE", home
+      take_survey(@survey, response_set) do |r|
+        r.a "#{OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX}.EMAIL", 'email@dev.null'
+        r.a"#{OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX}.EMAIL_TYPE", home
       end
 
       response_set.responses.reload
@@ -257,8 +257,8 @@ describe OperationalDataExtractor::Birth do
 
       response_set, instrument = prepare_instrument(@person, @participant, @survey)
 
-      take_survey(@survey, response_set) do |a|
-        a.choice "#{OperationalDataExtractor::Birth::BIRTH_VISIT_3_PREFIX}.BIRTH_DELIVER", hospital
+      take_survey(@survey, response_set) do |r|
+        r.a "#{OperationalDataExtractor::Birth::BIRTH_VISIT_3_PREFIX}.BIRTH_DELIVER", hospital
       end
 
       response_set.save!
@@ -286,24 +286,24 @@ describe OperationalDataExtractor::Birth do
     end
 
     it "sets the mode to CAPI" do
-      take_survey(survey, @response_set) do |a|
-        a.choice "prepopulated_mode_of_contact", mock(NcsCode, :local_code => "capi")
+      take_survey(survey, @response_set) do |r|
+        r.a "prepopulated_mode_of_contact", :reference_identifier => 'capi'
       end
       OperationalDataExtractor::Birth.new(@response_set).extract_data
       Instrument.find(@instrument.id).instrument_mode_code.should == Instrument.capi
     end
 
     it "sets the mode to CATI" do
-      take_survey(survey, @response_set) do |a|
-        a.choice "prepopulated_mode_of_contact", mock(NcsCode, :local_code => "cati")
+      take_survey(survey, @response_set) do |r|
+        r.a "prepopulated_mode_of_contact", :reference_identifier => "cati"
       end
       OperationalDataExtractor::Birth.new(@response_set).extract_data
       Instrument.find(@instrument.id).instrument_mode_code.should == Instrument.cati
     end
 
     it "sets the mode to PAPI" do
-      take_survey(survey, @response_set) do |a|
-        a.choice "prepopulated_mode_of_contact", mock(NcsCode, :local_code => "papi")
+      take_survey(survey, @response_set) do |r|
+        r.a "prepopulated_mode_of_contact", :reference_identifier => 'papi'
       end
       OperationalDataExtractor::Birth.new(@response_set).extract_data
       Instrument.find(@instrument.id).instrument_mode_code.should == Instrument.papi
@@ -327,10 +327,10 @@ describe OperationalDataExtractor::Birth do
 
     describe "processing standard racial data" do
       before do
-        take_survey(@survey, @response_set) do |a|
-          a.choice "#{OperationalDataExtractor::Birth::BIRTH_VISIT_BABY_RACE_1_3_PREFIX}.BABY_RACE_1", black_race
-          a.choice "#{OperationalDataExtractor::Birth::BIRTH_VISIT_BABY_RACE_1_3_PREFIX}.BABY_RACE_1", other_race
-          a.str "#{OperationalDataExtractor::Birth::BIRTH_VISIT_BABY_RACE_1_3_PREFIX}.BABY_RACE_1_OTH", "Aborigine"
+        take_survey(@survey, @response_set) do |r|
+          r.a "#{OperationalDataExtractor::Birth::BIRTH_VISIT_BABY_RACE_1_3_PREFIX}.BABY_RACE_1", black_race
+          r.a "#{OperationalDataExtractor::Birth::BIRTH_VISIT_BABY_RACE_1_3_PREFIX}.BABY_RACE_1", other_race
+          r.a "#{OperationalDataExtractor::Birth::BIRTH_VISIT_BABY_RACE_1_3_PREFIX}.BABY_RACE_1_OTH", 'Aborigine'
         end
 
         OperationalDataExtractor::Birth.new(@response_set).extract_data
@@ -355,9 +355,9 @@ describe OperationalDataExtractor::Birth do
 
     describe "processing new type racial data" do
       before do
-        take_survey(@survey, @response_set) do |a|
-          a.choice "#{OperationalDataExtractor::Birth::BIRTH_VISIT_BABY_RACE_NEW_3_PREFIX}.BABY_RACE_NEW", white_race
-          a.choice "#{OperationalDataExtractor::Birth::BIRTH_VISIT_BABY_RACE_NEW_3_PREFIX}.BABY_RACE_NEW", vietnamese_race
+        take_survey(@survey, @response_set) do |r|
+          r.a "#{OperationalDataExtractor::Birth::BIRTH_VISIT_BABY_RACE_NEW_3_PREFIX}.BABY_RACE_NEW", white_race
+          r.a "#{OperationalDataExtractor::Birth::BIRTH_VISIT_BABY_RACE_NEW_3_PREFIX}.BABY_RACE_NEW", vietnamese_race
         end
 
         OperationalDataExtractor::Birth.new(@response_set).extract_data

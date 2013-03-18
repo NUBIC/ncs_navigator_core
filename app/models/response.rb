@@ -31,6 +31,10 @@ class Response < ActiveRecord::Base
 
   default_scope includes(:answer, :question)
 
+  with_options(:as => :system) do |r|
+    r.attr_accessible :answer, :question, :value
+  end
+
   def self.for_merge
     includes(:answer, :question, :response_set)
   end

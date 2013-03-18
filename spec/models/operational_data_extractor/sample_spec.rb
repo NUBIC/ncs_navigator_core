@@ -51,8 +51,8 @@ describe OperationalDataExtractor::Sample do
         response_set, instrument = prepare_instrument(person, participant, survey)
         expected = 'EC2345671 – DB01'
 
-        take_survey(survey, response_set) do |a|
-          a.str "VACUUM_BAG.SAMPLE_ID", expected
+        take_survey(survey, response_set) do |r|
+          r.a "VACUUM_BAG.SAMPLE_ID", expected
         end
 
         response_set.responses.reload
@@ -83,10 +83,10 @@ describe OperationalDataExtractor::Sample do
           'EC2224443 – WQ03',
         ]
 
-        take_survey(survey, response_set) do |a|
-          a.str "TAP_WATER_TWF_SAMPLE[sample_number=1].SAMPLE_ID", sample_ids[0]
-          a.str "TAP_WATER_TWF_SAMPLE[sample_number=2].SAMPLE_ID", sample_ids[1]
-          a.str "TAP_WATER_TWF_SAMPLE[sample_number=3].SAMPLE_ID", sample_ids[2]
+        take_survey(survey, response_set) do |r|
+          r.a "TAP_WATER_TWF_SAMPLE[sample_number=1].SAMPLE_ID", sample_ids[0]
+          r.a "TAP_WATER_TWF_SAMPLE[sample_number=2].SAMPLE_ID", sample_ids[1]
+          r.a "TAP_WATER_TWF_SAMPLE[sample_number=3].SAMPLE_ID", sample_ids[2]
         end
 
         response_set.responses.reload
@@ -109,9 +109,9 @@ describe OperationalDataExtractor::Sample do
           'EC2224442 – WQ02',
         ]
 
-        take_survey(survey, response_set) do |a|
-          a.str "TAP_WATER_TWF_SAMPLE[sample_number=1].SAMPLE_ID", sample_ids[0]
-          a.str "TAP_WATER_TWF_SAMPLE[sample_number=2].SAMPLE_ID", sample_ids[1]
+        take_survey(survey, response_set) do |r|
+          r.a "TAP_WATER_TWF_SAMPLE[sample_number=1].SAMPLE_ID", sample_ids[0]
+          r.a "TAP_WATER_TWF_SAMPLE[sample_number=2].SAMPLE_ID", sample_ids[1]
         end
 
         response_set.responses.reload
@@ -132,10 +132,10 @@ describe OperationalDataExtractor::Sample do
           'EC8989898 – WQ03',
         ]
 
-        take_survey(survey, response_set) do |a|
-          a.str "TAP_WATER_TWF_SAMPLE[sample_number=1].SAMPLE_ID", sample_ids[0]
-          a.str "TAP_WATER_TWF_SAMPLE[sample_number=2].SAMPLE_ID", sample_ids[1]
-          a.str "TAP_WATER_TWF_SAMPLE[sample_number=3].SAMPLE_ID", sample_ids[2]
+        take_survey(survey, response_set) do |r|
+          r.a "TAP_WATER_TWF_SAMPLE[sample_number=1].SAMPLE_ID", sample_ids[0]
+          r.a "TAP_WATER_TWF_SAMPLE[sample_number=2].SAMPLE_ID", sample_ids[1]
+          r.a "TAP_WATER_TWF_SAMPLE[sample_number=3].SAMPLE_ID", sample_ids[2]
         end
 
         response_set.responses.reload
@@ -157,8 +157,8 @@ describe OperationalDataExtractor::Sample do
           'EC2224441 – WQ01',
         ]
 
-        take_survey(survey, response_set) do |a|
-          a.str "TAP_WATER_TWF_SAMPLE[sample_number=1].SAMPLE_ID", sample_ids[0]
+        take_survey(survey, response_set) do |r|
+          r.a "TAP_WATER_TWF_SAMPLE[sample_number=1].SAMPLE_ID", sample_ids[0]
         end
 
         response_set.responses.reload
@@ -192,10 +192,10 @@ describe OperationalDataExtractor::Sample do
           'EC2224443 – WQ03',
         ]
 
-        take_survey(survey, response_set) do |a|
-          a.str "TAP_WATER_TWQ_SAMPLE[sample_number=1].SAMPLE_ID", sample_ids[0]
-          a.str "TAP_WATER_TWQ_SAMPLE[sample_number=2].SAMPLE_ID", sample_ids[1]
-          a.str "TAP_WATER_TWQ_SAMPLE[sample_number=3].SAMPLE_ID", sample_ids[2]
+        take_survey(survey, response_set) do |r|
+          r.a "TAP_WATER_TWQ_SAMPLE[sample_number=1].SAMPLE_ID", sample_ids[0]
+          r.a "TAP_WATER_TWQ_SAMPLE[sample_number=2].SAMPLE_ID", sample_ids[1]
+          r.a "TAP_WATER_TWQ_SAMPLE[sample_number=3].SAMPLE_ID", sample_ids[2]
         end
 
         response_set.responses.reload
@@ -224,10 +224,10 @@ describe OperationalDataExtractor::Sample do
           'EC2224444-SB03',
         ]
 
-        take_survey(survey, response_set) do |a|
-          a.str "SAMPLE_DIST_SAMP[type=1].SAMPLE_ID", sample_ids[0]
-          a.str "SAMPLE_DIST_SAMP[type=2].SAMPLE_ID", sample_ids[1]
-          a.str "SAMPLE_DIST_SAMP[type=3].SAMPLE_ID", sample_ids[2]
+        take_survey(survey, response_set) do |r|
+          r.a "SAMPLE_DIST_SAMP[type=1].SAMPLE_ID", sample_ids[0]
+          r.a "SAMPLE_DIST_SAMP[type=2].SAMPLE_ID", sample_ids[1]
+          r.a "SAMPLE_DIST_SAMP[type=3].SAMPLE_ID", sample_ids[2]
         end
 
         response_set.responses.reload

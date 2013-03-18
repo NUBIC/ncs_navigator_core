@@ -49,8 +49,8 @@ describe OperationalDataExtractor::Specimen do
         response_set, instrument = prepare_instrument(person, participant, survey)
         expected = 'AA1234567-UR01'
 
-        take_survey(survey, response_set) do |a|
-          a.str "SPEC_URINE.SPECIMEN_ID", expected
+        take_survey(survey, response_set) do |r|
+          r.a "SPEC_URINE.SPECIMEN_ID", expected
         end
 
         response_set.responses.reload
@@ -84,13 +84,13 @@ describe OperationalDataExtractor::Specimen do
           "AA123456-AD10",
         ]
 
-        take_survey(survey, response_set) do |a|
-          a.str "SPEC_BLOOD_TUBE[tube_type=1].SPECIMEN_ID", specimen_ids[0]
-          a.str "SPEC_BLOOD_TUBE[tube_type=2].SPECIMEN_ID", specimen_ids[1]
-          a.str "SPEC_BLOOD_TUBE[tube_type=3].SPECIMEN_ID", specimen_ids[2]
-          a.str "SPEC_BLOOD_TUBE[tube_type=4].SPECIMEN_ID", specimen_ids[3]
-          a.str "SPEC_BLOOD_TUBE[tube_type=5].SPECIMEN_ID", specimen_ids[4]
-          a.str "SPEC_BLOOD_TUBE[tube_type=6].SPECIMEN_ID", specimen_ids[5]
+        take_survey(survey, response_set) do |r|
+          r.a "SPEC_BLOOD_TUBE[tube_type=1].SPECIMEN_ID", specimen_ids[0]
+          r.a "SPEC_BLOOD_TUBE[tube_type=2].SPECIMEN_ID", specimen_ids[1]
+          r.a "SPEC_BLOOD_TUBE[tube_type=3].SPECIMEN_ID", specimen_ids[2]
+          r.a "SPEC_BLOOD_TUBE[tube_type=4].SPECIMEN_ID", specimen_ids[3]
+          r.a "SPEC_BLOOD_TUBE[tube_type=5].SPECIMEN_ID", specimen_ids[4]
+          r.a "SPEC_BLOOD_TUBE[tube_type=6].SPECIMEN_ID", specimen_ids[5]
         end
 
         response_set.responses.reload
@@ -114,8 +114,8 @@ describe OperationalDataExtractor::Specimen do
           "AA123456-SS10",
         ]
 
-        take_survey(survey, response_set) do |a|
-          a.str "SPEC_BLOOD_TUBE[tube_type=1].SPECIMEN_ID", specimen_ids[0]
+        take_survey(survey, response_set) do |r|
+          r.a "SPEC_BLOOD_TUBE[tube_type=1].SPECIMEN_ID", specimen_ids[0]
         end
 
         response_set.responses.reload
@@ -142,11 +142,11 @@ describe OperationalDataExtractor::Specimen do
           "AA123456-LV10",
         ]
 
-        take_survey(survey, response_set) do |a|
-          a.str "SPEC_BLOOD_TUBE[tube_type=1].SPECIMEN_ID", specimen_ids[0]
-          a.str "SPEC_BLOOD_TUBE[tube_type=2].SPECIMEN_ID", specimen_ids[1]
-          a.str "SPEC_BLOOD_TUBE[tube_type=3].SPECIMEN_ID", specimen_ids[2]
-          a.str "SPEC_BLOOD_TUBE[tube_type=4].SPECIMEN_ID", specimen_ids[3]
+        take_survey(survey, response_set) do |r|
+          r.a "SPEC_BLOOD_TUBE[tube_type=1].SPECIMEN_ID", specimen_ids[0]
+          r.a "SPEC_BLOOD_TUBE[tube_type=2].SPECIMEN_ID", specimen_ids[1]
+          r.a "SPEC_BLOOD_TUBE[tube_type=3].SPECIMEN_ID", specimen_ids[2]
+          r.a "SPEC_BLOOD_TUBE[tube_type=4].SPECIMEN_ID", specimen_ids[3]
         end
 
         response_set.responses.reload
@@ -170,13 +170,13 @@ describe OperationalDataExtractor::Specimen do
           "AA999999-AD10",
         ]
 
-        take_survey(survey, response_set) do |a|
-          a.str "SPEC_BLOOD_TUBE[tube_type=1].SPECIMEN_ID", update_specimen_ids[0]
-          a.str "SPEC_BLOOD_TUBE[tube_type=2].SPECIMEN_ID", update_specimen_ids[1]
-          a.str "SPEC_BLOOD_TUBE[tube_type=3].SPECIMEN_ID", update_specimen_ids[2]
-          a.str "SPEC_BLOOD_TUBE[tube_type=4].SPECIMEN_ID", update_specimen_ids[3]
-          a.str "SPEC_BLOOD_TUBE[tube_type=5].SPECIMEN_ID", update_specimen_ids[4]
-          a.str "SPEC_BLOOD_TUBE[tube_type=6].SPECIMEN_ID", update_specimen_ids[5]
+        take_survey(survey, response_set) do |r|
+          r.a "SPEC_BLOOD_TUBE[tube_type=1].SPECIMEN_ID", update_specimen_ids[0]
+          r.a "SPEC_BLOOD_TUBE[tube_type=2].SPECIMEN_ID", update_specimen_ids[1]
+          r.a "SPEC_BLOOD_TUBE[tube_type=3].SPECIMEN_ID", update_specimen_ids[2]
+          r.a "SPEC_BLOOD_TUBE[tube_type=4].SPECIMEN_ID", update_specimen_ids[3]
+          r.a "SPEC_BLOOD_TUBE[tube_type=5].SPECIMEN_ID", update_specimen_ids[4]
+          r.a "SPEC_BLOOD_TUBE[tube_type=6].SPECIMEN_ID", update_specimen_ids[5]
         end
 
         response_set.responses.reload
@@ -204,10 +204,10 @@ describe OperationalDataExtractor::Specimen do
           "AA123456-CB01",
         ]
 
-        take_survey(survey, response_set) do |a|
-          a.str "SPEC_CORD_BLOOD_SPECIMEN[cord_container=1].SPECIMEN_ID", specimen_ids[0]
-          a.str "SPEC_CORD_BLOOD_SPECIMEN[cord_container=2].SPECIMEN_ID", specimen_ids[1]
-          a.str "SPEC_CORD_BLOOD_SPECIMEN[cord_container=3].SPECIMEN_ID", specimen_ids[2]
+        take_survey(survey, response_set) do |r|
+          r.a "SPEC_CORD_BLOOD_SPECIMEN[cord_container=1].SPECIMEN_ID", specimen_ids[0]
+          r.a "SPEC_CORD_BLOOD_SPECIMEN[cord_container=2].SPECIMEN_ID", specimen_ids[1]
+          r.a "SPEC_CORD_BLOOD_SPECIMEN[cord_container=3].SPECIMEN_ID", specimen_ids[2]
         end
 
         response_set.responses.reload
@@ -233,10 +233,10 @@ describe OperationalDataExtractor::Specimen do
           "AA123456-CB02",
         ]
 
-        take_survey(survey, response_set) do |a|
-          a.str "SPEC_CORD_BLOOD_SPECIMEN_2[collection_type=1].SPECIMEN_ID", specimen_ids[0]
-          a.str "SPEC_CORD_BLOOD_SPECIMEN_2[collection_type=2].SPECIMEN_ID", specimen_ids[1]
-          a.str "SPEC_CORD_BLOOD_SPECIMEN_2[collection_type=3].SPECIMEN_ID", specimen_ids[2]
+        take_survey(survey, response_set) do |r|
+          r.a "SPEC_CORD_BLOOD_SPECIMEN_2[collection_type=1].SPECIMEN_ID", specimen_ids[0]
+          r.a "SPEC_CORD_BLOOD_SPECIMEN_2[collection_type=2].SPECIMEN_ID", specimen_ids[1]
+          r.a "SPEC_CORD_BLOOD_SPECIMEN_2[collection_type=3].SPECIMEN_ID", specimen_ids[2]
         end
 
         response_set.responses.reload
@@ -262,10 +262,10 @@ describe OperationalDataExtractor::Specimen do
           "AA123456-CB03",
         ]
 
-        take_survey(survey, response_set) do |a|
-          a.str "SPEC_CORD_BLOOD_SPECIMEN_3[collection_type=1].SPECIMEN_ID", specimen_ids[0]
-          a.str "SPEC_CORD_BLOOD_SPECIMEN_3[collection_type=2].SPECIMEN_ID", specimen_ids[1]
-          a.str "SPEC_CORD_BLOOD_SPECIMEN_3[collection_type=3].SPECIMEN_ID", specimen_ids[2]
+        take_survey(survey, response_set) do |r|
+          r.a "SPEC_CORD_BLOOD_SPECIMEN_3[collection_type=1].SPECIMEN_ID", specimen_ids[0]
+          r.a "SPEC_CORD_BLOOD_SPECIMEN_3[collection_type=2].SPECIMEN_ID", specimen_ids[1]
+          r.a "SPEC_CORD_BLOOD_SPECIMEN_3[collection_type=3].SPECIMEN_ID", specimen_ids[2]
         end
 
         response_set.responses.reload
@@ -289,8 +289,8 @@ describe OperationalDataExtractor::Specimen do
           "AA123456-CB01",
         ]
 
-        take_survey(survey, response_set) do |a|
-          a.str "SPEC_CORD_BLOOD_SPECIMEN[cord_container=1].SPECIMEN_ID", specimen_ids[0]
+        take_survey(survey, response_set) do |r|
+          r.a "SPEC_CORD_BLOOD_SPECIMEN[cord_container=1].SPECIMEN_ID", specimen_ids[0]
         end
 
         response_set.responses.reload
@@ -319,11 +319,11 @@ describe OperationalDataExtractor::Specimen do
           "AA1212122-LV21",
         ]
 
-        take_survey(survey, response_set) do |a|
-          a.str "CHILD_BLOOD_TUBE[tube_type=1].SPECIMEN_ID", specimen_ids[0]
-          a.str "CHILD_BLOOD_TUBE[tube_type=2].SPECIMEN_ID", specimen_ids[1]
-          a.str "CHILD_BLOOD_TUBE[tube_type=3].SPECIMEN_ID", specimen_ids[2]
-          a.str "CHILD_BLOOD_TUBE[tube_type=4].SPECIMEN_ID", specimen_ids[3]
+        take_survey(survey, response_set) do |r|
+          r.a "CHILD_BLOOD_TUBE[tube_type=1].SPECIMEN_ID", specimen_ids[0]
+          r.a "CHILD_BLOOD_TUBE[tube_type=2].SPECIMEN_ID", specimen_ids[1]
+          r.a "CHILD_BLOOD_TUBE[tube_type=3].SPECIMEN_ID", specimen_ids[2]
+          r.a "CHILD_BLOOD_TUBE[tube_type=4].SPECIMEN_ID", specimen_ids[3]
         end
 
         response_set.responses.reload
@@ -349,8 +349,8 @@ describe OperationalDataExtractor::Specimen do
           "AA1212122-SC12"
         ]
 
-        take_survey(survey, response_set) do |a|
-          a.str "CHILD_SALIVA.SPECIMEN_ID", specimen_ids[0]
+        take_survey(survey, response_set) do |r|
+          r.a "CHILD_SALIVA.SPECIMEN_ID", specimen_ids[0]
         end
 
         response_set.responses.reload
@@ -375,8 +375,8 @@ describe OperationalDataExtractor::Specimen do
           "AA1212122-BU12"
         ]
 
-        take_survey(survey, response_set) do |a|
-          a.str "CHILD_URINE.SPECIMEN_ID", specimen_ids[0]
+        take_survey(survey, response_set) do |r|
+          r.a "CHILD_URINE.SPECIMEN_ID", specimen_ids[0]
         end
 
         response_set.responses.reload
@@ -401,8 +401,8 @@ describe OperationalDataExtractor::Specimen do
           "AA1212122-BM12"
         ]
 
-        take_survey(survey, response_set) do |a|
-          a.str "BREAST_MILK_SAQ.SPECIMEN_ID", specimen_ids[0]
+        take_survey(survey, response_set) do |r|
+          r.a "BREAST_MILK_SAQ.SPECIMEN_ID", specimen_ids[0]
         end
 
         response_set.responses.reload

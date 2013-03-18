@@ -47,8 +47,9 @@ module NcsNavigator::Core
         it "should be set to the response from part_one for instrument MDES version 3.0" do
           prepare_surveys("INS_QUE_Birth_INT_EHPBHIPBS_M3.0_V3.0_PART_ONE", "BIRTH_VISIT_3", "INS_QUE_Birth_INT_EHPBHIPBS_M3.0_V3.0_PART_TWO")
           some_other_place = mock(NcsCode, :local_code => 'some_other_place')
-          take_survey(@survey_pt1, @response_set_pt1) do |a|
-            a.choice "BIRTH_VISIT_3.BIRTH_DELIVER", some_other_place
+
+          take_survey(@survey_pt1, @response_set_pt1) do |r|
+            r.a "BIRTH_VISIT_3.BIRTH_DELIVER", some_other_place
           end
 
           assert_response_value(@rsp.populate, "prepopulated_birth_deliver_from_birth_visit_part_one", "SOME OTHER PLACE")
@@ -66,8 +67,8 @@ module NcsNavigator::Core
         it "should be set to the response from part_one for instrument MDES version 3.1" do
           prepare_surveys("INS_QUE_Birth_INT_LI_M3.1_V2.0_PART_ONE", "BIRTH_VISIT_LI_2", "INS_QUE_Birth_INT_LI_M3.1_V2.0_PART_TWO")
           some_other_place = mock(NcsCode, :local_code => 'some_other_place')
-          take_survey(@survey_pt1, @response_set_pt1) do |a|
-            a.choice "BIRTH_VISIT_LI_2.BIRTH_DELIVER", some_other_place
+          take_survey(@survey_pt1, @response_set_pt1) do |r|
+            r.a "BIRTH_VISIT_LI_2.BIRTH_DELIVER", some_other_place
           end
 
           assert_response_value(@rsp.populate, "prepopulated_birth_deliver_from_birth_visit_part_one", "SOME OTHER PLACE")
@@ -85,8 +86,8 @@ module NcsNavigator::Core
         it "should be set to the response from part_one for instrument MDES version 3.2" do
           prepare_surveys("INS_QUE_Birth_INT_M3.2_V3.1_PART_ONE", "BIRTH_VISIT_4", "INS_QUE_Birth_INT_M3.2_V3.1_PART_TWO")
           some_other_place = mock(NcsCode, :local_code => 'some_other_place')
-          take_survey(@survey_pt1, @response_set_pt1) do |a|
-            a.choice "BIRTH_VISIT_4.BIRTH_DELIVER", some_other_place
+          take_survey(@survey_pt1, @response_set_pt1) do |r|
+            r.a "BIRTH_VISIT_4.BIRTH_DELIVER", some_other_place
           end
 
           assert_response_value(@rsp.populate, "prepopulated_birth_deliver_from_birth_visit_part_one", "SOME OTHER PLACE")
@@ -107,8 +108,8 @@ module NcsNavigator::Core
 
         it "should be set to the response from part_one for instrument MDES version prior to 3.0" do
           prepare_surveys("INS_QUE_Birth_INT_LI_P2_V10_PART_ONE", "BIRTH_VISIT_LI", "INS_QUE_Birth_INT_LI_P2_V10_PART_TWO")
-          take_survey(@survey_pt1, @response_set_pt1) do |a|
-            a.yes "BIRTH_VISIT_LI.RELEASE"
+          take_survey(@survey_pt1, @response_set_pt1) do |r|
+            r.yes "BIRTH_VISIT_LI.RELEASE"
           end
 
           assert_response_value(@rsp.populate, "prepopulated_release_from_birth_visit_part_one", "YES")
@@ -125,8 +126,8 @@ module NcsNavigator::Core
 
         it "should be set to the response from part_one for instrument MDES version 3.0" do
           prepare_surveys("INS_QUE_Birth_INT_EHPBHIPBS_M3.0_V3.0_PART_ONE", "BIRTH_VISIT_3", "INS_QUE_Birth_INT_EHPBHIPBS_M3.0_V3.0_PART_TWO")
-          take_survey(@survey_pt1, @response_set_pt1) do |a|
-            a.yes "BIRTH_VISIT_3.RELEASE"
+          take_survey(@survey_pt1, @response_set_pt1) do |r|
+            r.yes "BIRTH_VISIT_3.RELEASE"
           end
 
           assert_response_value(@rsp.populate, "prepopulated_release_from_birth_visit_part_one", "YES")
@@ -143,8 +144,8 @@ module NcsNavigator::Core
 
         it "should be set to the response from part_one for instrument MDES version 3.1" do
           prepare_surveys("INS_QUE_Birth_INT_LI_M3.1_V2.0_PART_ONE", "BIRTH_VISIT_LI_2", "INS_QUE_Birth_INT_LI_M3.1_V2.0_PART_TWO")
-          take_survey(@survey_pt1, @response_set_pt1) do |a|
-            a.yes "BIRTH_VISIT_LI_2.RELEASE"
+          take_survey(@survey_pt1, @response_set_pt1) do |r|
+            r.yes "BIRTH_VISIT_LI_2.RELEASE"
           end
 
           assert_response_value(@rsp.populate, "prepopulated_release_from_birth_visit_part_one", "YES")
@@ -161,8 +162,8 @@ module NcsNavigator::Core
 
         it "should be set to the response from part_one for instrument MDES version 3.2" do
           prepare_surveys("INS_QUE_Birth_INT_M3.2_V3.1_PART_ONE", "BIRTH_VISIT_4", "INS_QUE_Birth_INT_M3.2_V3.1_PART_TWO")
-          take_survey(@survey_pt1, @response_set_pt1) do |a|
-            a.yes "BIRTH_VISIT_4.RELEASE"
+          take_survey(@survey_pt1, @response_set_pt1) do |r|
+            r.yes "BIRTH_VISIT_4.RELEASE"
           end
 
           assert_response_value(@rsp.populate, "prepopulated_release_from_birth_visit_part_one", "YES")
@@ -183,8 +184,8 @@ module NcsNavigator::Core
 
         it "should be set to the response from part_one for instrument MDES version prior ot 3.0" do
           prepare_surveys("INS_QUE_Birth_INT_LI_P2_V10_PART_ONE", "BIRTH_VISIT_LI", "INS_QUE_Birth_INT_LI_P2_V10_PART_TWO")
-          take_survey(@survey_pt1, @response_set_pt1) do |a|
-            a.no "BIRTH_VISIT_LI.MULTIPLE"
+          take_survey(@survey_pt1, @response_set_pt1) do |r|
+            r.no "BIRTH_VISIT_LI.MULTIPLE"
           end
         end
 
@@ -199,8 +200,8 @@ module NcsNavigator::Core
 
         it "should be set to the response from part_one for instrument MDES version 3.0" do
           prepare_surveys("INS_QUE_Birth_INT_EHPBHIPBS_M3.0_V3.0_PART_ONE", "BIRTH_VISIT_3", "INS_QUE_Birth_INT_EHPBHIPBS_M3.0_V3.0_PART_TWO")
-          take_survey(@survey_pt1, @response_set_pt1) do |a|
-            a.no "BIRTH_VISIT_3.MULTIPLE"
+          take_survey(@survey_pt1, @response_set_pt1) do |r|
+            r.no "BIRTH_VISIT_3.MULTIPLE"
           end
 
           assert_response_value(@rsp.populate, "prepopulated_multiple_from_birth_visit_part_one", "NO")
@@ -217,8 +218,8 @@ module NcsNavigator::Core
 
         it "should be set to the response from part_one for instrument MDES version 3.1" do
           prepare_surveys("INS_QUE_Birth_INT_LI_M3.1_V2.0_PART_ONE", "BIRTH_VISIT_LI_2", "INS_QUE_Birth_INT_LI_M3.1_V2.0_PART_TWO")
-          take_survey(@survey_pt1, @response_set_pt1) do |a|
-            a.no "BIRTH_VISIT_LI_2.MULTIPLE"
+          take_survey(@survey_pt1, @response_set_pt1) do |r|
+            r.no "BIRTH_VISIT_LI_2.MULTIPLE"
           end
 
           assert_response_value(@rsp.populate, "prepopulated_multiple_from_birth_visit_part_one", "NO")
@@ -235,8 +236,8 @@ module NcsNavigator::Core
 
         it "should be set to the response from part_one for instrument MDES version 3.2" do
           prepare_surveys("INS_QUE_Birth_INT_M3.2_V3.1_PART_ONE", "BIRTH_VISIT_4", "INS_QUE_Birth_INT_M3.2_V3.1_PART_TWO")
-          take_survey(@survey_pt1, @response_set_pt1) do |a|
-            a.no "BIRTH_VISIT_4.MULTIPLE"
+          take_survey(@survey_pt1, @response_set_pt1) do |r|
+            r.no "BIRTH_VISIT_4.MULTIPLE"
           end
 
           assert_response_value(@rsp.populate, "prepopulated_multiple_from_birth_visit_part_one", "NO")
@@ -273,8 +274,8 @@ module NcsNavigator::Core
         it "should be FALSE if work name was previously answered as refused" do
           pv1_response_set, pv1_instrument = prepare_instrument(person, participant, pv1_survey)
 
-          take_survey(pv1_survey, pv1_response_set) do |a|
-            a.refused "PREG_VISIT_1_3.WORK_NAME"
+          take_survey(pv1_survey, pv1_response_set) do |r|
+            r.refused "PREG_VISIT_1_3.WORK_NAME"
           end
 
           assert_response_value(@rsp.populate, "prepopulated_is_valid_work_name_provided", "FALSE")
@@ -283,8 +284,8 @@ module NcsNavigator::Core
         it "should be FALSE if work name was previously answered as don't know" do
           pv1_response_set, pv1_instrument = prepare_instrument(person, participant, pv1_survey)
 
-          take_survey(pv1_survey, pv1_response_set) do |a|
-            a.dont_know "PREG_VISIT_1_3.WORK_NAME"
+          take_survey(pv1_survey, pv1_response_set) do |r|
+            r.dont_know "PREG_VISIT_1_3.WORK_NAME"
           end
 
           assert_response_value(@rsp.populate, "prepopulated_is_valid_work_name_provided", "FALSE")
@@ -293,8 +294,8 @@ module NcsNavigator::Core
         it "should be TRUE if work name was previously answered" do
           pv1_response_set, pv1_instrument = prepare_instrument(person, participant, pv1_survey)
 
-          take_survey(pv1_survey, pv1_response_set) do |a|
-            a.str "PREG_VISIT_1_3.WORK_NAME", "work_name"
+          take_survey(pv1_survey, pv1_response_set) do |r|
+            r.a "PREG_VISIT_1_3.WORK_NAME", "work_name"
           end
 
           assert_response_value(@rsp.populate, "prepopulated_is_valid_work_name_provided", "TRUE")
@@ -311,8 +312,8 @@ module NcsNavigator::Core
         it "should be FALSE if work address was previously answered as refused" do
           pv1_response_set, pv1_instrument = prepare_instrument(person, participant, pv1_survey)
 
-          take_survey(pv1_survey, pv1_response_set) do |a|
-            a.refused "PREG_VISIT_1_3.WORK_ADDRESS_1"
+          take_survey(pv1_survey, pv1_response_set) do |r|
+            r.refused "PREG_VISIT_1_3.WORK_ADDRESS_1"
           end
 
           assert_response_value(@rsp.populate, "prepopulated_is_valid_work_address_provided", "FALSE")
@@ -321,8 +322,8 @@ module NcsNavigator::Core
         it "should be FALSE if work address was previously answered as don't know" do
           pv1_response_set, pv1_instrument = prepare_instrument(person, participant, pv1_survey)
 
-          take_survey(pv1_survey, pv1_response_set) do |a|
-            a.dont_know "PREG_VISIT_1_3.WORK_ADDRESS_1"
+          take_survey(pv1_survey, pv1_response_set) do |r|
+            r.dont_know "PREG_VISIT_1_3.WORK_ADDRESS_1"
           end
 
           assert_response_value(@rsp.populate, "prepopulated_is_valid_work_address_provided", "FALSE")
@@ -331,8 +332,8 @@ module NcsNavigator::Core
         it "should be TRUE if work address was previously answered" do
           pv1_response_set, pv1_instrument = prepare_instrument(person, participant, pv1_survey)
 
-          take_survey(pv1_survey, pv1_response_set) do |a|
-            a.str "PREG_VISIT_1_3.WORK_ADDRESS_1", "work_address"
+          take_survey(pv1_survey, pv1_response_set) do |r|
+            r.a "PREG_VISIT_1_3.WORK_ADDRESS_1", "work_address"
           end
 
           assert_response_value(@rsp.populate, "prepopulated_is_valid_work_address_provided", "TRUE")
