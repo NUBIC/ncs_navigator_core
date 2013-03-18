@@ -25,12 +25,3 @@
         = "Close contact for #{@contact_link.event.to_s}"
         %br
         = f.submit "Close"
-
-      - unless params[:close_contact]
-        - if @person && continuable?(@contact_link.event)
-          %p
-            = "- OR -"
-          %p
-            = "Continue onto #{upcoming_events_for(@person)}"
-            %br
-            = f.submit "Continue", :confirm => "Are you sure you would like to continue to #{upcoming_events_for(@person)}?"
