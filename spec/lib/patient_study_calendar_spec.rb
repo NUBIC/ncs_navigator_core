@@ -78,7 +78,7 @@ describe PatientStudyCalendar do
   it "gets the segments for the study" do
     use_template_snapshot_cassette do
       segments = subject.segments
-      segments.size.should == 17
+      segments.size.should == 19
       segments.first.attr('name').should == "Pregnancy Screener"
     end
   end
