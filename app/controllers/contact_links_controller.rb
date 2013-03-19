@@ -101,13 +101,12 @@ class ContactLinksController < ApplicationController
     @survey        = @response_set.survey if @response_set
     @contact_links = ContactLink.where(:contact_id => @contact_link.contact_id)
 
-    @activity_plan = psc.build_activity_plan(@participant)
-
     if @participant && @event
+      @activity_plan = psc.build_activity_plan(@participant)
       @activities_for_event = @activity_plan.activities_for_event(@event)
       @scheduled_activities = @activity_plan.scheduled_activities_for_event(@event)
+      @current_activity = @activity_plan.current_scheduled_activity(@event, @response_set)
     end
-    @current_activity = @activity_plan.current_scheduled_activity(@event, @response_set)
   end
 
   ##
