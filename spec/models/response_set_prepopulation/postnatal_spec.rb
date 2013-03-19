@@ -6,7 +6,7 @@ module ResponseSetPrepopulation
   describe Postnatal do
     include SurveyCompletion
 
-    it_should_behave_like 'a survey title acceptor', '_1Month', '_12Month', '_1MMonth', '_12MMonth' do
+    it_should_behave_like 'a survey title acceptor', '_3Month_', '_12Month_', '_3MMother_', '_12MMother_', '_Core_' do
       let(:populator) { Postnatal }
     end
 
@@ -80,45 +80,74 @@ module ResponseSetPrepopulation
       Postnatal.new(@response_set).run
     end
 
-    context "for 24M part one prepopulators"
-      def take_work_surveys(reference_id, valid_answers)
-        create_work_name_or_address_24_month(reference_id
-                                            ) do |survey, data_export_id|
-          if valid_answers
-            prepare_and_take_survey(nil, nil, nil, survey) do |r|
-              r.a data_export_id, 'work_name', :value => "work_name"
-            end
-          else
-            prepare_and_take_survey(nil, nil, nil, survey) do |r|
-              r.refused(data_export_id)
-            end
+    context "for work name and work address prepoulators"
+      def take_work_surveys(title, data_export_id, valid_answers)
+        survey = create_work_name_and_address_survey(title)
+        if valid_answers
+          prepare_and_take_survey(nil, nil, nil, survey) do |r|
+            r.a(data_export_id, valid_answers)
+          end
+        else
+          prepare_and_take_survey(nil, nil, nil, survey) do |r|
+            r.refused(data_export_id)
           end
         end
       end
 
       describe "prepopulated_is_valid_work_address_provided" do
-        before(:each) do
+        it "should be TRUE when valid answer to sureveys using WORK_ADDRESS_1 exists." do
           @survey = create_generic_true_false_prepopulator_survey(
                       "INS_QUE_24Month_INT_EHPBHILIPBS_M3.1_V3.0_PART_TWO",
                       "prepopulated_is_valid_work_address_provided")
           init_common_vars
+          take_work_surveys("INS_QUE_Birth_INT_LI_M3.1_V2.0_PART_TWO",
+                            "BIRTH_VISIT_LI_2.WORK_ADDRESS_1", '888 Street')
+          run_populator
+          get_response_as_string(@response_set,
+                "prepopulated_is_valid_work_address_provided").should == "TRUE"
         end
 
-        it "should be TRUE when valid answers to work address exist" do
-          take_work_surveys("WORK_ADDRESS_1", true)
+        it "should be TRUE when valid answer to sureveys using CWORK_ADDRESS_1 exists." do
+          @survey = create_generic_true_false_prepopulator_survey(
+                      "INS_QUE_24Month_INT_EHPBHILIPBS_M3.1_V3.0_PART_TWO",
+                      "prepopulated_is_valid_work_address_provided")
+          init_common_vars
+          take_work_surveys("INS_QUE_Birth_INT_LI_M3.1_V2.0_PART_TWO",
+                            "BIRTH_VISIT_LI_2.CWORK_ADDRESS_1", '888 Street')
+          run_populator
+          get_response_as_string(@response_set,
+                "prepopulated_is_valid_work_address_provided").should == "TRUE"
+        end
+
+        it "should be TRUE when valid answer to sureveys using WORK_ADDRESS1 exists." do
+          @survey = create_generic_true_false_prepopulator_survey(
+                      "INS_QUE_Birth_INT_M3.2_V3.1_PART_TWO",
+                      "prepopulated_is_valid_work_address_provided")
+          init_common_vars
+          take_work_surveys("INS_QUE_Birth_INT_M3.2_V3.1_PART_TWO",
+                            "BIRTH_VISIT_4.WORK_ADDRESS1", '888 Street')
           run_populator
           get_response_as_string(@response_set,
                 "prepopulated_is_valid_work_address_provided").should == "TRUE"
         end
 
         it "should be FALSE when only invalid answers to work address exist" do
-          take_work_surveys("WORK_ADDRESS_1", false)
+          @survey = create_generic_true_false_prepopulator_survey(
+                      "INS_QUE_24Month_INT_EHPBHILIPBS_M3.1_V3.0_PART_TWO",
+                      "prepopulated_is_valid_work_address_provided")
+          init_common_vars
+          take_work_surveys("INS_QUE_Birth_INT_LI_M3.1_V2.0_PART_TWO",
+                            "BIRTH_VISIT_LI_2.WORK_ADDRESS_1", false)
           run_populator
           get_response_as_string(@response_set,
                 "prepopulated_is_valid_work_address_provided").should == "FALSE"
         end
 
         it "should be FALSE when only no answers to work address exist" do
+          @survey = create_generic_true_false_prepopulator_survey(
+                      "INS_QUE_24Month_INT_EHPBHILIPBS_M3.1_V3.0_PART_TWO",
+                      "prepopulated_is_valid_work_address_provided")
+          init_common_vars
           run_populator
           get_response_as_string(@response_set,
                 "prepopulated_is_valid_work_address_provided").should == "FALSE"
@@ -134,14 +163,16 @@ module ResponseSetPrepopulation
         end
 
         it "should be TRUE when valid answers to work name exist" do
-          take_work_surveys("WORK_NAME", true)
+          take_work_surveys("INS_QUE_Birth_INT_LI_M3.1_V2.0_PART_TWO",
+                            "BIRTH_VISIT_LI_2.WORK_NAME", 'The Work')
           run_populator
           get_response_as_string(@response_set,
                   "prepopulated_is_valid_work_name_provided").should == "TRUE"
         end
 
         it "should be FALSE when only invalid answers to work name exist" do
-          take_work_surveys("WORK_NAME", false)
+          take_work_surveys("INS_QUE_Birth_INT_LI_M3.1_V2.0_PART_TWO",
+                            "BIRTH_VISIT_LI_2.WORK_NAME", false)
           run_populator
           get_response_as_string(@response_set,
                   "prepopulated_is_valid_work_name_provided").should == "FALSE"
