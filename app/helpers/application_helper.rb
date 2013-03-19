@@ -111,12 +111,12 @@ module ApplicationHelper
 
   def sample_root_id(value)
     dash = value.index("-")
-    value[0, dash]
+    dash.blank? ? "UNKNOWN" : value[0, dash]
   end
 
   def sample_extenstion(value)
-    dash = value.index("-") + 1
-    value[dash, value.length]
+    dash = value.index("-")
+    dash.blank? ? "UNKNOWN" : value[dash + 1, value.length]
   end
 
   def continuable?(event)
