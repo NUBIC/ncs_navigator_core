@@ -458,9 +458,11 @@ class Event < ActiveRecord::Base
 
   ##
   # Returns the (zero-based) number of times the event
-  # participant has performed this event
+  # participant has performed this event.
+  # Return 0 if there is no participant associated with this event.
   # @return [Integer]
   def determine_repeat_key
+    return 0 if self.participant.nil?
     self.participant.events.where(:event_type_code => self.event_type_code).count - 1
   end
 

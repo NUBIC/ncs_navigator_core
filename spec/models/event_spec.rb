@@ -749,6 +749,11 @@ describe Event do
         end
       end
     end
+
+    it "returns 0 if the participant is nil" do
+      Factory(:event, :participant => nil).determine_repeat_key.should == 0
+    end
+
   end
 
   describe '#scheduled_activities' do
