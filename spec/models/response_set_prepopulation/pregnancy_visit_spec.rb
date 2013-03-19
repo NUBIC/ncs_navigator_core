@@ -1,16 +1,33 @@
-# -*- coding: utf-8 -*-
-
 require 'spec_helper'
 
-module NcsNavigator::Core
+require File.expand_path('../a_survey_title_acceptor', __FILE__)
 
-  describe ResponseSetPopulator::PregnancyVisit do
+module ResponseSetPrepopulation
+  describe PregnancyVisit do
     include SurveyCompletion
+
+    context 'class' do
+      let(:populator) { PregnancyVisit }
+
+      it_should_behave_like 'a survey title acceptor', '_PregVisit1_', '_PregVisit2_'
+    end
 
     def assert_response_value(response_set, reference_identifier, value)
       response = response_set.responses.select { |r| r.question.reference_identifier == reference_identifier }.first
       response.should_not be_nil
       response.to_s.should == value
+    end
+
+    def init_instrument_and_response_set(event = nil)
+      @response_set, @instrument = prepare_instrument(person, participant, survey, nil, event)
+      @response_set.responses.should be_empty
+    end
+
+    def run_populator(event = nil, mode = nil)
+      init_instrument_and_response_set(event)
+      PregnancyVisit.new(@response_set).tap do |p|
+        p.mode = mode
+      end.run
     end
 
     context "with pregnancy visit two instrument" do
@@ -24,16 +41,13 @@ module NcsNavigator::Core
       before(:each) do
         participant.person = person
         participant.save!
-
-        @response_set, @instrument = prepare_instrument(person, participant, survey)
-        @response_set.responses.should be_empty
-        @rsp = ResponseSetPopulator::PregnancyVisit.new(person, @instrument, survey)
       end
 
       describe "prepopulated_is_work_name_previously_collected_and_valid" do
 
         it "should be FALSE if work name was not previously answered" do
-          assert_response_value(@rsp.populate, "prepopulated_is_work_name_previously_collected_and_valid", "FALSE")
+          run_populator
+          assert_response_value(@response_set, "prepopulated_is_work_name_previously_collected_and_valid", "FALSE")
         end
 
         it "should be FALSE if work name was previously answered as refused" do
@@ -44,7 +58,8 @@ module NcsNavigator::Core
             r.refused "PREG_VISIT_1_3.WORK_NAME"
           end
 
-          assert_response_value(@rsp.populate, "prepopulated_is_work_name_previously_collected_and_valid", "FALSE")
+          run_populator
+          assert_response_value(@response_set, "prepopulated_is_work_name_previously_collected_and_valid", "FALSE")
         end
 
         it "should be FALSE if work name was previously answered as don't know" do
@@ -55,7 +70,8 @@ module NcsNavigator::Core
             r.dont_know "PREG_VISIT_1_3.WORK_NAME"
           end
 
-          assert_response_value(@rsp.populate, "prepopulated_is_work_name_previously_collected_and_valid", "FALSE")
+          run_populator
+          assert_response_value(@response_set, "prepopulated_is_work_name_previously_collected_and_valid", "FALSE")
         end
 
         it "should be TRUE if work name was previously answered" do
@@ -66,7 +82,8 @@ module NcsNavigator::Core
             r.a "PREG_VISIT_1_3.WORK_NAME", :value => "work_name"
           end
 
-          assert_response_value(@rsp.populate, "prepopulated_is_work_name_previously_collected_and_valid", "TRUE")
+          run_populator
+          assert_response_value(@response_set, "prepopulated_is_work_name_previously_collected_and_valid", "TRUE")
         end
 
       end
@@ -74,7 +91,8 @@ module NcsNavigator::Core
       describe "prepopulated_is_work_address_previously_collected_and_valid" do
 
         it "should be FALSE if work address was not previously answered" do
-          assert_response_value(@rsp.populate, "prepopulated_is_work_address_previously_collected_and_valid", "FALSE")
+          run_populator
+          assert_response_value(@response_set, "prepopulated_is_work_address_previously_collected_and_valid", "FALSE")
         end
 
         it "should be FALSE if work address was previously answered as refused" do
@@ -85,7 +103,8 @@ module NcsNavigator::Core
             r.refused "PREG_VISIT_1_3.WORK_ADDRESS_1"
           end
 
-          assert_response_value(@rsp.populate, "prepopulated_is_work_address_previously_collected_and_valid", "FALSE")
+          run_populator
+          assert_response_value(@response_set, "prepopulated_is_work_address_previously_collected_and_valid", "FALSE")
         end
 
         it "should be FALSE if work address was previously answered as don't know" do
@@ -96,7 +115,8 @@ module NcsNavigator::Core
             r.dont_know "PREG_VISIT_1_3.WORK_ADDRESS_1"
           end
 
-          assert_response_value(@rsp.populate, "prepopulated_is_work_address_previously_collected_and_valid", "FALSE")
+          run_populator
+          assert_response_value(@response_set, "prepopulated_is_work_address_previously_collected_and_valid", "FALSE")
         end
 
         it "should be TRUE if work address was previously answered" do
@@ -107,7 +127,8 @@ module NcsNavigator::Core
             r.a "PREG_VISIT_1_3.WORK_ADDRESS_1", :value => "work_address"
           end
 
-          assert_response_value(@rsp.populate, "prepopulated_is_work_address_previously_collected_and_valid", "TRUE")
+          run_populator
+          assert_response_value(@response_set, "prepopulated_is_work_address_previously_collected_and_valid", "TRUE")
         end
 
       end
@@ -125,9 +146,6 @@ module NcsNavigator::Core
       before(:each) do
         participant.person = person
         participant.save!
-
-        @response_set, @instrument = prepare_instrument(person, participant, survey)
-        @response_set.responses.should be_empty
       end
 
       describe "for one or more contacts" do
@@ -143,13 +161,13 @@ module NcsNavigator::Core
         describe "the first visit" do
 
           it "prepopulated_is_first_pregnancy_visit_one should be TRUE" do
-            rsp = ResponseSetPopulator::PregnancyVisit.new(person, @instrument, survey)
-            assert_response_value(rsp.populate, "prepopulated_is_first_pregnancy_visit_one", "TRUE")
+            run_populator
+            assert_response_value(@response_set, "prepopulated_is_first_pregnancy_visit_one", "TRUE")
           end
 
           it "prepopulated_should_show_height should be TRUE" do
-            rsp = ResponseSetPopulator::PregnancyVisit.new(person, @instrument, survey)
-            assert_response_value(rsp.populate, "prepopulated_should_show_height", "TRUE")
+            run_populator
+            assert_response_value(@response_set, "prepopulated_should_show_height", "TRUE")
           end
 
           describe "if OWN_HOME was asked during SCREENER" do
@@ -167,16 +185,16 @@ module NcsNavigator::Core
                 r.yes "PRE_PREG.OWN_HOME"
               end
 
-              rsp = ResponseSetPopulator::PregnancyVisit.new(person, @instrument, survey)
-              assert_response_value(rsp.populate, "prepopulated_should_show_recent_move_for_preg_visit_one", "TRUE")
+              run_populator
+              assert_response_value(@response_set, "prepopulated_should_show_recent_move_for_preg_visit_one", "TRUE")
             end
 
           end
 
           describe "if OWN_HOME was NOT asked previously" do
             it "prepopulated_should_show_recent_move_for_preg_visit_one should be FALSE" do
-              rsp = ResponseSetPopulator::PregnancyVisit.new(person, @instrument, survey)
-              assert_response_value(rsp.populate, "prepopulated_should_show_recent_move_for_preg_visit_one", "FALSE")
+              run_populator
+              assert_response_value(@response_set, "prepopulated_should_show_recent_move_for_preg_visit_one", "FALSE")
             end
           end
 
@@ -191,8 +209,8 @@ module NcsNavigator::Core
                   r.yes "PRE_PREG.RECENT_MOVE"
                 end
 
-                rsp = ResponseSetPopulator::PregnancyVisit.new(person, @instrument, survey)
-                assert_response_value(rsp.populate,
+                run_populator
+                assert_response_value(@response_set,
                   "prepopulated_is_pre_pregnancy_information_available_and_recent_move_coded_as_one", "TRUE")
               end
 
@@ -207,8 +225,8 @@ module NcsNavigator::Core
                   r.no "PRE_PREG.RECENT_MOVE"
                 end
 
-                rsp = ResponseSetPopulator::PregnancyVisit.new(person, @instrument, survey)
-                assert_response_value(rsp.populate,
+                run_populator
+                assert_response_value(@response_set,
                   "prepopulated_is_pre_pregnancy_information_available_and_recent_move_coded_as_one", "FALSE")
               end
             end
@@ -230,24 +248,23 @@ module NcsNavigator::Core
           end
 
           it "prepopulated_is_first_pregnancy_visit_one should be FALSE" do
-            rsp = ResponseSetPopulator::PregnancyVisit.new(person, @instrument, survey)
-            assert_response_value(rsp.populate, "prepopulated_is_first_pregnancy_visit_one", "FALSE")
+            run_populator
+            assert_response_value(@response_set, "prepopulated_is_first_pregnancy_visit_one", "FALSE")
           end
 
           it "prepopulated_should_show_height should be FALSE" do
-            rsp = ResponseSetPopulator::PregnancyVisit.new(person, @instrument, survey, :event => pv1_event)
-            assert_response_value(rsp.populate, "prepopulated_should_show_height", "FALSE")
+            run_populator(pv1_event)
+            assert_response_value(@response_set, "prepopulated_should_show_height", "FALSE")
           end
 
           it "prepopulated_should_show_recent_move_for_preg_visit_one should be TRUE" do
-            rsp = ResponseSetPopulator::PregnancyVisit.new(person, @instrument, survey, :event => pv1_event)
-            assert_response_value(rsp.populate,
+            run_populator(pv1_event)
+            assert_response_value(@response_set,
               "prepopulated_should_show_recent_move_for_preg_visit_one", "TRUE")
           end
         end
 
       end
-
 
       describe "for a contact that is" do
 
@@ -256,15 +273,15 @@ module NcsNavigator::Core
 
         describe "in person" do
           it "prepopulated_mode_of_contact is set to CAPI" do
-            rsp = ResponseSetPopulator::PregnancyVisit.new(person, @instrument, survey, :mode => Instrument.capi)
-            assert_response_value(rsp.populate, "prepopulated_mode_of_contact", "CAPI")
+            run_populator(nil, Instrument.capi)
+            assert_response_value(@response_set, "prepopulated_mode_of_contact", "CAPI")
           end
         end
 
         describe "via telephone" do
           it "prepopulated_mode_of_contact is set to CATI" do
-            rsp = ResponseSetPopulator::PregnancyVisit.new(person, @instrument, survey, :mode => Instrument.cati)
-            assert_response_value(rsp.populate, "prepopulated_mode_of_contact", "CATI")
+            run_populator(nil, Instrument.cati)
+            assert_response_value(@response_set, "prepopulated_mode_of_contact", "CATI")
           end
         end
 

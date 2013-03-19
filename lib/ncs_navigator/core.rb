@@ -16,7 +16,6 @@ module NcsNavigator
     autoload :Psc,                        'ncs_navigator/core/psc'
     autoload :RecordOfContactImporter,    'ncs_navigator/core/record_of_contact_importer'
     autoload :RedisConfiguration,         'ncs_navigator/core/redis_configuration'
-    autoload :ResponseSetPopulator,       'ncs_navigator/core/response_set_populator'
     autoload :SidekiqConfiguration,       'ncs_navigator/core/sidekiq_configuration'
     autoload :StatusChecks,               'ncs_navigator/core/status_checks'
     autoload :Surveyor,                   'ncs_navigator/core/surveyor'

@@ -1,12 +1,13 @@
-# -*- coding: utf-8 -*-
-
 require 'spec_helper'
-require File.expand_path('../../../../../shared/custom_recruitment_strategy', __FILE__)
 
-module NcsNavigator::Core
+require File.expand_path('../a_survey_title_acceptor', __FILE__)
+require File.expand_path('../../../shared/custom_recruitment_strategy', __FILE__)
 
-  describe ResponseSetPopulator::NonInterview do
-    include SurveyCompletion
+module ResponseSetPrepopulation
+  describe NonInterview do
+    it_should_behave_like 'a survey title acceptor', '_NonIntRespQues_' do
+      let(:populator) { NonInterview }
+    end
 
     def get_response(response_set, reference_identifier)
       response = response_set.responses.select { |r|
@@ -32,11 +33,10 @@ module NcsNavigator::Core
         @participant.person = Factory(:person)
         @participant.save!
 
-        response_set, instrument= prepare_instrument(@participant.person,
+        @response_set, instrument= prepare_instrument(@participant.person,
                                                      @participant, survey)
-        response_set.responses.should be_empty
-        @rsp = ResponseSetPopulator::NonInterview.new(@participant.person,
-                                                      instrument, survey)
+        @response_set.responses.should be_empty
+        @rsp = NonInterview.new(@response_set)
       end
 
       describe "prepopulated_is_declined_participation_prior_to_enrollment" do
@@ -51,13 +51,15 @@ module NcsNavigator::Core
           pc = Factory(:participant_consent, :consent_given => @yes,
                        :consent_withdraw => @no, :consent_type => @general,
                        :participant => @participant)
-          assert_match(@rsp.populate,
+          @rsp.run
+          assert_match(@response_set,
               "prepopulated_is_declined_participation_prior_to_enrollment",
               "TRUE")
         end
 
         it "should be FALSE if participant declined after the enrollment" do
-          assert_match(@rsp.populate,
+          @rsp.run
+          assert_match(@response_set,
               "prepopulated_is_declined_participation_prior_to_enrollment",
               "FALSE")
         end
@@ -74,7 +76,8 @@ module NcsNavigator::Core
           end
 
           it "should be 'OVC AND EH STUDY CENTER' if OVC type" do
-            assert_match(@rsp.populate,
+            @rsp.run
+            assert_match(@response_set,
                                   "prepopulated_study_center_type",
                                   "OVC AND EH STUDY CENTERS")
           end
@@ -89,7 +92,8 @@ module NcsNavigator::Core
           end
 
           it "should be 'OVC AND EH STUDY CENTER' if EH type" do
-            assert_match(@rsp.populate,
+            @rsp.run
+            assert_match(@response_set,
                                   "prepopulated_study_center_type",
                                   "OVC AND EH STUDY CENTERS")
           end
@@ -104,19 +108,22 @@ module NcsNavigator::Core
           end
 
           it "should not be 'OVC AND EH STUDY CENTER' if not EH or OVC type" do
-            assert_miss(@rsp.populate,
+            @rsp.run
+            assert_miss(@response_set,
                                   "prepopulated_study_center_type",
                                   "OVC AND EH STUDY CENTERS")
           end
 
           it "should not be 'PB AND PBS STUDY CENTERS' if not PB or PBS type" do
-            assert_miss(@rsp.populate,
+            @rsp.run
+            assert_miss(@response_set,
                                   "prepopulated_study_center_type",
                                   "PB AND PBS STUDY CENTERS")
           end
 
           it "should be 'HILI STUDY CENTERS' if HILI type" do
-            assert_match(@rsp.populate,
+            @rsp.run
+            assert_match(@response_set,
                                   "prepopulated_study_center_type",
                                   "HILI STUDY CENTERS")
           end
@@ -131,7 +138,8 @@ module NcsNavigator::Core
           end
 
           it "should be 'PB AND PBS STUDY CENTERS' if PB type" do
-            assert_match(@rsp.populate,
+            @rsp.run
+            assert_match(@response_set,
                                   "prepopulated_study_center_type",
                                   "PB AND PBS STUDY CENTERS")
           end
@@ -147,19 +155,20 @@ module NcsNavigator::Core
           end
 
           it "should be 'PB AND PBS STUDY CENTERS' if PBS type" do
-            assert_match(@rsp.populate,
+            @rsp.run
+            assert_match(@response_set,
                                   "prepopulated_study_center_type",
                                   "PB AND PBS STUDY CENTERS")
           end
 
           it "should not be 'HILI STUDY CENTERS' if not HILI type" do
-            assert_miss(@rsp.populate,
+            @rsp.run
+            assert_miss(@response_set,
                                   "prepopulated_study_center_type",
                                   "HILI STUDY CENTERS")
           end
         end
 
       end
-
   end
 end

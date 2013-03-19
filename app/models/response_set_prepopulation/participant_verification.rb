@@ -1,9 +1,12 @@
-# -*- coding: utf-8 -*-
-require 'ncs_navigator/core'
+module ResponseSetPrepopulation
+  class ParticipantVerification < Populator
+    include OldAccessMethods
 
-module NcsNavigator::Core::ResponseSetPopulator
-  class ParticipantVerification < Base
-    def reference_identifiers
+    def self.applies_to?(rs)
+      rs.survey.title.include?('_ParticipantVerif_')
+    end
+
+    def self.reference_identifiers
       [
         "prepopulated_mode_of_contact",
         "prepopulated_is_pv1_or_pv2_or_father_for_participant_verification",
@@ -30,13 +33,8 @@ module NcsNavigator::Core::ResponseSetPopulator
       ]
     end
 
-    ##
-    # Creates responses for questions with reference identifiers
-    # that are known values and should be prepopulated
-    # @param [ResponseSet]
-    # @return [ResponseSet]
-    def prepopulate_response_set(response_set)
-      reference_identifiers.each do |reference_identifier|
+    def run
+      self.class.reference_identifiers.each do |reference_identifier|
         if question = find_question_for_reference_identifier(reference_identifier)
           response_type = "answer"
 
@@ -270,7 +268,6 @@ module NcsNavigator::Core::ResponseSetPopulator
       answer_for(question, ocare_child_response_is_one?)
     end
 
-
     # PROGRAMMER INSTRUCTIONS:
     # - IF RESP_PCARE = 1, DISPLAY “yourself”.
     # - OTHERWISE, DISPLAY “the primary caregiver”.
@@ -368,7 +365,5 @@ module NcsNavigator::Core::ResponseSetPopulator
     def sa_phone_previously_collected?(question)
       answer_for(question, valid_response_exists?("PARTICIPANT_VERIF.SA_PHONE"))
     end
-
-
   end
 end

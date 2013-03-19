@@ -1,11 +1,14 @@
-# -*- coding: utf-8 -*-
-
 require 'spec_helper'
 
-module NcsNavigator::Core
+require File.expand_path('../a_survey_title_acceptor', __FILE__)
 
-  describe ResponseSetPopulator::Postnatal do
+module ResponseSetPrepopulation
+  describe Postnatal do
     include SurveyCompletion
+
+    it_should_behave_like 'a survey title acceptor', '_1Month', '_12Month', '_1MMonth', '_12MMonth' do
+      let(:populator) { Postnatal }
+    end
 
     def get_response_as_string(response_set, reference_identifier)
       response = response_set.responses.select { |r|
@@ -40,7 +43,7 @@ module NcsNavigator::Core
     end
 
     def complete_event(event)
-      event.event_disposition_category_code = 3 # General Study Visit Event Code 
+      event.event_disposition_category_code = 3 # General Study Visit Event Code
       event.event_disposition = 60 # Completed Consent/Interview in English
       event.save!
     end
@@ -51,7 +54,7 @@ module NcsNavigator::Core
       complete_event(event) if event_complete
 
       contact = Factory(:contact)
-      contact_link = Factory(:contact_link, :person => @person, 
+      contact_link = Factory(:contact_link, :person => @person,
                               :contact => contact, :event => event)
       ncs_code = NcsCode::for_list_name_and_local_code('EVENT_TYPE_CL1',
                                                         event_type_code)
@@ -73,6 +76,10 @@ module NcsNavigator::Core
       end
     end
 
+    def run_populator
+      Postnatal.new(@response_set).run
+    end
+
     context "for 24M part one prepopulators"
       def take_work_surveys(reference_id, valid_answers)
         create_work_name_or_address_24_month(reference_id
@@ -80,7 +87,7 @@ module NcsNavigator::Core
           if valid_answers
             prepare_and_take_survey(nil, nil, nil, survey) do |r|
               r.a data_export_id, 'work_name', :value => "work_name"
-            end 
+            end
           else
             prepare_and_take_survey(nil, nil, nil, survey) do |r|
               r.refused(data_export_id)
@@ -99,24 +106,21 @@ module NcsNavigator::Core
 
         it "should be TRUE when valid answers to work address exist" do
           take_work_surveys("WORK_ADDRESS_1", true)
-          rsp = ResponseSetPopulator::Postnatal.new(@person, @instrument,
-                                                    @survey)
-          get_response_as_string(rsp.populate,
+          run_populator
+          get_response_as_string(@response_set,
                 "prepopulated_is_valid_work_address_provided").should == "TRUE"
         end
 
         it "should be FALSE when only invalid answers to work address exist" do
           take_work_surveys("WORK_ADDRESS_1", false)
-          rsp = ResponseSetPopulator::Postnatal.new(@person, @instrument,
-                                                    @survey)
-          get_response_as_string(rsp.populate,
+          run_populator
+          get_response_as_string(@response_set,
                 "prepopulated_is_valid_work_address_provided").should == "FALSE"
         end
 
         it "should be FALSE when only no answers to work address exist" do
-          rsp = ResponseSetPopulator::Postnatal.new(@person, @instrument,
-                                                    @survey)
-          get_response_as_string(rsp.populate,
+          run_populator
+          get_response_as_string(@response_set,
                 "prepopulated_is_valid_work_address_provided").should == "FALSE"
         end
       end
@@ -131,24 +135,21 @@ module NcsNavigator::Core
 
         it "should be TRUE when valid answers to work name exist" do
           take_work_surveys("WORK_NAME", true)
-          rsp = ResponseSetPopulator::Postnatal.new(@person, @instrument,
-                                                    @survey)
-          get_response_as_string(rsp.populate,
+          run_populator
+          get_response_as_string(@response_set,
                   "prepopulated_is_valid_work_name_provided").should == "TRUE"
         end
 
         it "should be FALSE when only invalid answers to work name exist" do
           take_work_surveys("WORK_NAME", false)
-          rsp = ResponseSetPopulator::Postnatal.new(@person, @instrument,
-                                                    @survey)
-          get_response_as_string(rsp.populate,
+          run_populator
+          get_response_as_string(@response_set,
                   "prepopulated_is_valid_work_name_provided").should == "FALSE"
         end
 
         it "should be FALSE when only no answers to work name exist" do
-          rsp = ResponseSetPopulator::Postnatal.new(@person, @instrument,
-                                                    @survey)
-          get_response_as_string(rsp.populate,
+          run_populator
+          get_response_as_string(@response_set,
                   "prepopulated_is_valid_work_name_provided").should == "FALSE"
         end
       end
@@ -163,24 +164,21 @@ module NcsNavigator::Core
 
         it "should be TRUE when valid answers to NUM_HH exist" do
           take_num_hh_surveys("24M", true)
-          rsp = ResponseSetPopulator::Postnatal.new(@person, @instrument,
-                                                    @survey)
-          get_response_as_string(rsp.populate,
+          run_populator
+          get_response_as_string(@response_set,
                       "prepopulated_should_show_num_hh_group").should == "TRUE"
         end
 
         it "should be FALSE when only invalid answers to NUM_HH exist" do
           take_num_hh_surveys("24M", false)
-          rsp = ResponseSetPopulator::Postnatal.new(@person, @instrument,
-                                                    @survey)
-          get_response_as_string(rsp.populate,
+          run_populator
+          get_response_as_string(@response_set,
                       "prepopulated_should_show_num_hh_group").should == "FALSE"
         end
 
         it "should be FALSE when no responses to NUM_HH exist" do
-          rsp = ResponseSetPopulator::Postnatal.new(@person, @instrument,
-                                                    @survey)
-          get_response_as_string(rsp.populate,
+          run_populator
+          get_response_as_string(@response_set,
                       "prepopulated_should_show_num_hh_group").should == "FALSE"
         end
       end
@@ -196,24 +194,21 @@ module NcsNavigator::Core
 
         it "should be TRUE when valid answers to NUM_HH exist" do
           take_num_hh_surveys("18M", true)
-          rsp = ResponseSetPopulator::Postnatal.new(@person, @instrument,
-                                                    @survey)
-          get_response_as_string(rsp.populate,
+          run_populator
+          get_response_as_string(@response_set,
                       "prepopulated_should_show_num_hh_group").should == "TRUE"
         end
 
         it "should be FALSE when only invalid answers to NUM_HH exist" do
           take_num_hh_surveys("18M", false)
-          rsp = ResponseSetPopulator::Postnatal.new(@person, @instrument,
-                                                    @survey)
-          get_response_as_string(rsp.populate,
+          run_populator
+          get_response_as_string(@response_set,
                       "prepopulated_should_show_num_hh_group").should == "FALSE"
         end
 
         it "should be FALSE when no responses to NUM_HH exist" do
-          rsp = ResponseSetPopulator::Postnatal.new(@person, @instrument,
-                                                    @survey)
-          get_response_as_string(rsp.populate,
+          run_populator
+          get_response_as_string(@response_set,
                       "prepopulated_should_show_num_hh_group").should == "FALSE"
         end
       end
@@ -230,9 +225,8 @@ module NcsNavigator::Core
         it "should be TRUE when answer to MULT_CHILD from part one is YES" do
           prepare_and_take_survey("TWELVE_MTH_MOTHER.MULT_CHILD", NcsCode::YES,
                                   :create_12mm_part_one_mult_child)
-          rsp = ResponseSetPopulator::Postnatal.new(@person, @instrument,
-                                                    @survey)
-          get_response_as_string(rsp.populate,
+          run_populator
+          get_response_as_string(@response_set,
                   "prepopulated_mult_child_answer_from_part_one_for_12MM"
                 ).should == "TRUE"
         end
@@ -240,23 +234,21 @@ module NcsNavigator::Core
         it "should be FALSE when answer to MULT_CHILD from part one is NO" do
           prepare_and_take_survey("TWELVE_MTH_MOTHER.MULT_CHILD", NcsCode::NO,
                                   :create_12mm_part_one_mult_child)
-          rsp = ResponseSetPopulator::Postnatal.new(@person, @instrument,
-                                                    @survey)
-          get_response_as_string(rsp.populate,
+          run_populator
+          get_response_as_string(@response_set,
                   "prepopulated_mult_child_answer_from_part_one_for_12MM"
                 ).should == "FALSE"
         end
 
         it "should be TRUE when there's no answer to MULT_CHILD from part one" do
-          rsp = ResponseSetPopulator::Postnatal.new(@person, @instrument,
-                                                    @survey)
-          get_response_as_string(rsp.populate,
+          run_populator
+          get_response_as_string(@response_set,
                         "prepopulated_mult_child_answer_from_part_one_for_12MM"
                 ).should == "FALSE"
         end
       end
 
-    context "for 6Month part two prepopulators" 
+    context "for 6Month part two prepopulators"
       describe "prepopulated_is_resp_rel_new" do
         before(:each) do
           @survey = create_generic_true_false_prepopulator_survey(
@@ -268,9 +260,8 @@ module NcsNavigator::Core
         it "should be TRUE if RESP_REL_NEW is set to biological mother (1)" do
           prepare_and_take_survey("PARTICIPANT_VERIF.RESP_REL_NEW", 1, # Mother
                                   :create_participant_verif_resp_rel_new)
-          rsp = ResponseSetPopulator::Postnatal.new(@person, @instrument,
-                                                    @survey)
-          get_response_as_string(rsp.populate,
+          run_populator
+          get_response_as_string(@response_set,
                             "prepopulated_is_resp_rel_new").should == "TRUE"
         end
 
@@ -278,16 +269,14 @@ module NcsNavigator::Core
           prepare_and_take_survey("PARTICIPANT_VERIF.RESP_REL_NEW",
                                   2, # Not Mother
                                   :create_participant_verif_resp_rel_new)
-          rsp = ResponseSetPopulator::Postnatal.new(@person, @instrument,
-                                                    @survey)
-          get_response_as_string(rsp.populate,
+          run_populator
+          get_response_as_string(@response_set,
                             "prepopulated_is_resp_rel_new").should == "FALSE"
         end
 
         it "should be FALSE if RESP_REL_NEW isn't set at all" do
-          rsp = ResponseSetPopulator::Postnatal.new(@person, @instrument,
-                                                    @survey)
-          get_response_as_string(rsp.populate,
+          run_populator
+          get_response_as_string(@response_set,
                             "prepopulated_is_resp_rel_new").should == "FALSE"
         end
       end
@@ -305,9 +294,8 @@ module NcsNavigator::Core
                                   :create_participant_verif_child_qnum) do |r|
             r.a "PARTICIPANT_VERIF.CHILD_QNUM", 'number', :value => 1
           end
-          rsp = ResponseSetPopulator::Postnatal.new(@person, @instrument,
-                                                    @survey)
-          get_response_as_string(rsp.populate,
+          run_populator
+          get_response_as_string(@response_set,
                             "prepopulated_is_child_qnum_one").should == "TRUE"
         end
 
@@ -316,16 +304,14 @@ module NcsNavigator::Core
                                   :create_participant_verif_child_qnum) do |r|
             r.a "PARTICIPANT_VERIF.CHILD_QNUM", 'number', :value => 2
           end
-          rsp = ResponseSetPopulator::Postnatal.new(@person, @instrument,
-                                                    @survey)
-          get_response_as_string(rsp.populate,
+          run_populator
+          get_response_as_string(@response_set,
                             "prepopulated_is_child_qnum_one").should == "FALSE"
         end
 
         it "should be FALSE if child number is not set" do
-          rsp = ResponseSetPopulator::Postnatal.new(@person, @instrument,
-                                                    @survey)
-          get_response_as_string(rsp.populate,
+          run_populator
+          get_response_as_string(@response_set,
                             "prepopulated_is_child_qnum_one").should == "FALSE"
         end
       end
@@ -341,25 +327,22 @@ module NcsNavigator::Core
         it "should be TRUE if more then one child is eligible for interview" do
           prepare_and_take_survey("PARTICIPANT_VERIF.MULT_CHILD", NcsCode::YES,
                                   :create_participant_verif_mult_child)
-          rsp = ResponseSetPopulator::Postnatal.new(@person, @instrument,
-                                                    @survey)
-          get_response_as_string(rsp.populate,
+          run_populator
+          get_response_as_string(@response_set,
                             "prepopulated_is_multiple_child").should == "TRUE"
         end
 
         it "should be FALSE if only one child is eligible for interview" do
           prepare_and_take_survey("PARTICIPANT_VERIF.MULT_CHILD", NcsCode::NO,
                                   :create_participant_verif_mult_child)
-          rsp = ResponseSetPopulator::Postnatal.new(@person, @instrument,
-                                                    @survey)
-          get_response_as_string(rsp.populate,
+          run_populator
+          get_response_as_string(@response_set,
                             "prepopulated_is_multiple_child").should == "FALSE"
         end
 
         it "should be FALSE if number of elgible children is not known" do
-          rsp = ResponseSetPopulator::Postnatal.new(@person, @instrument,
-                                                    @survey)
-          get_response_as_string(rsp.populate,
+          run_populator
+          get_response_as_string(@response_set,
                             "prepopulated_is_multiple_child").should == "FALSE"
         end
       end
@@ -375,26 +358,23 @@ module NcsNavigator::Core
 
         it "should be TRUE if 3-month interview event was completed" do
           make_contact(Event::three_month_visit_code)
-          rsp = ResponseSetPopulator::Postnatal.new(@person, @instrument,
-                                                    @survey)
-          get_response_as_string(rsp.populate,
+          run_populator
+          get_response_as_string(@response_set,
                   "prepopulated_is_three_months_interview_set_to_complete"
                 ).should == "TRUE"
         end
 
         it "should be FALSE if 3-month interview event was not completed" do
           make_contact(Event::three_month_visit_code, event_complete = false)
-          rsp = ResponseSetPopulator::Postnatal.new(@person, @instrument,
-                                                    @survey)
-          get_response_as_string(rsp.populate,
+          run_populator
+          get_response_as_string(@response_set,
                   "prepopulated_is_three_months_interview_set_to_complete"
                 ).should == "FALSE"
         end
 
         it "should be FALSE if 3-month interview event never happened" do
-          rsp = ResponseSetPopulator::Postnatal.new(@person, @instrument,
-                                                    @survey)
-          get_response_as_string(rsp.populate,
+          run_populator
+          get_response_as_string(@response_set,
                   "prepopulated_is_three_months_interview_set_to_complete"
                 ).should == "FALSE"
         end
@@ -412,9 +392,8 @@ module NcsNavigator::Core
         it "should be TRUE when answer to MULT_CHILD from part one is YES" do
           prepare_and_take_survey("SIX_MTH_MOTHER.MULT_CHILD", NcsCode::YES,
                                   :create_6mm_part_one_mult_child)
-          rsp = ResponseSetPopulator::Postnatal.new(@person, @instrument,
-                                                    @survey)
-          get_response_as_string(rsp.populate,
+          run_populator
+          get_response_as_string(@response_set,
                   "prepopulated_mult_child_answer_from_part_one_for_6MM"
                 ).should == "TRUE"
         end
@@ -422,17 +401,15 @@ module NcsNavigator::Core
         it "should be FALSE when answer to MULT_CHILD from part one is NO" do
           prepare_and_take_survey("SIX_MTH_MOTHER.MULT_CHILD", NcsCode::NO,
                                   :create_6mm_part_one_mult_child)
-          rsp = ResponseSetPopulator::Postnatal.new(@person, @instrument,
-                                                    @survey)
-          get_response_as_string(rsp.populate,
+          run_populator
+          get_response_as_string(@response_set,
                   "prepopulated_mult_child_answer_from_part_one_for_6MM"
                 ).should == "FALSE"
         end
 
         it "should be TRUE when there's no answer to MULT_CHILD from part one" do
-          rsp = ResponseSetPopulator::Postnatal.new(@person, @instrument,
-                                                    @survey)
-          get_response_as_string(rsp.populate,
+          run_populator
+          get_response_as_string(@response_set,
                         "prepopulated_mult_child_answer_from_part_one_for_6MM"
                 ).should == "FALSE"
         end
@@ -450,25 +427,22 @@ module NcsNavigator::Core
         it "should be TRUE when a birth was given at a hospital" do
           prepare_and_take_survey('BIRTH_VISIT_LI_2.BIRTH_DELIVER',
                                   1, :create_birth_part_one_birth_deliver)
-          rsp = ResponseSetPopulator::Postnatal.new(@person, @instrument,
-                                                    @survey)
-          get_response_as_string(rsp.populate,
+          run_populator
+          get_response_as_string(@response_set,
             "prepopulated_is_birth_deliver_collected_and_set_to_one"
           ).should == "TRUE"
         end
         it "should be FALSE when a birth was not given at a hospital" do
           prepare_and_take_survey('BIRTH_VISIT_LI_2.BIRTH_DELIVER',
                                   2, :create_birth_part_one_birth_deliver)
-          rsp = ResponseSetPopulator::Postnatal.new(@person, @instrument,
-                                                    @survey)
-          get_response_as_string(rsp.populate,
+          run_populator
+          get_response_as_string(@response_set,
             "prepopulated_is_birth_deliver_collected_and_set_to_one"
           ).should == "FALSE"
         end
         it "should be FALSE when information about birth was not collected" do
-          rsp = ResponseSetPopulator::Postnatal.new(@person, @instrument,
-                                                    @survey)
-          get_response_as_string(rsp.populate,
+          run_populator
+          get_response_as_string(@response_set,
             "prepopulated_is_birth_deliver_collected_and_set_to_one"
           ).should == "FALSE"
         end
@@ -484,25 +458,22 @@ module NcsNavigator::Core
 
         it "should be TRUE when a complete birth record exists" do
           make_contact(Event::birth_code)
-          rsp = ResponseSetPopulator::Postnatal.new(@person, @instrument,
-                                                    @survey)
-          get_response_as_string(rsp.populate,
+          run_populator
+          get_response_as_string(@response_set,
             "prepopulated_is_prev_event_birth_li_and_set_to_complete"
           ).should == "TRUE"
         end
 
         it "should be FALSE when an incomplete birth record exists" do
           make_contact(Event::birth_code, event_complete = false)
-          rsp = ResponseSetPopulator::Postnatal.new(@person, @instrument,
-                                                    @survey)
-          get_response_as_string(rsp.populate,
+          run_populator
+          get_response_as_string(@response_set,
             "prepopulated_is_prev_event_birth_li_and_set_to_complete"
           ).should == "FALSE"
         end
         it "should be FALSE when no birth record exists" do
-          rsp = ResponseSetPopulator::Postnatal.new(@person, @instrument,
-                                                    @survey)
-          get_response_as_string(rsp.populate,
+          run_populator
+          get_response_as_string(@response_set,
             "prepopulated_is_prev_event_birth_li_and_set_to_complete"
           ).should == "FALSE"
         end
@@ -529,7 +500,7 @@ module NcsNavigator::Core
             child.save!
           end
         end
-          
+
         before(:each) do
           @survey = create_generic_true_false_prepopulator_survey(
                       "INS_QUE_3Month_INT_EHPBHILIPBS_M3.1_V2.0_CHILD_HABITS",
@@ -539,24 +510,21 @@ module NcsNavigator::Core
 
         it "should be TRUE when participant has multiple children" do
           have_children(2)
-          rsp = ResponseSetPopulator::Postnatal.new(@person, @instrument,
-                                                    @survey)
-          get_response_as_string(rsp.populate,
+          run_populator
+          get_response_as_string(@response_set,
                             "prepopulated_is_multiple_child").should == "TRUE"
         end
 
         it "should be FALSE when participant has only one child" do
           have_children(1)
-          rsp = ResponseSetPopulator::Postnatal.new(@person, @instrument,
-                                                    @survey)
-          get_response_as_string(rsp.populate,
+          run_populator
+          get_response_as_string(@response_set,
                             "prepopulated_is_multiple_child").should == "FALSE"
         end
 
         it "should be TRUE when participant has no children" do
-          rsp = ResponseSetPopulator::Postnatal.new(@person, @instrument,
-                                                    @survey)
-          get_response_as_string(rsp.populate,
+          run_populator
+          get_response_as_string(@response_set,
                             "prepopulated_is_multiple_child").should == "FALSE"
         end
       end
@@ -572,17 +540,15 @@ module NcsNavigator::Core
 
         it "should be TRUE when there are no pre-natal events" do
           make_contact(Event::six_month_visit_code)
-          rsp = ResponseSetPopulator::Postnatal.new(@person, @instrument,
-                                                    @survey)
-          get_response_as_string(rsp.populate,
+          run_populator
+          get_response_as_string(@response_set,
                        "prepopulated_should_show_demographics").should == "TRUE"
         end
 
         it "should be FALSE when there are pre-natal events" do
           make_contact(Event::pregnancy_visit_1_code)
-          rsp = ResponseSetPopulator::Postnatal.new(@person, @instrument,
-                                                    @survey)
-          get_response_as_string(rsp.populate,
+          run_populator
+          get_response_as_string(@response_set,
                        "prepopulated_should_show_demographics").should == "FALSE"
         end
       end
@@ -594,21 +560,21 @@ module NcsNavigator::Core
               "INS_QUE_18MMother_INT_EHPBHI_M2.2_V2.0_EIGHTEEN_MTH_MOTHER_MOLD",
               "prepopulated_should_show_room_mold_child")
           init_common_vars
-          @rsp = ResponseSetPopulator::Postnatal.new(@person, @instrument,
-                                                     @survey)
         end
 
         it "should be TRUE if response to MOLD question was YES" do
           prepare_and_take_survey("EIGHTEEN_MTH_MOTHER_2.MOLD", 1,
                       :create_18mm_v2_survey_part_three_for_mold_prepopulators)
-          get_response_as_string(@rsp.populate,
+          run_populator
+          get_response_as_string(@response_set,
                         "prepopulated_should_show_room_mold_child"
                       ).should == "TRUE"
         end
         it "should be FALSE if response to MOLD question was NO" do
           prepare_and_take_survey("EIGHTEEN_MTH_MOTHER_2.MOLD", 2,
                       :create_18mm_v2_survey_part_three_for_mold_prepopulators)
-          get_response_as_string(@rsp.populate,
+          run_populator
+          get_response_as_string(@response_set,
                         "prepopulated_should_show_room_mold_child"
                       ).should == "FALSE"
         end
@@ -616,19 +582,22 @@ module NcsNavigator::Core
         it "should be FALSE if response to MOLD question was REFUSED" do
           prepare_and_take_survey("EIGHTEEN_MTH_MOTHER_2.MOLD", "neg_1",
                       :create_18mm_v2_survey_part_three_for_mold_prepopulators)
-          get_response_as_string(@rsp.populate,
+          run_populator
+          get_response_as_string(@response_set,
                         "prepopulated_should_show_room_mold_child"
                       ).should == "FALSE"
         end
         it "should be FALSE if response to MOLD question was REFUSED" do
           prepare_and_take_survey("EIGHTEEN_MTH_MOTHER_2.MOLD", "neg_2",
                       :create_18mm_v2_survey_part_three_for_mold_prepopulators)
-          get_response_as_string(@rsp.populate,
+          run_populator
+          get_response_as_string(@response_set,
                         "prepopulated_should_show_room_mold_child"
                       ).should == "FALSE"
         end
         it "should be FALSE if 18MM part 3 survey was not completed" do
-          get_response_as_string(@rsp.populate,
+          run_populator
+          get_response_as_string(@response_set,
                         "prepopulated_should_show_room_mold_child"
                       ).should == "FALSE"
         end
