@@ -390,11 +390,10 @@ module PostNatal
 
   def create_survey_section_question(title, data_export_id)
     begin
-      survey = Factory(:survey,
-                      :title => title,
+      survey = Factory(:survey, :title => title,
                       :access_code => title.downcase.tr('.', '_'))
-    rescue
-      raise "Survey #{title} caused problems."
+    rescue ActiveRecord::RecordInvalid
+      survey = Survey.where('title = ?', title).first
     end
     survey_section = Factory(:survey_section, :survey_id => survey.id)
     Factory(:question, :reference_identifier => data_export_id.split('.')[1],
@@ -426,33 +425,33 @@ module PostNatal
     end
   end
 
-  def create_work_name_or_address_24_month(reference_id)
-    pairs = [
-      ["INS_QUE_Birth_INT_EHPBHIPBS_M3.0_V3.0_PART_TWO",
-       "BIRTH_VISIT_3.#{reference_id}"],
-      ["INS_QUE_Birth_INT_LI_M3.1_V2.0_PART_TWO",
-       "BIRTH_VISIT_LI_2.#{reference_id}"],
-      ["INS_QUE_Birth_INT_M3.2_V3.1_PART_TWO",
-       "BIRTH_VISIT_4.#{reference_id}"],
-      ["INS_QUE_PregVisit1_INT_EHPBHIPBS_M3.0_V3.0",
-       "PREG_VISIT_1_3.#{reference_id}"],
-      ["INS_QUE_PregVisit2_INT_EHPBHIPBS_M3.0_V3.0",
-       "PREG_VISIT_2_3.#{reference_id}"]
-    ]
+  def create_work_name_and_address_survey(title)
+    surveys = {
+      "INS_QUE_Birth_INT_EHPBHIPBS_M3.0_V3.0_PART_TWO" =>
+        ["BIRTH_VISIT_3.WORK_ADDRESS_1", "BIRTH_VISIT_3.CWORK_ADDRESS_1",
+         "BIRTH_VISIT_LI_2.WORK_NAME"],
+      "INS_QUE_Birth_INT_LI_M3.1_V2.0_PART_TWO" =>
+        ["BIRTH_VISIT_LI_2.WORK_ADDRESS_1", "BIRTH_VISIT_LI_2.CWORK_ADDRESS_1",
+         "BIRTH_VISIT_LI_2.WORK_NAME"],
+      "INS_QUE_Birth_INT_M3.2_V3.1_PART_TWO" =>
+        ["BIRTH_VISIT_4.WORK_ADDRESS1", "BIRTH_VISIT_4.CWORK_ADDRESS1",
+         "BIRTH_VISIT_4.WORK_NAME"],
+    }
 
-    pairs.each do |args|
-      q = create_survey_section_question(*args)
+    q = nil
+    surveys[title].each do |exp_id|
+      q = create_survey_section_question(title, exp_id)
       a = Factory(:answer, :question_id => q.id,
-                  :reference_identifier => "work_name",
-                  :text => "WORK NAME:", :response_class => "string")
+                  :response_class => "string")
       a = Factory(:answer, :question_id => q.id,
                   :reference_identifier => "neg_1",
                   :text => "REFUSED", :response_class => "answer")
       a = Factory(:answer, :question_id => q.id,
                   :reference_identifier => "neg_2",
                   :text => "DON'T KNOW", :response_class => "answer")
-      yield q.survey_section.survey, q.data_export_identifier
     end
+
+    return q.survey_section.survey
   end
 
 end
