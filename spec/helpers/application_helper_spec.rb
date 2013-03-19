@@ -26,7 +26,7 @@ describe ApplicationHelper do
   end
 
   context "sample extenstion" do
-    it "returns UKNOWN when sample does not satisfy the format with dash" do
+    it "returns UNKNOWN when sample does not satisfy the format with dash" do
       helper.sample_extenstion('0').should == "UNKNOWN"
     end
     it "returns the prefix after dash" do
@@ -61,8 +61,8 @@ describe ApplicationHelper do
       end
     end
   end
-  
-  describe "staffname" do  
+
+  describe "staffname" do
 
     before do
       user = mock(Aker::User)
@@ -90,5 +90,5 @@ describe ApplicationHelper do
       helper.staff_name(nil).should eq("")
     end
   end
-   
+
 end
