@@ -6,8 +6,8 @@
 
 ** Deploy Cases using capistrano **
 
-  $ STUDY_CENTER=deploy_site USER=deploy_user cap staging deploy:block
   $ STUDY_CENTER=deploy_site USER=deploy_user cap staging deploy:migrations
+  $ STUDY_CENTER=deploy_site USER=deploy_user cap staging deploy:block
 
 ** You will be prompted for the version to deploy (hitting enter will deploy origin/master) **
 
@@ -113,3 +113,4 @@ includes the Host alias along with the User and Hostname
   Host deploy_site-core
   User deploy_user
   Hostname deploy_site-ncsapps.nubic.northwestern.edu
+
