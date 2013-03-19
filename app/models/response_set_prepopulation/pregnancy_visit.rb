@@ -1,9 +1,12 @@
-# -*- coding: utf-8 -*-
-require 'ncs_navigator/core'
+module ResponseSetPrepopulation
+  class PregnancyVisit < Populator
+    include OldAccessMethods
 
-module NcsNavigator::Core::ResponseSetPopulator
-  class PregnancyVisit < Base
-    def reference_identifiers
+    def self.applies_to?(rs)
+      %w(PregVisit1 PregVisit2).any? { |t| rs.survey.title.include?("_#{t}_") }
+    end
+
+    def self.reference_identifiers
       [
         "prepopulated_mode_of_contact",
         "prepopulated_should_show_height",
@@ -15,13 +18,8 @@ module NcsNavigator::Core::ResponseSetPopulator
       ]
     end
 
-    ##
-    # Creates responses for questions with reference identifiers
-    # that are known values and should be prepopulated
-    # @param [ResponseSet]
-    # @return [ResponseSet]
-    def prepopulate_response_set(response_set)
-      reference_identifiers.each do |reference_identifier|
+    def run
+      self.class.reference_identifiers.each do |reference_identifier|
         if question = find_question_for_reference_identifier(reference_identifier)
           response_type = "answer"
           answer = case reference_identifier

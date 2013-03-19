@@ -1,6 +1,6 @@
 source 'http://rubygems.org'
 
-gem 'rails', '3.1.11'
+gem 'rails', '3.1.12'
 
 gem 'active_model_serializers'
 gem 'bcdatabase', '~> 1.0'
@@ -79,7 +79,7 @@ gem 'dm-ar-finders', '~> 1.2.0'
 
 group :development, :test, :ci do
   gem 'annotate', '~> 2.5.0'
-  gem 'rspec-rails', '2.6.1'
+  gem 'rspec-rails', '~> 2.12.0'
 
   gem 'guard'
   gem 'guard-cucumber'

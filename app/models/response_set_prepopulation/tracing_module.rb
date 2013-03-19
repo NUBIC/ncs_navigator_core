@@ -1,10 +1,12 @@
-# -*- coding: utf-8 -*-
-require 'ncs_navigator/core'
+module ResponseSetPrepopulation
+  class TracingModule < Populator
+    include OldAccessMethods
 
-module NcsNavigator::Core::ResponseSetPopulator
-  class TracingModule < Base
+    def self.applies_to?(rs)
+      rs.survey.title.include?('_Tracing_')
+    end
 
-    def reference_identifiers
+    def self.reference_identifiers
       [
         "prepopulated_mode_of_contact",
         "prepopulated_should_show_address_for_tracing",
@@ -27,13 +29,8 @@ module NcsNavigator::Core::ResponseSetPopulator
       ]
     end
 
-    ##
-    # Creates responses for questions with reference identifiers
-    # that are known values and should be prepopulated
-    # @param [ResponseSet]
-    # @return [ResponseSet]
-    def prepopulate_response_set(response_set)
-      reference_identifiers.each do |reference_identifier|
+    def run
+      self.class.reference_identifiers.each do |reference_identifier|
         if question = find_question_for_reference_identifier(reference_identifier)
           response_type = "answer"
 
@@ -229,6 +226,5 @@ module NcsNavigator::Core::ResponseSetPopulator
       answer_for(question, !person.responses_for(data_export_identifier).blank?)
     end
     private :has_answered_question?
-
   end
 end

@@ -183,11 +183,11 @@ namespace :instruments do
     puts "# of questions that are marked 'prepopulated' = #{prepopulated_question_ids.size}"
 
     # get questions known to ResponseSetPrepopulators
-    known_prepopulated_question_ids = []
-    NcsNavigator::Core::ResponseSetPopulator::Base.subclasses.each do |sc|
-      known_prepopulated_question_ids << sc.new(Person.new, Instrument.new, Survey.new).reference_identifiers
+    reference_identifiers = ResponseSetPrepopulation::POPULATORS.each_with_object(Set.new) do |p, s|
+      s += p.reference_identifiers
     end
-    known_prepopulated_question_ids = known_prepopulated_question_ids.flatten.uniq
+
+    known_prepopulated_question_ids = reference_identifiers.to_a
 
     puts "# of 'prepopulated' questions known to ResponseSetPrepopulators = #{known_prepopulated_question_ids.size}"
 

@@ -1,11 +1,14 @@
-# -*- coding: utf-8 -*-
-
 require 'spec_helper'
 
-module NcsNavigator::Core
+require File.expand_path('../a_survey_title_acceptor', __FILE__)
 
-  describe ResponseSetPopulator::ParticipantVerification do
+module ResponseSetPrepopulation
+  describe ParticipantVerification do
     include SurveyCompletion
+
+    it_should_behave_like 'a survey title acceptor', '_ParticipantVerif_' do
+      let(:populator) { ParticipantVerification }
+    end
 
     def assert_response_value(response_set, reference_identifier, value)
       response = response_set.responses.detect { |r| r.question.reference_identifier == reference_identifier }
@@ -15,42 +18,45 @@ module NcsNavigator::Core
 
     context "with participant verification instrument pt one" do
 
-      let(:person) { Factory(:person) }
-      let(:survey_pt1) { create_participant_verification_part_one_survey_with_prepopulated_fields }
-
-      before(:each) do
-        participant = Factory(:participant)
-        participant.person = person
-        participant.save!
-
-        @response_set_pt1, @instrument_pt1 = prepare_instrument(person, participant, survey_pt1)
+      def init_instrument_and_response_set_pt1(event = nil)
+        @response_set_pt1, @instrument_pt1 = prepare_instrument(person, participant, survey_pt1, nil, event)
         @response_set_pt1.responses.should be_empty
       end
+
+      def run_populator(event = nil)
+        init_instrument_and_response_set_pt1(event)
+        populator.run
+      end
+
+      let(:populator) { ParticipantVerification.new(@response_set_pt1) }
+      let(:person) { Factory(:person) }
+      let(:participant) { Factory(:participant).tap{ |p| p.person = person; p.save } }
+      let(:survey_pt1) { create_participant_verification_part_one_survey_with_prepopulated_fields }
 
       describe "prepopulated_is_pv1_or_pv2_or_father_for_participant_verification" do
 
         it "is TRUE if this is the pv1 event" do
           event = Factory(:event, :event_type_code => 13) # PV1
-          rsp = ResponseSetPopulator::ParticipantVerification.new(person, @instrument_pt1, survey_pt1, :event => event)
-          assert_response_value(rsp.populate, "prepopulated_is_pv1_or_pv2_or_father_for_participant_verification", "TRUE")
+          run_populator(event)
+          assert_response_value(@response_set_pt1, "prepopulated_is_pv1_or_pv2_or_father_for_participant_verification", "TRUE")
         end
 
         it "is TRUE if this is the pv2 event" do
           event = Factory(:event, :event_type_code => 15) # PV2
-          rsp = ResponseSetPopulator::ParticipantVerification.new(person, @instrument_pt1, survey_pt1, :event => event)
-          assert_response_value(rsp.populate, "prepopulated_is_pv1_or_pv2_or_father_for_participant_verification", "TRUE")
+          run_populator(event)
+          assert_response_value(@response_set_pt1, "prepopulated_is_pv1_or_pv2_or_father_for_participant_verification", "TRUE")
         end
 
         it "is TRUE if this is the father event" do
           event = Factory(:event, :event_type_code => 19) # Father
-          rsp = ResponseSetPopulator::ParticipantVerification.new(person, @instrument_pt1, survey_pt1, :event => event)
-          assert_response_value(rsp.populate, "prepopulated_is_pv1_or_pv2_or_father_for_participant_verification", "TRUE")
+          run_populator(event)
+          assert_response_value(@response_set_pt1, "prepopulated_is_pv1_or_pv2_or_father_for_participant_verification", "TRUE")
         end
 
         it "is FALSE if this is NOT the pv1, pv2, or father event" do
           event = Factory(:event, :event_type_code => 18) # Birth
-          rsp = ResponseSetPopulator::ParticipantVerification.new(person, @instrument_pt1, survey_pt1, :event => event)
-          assert_response_value(rsp.populate, "prepopulated_is_pv1_or_pv2_or_father_for_participant_verification", "FALSE")
+          run_populator(event)
+          assert_response_value(@response_set_pt1, "prepopulated_is_pv1_or_pv2_or_father_for_participant_verification", "FALSE")
         end
 
       end
@@ -58,43 +64,45 @@ module NcsNavigator::Core
       describe "prepopulated_respondent_name_collected" do
 
         it "is FALSE if the person is missing a part of their name" do
-          person.stub!(:middle_name).and_return(nil)
+          person.update_attributes!(:middle_name => nil)
 
-          rsp = ResponseSetPopulator::ParticipantVerification.new(person, @instrument_pt1, survey_pt1)
-          assert_response_value(rsp.populate, "prepopulated_respondent_name_collected", "FALSE")
+          run_populator
+          assert_response_value(@response_set_pt1, "prepopulated_respondent_name_collected", "FALSE")
         end
 
         it "is TRUE if the person has a first, middle, and last name" do
           # sanity check
           [:first_name, :middle_name, :last_name].each { |name| person.send(name).should_not be_blank }
 
-          rsp = ResponseSetPopulator::ParticipantVerification.new(person, @instrument_pt1, survey_pt1)
-          assert_response_value(rsp.populate, "prepopulated_respondent_name_collected", "TRUE")
+          run_populator
+          assert_response_value(@response_set_pt1, "prepopulated_respondent_name_collected", "TRUE")
         end
 
         it "is TRUE if the person has a first, last and has responded has no middle name previously" do
           Person.any_instance.stub(:middle_name).and_return(nil)
           person.middle_name.should be_nil
 
+          init_instrument_and_response_set_pt1
           none = mock(NcsCode, :local_code => '-7')
           take_survey(survey_pt1, @response_set_pt1) do |r|
             r.a "PARTICIPANT_VERIF.R_MNAME", none
           end
 
-          rsp = ResponseSetPopulator::ParticipantVerification.new(person, @instrument_pt1, survey_pt1)
-          assert_response_value(rsp.populate, "prepopulated_respondent_name_collected", "TRUE")
+          run_populator
+          assert_response_value(@response_set_pt1, "prepopulated_respondent_name_collected", "TRUE")
         end
 
         it "is TRUE if the person has responded previously" do
 
+          init_instrument_and_response_set_pt1
           take_survey(survey_pt1, @response_set_pt1) do |r|
             r.a "PARTICIPANT_VERIF.R_FNAME", :value => "fname"
             r.a "PARTICIPANT_VERIF.R_MNAME", :value => "mname"
             r.a "PARTICIPANT_VERIF.R_LNAME", :value => "lname"
           end
 
-          rsp = ResponseSetPopulator::ParticipantVerification.new(person, @instrument_pt1, survey_pt1)
-          assert_response_value(rsp.populate, "prepopulated_respondent_name_collected", "TRUE")
+          run_populator
+          assert_response_value(@response_set_pt1, "prepopulated_respondent_name_collected", "TRUE")
         end
 
       end
@@ -103,14 +111,14 @@ module NcsNavigator::Core
 
         it "is TRUE for the PV1 event" do
           event = Factory(:event, :event_type_code => 13) # PV1
-          rsp = ResponseSetPopulator::ParticipantVerification.new(person, @instrument_pt1, survey_pt1, :event => event)
-          assert_response_value(rsp.populate, "prepopulated_should_show_maiden_name_and_nicknames", "TRUE")
+          run_populator(event)
+          assert_response_value(@response_set_pt1, "prepopulated_should_show_maiden_name_and_nicknames", "TRUE")
         end
 
         it "is FALSE for any event other than PV1 and Birth" do
           event = Factory(:event, :event_type_code => 15) # PV2
-          rsp = ResponseSetPopulator::ParticipantVerification.new(person, @instrument_pt1, survey_pt1, :event => event)
-          assert_response_value(rsp.populate, "prepopulated_should_show_maiden_name_and_nicknames", "FALSE")
+          run_populator(event)
+          assert_response_value(@response_set_pt1, "prepopulated_should_show_maiden_name_and_nicknames", "FALSE")
         end
 
         it "is TRUE for Birth if the PV1 is not complete" do
@@ -118,8 +126,8 @@ module NcsNavigator::Core
           Factory(:contact_link, :person => person, :contact => Factory(:contact), :event => pv1_event)
 
           event = Factory(:event, :event_type_code => 18) # Birth
-          rsp = ResponseSetPopulator::ParticipantVerification.new(person, @instrument_pt1, survey_pt1, :event => event)
-          assert_response_value(rsp.populate, "prepopulated_should_show_maiden_name_and_nicknames", "TRUE")
+          run_populator(event)
+          assert_response_value(@response_set_pt1, "prepopulated_should_show_maiden_name_and_nicknames", "TRUE")
         end
 
         it "is FALSE for Birth if the PV1 is complete" do
@@ -132,8 +140,8 @@ module NcsNavigator::Core
           pv1_event.save!
 
           event = Factory(:event, :event_type_code => 18) # Birth
-          rsp = ResponseSetPopulator::ParticipantVerification.new(person, @instrument_pt1, survey_pt1, :event => event)
-          assert_response_value(rsp.populate, "prepopulated_should_show_maiden_name_and_nicknames", "FALSE")
+          run_populator(event)
+          assert_response_value(@response_set_pt1, "prepopulated_should_show_maiden_name_and_nicknames", "FALSE")
         end
       end
 
@@ -142,42 +150,46 @@ module NcsNavigator::Core
         it "is TRUE if the person has a valid dob" do
           person.stub(:person_dob_date).and_return(Date.new(2001,1,1))
 
-          rsp = ResponseSetPopulator::ParticipantVerification.new(person, @instrument_pt1, survey_pt1)
-          assert_response_value(rsp.populate, "prepopulated_person_dob_previously_collected", "TRUE")
+          run_populator
+          assert_response_value(@response_set_pt1, "prepopulated_person_dob_previously_collected", "TRUE")
         end
 
         it "is TRUE if the person has responded previously" do
+          init_instrument_and_response_set_pt1
           take_survey(survey_pt1, @response_set_pt1) do |r|
             r.a "PARTICIPANT_VERIF.PERSON_DOB", :value => Date.new(2001,1,1)
           end
 
-          rsp = ResponseSetPopulator::ParticipantVerification.new(person, @instrument_pt1, survey_pt1)
-          assert_response_value(rsp.populate, "prepopulated_person_dob_previously_collected", "TRUE")
+          run_populator
+          assert_response_value(@response_set_pt1, "prepopulated_person_dob_previously_collected", "TRUE")
         end
 
         it "is FALSE if the person has responded refused previously" do
+          init_instrument_and_response_set_pt1
           take_survey(survey_pt1, @response_set_pt1) do |r|
             r.refused "PARTICIPANT_VERIF.PERSON_DOB"
           end
 
-          rsp = ResponseSetPopulator::ParticipantVerification.new(person, @instrument_pt1, survey_pt1)
-          assert_response_value(rsp.populate, "prepopulated_person_dob_previously_collected", "FALSE")
+          run_populator
+          assert_response_value(@response_set_pt1, "prepopulated_person_dob_previously_collected", "FALSE")
         end
 
         it "is FALSE if the person has responded don't know previously" do
+          init_instrument_and_response_set_pt1
           take_survey(survey_pt1, @response_set_pt1) do |r|
             r.dont_know "PARTICIPANT_VERIF.PERSON_DOB"
           end
 
-          rsp = ResponseSetPopulator::ParticipantVerification.new(person, @instrument_pt1, survey_pt1)
-          assert_response_value(rsp.populate, "prepopulated_person_dob_previously_collected", "FALSE")
+          run_populator
+          assert_response_value(@response_set_pt1, "prepopulated_person_dob_previously_collected", "FALSE")
         end
 
         it "is FALSE if the person has no dob and has not responded previously" do
+          init_instrument_and_response_set_pt1
           person.stub(:person_dob_date).and_return(nil)
 
-          rsp = ResponseSetPopulator::ParticipantVerification.new(person, @instrument_pt1, survey_pt1)
-          assert_response_value(rsp.populate, "prepopulated_person_dob_previously_collected", "TRUE")
+          run_populator
+          assert_response_value(@response_set_pt1, "prepopulated_person_dob_previously_collected", "TRUE")
         end
 
       end
@@ -185,7 +197,17 @@ module NcsNavigator::Core
     end
 
     context "with participant verification instrument part two" do
+      def init_instrument_and_response_set_pt2(event = nil)
+        @response_set_pt2, @instrument_pt2 = prepare_instrument(person, child, survey_pt2, nil, event)
+        @response_set_pt2.responses.should be_empty
+      end
 
+      def run_populator(event = nil)
+        init_instrument_and_response_set_pt2(event)
+        populator.run
+      end
+
+      let(:populator) { ParticipantVerification.new(@response_set_pt2) }
       let(:person) { Factory(:person) }
       let(:mother) { Factory(:participant) }
       let(:child_person) { Factory(:person) }
@@ -196,7 +218,6 @@ module NcsNavigator::Core
 
       let(:third_child_person) { Factory(:person) }
       let(:third_child) { Factory(:participant) }
-
 
       let(:survey_pt2) { create_participant_verification_part_two_survey_with_prepopulated_fields }
 
@@ -213,9 +234,6 @@ module NcsNavigator::Core
         # ParticipantPersonLink.create(:person_id => third_child_person.id, :participant_id => mother.id, :relationship_code => 8) # 8 Child
         # ParticipantPersonLink.create(:person_id => person.id, :participant_id => third_child.id, :relationship_code => 2) # 2 Mother
         # third_child.save!
-
-        @response_set_pt2, @instrument_pt2 = prepare_instrument(person, child, survey_pt2)
-        @response_set_pt2.responses.should be_empty
       end
 
       describe "prepopulated_should_show_child_name" do
@@ -224,29 +242,30 @@ module NcsNavigator::Core
           Person.any_instance.stub(:first_name).and_return(nil)
           Person.any_instance.stub(:last_name).and_return(nil)
 
-          rsp = ResponseSetPopulator::ParticipantVerification.new(person, @instrument_pt2, survey_pt2)
-          assert_response_value(rsp.populate, "prepopulated_should_show_child_name", "TRUE")
+          run_populator
+          assert_response_value(@response_set_pt2, "prepopulated_should_show_child_name", "TRUE")
         end
 
         it "is FALSE if the child (participant) name is known" do
           child_person.first_name.should_not be_nil
           child_person.last_name.should_not be_nil
 
-          rsp = ResponseSetPopulator::ParticipantVerification.new(person, @instrument_pt2, survey_pt2)
-          assert_response_value(rsp.populate, "prepopulated_should_show_child_name", "FALSE")
+          run_populator
+          assert_response_value(@response_set_pt2, "prepopulated_should_show_child_name", "FALSE")
         end
 
         it "is FALSE if the person has previously responded" do
           Person.any_instance.stub(:first_name).and_return(nil)
           Person.any_instance.stub(:last_name).and_return(nil)
 
+          init_instrument_and_response_set_pt2
           take_survey(survey_pt2, @response_set_pt2) do |r|
             r.a "PARTICIPANT_VERIF_CHILD.C_FNAME", :value => "cfname"
             r.a "PARTICIPANT_VERIF_CHILD.C_LNAME", :value => "clname"
           end
 
-          rsp = ResponseSetPopulator::ParticipantVerification.new(person, @instrument_pt2, survey_pt2)
-          assert_response_value(rsp.populate, "prepopulated_should_show_child_name", "FALSE")
+          run_populator
+          assert_response_value(@response_set_pt2, "prepopulated_should_show_child_name", "FALSE")
 
         end
 
@@ -254,26 +273,28 @@ module NcsNavigator::Core
           Person.any_instance.stub(:first_name).and_return(nil)
           Person.any_instance.stub(:last_name).and_return(nil)
 
+          init_instrument_and_response_set_pt2
           take_survey(survey_pt2, @response_set_pt2) do |r|
             r.refused "PARTICIPANT_VERIF_CHILD.C_FNAME"
             r.refused "PARTICIPANT_VERIF_CHILD.C_LNAME"
           end
 
-          rsp = ResponseSetPopulator::ParticipantVerification.new(person, @instrument_pt2, survey_pt2)
-          assert_response_value(rsp.populate, "prepopulated_should_show_child_name", "TRUE")
+          run_populator
+          assert_response_value(@response_set_pt2, "prepopulated_should_show_child_name", "TRUE")
         end
 
         it "is TRUE if the person has responded don't know previously" do
           Person.any_instance.stub(:first_name).and_return(nil)
           Person.any_instance.stub(:last_name).and_return(nil)
 
+          init_instrument_and_response_set_pt2
           take_survey(survey_pt2, @response_set_pt2) do |r|
             r.dont_know "PARTICIPANT_VERIF_CHILD.C_FNAME"
             r.dont_know "PARTICIPANT_VERIF_CHILD.C_LNAME"
           end
 
-          rsp = ResponseSetPopulator::ParticipantVerification.new(person, @instrument_pt2, survey_pt2)
-          assert_response_value(rsp.populate, "prepopulated_should_show_child_name", "TRUE")
+          run_populator
+          assert_response_value(@response_set_pt2, "prepopulated_should_show_child_name", "TRUE")
         end
 
       end
@@ -283,47 +304,50 @@ module NcsNavigator::Core
         it "is TRUE if the child (participant) dob is unknown" do
           Person.any_instance.stub(:person_dob_date).and_return(nil)
 
-          rsp = ResponseSetPopulator::ParticipantVerification.new(person, @instrument_pt2, survey_pt2)
-          assert_response_value(rsp.populate, "prepopulated_should_show_child_dob", "TRUE")
+          run_populator
+          assert_response_value(@response_set_pt2, "prepopulated_should_show_child_dob", "TRUE")
         end
 
         it "is FALSE if the child (participant) dob is known" do
           Person.any_instance.stub(:person_dob_date).and_return(Date.new(2001,1,1))
           child_person.person_dob_date.should_not be_nil
 
-          rsp = ResponseSetPopulator::ParticipantVerification.new(person, @instrument_pt2, survey_pt2)
-          assert_response_value(rsp.populate, "prepopulated_should_show_child_dob", "FALSE")
+          run_populator
+          assert_response_value(@response_set_pt2, "prepopulated_should_show_child_dob", "FALSE")
         end
 
         it "is FALSE if the person has previously responded" do
           Person.any_instance.stub(:first_name).and_return(nil)
           Person.any_instance.stub(:last_name).and_return(nil)
 
+          init_instrument_and_response_set_pt2
           take_survey(survey_pt2, @response_set_pt2) do |r|
             r.a "PARTICIPANT_VERIF_CHILD.CHILD_DOB", :value => Date.new(2001,1,1)
           end
 
-          rsp = ResponseSetPopulator::ParticipantVerification.new(person, @instrument_pt2, survey_pt2)
-          assert_response_value(rsp.populate, "prepopulated_should_show_child_dob", "FALSE")
+          run_populator
+          assert_response_value(@response_set_pt2, "prepopulated_should_show_child_dob", "FALSE")
 
         end
 
         it "is TRUE if the person has responded refused previously" do
+          init_instrument_and_response_set_pt2
           take_survey(survey_pt2, @response_set_pt2) do |r|
             r.refused "PARTICIPANT_VERIF_CHILD.CHILD_DOB"
           end
 
-          rsp = ResponseSetPopulator::ParticipantVerification.new(person, @instrument_pt2, survey_pt2)
-          assert_response_value(rsp.populate, "prepopulated_should_show_child_dob", "TRUE")
+          run_populator
+          assert_response_value(@response_set_pt2, "prepopulated_should_show_child_dob", "TRUE")
         end
 
         it "is TRUE if the person has responded don't know previously" do
+          init_instrument_and_response_set_pt2
           take_survey(survey_pt2, @response_set_pt2) do |r|
             r.dont_know "PARTICIPANT_VERIF_CHILD.CHILD_DOB"
           end
 
-          rsp = ResponseSetPopulator::ParticipantVerification.new(person, @instrument_pt2, survey_pt2)
-          assert_response_value(rsp.populate, "prepopulated_should_show_child_dob", "TRUE")
+          run_populator
+          assert_response_value(@response_set_pt2, "prepopulated_should_show_child_dob", "TRUE")
         end
 
       end
@@ -333,48 +357,51 @@ module NcsNavigator::Core
         it "is TRUE if the child (participant) sex is unknown" do
           Person.any_instance.stub(:sex_code).and_return(-4)
 
-          rsp = ResponseSetPopulator::ParticipantVerification.new(person, @instrument_pt2, survey_pt2)
-          assert_response_value(rsp.populate, "prepopulated_should_show_child_sex", "TRUE")
+          run_populator
+          assert_response_value(@response_set_pt2, "prepopulated_should_show_child_sex", "TRUE")
         end
 
         it "is FALSE if the child (participant) sex is known" do
           Person.any_instance.stub(:sex_code).and_return(1)
 
-          rsp = ResponseSetPopulator::ParticipantVerification.new(person, @instrument_pt2, survey_pt2)
-          assert_response_value(rsp.populate, "prepopulated_should_show_child_sex", "FALSE")
+          run_populator
+          assert_response_value(@response_set_pt2, "prepopulated_should_show_child_sex", "FALSE")
         end
 
         it "is FALSE if the person has previously responded" do
           Person.any_instance.stub(:sex_code).and_return(-4)
 
+          init_instrument_and_response_set_pt2
           take_survey(survey_pt2, @response_set_pt2) do |r|
             r.a "PARTICIPANT_VERIF_CHILD.CHILD_SEX", mock(NcsCode, :local_code => 1)
           end
 
-          rsp = ResponseSetPopulator::ParticipantVerification.new(person, @instrument_pt2, survey_pt2)
-          assert_response_value(rsp.populate, "prepopulated_should_show_child_sex", "FALSE")
+          run_populator
+          assert_response_value(@response_set_pt2, "prepopulated_should_show_child_sex", "FALSE")
         end
 
         it "is TRUE if the person has responded refused previously" do
           Person.any_instance.stub(:sex_code).and_return(-4)
 
+          init_instrument_and_response_set_pt2
           take_survey(survey_pt2, @response_set_pt2) do |r|
             r.refused "PARTICIPANT_VERIF_CHILD.CHILD_SEX"
           end
 
-          rsp = ResponseSetPopulator::ParticipantVerification.new(person, @instrument_pt2, survey_pt2)
-          assert_response_value(rsp.populate, "prepopulated_should_show_child_sex", "TRUE")
+          run_populator
+          assert_response_value(@response_set_pt2, "prepopulated_should_show_child_sex", "TRUE")
         end
 
         it "is TRUE if the person has responded don't know previously" do
           Person.any_instance.stub(:sex_code).and_return(-4)
 
+          init_instrument_and_response_set_pt2
           take_survey(survey_pt2, @response_set_pt2) do |r|
             r.dont_know "PARTICIPANT_VERIF_CHILD.CHILD_SEX"
           end
 
-          rsp = ResponseSetPopulator::ParticipantVerification.new(person, @instrument_pt2, survey_pt2)
-          assert_response_value(rsp.populate, "prepopulated_should_show_child_sex", "TRUE")
+          run_populator
+          assert_response_value(@response_set_pt2, "prepopulated_should_show_child_sex", "TRUE")
         end
 
       end
@@ -382,8 +409,8 @@ module NcsNavigator::Core
       describe "prepopulated_first_child" do
 
         it "is TRUE if the child (participant) is the first (or only) child" do
-          rsp = ResponseSetPopulator::ParticipantVerification.new(person, @instrument_pt2, survey_pt2)
-          assert_response_value(rsp.populate, "prepopulated_first_child", "TRUE")
+          run_populator
+          assert_response_value(@response_set_pt2, "prepopulated_first_child", "TRUE")
         end
 
         it "is FALSE if the child is not the first child" do
@@ -395,8 +422,8 @@ module NcsNavigator::Core
           @response_set_pt2_second_child, @instrument_pt2_second_child = prepare_instrument(person, second_child, survey_pt2)
           @response_set_pt2_second_child.responses.should be_empty
 
-          rsp = ResponseSetPopulator::ParticipantVerification.new(person, @instrument_pt2_second_child, survey_pt2)
-          assert_response_value(rsp.populate, "prepopulated_first_child", "FALSE")
+          ParticipantVerification.new(@response_set_pt2_second_child).run
+          assert_response_value(@response_set_pt2_second_child, "prepopulated_first_child", "FALSE")
         end
 
       end
@@ -404,16 +431,17 @@ module NcsNavigator::Core
       describe "prepopulated_resp_guard_previously_collected" do
 
         it "is FALSE if there is no previous response for RESP_GUARD" do
-          rsp = ResponseSetPopulator::ParticipantVerification.new(person, @instrument_pt2, survey_pt2)
-          assert_response_value(rsp.populate, "prepopulated_resp_guard_previously_collected", "FALSE")
+          run_populator
+          assert_response_value(@response_set_pt2, "prepopulated_resp_guard_previously_collected", "FALSE")
         end
 
         it "is TRUE if there is a previous response for RESP_GUARD" do
+          init_instrument_and_response_set_pt2
           take_survey(survey_pt2, @response_set_pt2) do |r|
             r.yes "PARTICIPANT_VERIF.RESP_GUARD"
           end
-          rsp = ResponseSetPopulator::ParticipantVerification.new(person, @instrument_pt2, survey_pt2)
-          assert_response_value(rsp.populate, "prepopulated_resp_guard_previously_collected", "TRUE")
+          run_populator
+          assert_response_value(@response_set_pt2, "prepopulated_resp_guard_previously_collected", "TRUE")
         end
 
       end
@@ -421,56 +449,61 @@ module NcsNavigator::Core
       describe "prepopulated_should_show_resp_pcare" do
 
         it "is TRUE if there is no response for RESP_PCARE" do
-          rsp = ResponseSetPopulator::ParticipantVerification.new(person, @instrument_pt2, survey_pt2)
-          assert_response_value(rsp.populate, "prepopulated_should_show_resp_pcare", "TRUE")
+          run_populator
+          assert_response_value(@response_set_pt2, "prepopulated_should_show_resp_pcare", "TRUE")
         end
 
         it "is TRUE if the person has responded refused previously" do
           Person.any_instance.stub(:sex_code).and_return(-4)
 
+          init_instrument_and_response_set_pt2
           take_survey(survey_pt2, @response_set_pt2) do |r|
             r.refused "PARTICIPANT_VERIF.RESP_PCARE"
           end
 
-          rsp = ResponseSetPopulator::ParticipantVerification.new(person, @instrument_pt2, survey_pt2)
-          assert_response_value(rsp.populate, "prepopulated_should_show_resp_pcare", "TRUE")
+          run_populator
+          assert_response_value(@response_set_pt2, "prepopulated_should_show_resp_pcare", "TRUE")
         end
 
         it "is TRUE if the person has responded don't know previously" do
           Person.any_instance.stub(:sex_code).and_return(-4)
 
+          init_instrument_and_response_set_pt2
           take_survey(survey_pt2, @response_set_pt2) do |r|
             r.dont_know "PARTICIPANT_VERIF.RESP_PCARE"
           end
-          rsp = ResponseSetPopulator::ParticipantVerification.new(person, @instrument_pt2, survey_pt2)
-          assert_response_value(rsp.populate, "prepopulated_should_show_resp_pcare", "TRUE")
+          run_populator
+          assert_response_value(@response_set_pt2, "prepopulated_should_show_resp_pcare", "TRUE")
         end
 
         it "is FALSE if there is a valid response for RESP_PCARE" do
+          init_instrument_and_response_set_pt2
           take_survey(survey_pt2, @response_set_pt2) do |r|
             r.yes "PARTICIPANT_VERIF.RESP_PCARE"
           end
-          rsp = ResponseSetPopulator::ParticipantVerification.new(person, @instrument_pt2, survey_pt2)
-          assert_response_value(rsp.populate, "prepopulated_should_show_resp_pcare", "FALSE")
+          run_populator
+          assert_response_value(@response_set_pt2, "prepopulated_should_show_resp_pcare", "FALSE")
         end
 
       end
 
       describe "prepopulated_resp_pcare_equals_one_in_previous_survey" do
         it "is FALSE if there is no previous response" do
-          rsp = ResponseSetPopulator::ParticipantVerification.new(person, @instrument_pt2, survey_pt2)
-          assert_response_value(rsp.populate, "prepopulated_resp_pcare_equals_one_in_previous_survey", "FALSE")
+          run_populator
+          assert_response_value(@response_set_pt2, "prepopulated_resp_pcare_equals_one_in_previous_survey", "FALSE")
         end
 
         it "is TRUE if there is only one previous response with a value of one" do
+          init_instrument_and_response_set_pt2
           take_survey(survey_pt2, @response_set_pt2) do |r|
             r.yes "PARTICIPANT_VERIF.RESP_PCARE"
           end
-          rsp = ResponseSetPopulator::ParticipantVerification.new(person, @instrument_pt2, survey_pt2)
-          assert_response_value(rsp.populate, "prepopulated_resp_pcare_equals_one_in_previous_survey", "TRUE")
+          run_populator
+          assert_response_value(@response_set_pt2, "prepopulated_resp_pcare_equals_one_in_previous_survey", "TRUE")
         end
 
         it "is TRUE if there is any one previous response with a value of one" do
+          init_instrument_and_response_set_pt2
           take_survey(survey_pt2, @response_set_pt2) do |r|
             r.dont_know "PARTICIPANT_VERIF.RESP_PCARE"
           end
@@ -479,35 +512,37 @@ module NcsNavigator::Core
             r.yes "PARTICIPANT_VERIF.RESP_PCARE"
           end
 
-          rsp = ResponseSetPopulator::ParticipantVerification.new(person, @instrument_pt2, survey_pt2)
-          assert_response_value(rsp.populate, "prepopulated_resp_pcare_equals_one_in_previous_survey", "TRUE")
+          run_populator
+          assert_response_value(@response_set_pt2, "prepopulated_resp_pcare_equals_one_in_previous_survey", "TRUE")
         end
       end
 
       describe "prepopulated_pcare_rel_previously_collected" do
 
         it "is FALSE if there is no previous response for PCARE_REL" do
-          rsp = ResponseSetPopulator::ParticipantVerification.new(person, @instrument_pt2, survey_pt2)
-          assert_response_value(rsp.populate, "prepopulated_pcare_rel_previously_collected", "FALSE")
+          run_populator
+          assert_response_value(@response_set_pt2, "prepopulated_pcare_rel_previously_collected", "FALSE")
         end
 
         it "is TRUE if there is a previous response for PCARE_REL" do
+          init_instrument_and_response_set_pt2
           take_survey(survey_pt2, @response_set_pt2) do |r|
             r.a "PARTICIPANT_VERIF.PCARE_REL", mock(NcsCode, :local_code => 1)
           end
-          rsp = ResponseSetPopulator::ParticipantVerification.new(person, @instrument_pt2, survey_pt2)
-          assert_response_value(rsp.populate, "prepopulated_pcare_rel_previously_collected", "TRUE")
+          run_populator
+          assert_response_value(@response_set_pt2, "prepopulated_pcare_rel_previously_collected", "TRUE")
         end
 
       end
 
       describe "prepopulated_ocare_child_previously_collected_and_equals_one" do
         it "is FALSE if there is no previous response" do
-          rsp = ResponseSetPopulator::ParticipantVerification.new(person, @instrument_pt2, survey_pt2)
-          assert_response_value(rsp.populate, "prepopulated_ocare_child_previously_collected_and_equals_one", "FALSE")
+          run_populator
+          assert_response_value(@response_set_pt2, "prepopulated_ocare_child_previously_collected_and_equals_one", "FALSE")
         end
 
         it "is TRUE if there is any one previous response with a value of one" do
+          init_instrument_and_response_set_pt2
           take_survey(survey_pt2, @response_set_pt2) do |r|
             r.dont_know "PARTICIPANT_VERIF.OCARE_CHILD"
           end
@@ -515,8 +550,8 @@ module NcsNavigator::Core
           take_survey(survey_pt2, @response_set_pt2) do |r|
             r.yes "PARTICIPANT_VERIF.OCARE_CHILD"
           end
-          rsp = ResponseSetPopulator::ParticipantVerification.new(person, @instrument_pt2, survey_pt2)
-          assert_response_value(rsp.populate, "prepopulated_ocare_child_previously_collected_and_equals_one", "TRUE")
+          run_populator
+          assert_response_value(@response_set_pt2, "prepopulated_ocare_child_previously_collected_and_equals_one", "TRUE")
         end
       end
 
@@ -526,19 +561,20 @@ module NcsNavigator::Core
           Person.any_instance.stub(:first_name).and_return(nil)
           Person.any_instance.stub(:last_name).and_return(nil)
 
+          init_instrument_and_response_set_pt2
           take_survey(survey_pt2, @response_set_pt2) do |r|
             r.yes "PARTICIPANT_VERIF.OCARE_CHILD"
           end
 
-          rsp = ResponseSetPopulator::ParticipantVerification.new(person, @instrument_pt2, survey_pt2)
-          assert_response_value(rsp.populate, "prepopulated_ocare_child_equal_one_and_other_caregiver_name_previously_collected", "FALSE")
+          run_populator
+          assert_response_value(@response_set_pt2, "prepopulated_ocare_child_equal_one_and_other_caregiver_name_previously_collected", "FALSE")
         end
-
 
         it "is FALSE if the person has NOT previously responded OCARE_CHILD = 1 && other caregiver name not valid" do
           Person.any_instance.stub(:first_name).and_return(nil)
           Person.any_instance.stub(:last_name).and_return(nil)
 
+          init_instrument_and_response_set_pt2
           take_survey(survey_pt2, @response_set_pt2) do |r|
             r.yes "PARTICIPANT_VERIF.OCARE_CHILD"
             r.dont_know "PARTICIPANT_VERIF.O_FNAME"
@@ -546,14 +582,15 @@ module NcsNavigator::Core
             r.dont_know "PARTICIPANT_VERIF.O_LNAME"
           end
 
-          rsp = ResponseSetPopulator::ParticipantVerification.new(person, @instrument_pt2, survey_pt2)
-          assert_response_value(rsp.populate, "prepopulated_ocare_child_equal_one_and_other_caregiver_name_previously_collected", "FALSE")
+          run_populator
+          assert_response_value(@response_set_pt2, "prepopulated_ocare_child_equal_one_and_other_caregiver_name_previously_collected", "FALSE")
         end
 
         it "is TRUE if the person has previously responded OCARE_CHILD = 1 && other caregiver name collected" do
           Person.any_instance.stub(:first_name).and_return(nil)
           Person.any_instance.stub(:last_name).and_return(nil)
 
+          init_instrument_and_response_set_pt2
           take_survey(survey_pt2, @response_set_pt2) do |r|
             r.yes "PARTICIPANT_VERIF.OCARE_CHILD"
             r.a "PARTICIPANT_VERIF.O_FNAME", :value => "ofname"
@@ -561,8 +598,8 @@ module NcsNavigator::Core
             r.a "PARTICIPANT_VERIF.O_LNAME", :value => "olname"
           end
 
-          rsp = ResponseSetPopulator::ParticipantVerification.new(person, @instrument_pt2, survey_pt2)
-          assert_response_value(rsp.populate, "prepopulated_ocare_child_equal_one_and_other_caregiver_name_previously_collected", "TRUE")
+          run_populator
+          assert_response_value(@response_set_pt2, "prepopulated_ocare_child_equal_one_and_other_caregiver_name_previously_collected", "TRUE")
         end
 
       end
@@ -570,16 +607,17 @@ module NcsNavigator::Core
       describe "prepopulated_ocare_rel_previously_collected" do
 
         it "is FALSE if there is no previous response for OCARE_REL" do
-          rsp = ResponseSetPopulator::ParticipantVerification.new(person, @instrument_pt2, survey_pt2)
-          assert_response_value(rsp.populate, "prepopulated_ocare_rel_previously_collected", "FALSE")
+          run_populator
+          assert_response_value(@response_set_pt2, "prepopulated_ocare_rel_previously_collected", "FALSE")
         end
 
         it "is TRUE if there is a previous response for OCARE_REL" do
+          init_instrument_and_response_set_pt2
           take_survey(survey_pt2, @response_set_pt2) do |r|
             r.a "PARTICIPANT_VERIF.OCARE_REL", mock(NcsCode, :local_code => 1)
           end
-          rsp = ResponseSetPopulator::ParticipantVerification.new(person, @instrument_pt2, survey_pt2)
-          assert_response_value(rsp.populate, "prepopulated_ocare_rel_previously_collected", "TRUE")
+          run_populator
+          assert_response_value(@response_set_pt2, "prepopulated_ocare_rel_previously_collected", "TRUE")
         end
 
       end
@@ -587,16 +625,17 @@ module NcsNavigator::Core
       describe "prepopulated_child_time_previously_collected" do
 
         it "is FALSE if there is no previous response for CHILD_TIME" do
-          rsp = ResponseSetPopulator::ParticipantVerification.new(person, @instrument_pt2, survey_pt2)
-          assert_response_value(rsp.populate, "prepopulated_child_time_previously_collected", "FALSE")
+          run_populator
+          assert_response_value(@response_set_pt2, "prepopulated_child_time_previously_collected", "FALSE")
         end
 
         it "is TRUE if there is a previous response for CHILD_TIME" do
+          init_instrument_and_response_set_pt2
           take_survey(survey_pt2, @response_set_pt2) do |r|
             r.a "PARTICIPANT_VERIF.CHILD_TIME", mock(NcsCode, :local_code => 1)
           end
-          rsp = ResponseSetPopulator::ParticipantVerification.new(person, @instrument_pt2, survey_pt2)
-          assert_response_value(rsp.populate, "prepopulated_child_time_previously_collected", "TRUE")
+          run_populator
+          assert_response_value(@response_set_pt2, "prepopulated_child_time_previously_collected", "TRUE")
         end
 
       end
@@ -604,16 +643,17 @@ module NcsNavigator::Core
       describe "prepopulated_child_secondary_address_variables_previously_collected" do
 
         it "is FALSE if there is no previous response for S_ADDRESS_1" do
-          rsp = ResponseSetPopulator::ParticipantVerification.new(person, @instrument_pt2, survey_pt2)
-          assert_response_value(rsp.populate, "prepopulated_child_secondary_address_variables_previously_collected", "FALSE")
+          run_populator
+          assert_response_value(@response_set_pt2, "prepopulated_child_secondary_address_variables_previously_collected", "FALSE")
         end
 
         it "is TRUE if there is a previous response for S_ADDRESS_1" do
+          init_instrument_and_response_set_pt2
           take_survey(survey_pt2, @response_set_pt2) do |r|
             r.a "PARTICIPANT_VERIF.S_ADDRESS_1", :value => "caddr1"
           end
-          rsp = ResponseSetPopulator::ParticipantVerification.new(person, @instrument_pt2, survey_pt2)
-          assert_response_value(rsp.populate, "prepopulated_child_secondary_address_variables_previously_collected", "TRUE")
+          run_populator
+          assert_response_value(@response_set_pt2, "prepopulated_child_secondary_address_variables_previously_collected", "TRUE")
         end
 
       end
@@ -621,23 +661,20 @@ module NcsNavigator::Core
       describe "prepopulated_sa_phone_previously_collected" do
 
         it "is FALSE if there is no previous response for SA_PHONE" do
-          rsp = ResponseSetPopulator::ParticipantVerification.new(person, @instrument_pt2, survey_pt2)
-          assert_response_value(rsp.populate, "prepopulated_sa_phone_previously_collected", "FALSE")
+          run_populator
+          assert_response_value(@response_set_pt2, "prepopulated_sa_phone_previously_collected", "FALSE")
         end
 
         it "is TRUE if there is a previous response for SA_PHONE" do
+          init_instrument_and_response_set_pt2
           take_survey(survey_pt2, @response_set_pt2) do |r|
             r.a "PARTICIPANT_VERIF.SA_PHONE", :value => "867-5309"
           end
-          rsp = ResponseSetPopulator::ParticipantVerification.new(person, @instrument_pt2, survey_pt2)
-          assert_response_value(rsp.populate, "prepopulated_sa_phone_previously_collected", "TRUE")
+          run_populator
+          assert_response_value(@response_set_pt2, "prepopulated_sa_phone_previously_collected", "TRUE")
         end
 
       end
-
-
     end
-
   end
-
 end

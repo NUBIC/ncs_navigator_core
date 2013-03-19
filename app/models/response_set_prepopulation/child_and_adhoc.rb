@@ -1,10 +1,19 @@
-# -*- coding: utf-8 -*-
-require 'ncs_navigator/core'
+module ResponseSetPrepopulation
+  class ChildAndAdhoc < Populator
+    include OldAccessMethods
 
-module NcsNavigator::Core::ResponseSetPopulator
-  class ChildAndAdHoc < Base
+    def self.applies_to?(rs)
+      [
+        /_PM_Child/,
+        /_BIO_Child/,
+        /_CON_Reconsideration/,
+        /_Father.*M2.1/,
+        /_InternetUseContact/,
+        /_MultiModeVisitInfo/
+      ].any?{ |regex| rs.survey.title =~ regex }
+    end
 
-    def reference_identifiers
+    def self.reference_identifiers
       [
         "prepopulated_should_show_upper_arm_length",
         "prepopulated_is_6_month_event",
@@ -17,13 +26,8 @@ module NcsNavigator::Core::ResponseSetPopulator
       ]
     end
 
-    ##
-    # Creates responses for questions with reference identifiers
-    # that are known values and should be prepopulated
-    # @param [ResponseSet]
-    # @return [ResponseSet]
-    def prepopulate_response_set(response_set)
-      reference_identifiers.each do |reference_identifier|
+    def run
+      self.class.reference_identifiers.each do |reference_identifier|
         if question = find_question_for_reference_identifier(
                                               reference_identifier)
           response_type = "answer"
@@ -104,6 +108,5 @@ module NcsNavigator::Core::ResponseSetPopulator
         ""
       end
     end
-
   end
 end
