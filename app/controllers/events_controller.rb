@@ -7,7 +7,7 @@ class EventsController < ApplicationController
   # GET /events.json
   def index
     params[:page] ||= 1
-        
+
     @q, @events = ransack_paginate(Event)
 
     respond_to do |format|
@@ -54,11 +54,10 @@ class EventsController < ApplicationController
 
         if @event.provider_recruitment_event?
           # do not set participant
-        else
-          participant = @event.participant
+        elsif participant = @event.participant
           unless participant.ineligible?
             resp = participant.advance(psc)
-            notice += " Could not schedule next event [#{participant.next_study_segment}]" unless resp
+            notice += " Scheduled next event [#{participant.next_study_segment}]" if resp
           end
         end
 
