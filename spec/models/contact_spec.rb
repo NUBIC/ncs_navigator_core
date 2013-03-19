@@ -391,7 +391,7 @@ describe Contact do
       contact1.should be_multiple_unique_events_for_contact
     end
 
-    it "returns true if a contact shares an event with other contacts, and contains no additional events" do
+    it "returns false if a contact shares an event with other contacts, and contains no additional events" do
       Factory(:contact_link, :event => event1, :contact => contact1)
       Factory(:contact_link, :event => event1, :contact => contact2)
       contact1.should_not be_multiple_unique_events_for_contact
