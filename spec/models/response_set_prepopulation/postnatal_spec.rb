@@ -121,7 +121,7 @@ module ResponseSetPrepopulation
 
         it "should be TRUE when valid answer to sureveys using WORK_ADDRESS1 exists." do
           @survey = create_generic_true_false_prepopulator_survey(
-                      "INS_QUE_Birth_INT_M3.2_V3.1_PART_TWO",
+                      "INS_QUE_Birth_INT_M3.2_V3.1_PART_ONE",
                       "prepopulated_is_valid_work_address_provided")
           init_common_vars
           take_work_surveys("INS_QUE_Birth_INT_M3.2_V3.1_PART_TWO",
