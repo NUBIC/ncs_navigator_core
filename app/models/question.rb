@@ -34,5 +34,8 @@ class Question < ActiveRecord::Base
   include Surveyor::Models::QuestionMethods
 
   default_scope :order => "display_order ASC, id ASC"
-end
 
+  def self.for_mustache_helpers
+    where("#{quoted_table_name}.reference_identifier LIKE 'helper_%'")
+  end
+end
