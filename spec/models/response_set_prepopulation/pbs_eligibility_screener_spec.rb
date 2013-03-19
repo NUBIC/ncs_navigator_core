@@ -1,12 +1,20 @@
-# -*- coding: utf-8 -*-
-
 require 'spec_helper'
 
-module NcsNavigator::Core
+require File.expand_path('../a_survey_title_acceptor', __FILE__)
 
-  describe ResponseSetPopulator::PbsEligibilityScreener do
+module ResponseSetPrepopulation
+  describe PbsEligibilityScreener do
+    it_should_behave_like 'a survey title acceptor', '_PBSamplingScreen_' do
+      let(:populator) { PbsEligibilityScreener }
+    end
 
     context "with pbs eligibility screener instrument" do
+      def run_populator(mode = nil)
+        populator.mode = mode
+        populator.run
+      end
+
+      let(:populator) { PbsEligibilityScreener.new(@response_set) }
 
       before(:each) do
         @person = Factory(:person)
@@ -22,26 +30,24 @@ module NcsNavigator::Core
       describe "contact type" do
         describe "in person" do
           it "sets prepopulated_mode_of_contact to CAPI" do
-            rsp = ResponseSetPopulator::PbsEligibilityScreener.new(@person, @instrument, @survey, :mode => Instrument.capi)
-            rs = rsp.populate
-            rs.responses.should_not be_empty
-            rs.should == @response_set
-            assert_response_value(rs, "prepopulated_mode_of_contact", "CAPI")
+            run_populator
+            @response_set.responses.should_not be_empty
+            assert_response_value(@response_set, "prepopulated_mode_of_contact", "CAPI")
           end
         end
 
         describe "telephone" do
           it "sets prepopulated_mode_of_contact to CATI" do
-            rsp = ResponseSetPopulator::PbsEligibilityScreener.new(@person, @instrument, @survey, :mode => Instrument.cati)
-            assert_response_value(rsp.populate, "prepopulated_mode_of_contact", "CATI")
+            run_populator(Instrument.cati)
+            assert_response_value(@response_set, "prepopulated_mode_of_contact", "CATI")
           end
         end
       end
 
       it "sets the psu id" do
         NcsNavigatorCore.stub(:psu).and_return("the_psu")
-        rsp = ResponseSetPopulator::PbsEligibilityScreener.new(@person, @instrument, @survey)
-        assert_response_value(rsp.populate, "prepopulated_psu_id", "the_psu")
+        run_populator
+        assert_response_value(@response_set, "prepopulated_psu_id", "the_psu")
       end
 
       describe "for a participant associated with a provider" do
@@ -51,8 +57,8 @@ module NcsNavigator::Core
           pbs_list = Factory(:pbs_list, :practice_num => 999, :provider => provider)
           person_provider_link = Factory(:person_provider_link, :person => @person, :provider => provider)
 
-          rsp = ResponseSetPopulator::PbsEligibilityScreener.new(@person, @instrument, @survey)
-          assert_response_value(rsp.populate, "prepopulated_practice_num", "999")
+          run_populator
+          assert_response_value(@response_set, "prepopulated_practice_num", "999")
         end
 
         it "does not create a response if the value is nil" do
@@ -60,8 +66,8 @@ module NcsNavigator::Core
           pbs_list = Factory(:pbs_list, :practice_num => nil, :provider => provider)
           person_provider_link = Factory(:person_provider_link, :person => @person, :provider => provider)
 
-          rsp = ResponseSetPopulator::PbsEligibilityScreener.new(@person, @instrument, @survey)
-          rs = rsp.populate
+          run_populator
+          rs = @response_set
           response = rs.responses.select { |r| r.question.reference_identifier == "prepopulated_practice_num" }.first
           response.should be_nil
         end
@@ -70,16 +76,16 @@ module NcsNavigator::Core
           provider = Factory(:provider)
           person_provider_link = Factory(:person_provider_link, :person => @person, :provider => provider)
 
-          rsp = ResponseSetPopulator::PbsEligibilityScreener.new(@person, @instrument, @survey)
-          assert_response_value(rsp.populate, "prepopulated_provider_id", provider.public_id)
+          run_populator
+          assert_response_value(@response_set, "prepopulated_provider_id", provider.public_id)
         end
 
         it "sets the name of the practice" do
           provider = Factory(:provider, :name_practice => "provider name of practice")
           person_provider_link = Factory(:person_provider_link, :person => @person, :provider => provider)
 
-          rsp = ResponseSetPopulator::PbsEligibilityScreener.new(@person, @instrument, @survey)
-          assert_response_value(rsp.populate, "prepopulated_name_practice", "provider name of practice")
+          run_populator
+          assert_response_value(@response_set, "prepopulated_name_practice", "provider name of practice")
         end
 
         it "uses the first known provider to prepopulate" do
@@ -89,8 +95,8 @@ module NcsNavigator::Core
           provider = Factory(:provider, :name_practice => "NOT THIS ONE")
           person_provider_link = Factory(:person_provider_link, :person => @person, :provider => provider)
 
-          rsp = ResponseSetPopulator::PbsEligibilityScreener.new(@person, @instrument, @survey)
-          assert_response_value(rsp.populate, "prepopulated_name_practice", "provider name of practice")
+          run_populator
+          assert_response_value(@response_set, "prepopulated_name_practice", "provider name of practice")
         end
 
       end
@@ -103,5 +109,4 @@ module NcsNavigator::Core
     end
 
   end
-
 end

@@ -1,10 +1,12 @@
-# -*- coding: utf-8 -*-
-
 require 'spec_helper'
 
-module NcsNavigator::Core
+require File.expand_path('../a_survey_title_acceptor', __FILE__)
 
-  describe ResponseSetPopulator::LowIntensity do
+module ResponseSetPrepopulation
+  describe LowIntensity do
+    it_should_behave_like 'a survey title acceptor', '_QUE_LI' do
+      let(:populator) { LowIntensity }
+    end
 
     context "with the lo i quex" do
 
@@ -28,15 +30,11 @@ module NcsNavigator::Core
       end
 
       it "sets prepopulated_ppg_status" do
-        rsp = ResponseSetPopulator::LowIntensity.new(@person, @instrument, @survey)
-        rs = rsp.populate
-        rs.responses.should_not be_empty
-        rs.responses.first.to_s.should == @participant.ppg_status.local_code.to_s
-        rs.should == @response_set
+        rsp = LowIntensity.new(@response_set)
+        rs = rsp.run
+        @response_set.responses.first.to_s.should == @participant.ppg_status.local_code.to_s
       end
 
     end
-
   end
-
 end

@@ -1,22 +1,19 @@
-# -*- coding: utf-8 -*-
-require 'ncs_navigator/core'
+module ResponseSetPrepopulation
+  class LowIntensity < Populator
+    include OldAccessMethods
 
-module NcsNavigator::Core::ResponseSetPopulator
-  class LowIntensity < Base
+    def self.applies_to?(rs)
+      rs.survey.title.include?('_QUE_LI')
+    end
 
-    def reference_identifiers
+    def self.reference_identifiers
       [
         "prepopulated_ppg_status",
       ]
     end
 
-    ##
-    # Creates responses for questions with reference identifiers
-    # that are known values and should be prepopulated
-    # @param [ResponseSet]
-    # @return [ResponseSet]
-    def prepopulate_response_set(response_set)
-      reference_identifiers.each do |reference_identifier|
+    def run
+      self.class.reference_identifiers.each do |reference_identifier|
         if question = find_question_for_reference_identifier(reference_identifier)
           answer = question.answers.first
           value = case reference_identifier
@@ -33,6 +30,5 @@ module NcsNavigator::Core::ResponseSetPopulator
       end
       response_set
     end
-
   end
 end

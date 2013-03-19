@@ -1,10 +1,12 @@
-# -*- coding: utf-8 -*-
-require 'ncs_navigator/core'
+module ResponseSetPrepopulation
+  class Birth < Populator
+    include OldAccessMethods
 
-module NcsNavigator::Core::ResponseSetPopulator
-  class Birth < Base
+    def self.applies_to?(rs)
+      rs.survey.title.include?('_Birth_')
+    end
 
-    def reference_identifiers
+    def self.reference_identifiers
       [
         "prepopulated_mode_of_contact",
         "prepopulated_birth_deliver_from_birth_visit_part_one",
@@ -18,13 +20,8 @@ module NcsNavigator::Core::ResponseSetPopulator
       ]
     end
 
-    ##
-    # Creates responses for questions with reference identifiers
-    # that are known values and should be prepopulated
-    # @param [ResponseSet]
-    # @return [ResponseSet]
-    def prepopulate_response_set(response_set)
-      reference_identifiers.each do |reference_identifier|
+    def run
+      self.class.reference_identifiers.each do |reference_identifier|
         if question = find_question_for_reference_identifier(reference_identifier)
           response_type = "answer"
 
@@ -36,12 +33,12 @@ module NcsNavigator::Core::ResponseSetPopulator
                                                          "BIRTH_DELIVER")
                     answer_equal_to_response_from_part_one_for(question, dei)
                   when "prepopulated_release_from_birth_visit_part_one"
-                    dei = birth_visit_part_one_export_id(response_set,
-                                                         "RELEASE")
+                    dei =  dei = birth_visit_part_one_export_id(response_set,
+                                                                "RELEASE")
                     answer_equal_to_response_from_part_one_for(question, dei)
                   when "prepopulated_multiple_from_birth_visit_part_one"
-                    dei = birth_visit_part_one_export_id(response_set,
-                                                         "MULTIPLE")
+                    dei =  birth_visit_part_one_export_id(response_set,
+                                                          "MULTIPLE")
                     answer_equal_to_response_from_part_one_for(question, dei)
                   when "prepopulated_is_valid_work_name_provided"
                     is_valid_work_name_provided?(question)
@@ -57,10 +54,9 @@ module NcsNavigator::Core::ResponseSetPopulator
                     nil
                   end
 
-        build_response_for_value(response_type, response_set, question, answer, nil)
+          build_response_for_value(response_type, response_set, question, answer, nil)
         end
       end
-      response_set
     end
 
     def birth_visit_part_one_export_id(response_set, data_ref)
@@ -80,6 +76,7 @@ module NcsNavigator::Core::ResponseSetPopulator
         question.answers.detect { |a| a.reference_identifier == most_recent_response.answer.reference_identifier }
       end
     end
+
     # PROGRAMMER INSTRUCTION:
     # - IF EMPLOY2 = 1, AND WORK_NAME PREVIOUSLY SET TO COMPLETE, AND VALID RESPONSE PROVIDED, GO TO WORK_NAME_CONFIRM.
     # - IF EMPLOY2 = 1, AND WORK_NAME PREVIOUSLY NOT SET TO COMPLETE, GO TO WORK_NAME.
@@ -110,6 +107,5 @@ module NcsNavigator::Core::ResponseSetPopulator
     def is_participant_p_type_15?(question)
       answer_for(question, participant.p_type.local_code == 15 ? true : false)
     end
-
-end
+  end
 end

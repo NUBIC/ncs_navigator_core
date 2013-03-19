@@ -2,15 +2,20 @@
 
 require 'spec_helper'
 
-module NcsNavigator::Core
+require File.expand_path('../a_survey_title_acceptor', __FILE__)
 
-  describe ResponseSetPopulator::Birth do
+module ResponseSetPrepopulation
+  describe Birth do
     include SurveyCompletion
 
     def assert_response_value(response_set, reference_identifier, value)
       response = response_set.responses.select { |r| r.question.reference_identifier == reference_identifier }.first
       response.should_not be_nil
       response.to_s.should == value
+    end
+
+    def run_populator
+      Birth.new(@response_set_pt2).run
     end
 
     context "for version dependent responses from part one prepopulated in part two" do
@@ -25,7 +30,6 @@ module NcsNavigator::Core
 
           @survey_pt2 = create_birth_part_two_survey_with_prepopulated_fields_from_part_one(survey2_name)
           @response_set_pt2, @instrument_pt2 = prepare_instrument(person, participant, @survey_pt2)
-          @rsp = ResponseSetPopulator::Birth.new(person, @instrument_pt2, @survey_pt2)
       end
 
       before(:each) do
@@ -38,29 +42,33 @@ module NcsNavigator::Core
         it "response should not exist if the question has not previously been answered for instrument MDES version 3.0" do
           prepare_surveys("INS_QUE_Birth_INT_EHPBHIPBS_M3.0_V3.0_PART_ONE", "BIRTH_VISIT_3", "INS_QUE_Birth_INT_EHPBHIPBS_M3.0_V3.0_PART_TWO")
           params = { :person => person, :instrument => @instrument_pt2, :survey => @survey_pt2 }
+          run_populator
           responses = @response_set_pt2.responses.select do |r|
             r.question.reference_identifier == "prepopulated_birth_deliver_from_birth_visit_part_one"
           end
+
           responses.should be_empty
         end
 
         it "should be set to the response from part_one for instrument MDES version 3.0" do
           prepare_surveys("INS_QUE_Birth_INT_EHPBHIPBS_M3.0_V3.0_PART_ONE", "BIRTH_VISIT_3", "INS_QUE_Birth_INT_EHPBHIPBS_M3.0_V3.0_PART_TWO")
           some_other_place = mock(NcsCode, :local_code => 'some_other_place')
-
           take_survey(@survey_pt1, @response_set_pt1) do |r|
             r.a "BIRTH_VISIT_3.BIRTH_DELIVER", some_other_place
           end
+          run_populator
 
-          assert_response_value(@rsp.populate, "prepopulated_birth_deliver_from_birth_visit_part_one", "SOME OTHER PLACE")
+          assert_response_value(@response_set_pt2, "prepopulated_birth_deliver_from_birth_visit_part_one", "SOME OTHER PLACE")
         end
 
         it "response should not exist if the question has not previously been answered for instrument MDES version 3.1" do
           prepare_surveys("INS_QUE_Birth_INT_LI_M3.1_V2.0_PART_ONE", "BIRTH_VISIT_LI_2", "INS_QUE_Birth_INT_LI_M3.1_V2.0_PART_TWO")
           params = { :person => person, :instrument => @instrument_pt2, :survey => @survey_pt2 }
+          run_populator
           responses = @response_set_pt2.responses.select do |r|
             r.question.reference_identifier == "prepopulated_birth_deliver_from_birth_visit_part_one"
           end
+
           responses.should be_empty
         end
 
@@ -70,16 +78,19 @@ module NcsNavigator::Core
           take_survey(@survey_pt1, @response_set_pt1) do |r|
             r.a "BIRTH_VISIT_LI_2.BIRTH_DELIVER", some_other_place
           end
+          run_populator
 
-          assert_response_value(@rsp.populate, "prepopulated_birth_deliver_from_birth_visit_part_one", "SOME OTHER PLACE")
+          assert_response_value(@response_set_pt2, "prepopulated_birth_deliver_from_birth_visit_part_one", "SOME OTHER PLACE")
         end
 
         it "response should not exist if the question has not previously been answered for instrument MDES version 3.2" do
           prepare_surveys("INS_QUE_Birth_INT_M3.2_V3.1_PART_ONE", "BIRTH_VISIT_4", "INS_QUE_Birth_INT_M3.2_V3.1_PART_TWO")
           params = { :person => person, :instrument => @instrument_pt2, :survey => @survey_pt2 }
+          run_populator
           responses = @response_set_pt2.responses.select do |r|
             r.question.reference_identifier == "prepopulated_birth_deliver_from_birth_visit_part_one"
           end
+
           responses.should be_empty
         end
 
@@ -89,17 +100,17 @@ module NcsNavigator::Core
           take_survey(@survey_pt1, @response_set_pt1) do |r|
             r.a "BIRTH_VISIT_4.BIRTH_DELIVER", some_other_place
           end
+          run_populator
 
-          assert_response_value(@rsp.populate, "prepopulated_birth_deliver_from_birth_visit_part_one", "SOME OTHER PLACE")
+          assert_response_value(@response_set_pt2, "prepopulated_birth_deliver_from_birth_visit_part_one", "SOME OTHER PLACE")
         end
-
       end
 
       describe "RELEASE" do
-
         it "response should not exist if the question has not previously been answered for instrument MDES version prior to 3.0" do
           prepare_surveys("INS_QUE_Birth_INT_LI_P2_V10_PART_ONE", "BIRTH_VISIT_LI", "INS_QUE_Birth_INT_LI_P2_V10_PART_TWO")
           params = { :person => person, :instrument => @instrument_pt2, :survey => @survey_pt2 }
+          run_populator
           responses = @response_set_pt2.responses.select do |r|
             r.question.reference_identifier == "prepopulated_release_from_birth_visit_part_one"
           end
@@ -108,16 +119,18 @@ module NcsNavigator::Core
 
         it "should be set to the response from part_one for instrument MDES version prior to 3.0" do
           prepare_surveys("INS_QUE_Birth_INT_LI_P2_V10_PART_ONE", "BIRTH_VISIT_LI", "INS_QUE_Birth_INT_LI_P2_V10_PART_TWO")
-          take_survey(@survey_pt1, @response_set_pt1) do |r|
-            r.yes "BIRTH_VISIT_LI.RELEASE"
+          take_survey(@survey_pt1, @response_set_pt1) do |a|
+            a.yes "BIRTH_VISIT_LI.RELEASE"
           end
+          run_populator
 
-          assert_response_value(@rsp.populate, "prepopulated_release_from_birth_visit_part_one", "YES")
+          assert_response_value(@response_set_pt2, "prepopulated_release_from_birth_visit_part_one", "YES")
         end
 
         it "response should not exist if the question has not previously been answered for instrument MDES version 3.0" do
           prepare_surveys("INS_QUE_Birth_INT_EHPBHIPBS_M3.0_V3.0_PART_ONE", "BIRTH_VISIT_3", "INS_QUE_Birth_INT_EHPBHIPBS_M3.0_V3.0_PART_TWO")
           params = { :person => person, :instrument => @instrument_pt2, :survey => @survey_pt2 }
+          run_populator
           responses = @response_set_pt2.responses.select do |r|
             r.question.reference_identifier == "prepopulated_release_from_birth_visit_part_one"
           end
@@ -129,13 +142,15 @@ module NcsNavigator::Core
           take_survey(@survey_pt1, @response_set_pt1) do |r|
             r.yes "BIRTH_VISIT_3.RELEASE"
           end
+          run_populator
 
-          assert_response_value(@rsp.populate, "prepopulated_release_from_birth_visit_part_one", "YES")
+          assert_response_value(@response_set_pt2, "prepopulated_release_from_birth_visit_part_one", "YES")
         end
 
         it "response should not exist if the question has not previously been answered for instrument MDES version 3.1" do
           prepare_surveys("INS_QUE_Birth_INT_LI_M3.1_V2.0_PART_ONE", "BIRTH_VISIT_LI_2", "INS_QUE_Birth_INT_LI_M3.1_V2.0_PART_TWO")
           params = { :person => person, :instrument => @instrument_pt2, :survey => @survey_pt2 }
+          run_populator
           responses = @response_set_pt2.responses.select do |r|
             r.question.reference_identifier == "prepopulated_release_from_birth_visit_part_one"
           end
@@ -144,16 +159,18 @@ module NcsNavigator::Core
 
         it "should be set to the response from part_one for instrument MDES version 3.1" do
           prepare_surveys("INS_QUE_Birth_INT_LI_M3.1_V2.0_PART_ONE", "BIRTH_VISIT_LI_2", "INS_QUE_Birth_INT_LI_M3.1_V2.0_PART_TWO")
-          take_survey(@survey_pt1, @response_set_pt1) do |r|
-            r.yes "BIRTH_VISIT_LI_2.RELEASE"
+          take_survey(@survey_pt1, @response_set_pt1) do |a|
+            a.yes "BIRTH_VISIT_LI_2.RELEASE"
           end
+          run_populator
 
-          assert_response_value(@rsp.populate, "prepopulated_release_from_birth_visit_part_one", "YES")
+          assert_response_value(@response_set_pt2, "prepopulated_release_from_birth_visit_part_one", "YES")
         end
 
         it "response should not exist if the question has not previously been answered for instrument MDES version 3.2" do
           prepare_surveys("INS_QUE_Birth_INT_M3.2_V3.1_PART_ONE", "BIRTH_VISIT_4", "INS_QUE_Birth_INT_M3.2_V3.1_PART_TWO")
           params = { :person => person, :instrument => @instrument_pt2, :survey => @survey_pt2 }
+          run_populator
           responses = @response_set_pt2.responses.select do |r|
             r.question.reference_identifier == "prepopulated_release_from_birth_visit_part_one"
           end
@@ -162,11 +179,12 @@ module NcsNavigator::Core
 
         it "should be set to the response from part_one for instrument MDES version 3.2" do
           prepare_surveys("INS_QUE_Birth_INT_M3.2_V3.1_PART_ONE", "BIRTH_VISIT_4", "INS_QUE_Birth_INT_M3.2_V3.1_PART_TWO")
-          take_survey(@survey_pt1, @response_set_pt1) do |r|
-            r.yes "BIRTH_VISIT_4.RELEASE"
+          take_survey(@survey_pt1, @response_set_pt1) do |a|
+            a.yes "BIRTH_VISIT_4.RELEASE"
           end
+          run_populator
 
-          assert_response_value(@rsp.populate, "prepopulated_release_from_birth_visit_part_one", "YES")
+          assert_response_value(@response_set_pt2, "prepopulated_release_from_birth_visit_part_one", "YES")
         end
 
       end
@@ -176,25 +194,30 @@ module NcsNavigator::Core
         it "should be set to the response from part_one for instrument MDES version prior to 3.0" do
           prepare_surveys("INS_QUE_Birth_INT_LI_P2_V10_PART_ONE", "BIRTH_VISIT_LI", "INS_QUE_Birth_INT_LI_P2_V10_PART_TWO")
           params = { :person => person, :instrument => @instrument_pt2, :survey => @survey_pt2 }
+          run_populator
           responses = @response_set_pt2.responses.select do |r|
             r.question.reference_identifier == "prepopulated_multiple_from_birth_visit_part_one"
           end
           responses.should be_empty
         end
 
-        it "should be set to the response from part_one for instrument MDES version prior ot 3.0" do
+        it "should be set to the response from part_one for instrument MDES version prior to 3.0" do
           prepare_surveys("INS_QUE_Birth_INT_LI_P2_V10_PART_ONE", "BIRTH_VISIT_LI", "INS_QUE_Birth_INT_LI_P2_V10_PART_TWO")
-          take_survey(@survey_pt1, @response_set_pt1) do |r|
-            r.no "BIRTH_VISIT_LI.MULTIPLE"
+          take_survey(@survey_pt1, @response_set_pt1) do |a|
+            a.no "BIRTH_VISIT_LI.MULTIPLE"
           end
+          run_populator
+          assert_response_value(@response_set_pt2, "prepopulated_multiple_from_birth_visit_part_one", "NO")
         end
 
         it "response should not exist if the question has not previously been answered for instrument MDES version 3.0" do
           prepare_surveys("INS_QUE_Birth_INT_EHPBHIPBS_M3.0_V3.0_PART_ONE", "BIRTH_VISIT_3", "INS_QUE_Birth_INT_EHPBHIPBS_M3.0_V3.0_PART_TWO")
           params = { :person => person, :instrument => @instrument_pt2, :survey => @survey_pt2 }
+          run_populator
           responses = @response_set_pt2.responses.select do |r|
             r.question.reference_identifier == "prepopulated_multiple_from_birth_visit_part_one"
           end
+
           responses.should be_empty
         end
 
@@ -203,13 +226,15 @@ module NcsNavigator::Core
           take_survey(@survey_pt1, @response_set_pt1) do |r|
             r.no "BIRTH_VISIT_3.MULTIPLE"
           end
+          run_populator
 
-          assert_response_value(@rsp.populate, "prepopulated_multiple_from_birth_visit_part_one", "NO")
+          assert_response_value(@response_set_pt2, "prepopulated_multiple_from_birth_visit_part_one", "NO")
         end
 
         it "response should not exist if the question has not previously been answered for instrument MDES version 3.1" do
           prepare_surveys("INS_QUE_Birth_INT_LI_M3.1_V2.0_PART_ONE", "BIRTH_VISIT_LI_2", "INS_QUE_Birth_INT_LI_M3.1_V2.0_PART_TWO")
           params = { :person => person, :instrument => @instrument_pt2, :survey => @survey_pt2 }
+          run_populator
           responses = @response_set_pt2.responses.select do |r|
             r.question.reference_identifier == "prepopulated_multiple_from_birth_visit_part_one"
           end
@@ -218,16 +243,18 @@ module NcsNavigator::Core
 
         it "should be set to the response from part_one for instrument MDES version 3.1" do
           prepare_surveys("INS_QUE_Birth_INT_LI_M3.1_V2.0_PART_ONE", "BIRTH_VISIT_LI_2", "INS_QUE_Birth_INT_LI_M3.1_V2.0_PART_TWO")
-          take_survey(@survey_pt1, @response_set_pt1) do |r|
-            r.no "BIRTH_VISIT_LI_2.MULTIPLE"
+          take_survey(@survey_pt1, @response_set_pt1) do |a|
+            a.no "BIRTH_VISIT_LI_2.MULTIPLE"
           end
+          run_populator
 
-          assert_response_value(@rsp.populate, "prepopulated_multiple_from_birth_visit_part_one", "NO")
+          assert_response_value(@response_set_pt2, "prepopulated_multiple_from_birth_visit_part_one", "NO")
         end
 
         it "response should not exist if the question has not previously been answered for instrument MDES version 3.2" do
           prepare_surveys("INS_QUE_Birth_INT_M3.2_V3.1_PART_ONE", "BIRTH_VISIT_4", "INS_QUE_Birth_INT_M3.2_V3.1_PART_TWO")
           params = { :person => person, :instrument => @instrument_pt2, :survey => @survey_pt2 }
+          run_populator
           responses = @response_set_pt2.responses.select do |r|
             r.question.reference_identifier == "prepopulated_multiple_from_birth_visit_part_one"
           end
@@ -236,14 +263,14 @@ module NcsNavigator::Core
 
         it "should be set to the response from part_one for instrument MDES version 3.2" do
           prepare_surveys("INS_QUE_Birth_INT_M3.2_V3.1_PART_ONE", "BIRTH_VISIT_4", "INS_QUE_Birth_INT_M3.2_V3.1_PART_TWO")
-          take_survey(@survey_pt1, @response_set_pt1) do |r|
-            r.no "BIRTH_VISIT_4.MULTIPLE"
+          take_survey(@survey_pt1, @response_set_pt1) do |a|
+            a.no "BIRTH_VISIT_4.MULTIPLE"
           end
+          run_populator
 
-          assert_response_value(@rsp.populate, "prepopulated_multiple_from_birth_visit_part_one", "NO")
+          assert_response_value(@response_set_pt2, "prepopulated_multiple_from_birth_visit_part_one", "NO")
         end
       end
-
     end
 
     context "for responses from part one prepopulated in part two" do
@@ -262,13 +289,13 @@ module NcsNavigator::Core
         # Yes this should be the same instrument - bypassing the PSC reference connection for now
         @response_set_pt2, @instrument_pt2 = prepare_instrument(person, participant, survey_pt2)
         @response_set_pt2.responses.should be_empty
-        @rsp = ResponseSetPopulator::Birth.new(person, @instrument_pt2, survey_pt2)
       end
 
       describe "prepopulated_is_valid_work_name_provided" do
 
         it "should be FALSE if work name was not previously answered" do
-          assert_response_value(@rsp.populate, "prepopulated_is_valid_work_name_provided", "FALSE")
+          run_populator
+          assert_response_value(@response_set_pt2, "prepopulated_is_valid_work_name_provided", "FALSE")
         end
 
         it "should be FALSE if work name was previously answered as refused" do
@@ -277,8 +304,9 @@ module NcsNavigator::Core
           take_survey(pv1_survey, pv1_response_set) do |r|
             r.refused "PREG_VISIT_1_3.WORK_NAME"
           end
+          run_populator
 
-          assert_response_value(@rsp.populate, "prepopulated_is_valid_work_name_provided", "FALSE")
+          assert_response_value(@response_set_pt2, "prepopulated_is_valid_work_name_provided", "FALSE")
         end
 
         it "should be FALSE if work name was previously answered as don't know" do
@@ -287,8 +315,9 @@ module NcsNavigator::Core
           take_survey(pv1_survey, pv1_response_set) do |r|
             r.dont_know "PREG_VISIT_1_3.WORK_NAME"
           end
+          run_populator
 
-          assert_response_value(@rsp.populate, "prepopulated_is_valid_work_name_provided", "FALSE")
+          assert_response_value(@response_set_pt2, "prepopulated_is_valid_work_name_provided", "FALSE")
         end
 
         it "should be TRUE if work name was previously answered" do
@@ -297,8 +326,10 @@ module NcsNavigator::Core
           take_survey(pv1_survey, pv1_response_set) do |r|
             r.a "PREG_VISIT_1_3.WORK_NAME", "work_name"
           end
+          run_populator
 
-          assert_response_value(@rsp.populate, "prepopulated_is_valid_work_name_provided", "TRUE")
+          puts @response_set_pt2.responses.map{|r| [r.question.reference_identifier, r.answer.reference_identifier] }
+          assert_response_value(@response_set_pt2, "prepopulated_is_valid_work_name_provided", "TRUE")
         end
 
       end
@@ -306,7 +337,8 @@ module NcsNavigator::Core
       describe "prepopulated_is_valid_work_address_provided" do
 
         it "should be FALSE if work address was not previously answered" do
-          assert_response_value(@rsp.populate, "prepopulated_is_valid_work_address_provided", "FALSE")
+          run_populator
+          assert_response_value(@response_set_pt2, "prepopulated_is_valid_work_address_provided", "FALSE")
         end
 
         it "should be FALSE if work address was previously answered as refused" do
@@ -315,8 +347,9 @@ module NcsNavigator::Core
           take_survey(pv1_survey, pv1_response_set) do |r|
             r.refused "PREG_VISIT_1_3.WORK_ADDRESS_1"
           end
+          run_populator
 
-          assert_response_value(@rsp.populate, "prepopulated_is_valid_work_address_provided", "FALSE")
+          assert_response_value(@response_set_pt2, "prepopulated_is_valid_work_address_provided", "FALSE")
         end
 
         it "should be FALSE if work address was previously answered as don't know" do
@@ -325,8 +358,9 @@ module NcsNavigator::Core
           take_survey(pv1_survey, pv1_response_set) do |r|
             r.dont_know "PREG_VISIT_1_3.WORK_ADDRESS_1"
           end
+          run_populator
 
-          assert_response_value(@rsp.populate, "prepopulated_is_valid_work_address_provided", "FALSE")
+          assert_response_value(@response_set_pt2, "prepopulated_is_valid_work_address_provided", "FALSE")
         end
 
         it "should be TRUE if work address was previously answered" do
@@ -335,8 +369,9 @@ module NcsNavigator::Core
           take_survey(pv1_survey, pv1_response_set) do |r|
             r.a "PREG_VISIT_1_3.WORK_ADDRESS_1", "work_address"
           end
+          run_populator
 
-          assert_response_value(@rsp.populate, "prepopulated_is_valid_work_address_provided", "TRUE")
+          assert_response_value(@response_set_pt2, "prepopulated_is_valid_work_address_provided", "TRUE")
         end
 
       end
@@ -344,24 +379,28 @@ module NcsNavigator::Core
       describe "prepopulated_is_pv_one_complete" do
         it "should be TRUE if the pv1 event was completed" do
           Participant.any_instance.stub(:completed_event?).and_return(true)
-          assert_response_value(@rsp.populate, "prepopulated_is_pv_one_complete", "TRUE")
+          run_populator
+          assert_response_value(@response_set_pt2, "prepopulated_is_pv_one_complete", "TRUE")
         end
 
         it "should be FALSE if the pv1 event was NOT completed" do
           Participant.any_instance.stub(:completed_event?).and_return(false)
-          assert_response_value(@rsp.populate, "prepopulated_is_pv_one_complete", "FALSE")
+          run_populator
+          assert_response_value(@response_set_pt2, "prepopulated_is_pv_one_complete", "FALSE")
         end
       end
 
       describe "prepopulated_is_pv_two_complete" do
         it "should be TRUE if the pv2 event was completed" do
           Participant.any_instance.stub(:completed_event?).and_return(true)
-          assert_response_value(@rsp.populate, "prepopulated_is_pv_two_complete", "TRUE")
+          run_populator
+          assert_response_value(@response_set_pt2, "prepopulated_is_pv_two_complete", "TRUE")
         end
 
         it "should be FALSE if the pv2 event was NOT completed" do
           Participant.any_instance.stub(:completed_event?).and_return(false)
-          assert_response_value(@rsp.populate, "prepopulated_is_pv_two_complete", "FALSE")
+          run_populator
+          assert_response_value(@response_set_pt2, "prepopulated_is_pv_two_complete", "FALSE")
         end
       end
 
@@ -379,14 +418,15 @@ module NcsNavigator::Core
                                                         participant,
                                                         survey)
         response_set.responses.should be_empty
-        ResponseSetPopulator::Birth.new(person, instrument, survey)
+        Birth.new(response_set)
       end
 
       describe "prepopulated_is_p_type_fifteen" do
         it "should be TRUE if participant is of p_code 15 type" do
           if Float(NcsNavigatorCore.mdes_version.number) >= 3.2
             rsp = build_rsp(Factory(:participant, :p_type_code => 15))
-            assert_response_value(rsp.populate,
+            rsp.run
+            assert_response_value(@response_set_pt2,
                                   "prepopulated_is_p_type_fifteen",
                                   "TRUE")
           else
@@ -397,7 +437,8 @@ module NcsNavigator::Core
         it "should be FALSE if participant is not of p_code 15 type" do
           if Float(NcsNavigatorCore.mdes_version.number) >= 3.2
             rsp = build_rsp(Factory(:participant))
-            assert_response_value(rsp.populate,
+            rsp.run
+            assert_response_value(@response_set_pt2,
                                   "prepopulated_is_p_type_fifteen",
                                   "FALSE")
           else
@@ -424,28 +465,26 @@ module NcsNavigator::Core
 
       describe "in person" do
         it "sets prepopulated_mode_of_contact to CAPI" do
-          rsp = ResponseSetPopulator::Birth.new(person, @instrument, survey, :mode => Instrument.capi)
-          rs = rsp.populate
-          rs.responses.should_not be_empty
-          rs.should == @response_set
-          rs.responses.first.question.reference_identifier.should == "prepopulated_mode_of_contact"
-          rs.responses.first.to_s.should == "CAPI"
+          Birth.new(@response_set).run
+          @response_set.responses.should_not be_empty
+          @response_set.should == @response_set
+          @response_set.responses.first.question.reference_identifier.should == "prepopulated_mode_of_contact"
+          @response_set.responses.first.to_s.should == "CAPI"
         end
       end
 
       describe "telephone" do
         it "sets prepopulated_mode_of_contact to CATI" do
-          rsp = ResponseSetPopulator::Birth.new(person, @instrument, survey, :mode => Instrument.cati)
-          rs = rsp.populate
-          rs.responses.should_not be_empty
-          rs.should == @response_set
-          rs.responses.first.question.reference_identifier.should == "prepopulated_mode_of_contact"
-          rs.responses.first.to_s.should == "CATI"
+          Birth.new(@response_set).tap do |p|
+            p.mode = Instrument.cati
+            p.run
+          end
+          @response_set.responses.should_not be_empty
+          @response_set.should == @response_set
+          @response_set.responses.first.question.reference_identifier.should == "prepopulated_mode_of_contact"
+          @response_set.responses.first.to_s.should == "CATI"
         end
       end
-
     end
-
   end
-
 end

@@ -1,10 +1,12 @@
-# -*- coding: utf-8 -*-
-require 'ncs_navigator/core'
+module ResponseSetPrepopulation
+  class Postnatal < Populator
+    include OldAccessMethods
 
-module NcsNavigator::Core::ResponseSetPopulator
-  class Postnatal < Base
+    def self.applies_to?(rs)
+      rs.survey.title =~ /_\d{1,2}M?Month/
+    end
 
-    def reference_identifiers
+    def self.reference_identifiers
       [
         "prepopulated_should_show_room_mold_child",
         "prepopulated_should_show_demographics",
@@ -22,13 +24,8 @@ module NcsNavigator::Core::ResponseSetPopulator
       ]
     end
 
-    ##
-    # Creates responses for questions with reference identifiers
-    # that are known values and should be prepopulated
-    # @param [ResponseSet]
-    # @return [ResponseSet]
-    def prepopulate_response_set(response_set)
-      reference_identifiers.each do |reference_identifier|
+    def run
+      self.class.reference_identifiers.each do |reference_identifier|
         if question = find_question_for_reference_identifier(
                                               reference_identifier)
           response_type = "answer"
@@ -150,6 +147,5 @@ module NcsNavigator::Core::ResponseSetPopulator
     def was_work_address_collected?
       check_multiple_surveys_for_response("WORK_ADDRESS_1")
     end
-
   end
 end
