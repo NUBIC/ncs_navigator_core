@@ -95,8 +95,14 @@ module NcsNavigator::Core::Warehouse
       end
 
       core_placeholder_event_ids =
-        Version.where(:whodunnit => WHODUNNIT, :item_type => 'Event').collect(&:item_id)
+        Version.where(:whodunnit => WHODUNNIT, :item_type => 'Event', :event => 'create').collect(&:item_id)
+      core_updated_event_ids =
+        Version.where(:whodunnit => WHODUNNIT, :item_type => 'Event', :event => 'update').collect(&:item_id)
+
       Event.where('id IN (?)', core_placeholder_event_ids).destroy_all
+      Event.where('id IN (?)', core_updated_event_ids).each do |event|
+        event.update_attributes(:psc_ideal_date => event.event_start_date)
+      end
     end
 
     ###### SCHEDULING SEGMENTS FOR EVENTS
@@ -143,7 +149,12 @@ module NcsNavigator::Core::Warehouse
       label = event_details['event_type_label']
       say_subtask_message("looking for #{label} on #{start_date}")
 
-      unless find_psc_event(psc_participant, start_date, label)
+      if psc_event = find_psc_event(psc_participant, start_date, label)
+        if existing_event = Event.find_by_event_id(event_id)
+          PaperTrail.whodunnit = WHODUNNIT
+          existing_event.update_attributes(:psc_ideal_date => psc_event[:start_date])
+        end
+      else
         schedule_new_segment_for_event(psc_participant, event_id, event_details, opts)
       end
 

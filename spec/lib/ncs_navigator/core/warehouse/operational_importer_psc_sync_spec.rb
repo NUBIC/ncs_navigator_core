@@ -295,6 +295,43 @@ module NcsNavigator::Core::Warehouse
           importer.reset
         end
       end
+
+      describe 'and updated events' do
+        let(:scheduled_events) {
+          [
+            {
+              :event_type_label => 'birth',
+              :start_date => '2010-09-30',
+              :scheduled_activities => %w(sa1)
+            }
+          ]
+        }
+
+        before do
+          add_event_hash('e1', '2010-09-30',
+            :event_type_label => 'birth',
+            :end_date => '2010-09-30')
+          redis.sadd("#{ns}:psc_sync:p:#{p_id}:events", 'e1')
+          Factory(:event, :participant => participant, :event_id => 'e1',
+              :event_type_code => 18, :event_start_date => Date.new(2010, 10, 11))
+          psc_participant.stub!(:scheduled_events).and_return(scheduled_events)
+
+          with_versioning { importer.schedule_events(psc_participant) }
+        end
+
+        it 'update the affected event attribute updated by import' do
+          Event.where(:event_type_code => 18).first.psc_ideal_date.to_s.should == '2010-09-30'
+
+          importer.reset
+
+          Event.where(:event_type_code => 18).first.psc_ideal_date.to_s.should == '2010-10-11'
+        end
+
+        it 'does not fail when reset twice' do
+          importer.reset
+          importer.reset
+        end
+      end
     end
 
     describe 'scheduling segments for events' do
@@ -450,6 +487,21 @@ module NcsNavigator::Core::Warehouse
             let(:start_date) { '2525-01-26' }
 
             it_behaves_like 'an already scheduled event'
+          end
+
+          describe 'for existing event' do
+            let(:start_date) { '2010-01-26' }
+
+            it_behaves_like 'an already scheduled event'
+
+            it "does update the event psc_ideal_date to the activity ideal date" do
+              Factory(:event, :participant => participant, :event_id => 'e1',
+              :event_type_code => 13, :event_start_date => Date.new(2010, 01, 11))
+              participant.events.where(:event_type_code => 13).first.psc_ideal_date.to_s.should == '2010-01-11'
+
+              importer.schedule_events(psc_participant)
+              participant.events.where(:event_type_code => 13).first.psc_ideal_date.to_s.should == '2010-01-26'
+            end
           end
         end
       end
