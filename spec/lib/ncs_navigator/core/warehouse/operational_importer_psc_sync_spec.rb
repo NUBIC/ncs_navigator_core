@@ -504,7 +504,6 @@ module NcsNavigator::Core::Warehouse
             it "does update the event psc_ideal_date to the activity ideal date" do
               Factory(:event, :participant => participant, :event_id => 'e1',
               :event_type_code => 13, :event_start_date => Date.new(2010, 01, 11))
-              participant.events.where(:event_type_code => 13).first.psc_ideal_date.to_s.should == '2010-01-11'
 
               importer.schedule_events(psc_participant)
               participant.events.where(:event_type_code => 13).first.psc_ideal_date.to_s.should == '2010-01-26'
