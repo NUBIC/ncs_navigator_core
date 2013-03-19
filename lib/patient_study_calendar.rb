@@ -344,7 +344,9 @@ class PatientStudyCalendar
   end
 
   ##
-  # Gets all open activities for an event.
+  # Gets all open activities for the participant of an event.
+  # If the participant does not exist, it returns an empty
+  # array.
   #
   # @see PatientStudyCalendar#scheduled_activities
   #
@@ -352,6 +354,8 @@ class PatientStudyCalendar
   # @return [Array<ScheduledActivity>]
   def activities_for_event(event)
     result = []
+    return result if event.participant.blank?
+
     scheduled_activities(event.participant).each do |a|
       result << a if event.matches_activity(a)
     end
