@@ -50,6 +50,13 @@ describe PatientStudyCalendar do
     end
   end
 
+  describe "#activities_for_event" do
+    it "returns an empty array if the event participant is nil" do
+      event = Factory(:event, :participant => nil)
+      subject.activities_for_event(event).should == []
+    end
+  end
+
   it "connects to the running instance of PSC configured in by the NcsNavigator::Configuration" do
     cnx = subject.get_connection
     cnx.should_not be_nil

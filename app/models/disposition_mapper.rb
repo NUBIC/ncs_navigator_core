@@ -160,22 +160,20 @@ class DispositionMapper
     # 1 In person         | 3 General Study Visits (including CASI SAQs)
     # 2 Mail              | 4 Mailed Back Self Administered Questionnaires
     # 3 Telephone         | 5 Telephone Interview Events
-    # 4 Email             | 6 Internet Survey Events
+    # 4 Email             | 3 General Study Visits (including CASI SAQs)
     # 5 Text Message      | 5 Telephone Interview Events
-    # 6 Website           | 6 Internet Survey Events
+    # 6 Website           | 3 General Study Visits (including CASI SAQs)
     #
     # @param[Integer] - CONTACT_TYPE_CL1
     # @return[NcsCode] - EVENT_DSPSTN_CAT_CL1
     def determine_category_from_contact_type(code)
       case code
-      when 1
+      when 1,4,6
         NcsCode.for_list_name_and_local_code('EVENT_DSPSTN_CAT_CL1', 3)
       when 2
         NcsCode.for_list_name_and_local_code('EVENT_DSPSTN_CAT_CL1', 4)
       when 3,5
         NcsCode.for_list_name_and_local_code('EVENT_DSPSTN_CAT_CL1', 5)
-      when 4,6
-        NcsCode.for_list_name_and_local_code('EVENT_DSPSTN_CAT_CL1', 6)
       else
         nil
       end
