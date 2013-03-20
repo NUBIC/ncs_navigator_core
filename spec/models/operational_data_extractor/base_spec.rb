@@ -315,6 +315,47 @@ describe OperationalDataExtractor::Base do
           institution.institute_name.should == "FAKE HOSPITAL MEMORIAL"
         end
 
+        context "birth place name doesn't exist" do
+          it "doesn't return an institution" do
+            @response_set.responses.delete(
+              @response_set.responses.where(
+                :questions => {:data_export_identifier => "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.BIRTH_PLACE"})
+            )
+            take_survey(@survey, @response_set) do |r|
+              r.refused "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.BIRTH_PLACE"
+            end
+            @response_set.save!
+            birth_address_and_institution = @pregnancy_visit_extractor.process_birth_institution_and_address(@birth_address_map, @institution_map)
+            birth_address_and_institution[1].should be_nil
+          end
+        end
+
+        context "when no response for birth plan" do
+          it "returns institution as nil" do
+            @response_set.responses.delete(
+              @response_set.responses.where(
+                :questions => {:data_export_identifier => "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.BIRTH_PLAN"})
+            )
+            @response_set.save!
+            birth, institution = @pregnancy_visit_extractor.process_institution(@institution_map, @response_set)
+            institution.should be_nil
+          end
+        end
+
+        context "when birth plan is refused" do
+          it "returns institution as nil" do
+            @response_set.responses.delete(
+              @response_set.responses.where(
+                :questions => {:data_export_identifier => "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.BIRTH_PLAN"})
+            )
+            take_survey(@survey, @response_set) do |r|
+              r.refused "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.BIRTH_PLAN"
+            end
+            @response_set.save!
+            birth, institution = @pregnancy_visit_extractor.process_institution(@institution_map, @response_set)
+            institution.should be_nil
+          end
+        end
       end
 
       describe "#get_address" do
@@ -570,20 +611,20 @@ describe OperationalDataExtractor::Base do
       @pregnancy_visit_extractor = OperationalDataExtractor::PregnancyVisit.new(@response_set)
     end
 
-    describe "#get_institution" do
+    describe "#find_or_build_institution" do
 
       it "generates a new institution record if one does not exist" do
-        institution = @pregnancy_visit_extractor.get_institution(@response_set, @hospital)
+        institution = @pregnancy_visit_extractor.find_or_build_institution(@response_set, @hospital)
         institution.should be_an_instance_of(Institution)
       end
 
       it "the new record should be associated with the response set" do
-        @pregnancy_visit_extractor.get_institution(@response_set, @hospital).response_set.should eq(@response_set)
+        @pregnancy_visit_extractor.find_or_build_institution(@response_set, @hospital).response_set.should eq(@response_set)
       end
 
       it "retrieves an institution record if one exists" do
         @existing_institution = Factory(:institution, :institute_type => @hospital, :response_set_id => @response_set.id)
-        @pregnancy_visit_extractor.get_institution(@response_set, @hospital).should eql(@existing_institution)
+        @pregnancy_visit_extractor.find_or_build_institution(@response_set, @hospital).should eql(@existing_institution)
       end
     end
 
@@ -593,32 +634,6 @@ describe OperationalDataExtractor::Base do
         @pregnancy_visit_extractor.process_institution(@institution_map, @response_set, @hospital).institute_name.should == "FAKE HOSPITAL MEMORIAL"
       end
 
-      context "when no response for birth plan" do
-        it "returns institution as nil" do
-          @response_set.responses.delete(
-            @response_set.responses.where(
-              :questions => {:data_export_identifier => "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.BIRTH_PLAN"})
-          )
-          @response_set.save!
-          birth, institution = @pregnancy_visit_extractor.process_institution(@institution_map, @response_set)
-          institution.should be_nil
-        end
-      end
-
-      context "when birth plan is refused" do
-        it "returns institution as nil" do
-          @response_set.responses.delete(
-            @response_set.responses.where(
-              :questions => {:data_export_identifier => "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.BIRTH_PLAN"})
-          )
-          take_survey(@survey, @response_set) do |r|
-            r.refused "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.BIRTH_PLAN"
-          end
-          @response_set.save!
-          birth, institution = @pregnancy_visit_extractor.process_institution(@institution_map, @response_set)
-          institution.should be_nil
-        end
-      end
       it "has nil institution"
       
     end

@@ -466,7 +466,7 @@ module OperationalDataExtractor
       birth_address
     end
 
-    def get_institution(response_set, institute_type)
+    def find_or_build_institution(response_set, institute_type)
       institution = Institution.where(:response_set_id => response_set.id, :institute_type_code => institute_type.local_code).first
       if institution.nil?
         institution = Institution.new( :psu => person.psu, :institute_type_code => institute_type.local_code, :response_set => response_set)
@@ -747,7 +747,7 @@ module OperationalDataExtractor
     def process_institution(map, response_set, type = other_institute_type)
       type = find_institution_type(map, type) if type && type == other_institute_type
       if type
-        institution = get_institution(response_set, type)
+        institution = find_or_build_institution(response_set, type)
         map.each do |key, attribute|
           if r = data_export_identifier_indexed_responses[key]
             value = response_value(r)
@@ -756,7 +756,7 @@ module OperationalDataExtractor
             end
           end
         end
-        institution  
+        institution.institute_name ? institution : nil
       end
     end
 
