@@ -761,20 +761,24 @@ module OperationalDataExtractor
     end
 
     def finalize_institution(institute)
-      begin
-        institute.save!
-        InstitutionPersonLink.find_or_create_by_institution_id_and_person_id(institute.id, person.id)
-      rescue ActiveRecord::RecordNotUnique
-        log.warn("IPL with person_id of #{person.id} and institution_id of #{institute.id} already exists, not creating")
+      if institute
+        begin
+          institute.save!
+          InstitutionPersonLink.find_or_create_by_institution_id_and_person_id(institute.id, person.id)
+        rescue ActiveRecord::RecordNotUnique
+          log.warn("IPL with person_id of #{person.id} and institution_id of #{institute.id} already exists, not creating")
+        end
       end
     end
 
     def finalize_institution_with_birth_address(birth_address, institute)
-      ActiveRecord::Base.transaction do
-         finalize_institution(institute)
-         birth_address.save! unless birth_address.blank?
-         institute.addresses << birth_address unless birth_address.blank?
-       end
+      if institute
+        ActiveRecord::Base.transaction do
+           finalize_institution(institute)
+           birth_address.save! unless birth_address.blank?
+           institute.addresses << birth_address unless birth_address.blank?
+         end
+      end
     end
 
     def institution_empty?(institution)

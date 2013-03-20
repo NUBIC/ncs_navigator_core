@@ -597,28 +597,38 @@ describe OperationalDataExtractor::Base do
     end
 
     describe "#finalize_institution" do
-      before do
-        @institution = @pregnancy_visit_extractor.process_institution(@institution_map, @response_set, @hospital)
-      end
+
+      let(:institution) { @pregnancy_visit_extractor.process_institution(@institution_map, @response_set, @hospital) }
 
       it "links the person to the institution" do
-        @pregnancy_visit_extractor.finalize_institution(@institution)
-        @participant.person.institutions.first.should eq(@institution)
+        @pregnancy_visit_extractor.finalize_institution(institution)
+        @participant.person.institutions.first.should eq(institution)
       end
 
       it "saves the institution record" do
-        @pregnancy_visit_extractor.finalize_institution(@institution)
+        @pregnancy_visit_extractor.finalize_institution(institution)
         Institution.count.should == 1
-        Institution.first.should eq(@institution)
+        Institution.first.should eq(institution)
       end
 
       it "does not create a duplicate institution-person link if one already exists" do
         (2).times do
-          @pregnancy_visit_extractor.finalize_institution(@institution)
+          @pregnancy_visit_extractor.finalize_institution(institution)
         end
-        InstitutionPersonLink.where(:person_id => @person.id, :institution_id => @institution.id).size.should == 1
+        InstitutionPersonLink.where(:person_id => @person.id, :institution_id => institution.id).size.should == 1
       end
 
+      context "institution is nil" do
+        it "does not link the institution record" do
+          @pregnancy_visit_extractor.finalize_institution(nil)
+          @participant.person.institutions.first.should eq(nil)
+        end
+
+        it "does not create an institution record" do
+          @pregnancy_visit_extractor.finalize_institution(nil)
+          Institution.count.should == 0
+        end
+      end
     end
 
     describe "#finalize_institution_with_birth_address" do
@@ -634,8 +644,17 @@ describe OperationalDataExtractor::Base do
         @institution.addresses.should include(@birth_address)
       end
 
+      context "institution is nil" do
+        it "does not create an institution record" do
+          @pregnancy_visit_extractor.finalize_institution_with_birth_address(@birth_address, nil)
+          Institution.count.should == 0
+        end
+        it "does nothing if institution is nil" do
+          @pregnancy_visit_extractor.finalize_institution_with_birth_address(@birth_address, nil)
+          InstitutionPersonLink.count.should == 0
+        end
+      end
     end
-
   end
 
   context "Processing PersonRace records" do
