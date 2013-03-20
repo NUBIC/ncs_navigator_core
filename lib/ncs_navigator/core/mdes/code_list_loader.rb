@@ -2,15 +2,15 @@
 require 'ncs_navigator/mdes'
 require 'yaml'
 
-module NcsNavigator::Core
-  class MdesCodeListLoader
+module NcsNavigator::Core::Mdes
+  class CodeListLoader
     attr_reader :mdes_version, :filename
 
     def initialize(options = {})
       @interactive = options[:interactive]
       ver = options[:mdes_version]
       @mdes_version = if ver
-        Mdes::Version.new(ver)
+        Version.new(ver)
       else
         NcsNavigatorCore.mdes_version
       end

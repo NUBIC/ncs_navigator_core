@@ -14,5 +14,5 @@ if ENV['INITIAL_MDES_VERSION']
   NcsNavigator::Core::Mdes::Version.set!(ENV['INITIAL_MDES_VERSION'])
 end
 
-require 'ncs_navigator/core/mdes_code_list_loader'
-NcsNavigator::Core::MdesCodeListLoader.new(:interactive => true).load_from_yaml
+require 'ncs_navigator/core/mdes/code_list_loader'
+NcsNavigator::Core::Mdes::CodeListLoader.new(:interactive => true).load_from_yaml

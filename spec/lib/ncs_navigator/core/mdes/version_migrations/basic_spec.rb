@@ -22,7 +22,7 @@ module NcsNavigator::Core::Mdes::VersionMigrations
 
       after do
         # restore the code list to the current version
-        NcsNavigator::Core::MdesCodeListLoader.new.load_from_yaml
+        NcsNavigator::Core::Mdes::CodeListLoader.new.load_from_yaml
       end
 
       it 'updates the MDES version in the database' do

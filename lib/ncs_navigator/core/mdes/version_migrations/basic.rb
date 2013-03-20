@@ -54,7 +54,7 @@ module NcsNavigator::Core::Mdes::VersionMigrations
     end
 
     def switch_code_lists
-      NcsNavigator::Core::MdesCodeListLoader.
+      NcsNavigator::Core::Mdes::CodeListLoader.
         new(:mdes_version => to, :interactive => @interactive).
         load_from_yaml
     end
