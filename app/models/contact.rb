@@ -147,10 +147,11 @@ class Contact < ActiveRecord::Base
   end
 
   ##
-  # Returns the count of total unique events associated with a contact
+  # Returns true if there are more than one unique event
+  # associated with the contact
   # @return [Boolean]
   def multiple_unique_events_for_contact?
-    contact_links.map(&:event).uniq.compact.count > 1
+    events.count(:distinct => true) > 1
   end
 
   ##

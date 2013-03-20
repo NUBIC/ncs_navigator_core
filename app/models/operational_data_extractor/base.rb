@@ -736,7 +736,7 @@ module OperationalDataExtractor
 
     def find_institution_type(map, type)
       extracted_type = data_export_identifier_indexed_responses.find { |k, v|
-        map[k]
+        map[k] == 'institute_type_code'
       }
       type = NcsCode.for_list_name_and_local_code(
         'ORGANIZATION_TYPE_CL1', response_value(extracted_type[1])
@@ -745,9 +745,7 @@ module OperationalDataExtractor
     end
 
     def process_institution(map, response_set, type = other_institute_type)
-      unless type && type.local_code != -5
-        type = find_institution_type(map, type)
-      end
+      type = find_institution_type(map, type) if type.try(:local_code) == -5
       institution = get_institution(response_set, type)
       map.each do |key, attribute|
         if r = data_export_identifier_indexed_responses[key]

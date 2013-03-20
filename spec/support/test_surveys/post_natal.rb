@@ -389,12 +389,8 @@ module PostNatal
   end
 
   def create_survey_section_question(title, data_export_id)
-    begin
-      survey = Factory(:survey, :title => title,
+    survey = Factory(:survey, :title => title,
                       :access_code => title.downcase.tr('.', '_'))
-    rescue ActiveRecord::RecordInvalid
-      survey = Survey.where('title = ?', title).first
-    end
     survey_section = Factory(:survey_section, :survey_id => survey.id)
     Factory(:question, :reference_identifier => data_export_id.split('.')[1],
             :data_export_identifier => data_export_id,
@@ -429,7 +425,7 @@ module PostNatal
     surveys = {
       "INS_QUE_Birth_INT_EHPBHIPBS_M3.0_V3.0_PART_TWO" =>
         ["BIRTH_VISIT_3.WORK_ADDRESS_1", "BIRTH_VISIT_3.CWORK_ADDRESS_1",
-         "BIRTH_VISIT_LI_2.WORK_NAME"],
+         "BIRTH_VISIT_3.WORK_NAME"],
       "INS_QUE_Birth_INT_LI_M3.1_V2.0_PART_TWO" =>
         ["BIRTH_VISIT_LI_2.WORK_ADDRESS_1", "BIRTH_VISIT_LI_2.CWORK_ADDRESS_1",
          "BIRTH_VISIT_LI_2.WORK_NAME"],
@@ -438,9 +434,13 @@ module PostNatal
          "BIRTH_VISIT_4.WORK_NAME"],
     }
 
-    q = nil
+    survey = Factory(:survey, :title => title,
+                      :access_code => title.downcase.tr('.', '_'))
+    survey_section = Factory(:survey_section, :survey_id => survey.id)
     surveys[title].each do |exp_id|
-      q = create_survey_section_question(title, exp_id)
+      q = Factory(:question, :reference_identifier => exp_id.split('.')[1],
+                  :data_export_identifier => exp_id,
+                  :survey_section_id => survey_section.id)
       a = Factory(:answer, :question_id => q.id,
                   :response_class => "string")
       a = Factory(:answer, :question_id => q.id,
@@ -451,7 +451,7 @@ module PostNatal
                   :text => "DON'T KNOW", :response_class => "answer")
     end
 
-    return q.survey_section.survey
+    return survey
   end
 
 end
