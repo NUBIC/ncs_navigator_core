@@ -4,7 +4,7 @@ require 'yaml'
 
 module NcsNavigator::Core::Mdes
   class CodeListLoader
-    attr_reader :mdes_version, :filename
+    attr_reader :mdes_version, :automatic_filename, :manual_filename
 
     def initialize(options = {})
       @interactive = options[:interactive]
@@ -15,7 +15,8 @@ module NcsNavigator::Core::Mdes
         NcsNavigatorCore.mdes_version
       end
 
-      @filename = Rails.root + 'db' + "ncs_codes-#{mdes_version.number}.yml"
+      @automatic_filename = Rails.root + 'db' + "ncs_codes-#{mdes_version.number}.yml"
+      @manual_filename = Rails.root + 'db' + "ncs_codes-#{mdes_version.number}-additions.yml"
     end
 
     def interactive?
@@ -43,13 +44,13 @@ module NcsNavigator::Core::Mdes
         }
       }.flatten.sort_by { |list_entry| [list_entry['list_name'], list_entry['local_code']] }
 
-      File.open(filename.to_s, 'w:utf-8') do |w|
+      File.open(automatic_filename.to_s, 'w:utf-8') do |w|
         w.write(yml.to_yaml)
       end
     end
 
     def load_from_yaml
-      create_yaml unless filename.exist?
+      create_yaml unless automatic_filename.exist?
 
       partitioned = select_for_insert_update_delete
 
@@ -99,7 +100,10 @@ module NcsNavigator::Core::Mdes
     private :do_update
 
     def select_for_insert_update_delete
-      yaml_entries = YAML.load(File.read(filename.to_s))
+      yaml_entries = YAML.load(automatic_filename.read)
+      if manual_filename.exist?
+        yaml_entries += YAML.load(manual_filename.read)
+      end
       existing_entries = ActiveRecord::Base.connection.
         select_all('SELECT list_name, local_code FROM ncs_codes')
 
