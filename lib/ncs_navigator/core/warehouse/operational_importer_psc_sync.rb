@@ -98,7 +98,7 @@ module NcsNavigator::Core::Warehouse
       end
 
       core_placeholder_event_ids =
-        Version.where(:whodunnit => WHODUNNIT, :item_type => 'Event', :event => 'create').collect(&:item_id)
+        Version.select(:item_id).where(:whodunnit => WHODUNNIT, :item_type => 'Event', :event => 'create').collect(&:item_id)
       Event.where('id IN (?)', core_placeholder_event_ids).destroy_all
 
       core_updated_event_ids_and_changes = Version.where(:whodunnit => WHODUNNIT, :item_type => 'Event', :event => 'update').order(:created_at).collect { |v| [v.item_id, v.changeset] }
