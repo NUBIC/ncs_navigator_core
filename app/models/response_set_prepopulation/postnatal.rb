@@ -21,7 +21,8 @@ module ResponseSetPrepopulation
         "prepopulated_should_show_num_hh_group",
         "prepopulated_is_valid_work_name_provided",
         "prepopulated_is_valid_work_address_provided",
-        "prepopulated_is_child_num_gt_or_eq_one_for_first_child"
+        "prepopulated_is_child_num_gt_or_eq_one_for_first_child",
+        "prepopulated_intro_30_months"
       ]
     end
 
@@ -63,6 +64,9 @@ module ResponseSetPrepopulation
               answer_for(question, was_work_address_collected?)
             when "prepopulated_is_child_num_gt_or_eq_one_for_first_child"
               answer_for(question, is_the_first_child?)
+            when "prepopulated_intro_30_months"
+              answer_for(question, get_last_response_as_string(
+                                  "THIRTY_MONTH_INTERVIEW_CHILD.INTRO_30MO"))
             else
               nil
             end
@@ -124,7 +128,7 @@ module ResponseSetPrepopulation
 
     def is_the_first_child?
       return true unless was_answer_to_mult_child_yes?("PARTICIPANT_VERIF")
-      is_this_child_number_one? ? true : false
+      is_this_child_number_one?
     end
 
     def was_resp_rel_new_biological_mother?

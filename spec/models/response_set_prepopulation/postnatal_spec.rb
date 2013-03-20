@@ -634,7 +634,7 @@ module ResponseSetPrepopulation
         end
       end
 
-    context "for 18MM v2.x prepopulators"
+    context "for 30M M3.1 prepopulators"
       describe "prepopulated_is_child_num_gt_or_eq_one_for_first_child" do
         before(:each) do
           @survey = create_generic_true_false_prepopulator_survey(
@@ -644,8 +644,8 @@ module ResponseSetPrepopulation
         end
 
         it "should be TRUE if there is only one child" do
-          prepare_and_take_survey(nil, nil, :create_participant_verif_m_3_0,
-                                                                  nil) do |r|
+          prepare_and_take_survey(nil, nil, :create_participant_verif_m_3_0
+                                                                      ) do |r|
             r.no 'PARTICIPANT_VERIF.MULT_CHILD'
           end
           run_populator
@@ -654,8 +654,8 @@ module ResponseSetPrepopulation
                       ).should == "TRUE"
         end
         it "should be TRUE if there are many children but our target is #1" do
-          prepare_and_take_survey(nil, nil, :create_participant_verif_m_3_0,
-                                                                  nil) do |r|
+          prepare_and_take_survey(nil, nil, :create_participant_verif_m_3_0
+                                                                      ) do |r|
             r.yes 'PARTICIPANT_VERIF.MULT_CHILD'
             r.a 'PARTICIPANT_VERIF.CHILD_QNUM', 'number', :value => 1
           end
@@ -665,8 +665,8 @@ module ResponseSetPrepopulation
                       ).should == "TRUE"
         end
         it "should be FALSE if there are many children but our target is #2" do
-          prepare_and_take_survey(nil, nil, :create_participant_verif_m_3_0,
-                                                                  nil) do |r|
+          prepare_and_take_survey(nil, nil, :create_participant_verif_m_3_0
+                                                                      ) do |r|
             r.yes 'PARTICIPANT_VERIF.MULT_CHILD'
             r.a 'PARTICIPANT_VERIF.CHILD_QNUM', 'number', :value => 2
           end
@@ -676,5 +676,28 @@ module ResponseSetPrepopulation
                       ).should == "FALSE"
         end
       end
+
+      describe "prepopulated_intro_30_months" do
+        before(:each) do
+          @survey = part2_30_month_survey_M31
+          init_common_vars
+        end
+
+        it "returns continue if that's the answer to INTRO_30MO" do
+          prepare_and_take_survey("THIRTY_MONTH_INTERVIEW_CHILD.INTRO_30MO",
+                                  1, :child_30_month_survey_M31)
+          run_populator
+          get_response_as_string(@response_set, "prepopulated_intro_30_months"
+                                ).should == "CONTINUE"
+        end
+        it "returns REFUSED if that's the answer to INTRO_30MO" do
+          prepare_and_take_survey("THIRTY_MONTH_INTERVIEW_CHILD.INTRO_30MO",
+                                  "neg_1", :child_30_month_survey_M31)
+          run_populator
+          get_response_as_string(@response_set, "prepopulated_intro_30_months"
+                                ).should == "REFUSED"
+        end
+      end
+
   end
 end

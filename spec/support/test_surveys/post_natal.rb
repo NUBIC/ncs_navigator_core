@@ -356,6 +356,39 @@ module PostNatal
     survey
   end
 
+  def part2_30_month_survey_M31
+    survey = Factory(:survey, :title =>
+                          "INS_QUE_30Month_INT_EHPBHILIPBS_M3.1_V1.0_PART_TWO",
+                     :access_code =>
+                          "ins_que_30Month_int_ehpbhilipbs_m3_1_v1_0_part_two")
+    survey_section = Factory(:survey_section, :survey_id => survey.id)
+    q = Factory(:question, :reference_identifier =>
+                           "prepopulated_intro_30_months",
+                :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :reference_identifier => "1",
+                :text => "CONTINUE", :response_class => "answer")
+    a = Factory(:answer, :question_id => q.id, :text => "REFUSED",
+                :response_class => "answer", :reference_identifier => "neg_1")
+    survey
+  end
+
+  def child_30_month_survey_M31
+    survey = Factory(:survey, :title =>
+                            "INS_QUE_30Month_INT_EHPBHILIPBS_M3.1_V1.0_CHILD",
+                     :access_code =>
+                            "ins_que_30Month_int_ehpbhilipbs_m3_1_v1_0_child")
+    survey_section = Factory(:survey_section, :survey_id => survey.id)
+    q = Factory(:question, :reference_identifier => "INTRO_30MO",
+                :data_export_identifier =>
+                           "THIRTY_MONTH_INTERVIEW_CHILD.INTRO_30MO",
+                :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :reference_identifier => "1",
+                :text => "CONTINUE", :response_class => "answer")
+    a = Factory(:answer, :question_id => q.id, :text => "REFUSED",
+                :response_class => "answer", :reference_identifier => "neg_1")
+    survey
+  end
+
   def create_12mm_part_one_mult_child
     survey = Factory(:survey,
                      :title => "INS_QUE_12MMother_INT_EHPBHI_P2_V11_PART_ONE",
