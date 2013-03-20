@@ -156,7 +156,7 @@ class NcsCode < ActiveRecord::Base
     ### participant_consent
     # :psu_code               => "PSU_CL1",             # already referenced
     :consent_type_code              => 'CONSENT_TYPE_CL1',
-    :consent_form_type_code         => 'CONSENT_TYPE_CL1',
+    :consent_form_type_code         => 'CONSENT_TYPE_CL3',
     :consent_given_code             => 'CONFIRM_TYPE_CL2',
     :consent_withdraw_code          => 'CONFIRM_TYPE_CL2',
     :consent_withdraw_type_code     => 'CONSENT_WITHDRAW_REASON_CL1',
