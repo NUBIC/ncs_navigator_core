@@ -745,19 +745,19 @@ module OperationalDataExtractor
     end
 
     def process_institution(map, response_set, type = other_institute_type)
-      unless type && type.local_code != -5
-        type = find_institution_type(map, type)
-      end
-      institution = get_institution(response_set, type)
-      map.each do |key, attribute|
-        if r = data_export_identifier_indexed_responses[key]
-          value = response_value(r)
-          unless value.blank?
-            set_value(institution, attribute, value)
+      type = find_institution_type(map, type) if type && type == other_institute_type
+      if type
+        institution = get_institution(response_set, type)
+        map.each do |key, attribute|
+          if r = data_export_identifier_indexed_responses[key]
+            value = response_value(r)
+            unless value.blank?
+              set_value(institution, attribute, value)
+            end
           end
         end
+        institution  
       end
-      institution
     end
 
     def finalize_institution(institute)
