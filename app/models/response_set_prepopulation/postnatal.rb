@@ -20,7 +20,8 @@ module ResponseSetPrepopulation
         "prepopulated_mult_child_answer_from_part_one_for_12MM",
         "prepopulated_should_show_num_hh_group",
         "prepopulated_is_valid_work_name_provided",
-        "prepopulated_is_valid_work_address_provided"
+        "prepopulated_is_valid_work_address_provided",
+        "prepopulated_is_child_num_gt_or_eq_one_for_first_child"
       ]
     end
 
@@ -60,6 +61,8 @@ module ResponseSetPrepopulation
               answer_for(question, was_work_name_collected?)
             when "prepopulated_is_valid_work_address_provided"
               answer_for(question, was_work_address_collected?)
+            when "prepopulated_is_child_num_gt_or_eq_one_for_first_child"
+              answer_for(question, is_the_first_child?)
             else
               nil
             end
@@ -117,6 +120,11 @@ module ResponseSetPrepopulation
     def is_this_child_number_one?
       person.responses_for("PARTICIPANT_VERIF.CHILD_QNUM"
                           ).last.try(:value) == 1 # Child number 1
+    end
+
+    def is_the_first_child?
+      return true unless was_answer_to_mult_child_yes?("PARTICIPANT_VERIF")
+      is_this_child_number_one? ? true : false
     end
 
     def was_resp_rel_new_biological_mother?

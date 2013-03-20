@@ -290,7 +290,7 @@ module ResponseSetPrepopulation
 
         it "should be TRUE if RESP_REL_NEW is set to biological mother (1)" do
           prepare_and_take_survey("PARTICIPANT_VERIF.RESP_REL_NEW", 1, # Mother
-                                  :create_participant_verif_resp_rel_new)
+                                  :create_participant_verif_m_3_0)
           run_populator
           get_response_as_string(@response_set,
                             "prepopulated_is_resp_rel_new").should == "TRUE"
@@ -299,7 +299,7 @@ module ResponseSetPrepopulation
         it "should be FALSE if RESP_REL_NEW isn't set to mother (not 1)" do
           prepare_and_take_survey("PARTICIPANT_VERIF.RESP_REL_NEW",
                                   2, # Not Mother
-                                  :create_participant_verif_resp_rel_new)
+                                  :create_participant_verif_m_3_0)
           run_populator
           get_response_as_string(@response_set,
                             "prepopulated_is_resp_rel_new").should == "FALSE"
@@ -322,7 +322,7 @@ module ResponseSetPrepopulation
 
         it "should be TRUE if child number is 1" do
           prepare_and_take_survey(nil, nil,
-                                  :create_participant_verif_child_qnum) do |r|
+                                  :create_participant_verif_m_3_0) do |r|
             r.a "PARTICIPANT_VERIF.CHILD_QNUM", 'number', :value => 1
           end
           run_populator
@@ -332,7 +332,7 @@ module ResponseSetPrepopulation
 
         it "should be FALSE if child number is not 1" do
           prepare_and_take_survey(nil, nil,
-                                  :create_participant_verif_child_qnum) do |r|
+                                  :create_participant_verif_m_3_0) do |r|
             r.a "PARTICIPANT_VERIF.CHILD_QNUM", 'number', :value => 2
           end
           run_populator
@@ -357,7 +357,7 @@ module ResponseSetPrepopulation
 
         it "should be TRUE if more then one child is eligible for interview" do
           prepare_and_take_survey("PARTICIPANT_VERIF.MULT_CHILD", NcsCode::YES,
-                                  :create_participant_verif_mult_child)
+                                  :create_participant_verif_m_3_0)
           run_populator
           get_response_as_string(@response_set,
                             "prepopulated_is_multiple_child").should == "TRUE"
@@ -365,7 +365,7 @@ module ResponseSetPrepopulation
 
         it "should be FALSE if only one child is eligible for interview" do
           prepare_and_take_survey("PARTICIPANT_VERIF.MULT_CHILD", NcsCode::NO,
-                                  :create_participant_verif_mult_child)
+                                  :create_participant_verif_m_3_0)
           run_populator
           get_response_as_string(@response_set,
                             "prepopulated_is_multiple_child").should == "FALSE"
@@ -634,5 +634,47 @@ module ResponseSetPrepopulation
         end
       end
 
+    context "for 18MM v2.x prepopulators"
+      describe "prepopulated_is_child_num_gt_or_eq_one_for_first_child" do
+        before(:each) do
+          @survey = create_generic_true_false_prepopulator_survey(
+              "INS_QUE_30Month_INT_EHPBHILIPBS_M3.1_V1.0_CHILD",
+              "prepopulated_is_child_num_gt_or_eq_one_for_first_child")
+          init_common_vars
+        end
+
+        it "should be TRUE if there is only one child" do
+          prepare_and_take_survey(nil, nil, :create_participant_verif_m_3_0,
+                                                                  nil) do |r|
+            r.no 'PARTICIPANT_VERIF.MULT_CHILD'
+          end
+          run_populator
+          get_response_as_string(@response_set,
+                      "prepopulated_is_child_num_gt_or_eq_one_for_first_child"
+                      ).should == "TRUE"
+        end
+        it "should be TRUE if there are many children but our target is #1" do
+          prepare_and_take_survey(nil, nil, :create_participant_verif_m_3_0,
+                                                                  nil) do |r|
+            r.yes 'PARTICIPANT_VERIF.MULT_CHILD'
+            r.a 'PARTICIPANT_VERIF.CHILD_QNUM', 'number', :value => 1
+          end
+          run_populator
+          get_response_as_string(@response_set,
+                      "prepopulated_is_child_num_gt_or_eq_one_for_first_child"
+                      ).should == "TRUE"
+        end
+        it "should be FALSE if there are many children but our target is #2" do
+          prepare_and_take_survey(nil, nil, :create_participant_verif_m_3_0,
+                                                                  nil) do |r|
+            r.yes 'PARTICIPANT_VERIF.MULT_CHILD'
+            r.a 'PARTICIPANT_VERIF.CHILD_QNUM', 'number', :value => 2
+          end
+          run_populator
+          get_response_as_string(@response_set,
+                      "prepopulated_is_child_num_gt_or_eq_one_for_first_child"
+                      ).should == "FALSE"
+        end
+      end
   end
 end
