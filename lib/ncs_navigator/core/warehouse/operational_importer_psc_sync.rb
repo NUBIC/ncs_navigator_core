@@ -99,13 +99,18 @@ module NcsNavigator::Core::Warehouse
 
       core_placeholder_event_ids =
         Version.where(:whodunnit => WHODUNNIT, :item_type => 'Event', :event => 'create').collect(&:item_id)
-      core_updated_event_ids =
-        Version.where(:whodunnit => WHODUNNIT, :item_type => 'Event', :event => 'update').collect(&:item_id)
       Event.where('id IN (?)', core_placeholder_event_ids).destroy_all
-      Event.where('id IN (?)', core_updated_event_ids).each do |event|
-        event.update_attributes(:psc_ideal_date => event.event_start_date)
-      end
+
+      core_updated_event_ids_and_changes = Version.where(:whodunnit => WHODUNNIT, :item_type => 'Event', :event => 'update').order(:created_at).collect { |v| [v.item_id, v.changeset] }
+      core_updated_events_by_id = Event.where(:id => core_updated_event_ids_and_changes.collect { |e_and_c| e_and_c.first }).each_with_object({}) { |evt, index| index[evt.id] = evt }
+      core_updated_event_ids_and_changes.each { |event_id, changes| reverse_changes(core_updated_events_by_id[event_id], changes) }
     end
+
+
+    def reverse_changes(event, changes)
+      changes.each { |att, att_changes| event.update_attributes(att.to_sym => att_changes.first) }
+    end
+    private :reverse_changes
 
     ###### SCHEDULING SEGMENTS FOR EVENTS
 
