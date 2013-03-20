@@ -781,13 +781,6 @@ module OperationalDataExtractor
       end
     end
 
-    def institution_empty?(institution)
-      institution_contents = []
-      institution_components = [:institute_name, :institute_type]
-      institution_components.each { |ic| institution_contents << institution.send(ic) }
-      institution_contents.all? { |ic| ic == MISSING_IN_ERROR || ic.nil? }
-    end
-
     def finalize_ppg_status_history(ppg_status_history)
       if ppg_status_history && !ppg_status_history.ppg_status_code.blank?
         set_participant_type(participant, ppg_status_history.ppg_status_code)
