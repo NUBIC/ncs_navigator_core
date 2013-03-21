@@ -36,7 +36,7 @@ module ResponseSetPrepopulation
             when "prepopulated_should_show_demographics"
               answer_for(question, were_there_no_prenatal_events?)
             when "prepopulated_is_prev_event_birth_li_and_set_to_complete"
-              answer_for(question, is_event_completed?(Event::birth_code))
+              answer_for(question, !is_event_completed?(Event::birth_code))
             when "prepopulated_is_multiple_child"
               answer_for(question, prepopulated_is_multiple_child?(question))
             when "prepopulated_is_birth_deliver_collected_and_set_to_one"
@@ -78,7 +78,7 @@ module ResponseSetPrepopulation
 
     def is_response_to_mold_question_yes?
       get_last_response_as_string(
-                    "EIGHTEEN_MTH_MOTHER_2.MOLD") == NcsCode::YES.to_s
+                            "EIGHTEEN_MTH_MOTHER_2.MOLD") == NcsCode::YES.to_s
     end
 
     def were_there_no_prenatal_events?
@@ -90,7 +90,9 @@ module ResponseSetPrepopulation
     end
 
     def is_event_completed?(code)
-      person.events.any? { |e| e.event_type_code == code && e.completed? }
+      event = participant.events.chronological.where(
+                            :event_type_code => code).last
+      event && event.try(:completed?) ? true : false
     end
 
     def prepopulated_is_multiple_child?(question)
@@ -105,8 +107,7 @@ module ResponseSetPrepopulation
     end
 
     def was_birth_given_at_hospital?
-      get_last_response_as_string(
-                    "BIRTH_VISIT_LI_2.BIRTH_DELIVER") == "1" # HOSPITAL
+      check_multiple_surveys_for_response("BIRTH_DELIVER", "1")
     end
 
     def was_answer_to_mult_child_yes?(data_export_id)
@@ -124,16 +125,13 @@ module ResponseSetPrepopulation
           "PARTICIPANT_VERIF.RESP_REL_NEW") == "1" # BIOLOGICAL (OR BIRTH) MOTHER
     end
 
-    def check_multiple_surveys_for_response(reference_id)
-      Response.includes([:answer, :question, :response_set]).where(
+    def check_multiple_surveys_for_response(q_ref_id, a_ref_id = nil)
+      candidates = Response.includes([:answer, :question, :response_set]).where(
         "response_sets.user_id = ? AND questions.data_export_identifier like ?",
-        person.id, "%.#{reference_id}").each do |response|
-          # Presense of an value implies selection of answer with
-          # ref_id "number", so no need to check.
-          return true if response.try(:value)
-        end
-
-      false
+        person.id, "%.#{q_ref_id}")
+        candidates.any? { |c|
+          c.value || a_ref_id && c.answer.reference_identifier == a_ref_id
+        }
     end
 
     def was_household_number_collected?
