@@ -7,6 +7,8 @@ class PeopleController < ApplicationController
 
   permit Role::SYSTEM_ADMINISTRATOR, Role::USER_ADMINISTRATOR, Role::ADMINISTRATIVE_STAFF, Role::STAFF_SUPERVISOR, :only => [:index]
 
+  before_filter :set_participant, :only => [:new, :edit, :create, :update]
+
   # GET /people
   # GET /people.json
   def index
@@ -41,10 +43,6 @@ class PeopleController < ApplicationController
   # GET /people/new
   # GET /people/new.json
   def new
-    unless params[:participant_id].blank?
-      @participant = Participant.find(params[:participant_id])
-    end
-
     @person = Person.new
     set_person_attribute_defaults(@person)
     @provider = Provider.find(params[:provider_id]) unless params[:provider_id].blank?
@@ -74,13 +72,7 @@ class PeopleController < ApplicationController
 
     respond_to do |format|
       if @person.save
-
-        ## Create relationship to participant if participant_id is sent
-        if !params[:participant_id].blank? && !params[:relationship_code].blank?
-          @participant = Participant.find(params[:participant_id])
-          ParticipantPersonLink.create(:participant => @participant, :person => @person,
-                                       :relationship_code => params[:relationship_code])
-        end
+        create_relationship_to_participant
 
         path = people_path
         msg  = 'Person was successfully created.'
@@ -108,7 +100,6 @@ class PeopleController < ApplicationController
         end
       end
     end
-
   end
 
   # GET /people/1/edit
@@ -142,6 +133,72 @@ class PeopleController < ApplicationController
       end
     end
   end
+
+  # GET /people/new_child
+  def new_child
+    @person = Person.new
+    set_person_attribute_defaults(@person, true)
+    @participant = Participant.find(params[:participant_id])
+    @contact_link = ContactLink.find(params[:contact_link_id])
+    respond_to do |format|
+      format.html # new.html.haml
+      format.json  { render :json => @person }
+    end
+  end
+
+  # POST /people/create_child
+  def create_child
+    @participant = Participant.find(params[:participant_id])
+    @contact_link = ContactLink.find(params[:contact_link_id])
+
+    respond_to do |format|
+      if @participant.create_child_person_and_participant!(params[:person])
+
+        path = decision_page_contact_link_path(@contact_link)
+        msg  = 'Child was successfully created.'
+
+        format.html { redirect_to(path, :notice => msg) }
+        format.json { render :json => @person }
+      else
+        format.html { render :action => "new_child" }
+        format.json { render :json => @person.errors }
+      end
+    end
+  end
+
+  # GET /people/:id/edit_child
+  def edit_child
+    @person = Person.find(params[:id])
+    set_person_attribute_defaults(@person, true)
+    @participant = Participant.find(params[:participant_id])
+    @contact_link = ContactLink.find(params[:contact_link_id])
+    respond_to do |format|
+      format.html # new.html.haml
+      format.json  { render :json => @person }
+    end
+  end
+
+  # PUT /people/:id/update_child
+  def update_child
+    @person = Person.find(params[:id])
+    @participant = Participant.find(params[:participant_id])
+    @contact_link = ContactLink.find(params[:contact_link_id])
+
+    respond_to do |format|
+      if @person.update_attributes(params[:person])
+
+        path = decision_page_contact_link_path(@contact_link)
+        msg  = 'Child was successfully updated.'
+
+        format.html { redirect_to(path, :notice => msg) }
+        format.json { render :json => @person }
+      else
+        format.html { render :action => "edit_child" }
+        format.json { render :json => @person.errors }
+      end
+    end
+  end
+
 
   # GET /people/1/start_instrument
   def start_instrument
@@ -208,7 +265,6 @@ class PeopleController < ApplicationController
     redirect_to(edit_my_survey_path(:survey_code => params[:survey_access_code], :response_set_code => rs_access_code))
   end
 
-
   def responses_for
     @person = Person.find(params[:id])
     if request.put?
@@ -228,14 +284,35 @@ class PeopleController < ApplicationController
     end
   end
 
-  def set_person_attribute_defaults(person)
+  def set_person_attribute_defaults(person, child = false)
     if person.p_info_date.blank?
       dt = person.new_record? ? Date.today : person.created_at.to_date
       person.p_info_date = dt
     end
-    person.p_info_source_code = Person.person_self_code if person.p_info_source_code.blank?
+    if person.p_info_source_code.blank? && !child
+      person.p_info_source_code = Person.person_self_code
+    end
     person.p_info_update      = Date.today
   end
   private :set_person_attribute_defaults
+
+  ##
+  # Create relationship to participant if paramaters include
+  # participant_id and relationship code
+  def create_relationship_to_participant
+    relationship_code = params[:relationship_code]
+    if @participant && relationship_code
+      ParticipantPersonLink.create(:participant => @participant, :person => @person,
+                                   :relationship_code => params[:relationship_code])
+    end
+  end
+  private :create_relationship_to_participant
+
+  def set_participant
+    if params[:participant_id]
+      @participant = Participant.find(params[:participant_id])
+    end
+  end
+  private :set_participant
 
 end
