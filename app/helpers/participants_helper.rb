@@ -133,11 +133,25 @@ module ParticipantsHelper
     name.to_s.sub(/(.*?)\s*Part\b.*\Z/i) { $1 }
   end
 
+  def activity_link_name(activity)
+    name = "#{strip_part_from_activity_name(activity.activity_name)}"
+    if activity.participant.has_children? || activity.participant.child_participant?
+      name << " (#{activity.participant.person.full_name})"
+    end
+    name
+  end
+
   def saq_confirmation_message(event)
     msg = event.closed? ? "This event is already closed.\n\n" : ""
     msg << "Would you like to record or add more information to the Self-Administered Questionnaire (SAQ)\n"
     msg << "for the #{event.event_type.to_s} Event?"
     msg
+  end
+
+  ##
+  # Determine if the activities include a child consent
+  def activities_include_child_consent?(activities_for_event)
+    activities_for_event.find{ |sa| sa.child_consent? }
   end
 
   ##

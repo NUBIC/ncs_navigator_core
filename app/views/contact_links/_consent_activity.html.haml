@@ -1,4 +1,4 @@
 - if survey.title == "IRB_CON_NonInterviewReport"
   = render "non_interview_report_consent_activity", :activity => activity, :survey => survey, :contact_link => contact_link
 - else
-  = render "instrument_consent_activity", :activity => activity, :survey => survey, :contact_link => contact_link
+  = render "instrument_consent_activity", :activity => activity, :survey => survey, :contact_link => contact_link, :person => person
