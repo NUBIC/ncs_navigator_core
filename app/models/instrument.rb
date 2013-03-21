@@ -123,10 +123,10 @@ class Instrument < ActiveRecord::Base
     rs = ResponseSet.includes(:instrument).where(where_clause, survey.id, person.id, event.id).first
 
     if !rs || event.closed?
-      person.start_instrument(survey, participant, mode)
+      person.start_instrument(survey, participant, mode, event)
     else
       rs.instrument
-    end.tap { |i| i.event = event }
+    end
   end
 
   ##
@@ -137,7 +137,7 @@ class Instrument < ActiveRecord::Base
   # @return[Instrument]
   def self.continue_instrument_associated_with_survey(person, participant, instrument_survey, current_survey, event, mode)
     instrument = find_instrument_to_continue(person, instrument_survey, event)
-    person.start_instrument(current_survey, participant, mode, instrument)
+    person.start_instrument(current_survey, participant, mode, event, instrument)
   end
 
   def self.find_instrument_to_continue(person, instrument_survey, event)
