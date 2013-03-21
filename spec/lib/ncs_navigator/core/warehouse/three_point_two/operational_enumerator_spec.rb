@@ -894,6 +894,9 @@ module NcsNavigator::Core::Warehouse::ThreePointTwo
         results.first.provider_id.should == Provider.first.public_id
       end
 
+      it 'hard-codes medical_records to -4 for now (#3632)' do
+        results.first.medical_records.should == '-4'
+      end
     end
 
     describe 'for PersonProviderLink' do

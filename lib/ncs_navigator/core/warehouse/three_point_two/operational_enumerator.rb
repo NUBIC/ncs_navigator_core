@@ -177,6 +177,9 @@ module NcsNavigator::Core::Warehouse::ThreePointTwo
     )
 
     produce_one_for_one(:providers, :Provider,
+      :selects => [
+        '-4 AS medical_records'
+      ],
       :ignored_columns => %w(institution_id)
     )
 
