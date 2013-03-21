@@ -1,7 +1,242 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<study xmlns="http://bioinformatics.northwestern.edu/ns/psc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" assigned-identifier="NCS Hi-Lo" last-modified-date="2013-03-14T10:03:17.100Z" xsi:schemaLocation="http://bioinformatics.northwestern.edu/ns/psc http://bioinformatics.northwestern.edu/ns/psc/psc.xsd">
+<study xmlns="http://bioinformatics.northwestern.edu/ns/psc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" assigned-identifier="NCS Hi-Lo" last-modified-date="2013-03-20T15:41:46.185Z" xsi:schemaLocation="http://bioinformatics.northwestern.edu/ns/psc http://bioinformatics.northwestern.edu/ns/psc/psc.xsd">
   <planned-calendar id="80f00ffd-5454-4193-aca5-23f289a22e9a"/>
+  <amendment name="Rev 46" date="2013-03-20" mandatory="true" released-date="2013-03-20T15:41:46.185Z" previous-amendment-key="2013-03-20~Rev 45">
+    <epoch-delta id="648e78d4-9ec2-42b9-b72a-6cc9d55354e1" node-id="439ad51e-5277-4f14-b786-c516909a970a">
+      <add id="b1e68bf0-63e0-496c-bef0-fe24ac085a4a" index="4">
+        <study-segment id="f326c501-98c7-448a-949a-ed556228fe72" name="Parental Permission for Child Participation 6 months to Age of Majority">
+          <period id="567cbdb9-4b31-4496-9c1c-7e96ecad2dcc" name="Parental Permission for Child Participation" repetitions="1" start-day="1" duration-quantity="1" duration-unit="day">
+            <planned-activity id="f2b05457-ae86-4d96-b88d-1b28014595e5" day="1">
+              <label id="55b67994-3671-48e8-a464-ffb23298b9ec" name="event:informed_consent"/>
+              <label id="576e6231-1dfc-4353-9a48-3d68de4afb85" name="instrument:2.0:irb_con_informed_consent"/>
+              <label id="a76e4867-6d60-4df8-bad8-0c77402e5a97" name="instrument:2.1:irb_con_informed_consent"/>
+              <label id="37d8e367-7088-4389-a35c-f57c84c4390c" name="instrument:2.2:irb_con_informed_consent"/>
+              <label id="afac2b2b-8f97-4dfd-a5ac-8b37684a8102" name="instrument:3.0:irb_con_informed_consent"/>
+              <label id="2982d6ac-40ea-44ec-ac00-c07ca352182c" name="instrument:3.1:irb_con_informed_consent"/>
+              <label id="0cbd83e1-42e2-4c1c-85d8-1361d808e596" name="instrument:3.2:irb_con_informed_consent"/>
+              <label id="719886fa-affd-40ee-8382-693a1de9f1e3" name="order:01_02"/>
+              <label id="54fc1eee-cd42-473b-a0c8-d328e735a72d" name="participant_type:child"/>
+              <activity-reference code="CC" source="NCS"/>
+            </planned-activity>
+            <planned-activity id="b3284c89-c4ec-424a-a4a4-7f97022a2c38" day="1">
+              <label id="89d14327-c208-47de-bd7e-e4333c2e4c48" name="event:informed_consent"/>
+              <label id="91ffdfea-b678-4758-8add-8106f4268aff" name="instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one"/>
+              <label id="b0f7f3f4-e186-46c8-bc3f-5de82c105427" name="instrument:3.1:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one"/>
+              <label id="c835db4e-0d7d-4392-bd35-031271701f3e" name="instrument:3.2:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one"/>
+              <label id="129b2ca3-0f35-4406-b1f6-cf49d2c97a35" name="order:00_01"/>
+              <label id="47624ddc-0aae-4069-95d2-7c88de41d987" name="participant_type:mother"/>
+              <activity-reference code="PVI" source="NCS"/>
+            </planned-activity>
+            <planned-activity id="273b95b0-d32c-4bc9-861a-21c6563ed25a" day="1">
+              <label id="5c138482-3e1d-4e97-af5c-fdb9f3fd3648" name="event:informed_consent"/>
+              <label id="4ecedff4-30c4-4230-be45-4b24225d74b5" name="instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_two"/>
+              <label id="9b15056b-4f3d-401e-88e1-802371853809" name="instrument:3.1:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_two"/>
+              <label id="b6f09c97-9119-41fd-b301-6ead5cfc8b96" name="instrument:3.2:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_two"/>
+              <label id="e8fb9d74-cc3d-4a34-94bd-94c2b0d00b13" name="order:00_02"/>
+              <label id="4f063431-ae80-4145-9339-158476747141" name="participant_type:child"/>
+              <label id="41cfa48c-958a-49f4-b0cb-6d213c384271" name="references:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one"/>
+              <label id="49b54589-143e-4511-9152-13673f5c3983" name="references:3.1:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one"/>
+              <label id="433d2650-f378-4fe7-b8cd-e21d45874f1d" name="references:3.2:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one"/>
+              <activity-reference code="PVI2" source="NCS"/>
+            </planned-activity>
+          </period>
+        </study-segment>
+      </add>
+    </epoch-delta>
+  </amendment>
+  <amendment name="Rev 45" date="2013-03-20" mandatory="true" released-date="2013-03-20T13:29:40.238Z" updated-date="2013-03-20T13:22:52.1Z" previous-amendment-key="2013-03-18~Rev 44">
+    <study-segment-delta id="97bd2215-5639-4aa5-8778-23cef163e97b" node-id="c9bd6beb-7861-4eab-958e-cad971eb8647">
+      <property-change id="11084f18-20aa-488b-973e-8a3d9aeee1f1" property-name="name" old-value="Parental Permission for Child Participation" new-value="Parental Permission for Child Participation Birth to 6 months"/>
+    </study-segment-delta>
+    <planned-activity-delta id="abfee7ac-ae19-407c-b59b-bc2c066fd472" node-id="0db6452c-93e5-4c95-ae26-b898b583d82b">
+      <property-change id="6685e406-a08b-4e2a-8806-744ff936ce58" property-name="day" old-value="1" new-value="1"/>
+      <add id="bbf3c45e-a737-4b08-8b00-0e0264970fa0">
+        <label id="721b9d64-ff46-4a21-a32d-364fba088e82" name="instrument:2.0:irb_con_informed_consent"/>
+      </add>
+      <add id="5147ad0b-0a35-48fd-9292-236ffc892904">
+        <label id="051d4cc9-f32a-4b72-a16e-b1148fa7cdfc" name="instrument:2.1:irb_con_informed_consent"/>
+      </add>
+      <add id="0378fb61-c3f5-4ab6-b931-c37d5344d80c">
+        <label id="49271539-9d10-41af-a844-9457a4910a19" name="instrument:2.2:irb_con_informed_consent"/>
+      </add>
+      <add id="62dc90a6-1d68-4112-b95a-6be0cf1cbe34">
+        <label id="04a93161-1019-41be-9168-5866189d540a" name="instrument:3.0:irb_con_informed_consent"/>
+      </add>
+      <add id="8214f0a5-b093-45f6-bcb5-cf865c0fd47c">
+        <label id="bb739102-151b-4147-b009-17e32b49e182" name="instrument:3.1:irb_con_informed_consent"/>
+      </add>
+      <add id="1cad1851-6063-4402-b909-7fc9a9c931be">
+        <label id="29a35842-67ff-46e0-8586-ebd6090af46f" name="instrument:3.2:irb_con_informed_consent"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="8003dea1-2128-4db2-a8bc-d1b5b2fc72ae" node-id="e40443d8-b9d0-47d1-a676-10417a0d5179">
+      <property-change id="971fa228-d827-43c8-b5f7-658d48770bda" property-name="day" old-value="1" new-value="1"/>
+      <add id="6317207d-5f5f-4536-aa95-2f41656fb793">
+        <label id="76976e26-7fa5-45ef-9932-ff585fca6c4a" name="instrument:2.0:irb_con_informed_consent"/>
+      </add>
+      <add id="caa4fa16-6b17-47a9-94dd-125bb2900b1c">
+        <label id="b976995f-1309-4ffb-a063-79a08345014b" name="instrument:2.1:irb_con_informed_consent"/>
+      </add>
+      <add id="767e50df-68c0-4284-8dd7-f4f74522a434">
+        <label id="e90b6462-672e-44a5-9eed-9a8e31224227" name="instrument:2.2:irb_con_informed_consent"/>
+      </add>
+      <add id="803215d9-9a5e-44c3-a934-2d6bef9071d1">
+        <label id="ee6c924c-7c9f-4361-91d4-b4071e959f69" name="instrument:3.0:irb_con_informed_consent"/>
+      </add>
+      <add id="018d9f45-0b6e-4d2e-82b0-4e5ef9eb1c9a">
+        <label id="3cd076c5-9894-4ea3-af4d-363e053e7011" name="instrument:3.1:irb_con_informed_consent"/>
+      </add>
+      <add id="586284ad-57fd-41bb-b5fe-1ba560c35e8f">
+        <label id="f722373c-ac8d-4142-a8bc-9420b2503101" name="instrument:3.2:irb_con_informed_consent"/>
+      </add>
+    </planned-activity-delta>
+    <epoch-delta id="76511fd0-4bf1-4e0e-8f03-888a48cee2ca" node-id="7955eab9-f505-45d2-9c79-eeaa19cf5382">
+      <remove id="000d6ab3-efec-4401-ae9d-cd2a77ecea7c" child-id="645376f4-5ca1-49e8-a31a-8f1030059348"/>
+    </epoch-delta>
+    <planned-activity-delta id="9860ee93-3ea3-4165-9aef-58a36a388308" node-id="46ce7427-6039-4393-89f5-9ed5a8b39826">
+      <property-change id="bbdd4e6a-cfab-4991-a651-10a048c158bf" property-name="day" old-value="1" new-value="1"/>
+      <add id="7c56d906-6fc9-427b-877e-27e110c9e00c">
+        <label id="68286391-56bb-4a05-ae81-a49372daf76d" name="instrument:2.0:irb_con_informed_consent"/>
+      </add>
+      <add id="19794dd8-6569-4b1c-86e9-d7f3bb841aa6">
+        <label id="e4e3faaa-5496-4927-85da-e815abaf0c11" name="instrument:2.1:irb_con_informed_consent"/>
+      </add>
+      <add id="729b580f-6bef-4423-98a5-57476e7ebae2">
+        <label id="30b91e5c-d6fe-49b8-ae93-dbe2dae47fa2" name="instrument:2.2:irb_con_informed_consent"/>
+      </add>
+      <add id="dcb911cf-6680-4be9-8226-1359402edb78">
+        <label id="1f5a9147-dc12-4406-bb67-02502d41fd97" name="instrument:3.0:irb_con_informed_consent"/>
+      </add>
+      <add id="b229d4a6-73f8-4122-8353-2e4327571868">
+        <label id="ff8e8d5e-a8f8-4cd0-8c12-1c7dc470db6d" name="instrument:3.1:irb_con_informed_consent"/>
+      </add>
+      <add id="20197796-e79a-4a42-818a-22ef0ddfcbbb">
+        <label id="de68f8f2-27d3-4bd0-8f3a-e3525a24538e" name="instrument:3.2:irb_con_informed_consent"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="8feaf3c7-7ffc-4b3c-ae32-26ac6495c8d7" node-id="2690f0c5-936f-49cb-8be2-e02e832d6105">
+      <property-change id="c020d0e6-6038-4a1f-a1c3-3d9d69fafdb5" property-name="day" old-value="1" new-value="1"/>
+      <add id="45d36eac-fbdf-4c33-bcc8-d5ed61e5edc4">
+        <label id="cab52c8d-bb13-4b4a-9ef0-4a09f8f0b2ef" name="instrument:2.0:irb_con_informed_consent"/>
+      </add>
+      <add id="ef382f8b-bc4d-4f2a-a41e-fc1fbc1f322a">
+        <label id="0110d2be-5273-4db8-b2e4-11a47a45dbf5" name="instrument:2.1:irb_con_informed_consent"/>
+      </add>
+      <add id="c7d153d6-6ced-4a58-9020-38cc4a481f72">
+        <label id="cf4d20c3-7aa3-4e29-9f7c-ed3176aa04aa" name="instrument:2.2:irb_con_informed_consent"/>
+      </add>
+      <add id="2e8b75ff-e216-4d2f-b4de-7cce41d85ff9">
+        <label id="bf952045-0a4f-475d-95e2-275e9360fbdc" name="instrument:3.0:irb_con_informed_consent"/>
+      </add>
+      <add id="689e429c-c6f9-4b3e-9c27-ed48b3e5092b">
+        <label id="aa39b726-35f7-49ea-868f-06b8069bc4c0" name="instrument:3.1:irb_con_informed_consent"/>
+      </add>
+      <add id="ac8535bf-2958-45a6-8465-6d471bd8755d">
+        <label id="5395f43c-311a-43f9-8224-1511a44a6205" name="instrument:3.2:irb_con_informed_consent"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="c355ea18-f11d-4559-9042-1e8ab35f82d0" node-id="86134b47-52d3-4b44-8373-3095287a5214">
+      <property-change id="77532a49-01b2-47ed-9357-bbdaec8ad3c5" property-name="day" old-value="1" new-value="1"/>
+      <add id="b0839ccf-8cd1-4888-abf9-9a40eb81db75">
+        <label id="ffe7472d-6ceb-4ea9-916d-9de539b82468" name="instrument:2.0:irb_con_informed_consent"/>
+      </add>
+      <add id="0b38c52e-d180-40d7-9c29-77269cb68746">
+        <label id="465aa36e-0fe6-4d80-b820-c6401fee4579" name="instrument:2.1:irb_con_informed_consent"/>
+      </add>
+      <add id="c2cbef75-d6db-43b0-a187-d0ccc625c107">
+        <label id="4beeff2a-e574-4014-8b88-5f18365a8259" name="instrument:2.2:irb_con_informed_consent"/>
+      </add>
+      <add id="f29fe48b-5d2e-44d4-9327-f23deda8c5a5">
+        <label id="82642599-3668-4032-b99d-de4af6683b05" name="instrument:3.0:irb_con_informed_consent"/>
+      </add>
+      <add id="35302651-e009-4204-aea0-e1b200cc1b5e">
+        <label id="6d284841-cdff-442c-89be-d796d44bbb6b" name="instrument:3.1:irb_con_informed_consent"/>
+      </add>
+      <add id="bb0f0665-4411-4adb-bd26-58508221c699">
+        <label id="12a73400-2881-4a5a-b5dc-6ab71fb8d1b4" name="instrument:3.2:irb_con_informed_consent"/>
+      </add>
+    </planned-activity-delta>
+  </amendment>
+  <amendment name="Rev 44" date="2013-03-18" mandatory="true" released-date="2013-03-18T15:24:22.848Z" updated-date="2013-03-18T15:19:58.564Z" previous-amendment-key="2013-03-14~Rev 43">
+    <planned-activity-delta id="0b1ae847-4d4f-44dd-9365-65a1b515a178" node-id="0a5a0ca9-bf89-4033-b371-2c797027bbf7">
+      <property-change id="cef5f447-37be-4ff8-82c5-98456a3c2c01" property-name="day" old-value="1" new-value="1"/>
+      <property-change id="50b67416-d93c-46e3-8d8c-ba55629caafe" property-name="condition" old-value="" new-value="If Participant refuses to Reconsent"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="b2a7aed3-816f-424a-af7b-d3b6da0c0fa6" node-id="9d70d969-7be3-4cd1-8b59-336995618e94">
+      <property-change id="5d21f929-879f-4a76-9806-6fea39c629fa" property-name="day" old-value="1" new-value="1"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="1c7ebc50-372d-4458-a5f1-03d09af9f7be" node-id="b5f9c876-e6b7-461e-becb-dd51836386d3">
+      <property-change id="087217b4-abfb-4d81-8499-ea4526d5f1c7" property-name="day" old-value="1" new-value="1"/>
+      <remove id="319e5f83-835b-4867-b064-5bc75755435e" child-id="5657793d-1894-4718-8887-df77262605f9"/>
+      <remove id="2d05b252-77bc-43ab-b908-931157c3e9d4" child-id="0d1ac19c-a18c-45b9-89c1-3aa0a3cc33c6"/>
+      <remove id="802743eb-a426-4b7e-82f7-fa3fb505b202" child-id="3e36eb71-22c1-4932-9244-e22d9d7d7fe8"/>
+      <remove id="4b4a31b5-7a53-4d31-900e-4c31d9159d8a" child-id="ab9e25f1-3f45-4e14-bdd4-1e56ec383bc2"/>
+      <remove id="1f6c0a96-8e5d-44a0-9403-6052af208614" child-id="a121168f-c78e-4505-bce8-8221ffd1d991"/>
+      <remove id="9f19e319-3451-4a28-996c-da05138127c8" child-id="ef25f45e-1a6b-4e33-bb84-68e9625be324"/>
+      <add id="9e62a8e5-0c78-466f-a2b2-423e26fe3f63">
+        <label id="ed5cb042-3006-4acf-b072-8915b2f3a2e3" name="instrument:2.0:irb_con_informed_consent"/>
+      </add>
+      <add id="5e535e46-0757-4d1d-8557-550068fe8aa6">
+        <label id="0b9c732f-379a-42ef-8baa-fbc8ade09968" name="instrument:2.1:irb_con_informed_consent"/>
+      </add>
+      <add id="64022799-89ec-443a-a79f-1865d2994055">
+        <label id="c483e0ce-1bb7-4bf8-8b84-0ee27ed7a1f5" name="instrument:2.2:irb_con_informed_consent"/>
+      </add>
+      <add id="b3d8412e-eadd-4cf7-82da-eae2863073a5">
+        <label id="124738d1-e5b0-4db9-9ea7-366d859e5ddf" name="instrument:3.0:irb_con_informed_consent"/>
+      </add>
+      <add id="b9a16941-e355-4b35-84bd-e8411f8d182f">
+        <label id="3783000e-07c2-426a-8c1e-523845e59d52" name="instrument:3.1:irb_con_informed_consent"/>
+      </add>
+      <add id="5b6c0032-e810-4378-8f68-f67a6a856eea">
+        <label id="ef2acb92-52e0-45b0-9a6b-21ee9e5b8006" name="instrument:3.2:irb_con_informed_consent"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="3a5967e6-98a6-4cef-a674-87c716f17446" node-id="bef9a258-a3a7-4669-880a-6a8a04fd5f48">
+      <property-change id="42acc42a-81df-4b30-bcc1-44a659159ae7" property-name="day" old-value="1" new-value="1"/>
+      <remove id="0ef55aed-efa7-439f-9578-76b4d86099e2" child-id="be4c4bf9-459b-4ea8-aa13-763f29b44af0"/>
+      <remove id="367aa151-ac64-4134-9676-438720a37209" child-id="8a03aa13-416b-4d52-9118-72cd2bff2893"/>
+      <remove id="3d3c0e9e-fd43-4ef3-8d36-94c896449ab4" child-id="c900cd40-cc5c-49c0-b57b-e5efb9fefcb6"/>
+      <remove id="97339b4d-6a4d-4891-bace-ed527fc72401" child-id="c9e6555e-ee24-4274-98fa-735debf4ad22"/>
+      <remove id="183780ed-2df7-4f0e-8e53-8b27e589651e" child-id="16c83fae-4fff-4d4a-a1ab-dd5ff17346af"/>
+      <remove id="03625b66-1b3d-417b-bb81-11dccbbaf331" child-id="328c8152-f293-4924-873d-111503feaa9b"/>
+      <add id="fca899f8-a99a-4157-b41b-4ea44a142ba4">
+        <label id="1bb7de39-bd71-489c-ba56-16da6e1f4763" name="instrument:2.0:irb_con_informed_consent"/>
+      </add>
+      <add id="536e4f7f-bf82-47c5-88c8-592290e00802">
+        <label id="db09d9fb-26b7-47f1-bdd9-76bb83759180" name="instrument:2.1:irb_con_informed_consent"/>
+      </add>
+      <add id="6b9cb7f3-fa06-4583-bec4-5a7850d2d033">
+        <label id="2510f630-0a2d-41fc-a3fe-67b442dec68d" name="instrument:2.2:irb_con_informed_consent"/>
+      </add>
+      <add id="cfca88a9-4235-48ac-936a-55d35189c990">
+        <label id="03626701-9297-4910-ac41-644db21f5a16" name="instrument:3.0:irb_con_informed_consent"/>
+      </add>
+      <add id="ccc4aa81-1c44-4298-9de8-8f24ebf952a7">
+        <label id="3aafff5c-770f-46fb-b96d-6c12d656fb81" name="instrument:3.1:irb_con_informed_consent"/>
+      </add>
+      <add id="712a96e1-6da4-4a81-b417-e5cca1f4278a">
+        <label id="b0bcbc8c-69ab-4ffe-8bc0-63aaed76af7b" name="instrument:3.2:irb_con_informed_consent"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="c7a20251-5301-4b92-9290-85d2ddf4713f" node-id="1ade4638-6e80-431f-8454-0a2b2d5654f5">
+      <property-change id="59bd7529-0824-4c0b-a3b0-1d7a1a8d5731" property-name="day" old-value="1" new-value="1"/>
+      <property-change id="f3ab22ef-bd90-46a8-afdd-d170f6e7c3c8" property-name="condition" old-value="" new-value="If Participant refused to consent"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="9da2e7dd-eeff-42e9-a193-a74381b310ee" node-id="728c0594-dac4-4e10-8b45-b570fb5bc7ad">
+      <property-change id="99fd387c-d0bb-45f4-9933-94bb62988434" property-name="day" old-value="1" new-value="1"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="c07e0534-dc33-4be7-a21e-1de5115bd3cc" node-id="f9ded0e0-2f09-41e1-9ee2-a5abec04bce9">
+      <property-change id="d9498ef1-2a5b-4710-a4f9-fd1875ec77a9" property-name="day" old-value="1" new-value="1"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="34e93ecd-a057-4b45-afce-e9db9ac0d941" node-id="f3f6c2a0-1672-47c4-ac9d-09a89f73c93e">
+      <property-change id="2b4f78a3-6915-4f7d-82f2-5b5031c7424f" property-name="day" old-value="1" new-value="1"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="702c6dbe-e41e-4c54-8168-96aa178a77e3" node-id="3a9323d6-7435-49ec-9f99-722a3c7b9be4">
+      <property-change id="89d8d83b-ab6a-4196-8bba-3bcca301bed0" property-name="day" old-value="1" new-value="1"/>
+    </planned-activity-delta>
+  </amendment>
   <amendment name="Rev 43" date="2013-03-14" mandatory="true" released-date="2013-03-14T10:03:17.100Z" previous-amendment-key="2013-03-08~Rev 42">
     <period-delta id="c77da44c-cf63-47c3-928e-effd4752e7fa" node-id="1dc689b8-1798-4189-88a2-b76f23324294">
       <add id="53947ebf-336f-4f0e-8188-91eab7a182e0">
@@ -7149,13 +7384,6 @@
               </planned-activity>
             </period>
           </study-segment>
-          <study-segment id="645376f4-5ca1-49e8-a31a-8f1030059348" name="Child Consent">
-            <period id="6e9424b8-461f-48c2-a3f8-b67b164159bc" name="Child Concent" repetitions="1" start-day="1" duration-quantity="168" duration-unit="day">
-              <planned-activity id="14d6ed35-1104-4da6-9784-9de30c1e8a6b" day="168">
-                <activity-reference code="CC" source="NCS"/>
-              </planned-activity>
-            </period>
-          </study-segment>
           <study-segment id="a6af42b4-6aec-4c63-a8d3-8b59474da940" name="Father Consent and Interview">
             <period id="e526bc74-f474-4544-85d2-ced85b6d16f0" name="Father Consent and Interview" repetitions="1" start-day="1" duration-quantity="1" duration-unit="day">
               <planned-activity id="4e33bea0-cefa-4132-bd1b-5179eec993d9" day="1">
@@ -7166,6 +7394,13 @@
               </planned-activity>
               <planned-activity id="b1b535d1-6c50-4865-9dda-610f7e5d0261" day="1">
                 <activity-reference code="FI" source="NCS"/>
+              </planned-activity>
+            </period>
+          </study-segment>
+          <study-segment id="645376f4-5ca1-49e8-a31a-8f1030059348" name="Child Consent">
+            <period id="6e9424b8-461f-48c2-a3f8-b67b164159bc" name="Child Concent" repetitions="1" start-day="1" duration-quantity="168" duration-unit="day">
+              <planned-activity id="14d6ed35-1104-4da6-9784-9de30c1e8a6b" day="168">
+                <activity-reference code="CC" source="NCS"/>
               </planned-activity>
             </period>
           </study-segment>
