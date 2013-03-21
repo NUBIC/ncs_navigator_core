@@ -47,7 +47,7 @@ gem 'surveyor',
   :branch => 'ncs'
 
 gem 'psc'
-gem 'ncs_navigator_configuration', :git => 'https://github.com/NUBIC/ncs_navigator_configuration.git'
+gem 'ncs_navigator_configuration', '~> 0.4'
 gem 'sidekiq'
 
 gem 'state_machine'
