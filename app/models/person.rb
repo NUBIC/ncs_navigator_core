@@ -260,12 +260,12 @@ class Person < ActiveRecord::Base
   # @param mode [Integer] Instrument mode code
   # @param [Instrument] - The instrument associated with the Survey (or Survey part)
   # @return [Instrument]
-  def start_instrument(survey, participant, mode, instrument = nil)
+  def start_instrument(survey, participant, mode, event, instrument = nil)
     # TODO: raise Exception if survey is nil
     return if survey.nil?
-
     instrument = build_instrument(survey, mode) if instrument.nil?
     instrument.tap do |instr|
+      instr.event = event
       rs = instr.response_sets.build(:survey => survey, :user_id => self.id)
       rs.participant = participant
       rs.prepopulate
