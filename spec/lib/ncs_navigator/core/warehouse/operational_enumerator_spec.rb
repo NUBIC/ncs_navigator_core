@@ -34,6 +34,7 @@ module NcsNavigator::Core::Warehouse
       # corresponding op enumerator. This is true now but will not always be.
       describe 'for an unsupported MDES version' do
         before do
+          pending 'There are no longer any unsupported MDES versions for this test to use.'
           wh_config.mdes_version = '3.1'
         end
 
