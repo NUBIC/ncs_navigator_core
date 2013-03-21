@@ -607,8 +607,6 @@ describe Event do
         psc.stub!(:template_snapshot).and_return(Nokogiri::XML(File.read(
               File.expand_path('../../fixtures/psc/current_hilo_template_snapshot.xml', __FILE__))))
 
-        PatientStudyCalendar.any_instance.stub!(:should_schedule_segment).and_return(true)
-
         date = Date.today
         part = Factory(:high_intensity_pregnancy_one_participant)
         part.person = Factory(:person)
