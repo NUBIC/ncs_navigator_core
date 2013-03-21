@@ -102,13 +102,12 @@ describe ProvidersController do
       it "builds a primary contact for the provider if none exists" do
         provider.staff.should be_empty
         get :edit_contact_information, :id => provider.id
-        assigns(:provider).staff.should_not be_empty
+        assigns(:provider).staff.first.should be_a Person
       end
 
       it "builds a primary contact information for the provider contact if none exists" do
         provider.staff.should be_empty
         get :edit_contact_information, :id => provider.id
-        assigns(:provider).staff.should_not be_empty
         assigns(:provider).staff.first.emails.should_not be_empty
         assigns(:provider).staff.first.telephones.should_not be_empty
       end
