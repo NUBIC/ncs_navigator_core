@@ -16,6 +16,7 @@ module NcsNavigator::Core::Warehouse
   autoload :TwoPointTwo,                  'ncs_navigator/core/warehouse/two_point_two'
   autoload :TwoPointZero,                 'ncs_navigator/core/warehouse/two_point_zero'
   autoload :ThreePointOne,                'ncs_navigator/core/warehouse/three_point_one'
+  autoload :ThreePointTwo,                'ncs_navigator/core/warehouse/three_point_two'
   autoload :ThreePointZero,               'ncs_navigator/core/warehouse/three_point_zero'
   autoload :UnusedOperationalPassthrough, 'ncs_navigator/core/warehouse/unused_operational_passthrough'
   autoload :UnusedPassthrough,            'ncs_navigator/core/warehouse/unused_passthrough'

@@ -70,9 +70,9 @@ GEM
     annotate (2.5.0)
       rake
     arel (2.2.3)
-    bcdatabase (1.2.1)
+    bcdatabase (1.2.2)
       activesupport (>= 2.0)
-      highline (~> 1.5)
+      highline (~> 1.5, < 1.6.9)
       i18n
       thor (~> 0.14.6)
     bcrypt-ruby (3.0.1)
@@ -227,7 +227,7 @@ GEM
       spork (>= 0.8.4)
     haml (3.1.8)
     hana (1.0.1)
-    highline (1.6.15)
+    highline (1.6.8)
     hike (1.2.1)
     i18n (0.6.4)
     inifile (0.4.1)
@@ -272,7 +272,7 @@ GEM
     mustache (0.99.4)
     ncs_mdes (0.12.0)
       nokogiri (~> 1.5.6)
-    ncs_mdes_warehouse (0.11.0)
+    ncs_mdes_warehouse (0.12.0)
       actionmailer (~> 3.0)
       activesupport (~> 3.0, != 3.2.6, != 3.2.5, != 3.2.4)
       bcdatabase (~> 1.1)
@@ -288,7 +288,7 @@ GEM
       dm-validations (~> 1.2.0)
       i18n (~> 0.4)
       json (~> 1.6)
-      ncs_mdes (~> 0.11)
+      ncs_mdes (~> 0.12)
       ncs_navigator_configuration (~> 0.2)
       nokogiri (~> 1.5.6)
       rgl
@@ -511,7 +511,7 @@ DEPENDENCIES
   lograge
   mustache
   ncs_mdes (>= 0.11.0)
-  ncs_mdes_warehouse (~> 0.11)
+  ncs_mdes_warehouse (~> 0.12)
   ncs_navigator_authority
   ncs_navigator_configuration (~> 0.4)
   paper_trail (~> 2)
