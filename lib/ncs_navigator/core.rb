@@ -9,7 +9,6 @@ module NcsNavigator
     autoload :FollowedParticipantChecker, 'ncs_navigator/core/followed_participant_checker'
     autoload :HasPublicId,                'ncs_navigator/core/has_public_id'
     autoload :Mdes,                       'ncs_navigator/core/mdes'
-    autoload :MdesCodeListLoader,         'ncs_navigator/core/mdes_code_list_loader'
     autoload :MdesInstrumentSurvey,       'ncs_navigator/core/mdes_instrument_survey'
     autoload :Mustache,                   'ncs_navigator/core/mustache'
     autoload :Pbs,                        'ncs_navigator/core/pbs'

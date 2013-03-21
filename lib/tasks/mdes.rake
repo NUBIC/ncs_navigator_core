@@ -1,12 +1,12 @@
 namespace :mdes do
   namespace :code_lists do
     task :base => :environment do
-      require 'ncs_navigator/core/mdes_code_list_loader'
+      require 'ncs_navigator/core/mdes/code_list_loader'
     end
 
     desc 'Generate the code list YAML file for the current MDES version'
     task :yaml => :base do
-      NcsNavigator::Core::MdesCodeListLoader.new(:interactive => true).create_yaml
+      NcsNavigator::Core::Mdes::CodeListLoader.new(:interactive => true).create_yaml
       $stderr.puts "Code list YAML regenerated. Please verify and commit it."
     end
 
@@ -14,7 +14,7 @@ namespace :mdes do
     task :all_yaml => :base do
       %w(2.0 2.1 2.2 3.0 3.1 3.2).each do |mdes_version|
         $stderr.print "Creating for #{mdes_version}..."; $stderr.flush
-        NcsNavigator::Core::MdesCodeListLoader.new(:interactive => true, :mdes_version => mdes_version).create_yaml
+        NcsNavigator::Core::Mdes::CodeListLoader.new(:interactive => true, :mdes_version => mdes_version).create_yaml
         $stderr.puts 'done.'
       end
       $stderr.puts "All code list YAML regenerated. Please verify and commit them."
@@ -26,7 +26,7 @@ namespace :mdes do
 
       require 'benchmark'
       $stderr.puts(Benchmark.measure do
-        NcsNavigator::Core::MdesCodeListLoader.new(:interactive => true).load_from_yaml
+        NcsNavigator::Core::Mdes::CodeListLoader.new(:interactive => true).load_from_yaml
       end)
     end
 
