@@ -139,6 +139,57 @@ describe PeopleController do
       end
     end
 
+    describe "GET new_child" do
+      it "raises exception when no participant is given" do
+        expect do
+          get :new_child, :participant_id => nil
+        end.to raise_error(ActiveRecord::RecordNotFound)
+      end
+
+      it "raises exception when no contact_link is given" do
+        expect do
+          get :new_child, :contact_link_id => nil, :participant => Factory(:participant)
+        end.to raise_error(ActiveRecord::RecordNotFound)
+      end
+    end
+
+    describe "POST create_child" do
+
+      let(:mother) { Factory(:person) }
+      let(:mother_participant) { Factory(:participant) }
+      let(:contact_link) { Factory(:contact_link) }
+      let(:fname) { "John" }
+      let(:lname) { "Doe" }
+
+      before do
+        mother_participant.person = mother
+        mother_participant.save!
+      end
+
+      it "creates a child person and participant record associated with the mother participant" do
+        mother_participant.children.should be_empty
+
+        post :create_child, :participant_id => mother_participant.id, :contact_link_id => contact_link.id, :relationship_code => '8',
+             :person => { :first_name => fname, :last_name => lname, :sex_code => "1",  }
+
+        pt = Participant.find(mother_participant.id)
+        pt.children.size.should == 1
+        child = pt.children.first
+        child.first_name.should == fname
+        child.last_name.should == lname
+
+        child_participant = child.participant
+        child_participant.should_not be_nil
+        child_participant.mother.should == mother
+      end
+
+      it "redirects to the contact link decision page" do
+        post :create_child, :participant_id => mother_participant.id, :contact_link_id => contact_link.id, :relationship_code => '8',
+             :person => { :first_name => fname, :last_name => lname, :sex_code => "1",  }
+        response.should redirect_to(decision_page_contact_link_path(contact_link))
+      end
+    end
+
     context "starting an internal survey" do
       let(:person) { Factory(:person) }
       let(:participant) { Factory(:participant) }
@@ -210,6 +261,7 @@ describe PeopleController do
         end
       end
     end
+
   end
 
   context "with an authenticated yet unauthorized user"  do
