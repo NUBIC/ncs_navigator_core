@@ -11,6 +11,17 @@ Given /^a participant exists with a person$/ do
                          :instrument => nil)
 end
 
+Given /^a participant exists with a child$/ do
+  steps %Q{
+    Given a participant exists with a person
+  }
+
+  attrs = {:first_name => "John", :last_name => "Doe"}
+
+  participant = Participant.last
+  participant.create_child_person_and_participant!(attrs)
+end
+
 Given /^a high intensity participant exists with a person$/ do
   person = Factory(:person)
   participant = Factory(:participant, :high_intensity => true)

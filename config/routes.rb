@@ -28,6 +28,12 @@ NcsNavigatorCore::Application.routes.draw do
       put :responses_for
       get :provider_staff_member
       get :provider_staff_member_radio_button
+      get :edit_child
+      put :update_child
+    end
+    collection do
+      get :new_child
+      post :create_child
     end
     resources :contacts, :except => [:index]
     resources :telephones, :except => [:index, :destroy]

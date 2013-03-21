@@ -53,6 +53,15 @@ module NavigationHelpers
     when /^the edit_person_contact page$/
       edit_person_contact_path(Participant.first.person.id, Contact.last)
 
+    when /^the new child page for a participant and contact link$/
+      new_child_people_path(:participant_id => Participant.last.id,
+                            :contact_link_id => ContactLink.last.id)
+
+    when /^the edit child page for a participant and contact link$/
+      edit_child_person_path(Person.last,
+                             :participant_id => Participant.last.id,
+                             :contact_link_id => ContactLink.last.id)
+
     when /^the new participant page for that person$/
       new_participant_path(:person_id => Person.last.id)
 
@@ -96,6 +105,9 @@ module NavigationHelpers
 
     when /^the select_instrument_contact_link page$/
       select_instrument_contact_link_path(ContactLink.last)
+
+    when /^the decision_page_contact_link page$/
+      decision_page_contact_link_path(ContactLink.last)
 
     when /^the consent_contact_link page$/
       consent_contact_link_path(ContactLink.last)
