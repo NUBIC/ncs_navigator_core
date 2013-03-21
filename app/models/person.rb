@@ -260,6 +260,8 @@ class Person < ActiveRecord::Base
   # @param mode [Integer] Instrument mode code
   # @param [Instrument] - The instrument associated with the Survey (or Survey part)
   # @return [Instrument]
+  #
+  # event has to be set for some prepopopulation questions to work properly.
   def start_instrument(survey, participant, mode, event, instrument = nil)
     # TODO: raise Exception if survey is nil
     return if survey.nil?
