@@ -207,6 +207,7 @@ module PregnancyVisitOne
     # Institution Name
     q = Factory(:question, :reference_identifier => "BIRTH_PLACE", :data_export_identifier => "PREG_VISIT_1_3.BIRTH_PLACE", :survey_section_id => survey_section.id)
     a = Factory(:answer, :question_id => q.id, :text => "FAKE HOSPITAL MEMORIAL", :response_class => "string")
+    a = Factory(:answer, :question_id => q.id, :text => "Refused", :response_class => "answer", :reference_identifier => "neg_1")
     # Address One
     q = Factory(:question, :reference_identifier => "B_ADDRESS_1", :data_export_identifier => "PREG_VISIT_1_3.B_ADDRESS_1", :survey_section_id => survey_section.id)
     a = Factory(:answer, :question_id => q.id, :text => "Address 1", :response_class => "string")

@@ -251,8 +251,11 @@ describe OperationalDataExtractor::Birth do
       person.emails.last.email_rank_code.should == 1
     end
 
-    it "extracts institution information from the survey responses" do
-
+    it "does not extract institution information from the survey responses" do
+      # The birth instrument collects institute type and no other institution
+      # details (e.g. name or address). Currently, there is no reason to create
+      # an institution record with only institute type.
+      
       hospital = NcsCode.for_list_name_and_local_code("BIRTH_PLACE_PLAN_CL1", 1)
 
       response_set, instrument = prepare_instrument(@person, @participant, @survey)
@@ -266,8 +269,7 @@ describe OperationalDataExtractor::Birth do
 
       OperationalDataExtractor::Birth.new(response_set).extract_data
 
-      @participant.person.institutions.size.should == 1
-      @participant.person.institutions.first.institute_type.local_code.should == 1
+      @participant.person.institutions.should be_empty
     end
 
   end
