@@ -1,4 +1,4 @@
-module NcsNavigator::Core
+module NcsNavigator::Core::Mdes
   ##
   # A trivial cache of {NcsCode} instances. A code list is read on first use
   # from the database. Thereafter it is used from memory only.

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-module NcsNavigator::Core
+module NcsNavigator::Core::Mdes
   describe CodeListCache do
     let(:cache) { CodeListCache.new }
 
