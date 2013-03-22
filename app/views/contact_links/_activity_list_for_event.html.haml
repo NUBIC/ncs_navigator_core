@@ -1,14 +1,5 @@
 - if activities_include_child_consent?(activities_for_event)
-  .manage_children
-    - participant = @contact_link.event.participant
-    - participant.children.each do |child|
-      = link_to "Edit #{blank_safe(child.full_name)}",
-        edit_child_person_path(child, :participant_id => participant.id, :contact_link_id => @contact_link.id),
-        :class => "edit_link icon_link"
-      %br
-    = link_to "New Child",
-      new_child_people_path(:participant_id => participant.id, :contact_link_id => @contact_link.id),
-      :class => "add_link icon_link", :confirm => "Are you certain you would like to create a new child record?"
+  = render "manage_children", :contact_link => @contact_link
 - activities_for_event.each_with_index do |sa, ind|
   - next unless sa.scheduled? or sa.occurred? or sa.conditional?
   = render "instrument_for_activity", :activity => sa, :person => @person, :contact_link => @contact_link
