@@ -513,11 +513,11 @@ describe Instrument do
     }.each do |attr, list|
       describe "for #{attr}" do
         let!(:default_code) {
-          NcsCode.find_or_create_by_list_name_and_local_code(list, 2, :display_text => 'Foo')
+          NcsCode.for_list_name_and_local_code(list, 2)
         }
 
         let(:other_code) {
-          NcsCode.find_or_create_by_list_name_and_local_code(list, 3, :display_text => 'Bar')
+          NcsCode.for_list_name_and_local_code(list, 1)
         }
 
         let(:new_instrument_attributes) {
