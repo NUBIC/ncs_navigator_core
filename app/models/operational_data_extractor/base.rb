@@ -736,7 +736,7 @@ module OperationalDataExtractor
       email
     end
 
-    def find_institution_type(map, type)
+    def find_institution_type(map)
       extracted_type = data_export_identifier_indexed_responses.find { |k, v|
         map[k]
       }
@@ -747,7 +747,7 @@ module OperationalDataExtractor
     end
 
     def process_institution(map, response_set)
-      type = find_institution_type(map, type)
+      type = find_institution_type(map)
       if type
         institution = find_or_build_institution(response_set, type)
         map.each do |key, attribute|
