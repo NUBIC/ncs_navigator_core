@@ -31,10 +31,6 @@ describe SampleReceiptConfirmation do
   end
   
   it { should belong_to(:sample_receipt_shipping_center) }
-  it { should belong_to(:psu) }  
-  it { should belong_to(:shipment_receipt_confirmed) }
-  it { should belong_to(:shipment_condition) }
-  it { should belong_to(:sample_condition) }
   
   context "as mdes record" do
     it "sets the public_id to a uuid" do

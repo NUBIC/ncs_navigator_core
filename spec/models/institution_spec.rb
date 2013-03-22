@@ -35,12 +35,6 @@ describe Institution do
     institution.should_not be_nil
   end
 
-  it { should belong_to(:psu) }
-  it { should belong_to(:institute_type) }
-  it { should belong_to(:institute_relation) }
-  it { should belong_to(:institute_owner) }
-  it { should belong_to(:institute_unit) }
-  it { should belong_to(:institute_info_source) }
   it { should belong_to(:response_set) }
 
   it { should have_many(:addresses) }

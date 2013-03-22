@@ -34,10 +34,6 @@ describe SpecimenShipping do
   end
   
   it { should belong_to(:specimen_processing_shipping_center) }
-  it { should belong_to(:psu) }  
-  it { should belong_to(:shipment_temperature) }
-  it { should belong_to(:shipment_receipt_confirmed) }
-  it { should belong_to(:shipment_issues) }
   
   context "as mdes record" do
     it "sets the public_id to a uuid" do

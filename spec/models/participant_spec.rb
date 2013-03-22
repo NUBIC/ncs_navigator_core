@@ -49,13 +49,6 @@ describe Participant do
     participant.should be_low_intensity
   end
 
-  it { should belong_to(:psu) }
-  it { should belong_to(:p_type) }
-  it { should belong_to(:status_info_source) }
-  it { should belong_to(:status_info_mode) }
-  it { should belong_to(:enroll_status) }
-  it { should belong_to(:pid_entry) }
-  it { should belong_to(:pid_age_eligibility) }
 
   it { should have_many(:ppg_details) }
   it { should have_many(:ppg_status_histories) }

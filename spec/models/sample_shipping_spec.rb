@@ -33,10 +33,6 @@ describe SampleShipping do
   end
   
   it { should belong_to(:sample_receipt_shipping_center) }
-  it { should belong_to(:psu) }  
-  it { should belong_to(:shipper_destination) }
-  it { should belong_to(:shipment_coolant) }
-  it { should belong_to(:sample_shipped_by) }
   
   context "as mdes record" do
     it "sets the public_id to a uuid" do

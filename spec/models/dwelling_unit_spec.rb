@@ -34,12 +34,6 @@ describe DwellingUnit do
     du.should_not be_nil
   end
 
-  it { should belong_to(:psu) }
-  it { should belong_to(:duplicate_du) }
-  it { should belong_to(:missed_du) }
-  it { should belong_to(:du_type) }
-  it { should belong_to(:du_ineligible) }
-  it { should belong_to(:du_access) }
 
   it { should have_many(:dwelling_household_links) }
   it { should have_many(:household_units).through(:dwelling_household_links) }

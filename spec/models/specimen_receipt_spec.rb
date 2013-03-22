@@ -41,14 +41,6 @@ describe SpecimenReceipt do
   it { should belong_to(:specimen_processing_shipping_center) }
   it { should belong_to(:specimen_storage_container) }
   it { should belong_to(:specimen_equipment) }
-  it { should belong_to(:psu) }
-  it { should belong_to(:receipt_comment) }
-  it { should belong_to(:monitor_status) }
-  it { should belong_to(:upper_trigger) }
-  it { should belong_to(:upper_trigger_level) }
-  it { should belong_to(:lower_trigger_cold) }
-  it { should belong_to(:lower_trigger_ambient) }
-  it { should belong_to(:centrifuge_comment) }
 
   context "as mdes record" do
     it "sets the public_id to a uuid" do

@@ -39,19 +39,9 @@ describe NonInterviewProvider do
     nir.should_not be_nil
   end
 
-  it { should belong_to(:psu) }
   it { should belong_to(:contact) }
   it { should belong_to(:provider) }
 
-  it { should belong_to(:nir_type_provider) }
-  it { should belong_to(:nir_closed_info) }
-  it { should belong_to(:who_refused) }
-  it { should belong_to(:perm_closure) }
-  it { should belong_to(:refuser_strength) }
-  it { should belong_to(:ref_action_provider) }
-  it { should belong_to(:who_confirm_noprenatal) }
-  it { should belong_to(:nir_moved_info) }
-  it { should belong_to(:perm_moved) }
 
   it { should have_many(:non_interview_provider_refusals) }
 

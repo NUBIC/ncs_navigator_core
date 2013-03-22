@@ -47,25 +47,11 @@ describe ParticipantConsent do
     pc.should_not be_nil
   end
 
-  it { should belong_to(:psu) }
   it { should belong_to(:participant) }
   it { should belong_to(:contact) }
   it { should belong_to(:person_who_consented) }
   it { should belong_to(:person_wthdrw_consent) }
-  it { should belong_to(:consent_type) }
-  it { should belong_to(:consent_form_type) }
-  it { should belong_to(:consent_given) }
 
-  it { should belong_to(:consent_withdraw) }
-  it { should belong_to(:consent_withdraw_type) }
-  it { should belong_to(:consent_withdraw_reason) }
-  it { should belong_to(:consent_language) }
-  it { should belong_to(:who_consented) }
-  it { should belong_to(:who_wthdrw_consent) }
-  it { should belong_to(:consent_translate) }
-  it { should belong_to(:reconsideration_script_use) }
-  it { should belong_to(:consent_reconsent) }
-  it { should belong_to(:consent_reconsent_reason) }
 
   it { should ensure_length_of(:consent_version).is_at_most(9) }
 

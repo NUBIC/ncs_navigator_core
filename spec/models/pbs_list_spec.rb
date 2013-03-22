@@ -42,15 +42,8 @@ describe PbsList do
     pbs_list.should_not be_nil
   end
 
-  it { should belong_to(:psu) }
   it { should belong_to(:provider) }
   it { should belong_to(:substitute_provider) }
-  it { should belong_to(:in_out_frame) }
-  it { should belong_to(:in_sample) }
-  it { should belong_to(:in_out_psu) }
-  it { should belong_to(:cert_flag) }
-  it { should belong_to(:frame_completion_req) }
-  it { should belong_to(:pr_recruitment_status) }
 
   it { should validate_presence_of(:provider) }
 
