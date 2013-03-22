@@ -30,6 +30,14 @@ module NcsNavigator::Core
         cache.code_list('fooquux').should be_nil
       end
 
+      it 'returns an unmodifiable list' do
+        expect { actual << 'foo' }.to raise_error(/frozen/)
+      end
+
+      it 'returns a list containing unmodifiable instances' do
+        expect { actual.first.local_code = 18 }.to raise_error(/frozen/)
+      end
+
       it 'only queries once per distinct list requested' do
         expect {
           cache.code_list(a_list_name)
@@ -63,6 +71,10 @@ module NcsNavigator::Core
 
       it 'gives nil for an unknown code' do
         cache.code_value(a_list_name, -100000).should be_nil
+      end
+
+      it 'returns unmodifiable instances' do
+        expect { actual.display_text = 'Something else' }.to raise_error(/frozen/)
       end
 
       it 'only queries once per code list' do

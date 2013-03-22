@@ -24,8 +24,8 @@ module NcsNavigator::Core
       if code_lists.has_key?(list_name)
         code_lists[list_name]
       else
-        cl = NcsCode.where(:list_name => list_name).order(:local_code).all
-        code_lists[list_name] = cl.empty? ? nil : cl
+        cl = NcsCode.where(:list_name => list_name).order(:local_code).all.each(&:freeze)
+        code_lists[list_name] = cl.empty? ? nil : cl.freeze
       end
     end
 
