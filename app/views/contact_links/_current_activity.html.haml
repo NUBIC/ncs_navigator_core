@@ -1,9 +1,7 @@
 -# the current activity
 %div{ :class => "instrument", :title => survey.title}
   - if activity.consent_activity?
-    = link_to activity_link_name(activity),
-        determine_consent_activity_path(person, activity, survey, contact_link),
-        :class => "star_link icon_link"
+    = render "consent_activity", :activity => activity, :survey => survey, :contact_link => contact_link, :person => person
   - else
     = link_to activity_link_name(activity),
         start_instrument_person_path(person, :participant_id => activity.participant.id,
