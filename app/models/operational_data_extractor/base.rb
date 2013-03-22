@@ -450,7 +450,9 @@ module OperationalDataExtractor
       email
     end
 
-    def get_birth_address(response_set, person, address_type, address_rank)
+    def get_birth_address(response_set, person)
+      address_type = address_other_type
+      address_rank = primary_rank
       criteria = Hash.new
       criteria[:response_set_id] = response_set.id
       criteria[:address_type_code] = address_type.local_code
@@ -633,9 +635,9 @@ module OperationalDataExtractor
       relationship
     end
 
-    def process_birth_institution_and_address(birth_address_map, institution_map, institute_type = other_institute_type, address_type = address_other_type, address_rank = primary_rank)
-      birth_address = get_birth_address(response_set, participant.person, address_type,  address_rank)
-      institution = process_institution(institution_map, response_set, institute_type)
+    def process_birth_institution_and_address(birth_address_map, institution_map)
+      birth_address = get_birth_address(response_set, participant.person)
+      institution = process_institution(institution_map, response_set)
 
       birth_address_map.each do |key, attribute|
         if r = data_export_identifier_indexed_responses[key]
@@ -744,8 +746,8 @@ module OperationalDataExtractor
       type
     end
 
-    def process_institution(map, response_set, type = other_institute_type)
-      type = find_institution_type(map, type) if type && type == other_institute_type
+    def process_institution(map, response_set)
+      type = find_institution_type(map, type)
       if type
         institution = find_or_build_institution(response_set, type)
         map.each do |key, attribute|
@@ -756,8 +758,14 @@ module OperationalDataExtractor
             end
           end
         end
-        institution.institute_name ? institution : nil
+        institution_valid?(institution) ? institution : nil
       end
+    end
+
+    def institution_valid?(institution)
+      institute_type_ok = !institution.institute_type.blank? && institution.institute_type != MISSING_IN_ERROR
+      institute_name_ok = !institution.institute_name.blank?
+      institute_type_ok && institute_name_ok
     end
 
     def finalize_institution(institute)

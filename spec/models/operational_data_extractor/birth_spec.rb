@@ -251,7 +251,7 @@ describe OperationalDataExtractor::Birth do
       person.emails.last.email_rank_code.should == 1
     end
 
-    it "extracts institution information from the survey responses" do
+    it "does not extract institution information from the survey responses" do
 
       hospital = NcsCode.for_list_name_and_local_code("BIRTH_PLACE_PLAN_CL1", 1)
 
@@ -266,8 +266,7 @@ describe OperationalDataExtractor::Birth do
 
       OperationalDataExtractor::Birth.new(response_set).extract_data
 
-      @participant.person.institutions.size.should == 1
-      @participant.person.institutions.first.institute_type.local_code.should == 1
+      @participant.person.institutions.should be_empty
     end
 
   end

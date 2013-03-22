@@ -630,8 +630,8 @@ describe OperationalDataExtractor::Base do
 
     describe "#process_institution" do
       it "generates an instituiton record" do
-        @pregnancy_visit_extractor.process_institution(@institution_map, @response_set, @hospital).should be_an_instance_of(Institution)
-        @pregnancy_visit_extractor.process_institution(@institution_map, @response_set, @hospital).institute_name.should == "FAKE HOSPITAL MEMORIAL"
+        @pregnancy_visit_extractor.process_institution(@institution_map, @response_set).should be_an_instance_of(Institution)
+        @pregnancy_visit_extractor.process_institution(@institution_map, @response_set).institute_name.should == "FAKE HOSPITAL MEMORIAL"
       end
 
       it "has nil institution"
@@ -640,7 +640,7 @@ describe OperationalDataExtractor::Base do
 
     describe "#finalize_institution" do
 
-      let(:institution) { @pregnancy_visit_extractor.process_institution(@institution_map, @response_set, @hospital) }
+      let(:institution) { @pregnancy_visit_extractor.process_institution(@institution_map, @response_set) }
 
       it "links the person to the institution" do
         @pregnancy_visit_extractor.finalize_institution(institution)
