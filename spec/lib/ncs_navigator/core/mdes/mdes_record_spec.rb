@@ -180,6 +180,14 @@ module NcsNavigator::Core::Mdes
       end
     end
 
+    describe 'when coded values are left blank' do
+      it 'sets them to -4 before validation' do
+        f = Foo.new
+        f.valid?
+        f.event_type_code.should == -4
+      end
+    end
+
     describe '#psu_code' do
       let!(:record) { Foo.create }
 

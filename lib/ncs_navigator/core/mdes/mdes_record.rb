@@ -103,9 +103,9 @@ module NcsNavigator::Core::Mdes
 
       # If an NCS Code is missing, default the selection to 'Missing in Error' whose local_code value is -4
       def set_missing_in_error
-        self.class.reflect_on_all_associations.each do |association|
-          if association.options[:class_name] == "NcsCode" && not_set?(association.name.to_sym)
-            self.send("#{association.name}_code=", -4)
+        self.class.ncs_coded_attributes.values.each do |nca|
+          if send(nca.foreign_key_getter).nil?
+            send(nca.foreign_key_setter, -4)
           end
         end
       end
