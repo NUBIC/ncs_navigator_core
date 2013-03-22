@@ -20,15 +20,6 @@ GIT
   specs:
     database_cleaner (0.7.2)
 
-GIT
-  remote: https://github.com/NUBIC/ncs_navigator_configuration.git
-  revision: 0067e1dc47df1ec5cf7b837a654694259afdb691
-  specs:
-    ncs_navigator_configuration (0.3.3.pre)
-      fastercsv (~> 1.5)
-      inifile (~> 0.4.1)
-      ncs_mdes (~> 0.4)
-
 GEM
   remote: http://rubygems.org/
   specs:
@@ -79,9 +70,9 @@ GEM
     annotate (2.5.0)
       rake
     arel (2.2.3)
-    bcdatabase (1.2.1)
+    bcdatabase (1.2.2)
       activesupport (>= 2.0)
-      highline (~> 1.5)
+      highline (~> 1.5, < 1.6.9)
       i18n
       thor (~> 0.14.6)
     bcrypt-ruby (3.0.1)
@@ -236,7 +227,7 @@ GEM
       spork (>= 0.8.4)
     haml (3.1.8)
     hana (1.0.1)
-    highline (1.6.15)
+    highline (1.6.8)
     hike (1.2.1)
     i18n (0.6.4)
     inifile (0.4.1)
@@ -279,9 +270,9 @@ GEM
     multi_json (1.7.1)
     multipart-post (1.1.5)
     mustache (0.99.4)
-    ncs_mdes (0.11.0)
+    ncs_mdes (0.12.0)
       nokogiri (~> 1.5.6)
-    ncs_mdes_warehouse (0.11.0)
+    ncs_mdes_warehouse (0.12.0)
       actionmailer (~> 3.0)
       activesupport (~> 3.0, != 3.2.6, != 3.2.5, != 3.2.4)
       bcdatabase (~> 1.1)
@@ -297,7 +288,7 @@ GEM
       dm-validations (~> 1.2.0)
       i18n (~> 0.4)
       json (~> 1.6)
-      ncs_mdes (~> 0.11)
+      ncs_mdes (~> 0.12)
       ncs_navigator_configuration (~> 0.2)
       nokogiri (~> 1.5.6)
       rgl
@@ -309,6 +300,10 @@ GEM
       faraday (~> 0.7.5)
       faraday-stack (~> 0.1.3)
       ncs_navigator_configuration (~> 0.2)
+    ncs_navigator_configuration (0.4.0)
+      fastercsv (~> 1.5)
+      inifile (~> 0.4.1)
+      ncs_mdes (~> 0.4)
     net-http-digest_auth (1.2.1)
     net-http-persistent (2.7)
     net-ldap (0.1.1)
@@ -319,7 +314,7 @@ GEM
     net-ssh (2.5.2)
     net-ssh-gateway (1.1.0)
       net-ssh (>= 1.99.1)
-    nokogiri (1.5.6)
+    nokogiri (1.5.9)
     ntlm-http (0.1.1)
     paper_trail (2.6.3)
       activerecord (~> 3.0)
@@ -516,9 +511,9 @@ DEPENDENCIES
   lograge
   mustache
   ncs_mdes (>= 0.11.0)
-  ncs_mdes_warehouse (~> 0.11)
+  ncs_mdes_warehouse (~> 0.12)
   ncs_navigator_authority
-  ncs_navigator_configuration!
+  ncs_navigator_configuration (~> 0.4)
   paper_trail (~> 2)
   perftools.rb
   pg
