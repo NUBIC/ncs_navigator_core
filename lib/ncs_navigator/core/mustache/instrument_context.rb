@@ -442,7 +442,7 @@ module NcsNavigator::Core::Mustache
     end
 
     def c_dob_through_participant
-      participant.children.blank? ? "CHILD'S DATE OF BIRTH]" : participant.children.first.person_dob
+      (participant.children.blank? || participant.children.first.blank? || participant.children.first.person_dob.blank?) ? "[CHILD'S DATE OF BIRTH]" : participant.children.first.person_dob
     end
 
     def age_of_child_in_months(today = Date.today)
