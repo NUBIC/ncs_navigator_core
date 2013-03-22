@@ -4,6 +4,7 @@ module NcsNavigator
   module Core
     autoload :VERSION,                  'ncs_navigator/core/version'
 
+    autoload :CodeListCache,              'ncs_navigator/core/code_list_cache'
     autoload :Configuration,              'ncs_navigator/core/configuration'
     autoload :Field,                      'ncs_navigator/core/field'
     autoload :FollowedParticipantChecker, 'ncs_navigator/core/followed_participant_checker'

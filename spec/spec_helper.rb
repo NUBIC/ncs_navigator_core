@@ -158,6 +158,9 @@ Spork.prefork do
       ChildAndAdHoc
     ].each { |test_survey| config.include test_survey }
 
+    require 'support/matchers'
+    config.include NcsNavigator::Core::Spec::Matchers
+
     if ENV['PROFILE_DB']
       ActiveRecordQueryProfiler.register(config)
     end
