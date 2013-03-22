@@ -175,30 +175,6 @@ module NcsNavigator::Core::Mdes
     end
 
     describe 'a coded attribute' do
-      describe 'the ActiveRecord association' do
-        let(:coded_association) { Foo.reflect_on_association(:psu) }
-
-        it 'is created' do
-          coded_association.should_not be_nil
-        end
-
-        it 'is associated to an NcsCode' do
-          coded_association.options[:class_name].should == 'NcsCode'
-        end
-
-        it 'is limited to codes of the declared list' do
-          coded_association.options[:conditions].should == "list_name = 'PSU_CL1'"
-        end
-
-        it 'uses a _code field to store the value' do
-          coded_association.options[:foreign_key].should == :psu_code
-        end
-
-        it "refers to the NcsCode's local code" do
-          coded_association.options[:primary_key].should == :local_code
-        end
-      end
-
       it 'exposes the list name' do
         Foo.ncs_coded_attributes[:psu].list_name.should == 'PSU_CL1'
       end
