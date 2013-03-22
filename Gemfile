@@ -47,7 +47,7 @@ gem 'surveyor',
   :branch => 'ncs'
 
 gem 'psc'
-gem 'ncs_navigator_configuration', :git => 'https://github.com/NUBIC/ncs_navigator_configuration.git'
+gem 'ncs_navigator_configuration', '~> 0.4'
 gem 'sidekiq'
 
 gem 'state_machine'
@@ -73,7 +73,7 @@ group :staging, :production do
   gem 'therubyracer'
 end
 
-gem 'ncs_mdes_warehouse', '~> 0.11'
+gem 'ncs_mdes_warehouse', '~> 0.12'
 gem 'aker-cas_cli', '~> 1.0', :require => false
 gem 'dm-ar-finders', '~> 1.2.0'
 
