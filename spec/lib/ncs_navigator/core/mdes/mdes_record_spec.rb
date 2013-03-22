@@ -180,24 +180,6 @@ module NcsNavigator::Core::Mdes
       end
     end
 
-    describe '.with_codes' do
-      before do
-        Foo.create
-      end
-
-      it 'exists on the model' do
-        Foo.should respond_to(:with_codes)
-      end
-
-      it 'eager-loads codes' do
-        Foo.with_codes.first.association(:event_type).should be_loaded
-      end
-
-      it 'supports eager-loading' do
-        Foo.with_codes(:psu).first.association(:event_type).should_not be_loaded
-      end
-    end
-
     describe '#psu_code' do
       let!(:record) { Foo.create }
 
