@@ -7,6 +7,13 @@ module NcsNavigator::Core
     protected :code_lists
 
     def initialize
+      reset
+    end
+
+    ##
+    # Clears the cache to force reloads of all code lists. Should be needed only
+    # in testing.
+    def reset
       @code_lists = {}
     end
 

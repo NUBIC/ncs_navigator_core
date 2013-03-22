@@ -92,6 +92,10 @@ describe NcsCode do
     it 'gives nil for an unknown code' do
       NcsCode.for_list_name_and_local_code('CONFIRM_TYPE_CL10', 24).should be_nil
     end
+
+    it 'works when the code is a string' do
+      NcsCode.for_list_name_and_local_code('GENDER_CL2', '2').should be_a NcsCode
+    end
   end
 
   describe '.for_list_name_and_display_text' do

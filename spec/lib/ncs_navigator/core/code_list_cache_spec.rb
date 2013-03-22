@@ -76,5 +76,15 @@ module NcsNavigator::Core
         }.to_not execute_more_queries_than(3)
       end
     end
+
+    describe '#reset' do
+      it 'triggers a reload of a loaded code list' do
+        expect {
+          cache.code_list('CONFIRM_TYPE_CL2')
+          cache.reset
+          cache.code_list('CONFIRM_TYPE_CL2')
+        }.to execute_more_queries_than(1)
+      end
+    end
   end
 end
