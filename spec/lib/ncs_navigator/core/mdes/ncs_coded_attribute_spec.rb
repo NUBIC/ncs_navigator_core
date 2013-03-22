@@ -32,27 +32,104 @@ module NcsNavigator::Core::Mdes
       end
     end
 
-    describe 'the ActiveRecord association' do
-      let(:coded_association) { Quux.reflect_on_association(:psu) }
+    describe 'model additions' do
+      let(:instance) { Quux.new }
 
-      it 'is created' do
-        coded_association.should_not be_nil
+      let(:an_event_type_code) { 13 }
+      let(:an_event_type) { NcsCode.for_list_name_and_local_code('EVENT_TYPE_CL1', an_event_type_code) }
+      let(:a_psu) { NcsCode.for_list_name_and_local_code('PSU_CL1', 20000209) }
+
+      describe 'NcsCode accessors' do
+        describe 'writer' do
+          it 'accepts an NcsCode and sets the code attribute' do
+            instance.event_type = an_event_type
+            instance.event_type_code.should == an_event_type_code
+          end
+
+          it 'accepts a code value and sets the code attribute' do
+            instance.event_type = an_event_type_code
+            instance.event_type_code.should == an_event_type_code
+          end
+
+          it 'accepts display text and sets the code attribute' do
+            pending 'Might be neat, but what is the appropriate response when invalid? Exception or ?'
+            instance.event_type = an_event_type.display_text
+            instance.event_type_code.should == an_event_type_code
+          end
+
+          it 'rejects other kinds of values' do
+            expect { instance.event_type = true }.
+              to raise_error(/Cannot resolve an NcsCode from true/)
+          end
+
+          it 'accepts nil and sets the code attribute to nil' do
+            instance.event_type_code = an_event_type_code
+            instance.event_type = nil
+            instance.event_type_code.should be_nil
+          end
+
+          # the error will be reported in the validations
+          it 'accepts an invalid NcsCode and sets the code attribute' do
+            instance.event_type = a_psu
+            instance.event_type_code.should == a_psu.local_code
+          end
+        end
+
+        describe 'reader' do
+          describe 'when the code alone is set' do
+            it 'locates an NcsCode for the correct code' do
+              instance.event_type_code = 15
+              instance.event_type.local_code.should == 15
+            end
+
+            it 'locates an NcsCode for the correct list' do
+              instance.event_type_code = 15
+              instance.event_type.list_name.should == 'EVENT_TYPE_CL1'
+            end
+
+            it 'returns nil when the code is set to nil' do
+              instance.event_type_code = nil
+              instance.event_type.should be_nil
+            end
+
+            it 'returns nil when the code is not valid for the list' do
+              instance.event_type_code = a_psu.local_code
+              instance.event_type.should be_nil
+            end
+          end
+
+          describe 'when an NcsCode is set' do
+            it 'returns the same value' do
+              instance.event_type = an_event_type
+              instance.event_type.should be(an_event_type)
+            end
+
+            it 'returns the same value even if it is not valid' do
+              instance.event_type = a_psu
+              instance.event_type.should == a_psu
+            end
+
+            it 'returns nil when nil is set' do
+              instance.event_type = nil
+              instance.event_type.should be_nil
+            end
+          end
+        end
       end
 
-      it 'is associated to an NcsCode' do
-        coded_association.options[:class_name].should == 'NcsCode'
+      describe 'foreign key accessors' do
+        describe 'writer' do
+          it 'triggers a change to the NcsCode value' do
+            instance.event_type = an_event_type
+            instance.event_type_code = 18
+            instance.event_type.local_code.should == 18
+          end
+        end
       end
 
-      it 'is limited to codes of the declared list' do
-        coded_association.options[:conditions].should == "list_name = 'PSU_CL1'"
-      end
-
-      it 'uses a _code field to store the value' do
-        coded_association.options[:foreign_key].should == :psu_code
-      end
-
-      it "refers to the NcsCode's local code" do
-        coded_association.options[:primary_key].should == :local_code
+      describe 'validation' do
+        it 'complains about an NcsCode of the wrong list'
+        it 'complains about a coded value that is not acceptable'
       end
     end
   end
