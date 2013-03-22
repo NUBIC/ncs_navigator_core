@@ -315,6 +315,47 @@ describe OperationalDataExtractor::Base do
           institution.institute_name.should == "FAKE HOSPITAL MEMORIAL"
         end
 
+        context "birth place name doesn't exist" do
+          it "doesn't return an institution" do
+            @response_set.responses.delete(
+              @response_set.responses.where(
+                :questions => {:data_export_identifier => "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.BIRTH_PLACE"})
+            )
+            take_survey(@survey, @response_set) do |r|
+              r.refused "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.BIRTH_PLACE"
+            end
+            @response_set.save!
+            birth_address_and_institution = @pregnancy_visit_extractor.process_birth_institution_and_address(@birth_address_map, @institution_map)
+            birth_address_and_institution[1].should be_nil
+          end
+        end
+
+        context "when no response for birth plan" do
+          it "returns institution as nil" do
+            @response_set.responses.delete(
+              @response_set.responses.where(
+                :questions => {:data_export_identifier => "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.BIRTH_PLAN"})
+            )
+            @response_set.save!
+            birth, institution = @pregnancy_visit_extractor.process_institution(@institution_map, @response_set)
+            institution.should be_nil
+          end
+        end
+
+        context "when birth plan is refused" do
+          it "returns institution as nil" do
+            @response_set.responses.delete(
+              @response_set.responses.where(
+                :questions => {:data_export_identifier => "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.BIRTH_PLAN"})
+            )
+            take_survey(@survey, @response_set) do |r|
+              r.refused "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.BIRTH_PLAN"
+            end
+            @response_set.save!
+            birth, institution = @pregnancy_visit_extractor.process_institution(@institution_map, @response_set)
+            institution.should be_nil
+          end
+        end
       end
 
       describe "#get_address" do
@@ -568,74 +609,96 @@ describe OperationalDataExtractor::Base do
       @response_set.save!
 
       @pregnancy_visit_extractor = OperationalDataExtractor::PregnancyVisit.new(@response_set)
-      @birth_address, @institution = @pregnancy_visit_extractor.process_birth_institution_and_address(@birth_address_map, @institution_map)
     end
 
-    describe "#get_institution" do
+    describe "#find_or_build_institution" do
 
       it "generates a new institution record if one does not exist" do
-        institution = @pregnancy_visit_extractor.get_institution(@response_set, @hospital)
+        institution = @pregnancy_visit_extractor.find_or_build_institution(@response_set, @hospital)
         institution.should be_an_instance_of(Institution)
       end
 
       it "the new record should be associated with the response set" do
-        @pregnancy_visit_extractor.get_institution(@response_set, @hospital).response_set.should eq(@response_set)
+        @pregnancy_visit_extractor.find_or_build_institution(@response_set, @hospital).response_set.should eq(@response_set)
       end
 
       it "retrieves an institution record if one exists" do
         @existing_institution = Factory(:institution, :institute_type => @hospital, :response_set_id => @response_set.id)
-        @pregnancy_visit_extractor.get_institution(@response_set, @hospital).should eql(@existing_institution)
+        @pregnancy_visit_extractor.find_or_build_institution(@response_set, @hospital).should eql(@existing_institution)
       end
-
     end
 
     describe "#process_institution" do
       it "generates an instituiton record" do
-        @pregnancy_visit_extractor.process_institution(@institution_map, @response_set, @hospital).should be_an_instance_of(Institution)
-        @pregnancy_visit_extractor.process_institution(@institution_map, @response_set, @hospital).institute_name.should == "FAKE HOSPITAL MEMORIAL"
+        @pregnancy_visit_extractor.process_institution(@institution_map, @response_set).should be_an_instance_of(Institution)
+        @pregnancy_visit_extractor.process_institution(@institution_map, @response_set).institute_name.should == "FAKE HOSPITAL MEMORIAL"
       end
+
+      it "has nil institution"
+      
     end
 
     describe "#finalize_institution" do
-      before do
-        @institution = @pregnancy_visit_extractor.process_institution(@institution_map, @response_set, @hospital)
-      end
+
+      let(:institution) { @pregnancy_visit_extractor.process_institution(@institution_map, @response_set) }
 
       it "links the person to the institution" do
-        @pregnancy_visit_extractor.finalize_institution(@institution)
-        @participant.person.institutions.first.should eq(@institution)
+        @pregnancy_visit_extractor.finalize_institution(institution)
+        @participant.person.institutions.first.should eq(institution)
       end
 
       it "saves the institution record" do
-        @pregnancy_visit_extractor.finalize_institution(@institution)
+        @pregnancy_visit_extractor.finalize_institution(institution)
         Institution.count.should == 1
-        Institution.first.should eq(@institution)
+        Institution.first.should eq(institution)
       end
 
       it "does not create a duplicate institution-person link if one already exists" do
         (2).times do
-          @pregnancy_visit_extractor.finalize_institution(@institution)
+          @pregnancy_visit_extractor.finalize_institution(institution)
         end
-        InstitutionPersonLink.where(:person_id => @person.id, :institution_id => @institution.id).size.should == 1
+        InstitutionPersonLink.where(:person_id => @person.id, :institution_id => institution.id).size.should == 1
       end
 
+      context "institution is nil" do
+        it "does not link the institution record" do
+          @pregnancy_visit_extractor.finalize_institution(nil)
+          @participant.person.institutions.first.should eq(nil)
+        end
+
+        it "does not create an institution record" do
+          @pregnancy_visit_extractor.finalize_institution(nil)
+          Institution.count.should == 0
+        end
+      end
     end
 
     describe "#finalize_institution_with_birth_address" do
 
       it "creates a institution-person link" do
-        @pregnancy_visit_extractor.finalize_institution_with_birth_address(@birth_address, @institution)
+        birth_address, institution = @pregnancy_visit_extractor.process_birth_institution_and_address(@birth_address_map, @institution_map)
+        @pregnancy_visit_extractor.finalize_institution_with_birth_address(@birth_address, institution)
         InstitutionPersonLink.count.should == 1
       end
 
       it "creates a birth institution record" do
-        @pregnancy_visit_extractor.finalize_institution_with_birth_address(@birth_address, @institution)
+        birth_address, institution = @pregnancy_visit_extractor.process_birth_institution_and_address(@birth_address_map, @institution_map)
+        @pregnancy_visit_extractor.finalize_institution_with_birth_address(birth_address, institution)
         Institution.count.should == 1
-        @institution.addresses.should include(@birth_address)
+        institution.addresses.should include(birth_address)
       end
 
+      context "institution is nil" do
+        it "does not create an institution record" do
+          @pregnancy_visit_extractor.finalize_institution_with_birth_address(@birth_address, nil)
+          Institution.count.should == 0
+        end
+        it "does nothing if institution is nil" do
+          @pregnancy_visit_extractor.finalize_institution_with_birth_address(@birth_address, nil)
+          InstitutionPersonLink.count.should == 0
+        end
+      end
     end
-
   end
 
   context "Processing PersonRace records" do

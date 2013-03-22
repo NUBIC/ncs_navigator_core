@@ -450,7 +450,9 @@ module OperationalDataExtractor
       email
     end
 
-    def get_birth_address(response_set, person, address_type, address_rank)
+    def get_birth_address(response_set, person)
+      address_type = address_other_type
+      address_rank = primary_rank
       criteria = Hash.new
       criteria[:response_set_id] = response_set.id
       criteria[:address_type_code] = address_type.local_code
@@ -466,7 +468,7 @@ module OperationalDataExtractor
       birth_address
     end
 
-    def get_institution(response_set, institute_type)
+    def find_or_build_institution(response_set, institute_type)
       institution = Institution.where(:response_set_id => response_set.id, :institute_type_code => institute_type.local_code).first
       if institution.nil?
         institution = Institution.new( :psu => person.psu, :institute_type_code => institute_type.local_code, :response_set => response_set)
@@ -633,9 +635,9 @@ module OperationalDataExtractor
       relationship
     end
 
-    def process_birth_institution_and_address(birth_address_map, institution_map, institute_type = other_institute_type, address_type = address_other_type, address_rank = primary_rank)
-      birth_address = get_birth_address(response_set, participant.person, address_type,  address_rank)
-      institution = process_institution(institution_map, response_set, institute_type)
+    def process_birth_institution_and_address(birth_address_map, institution_map)
+      birth_address = get_birth_address(response_set, participant.person)
+      institution = process_institution(institution_map, response_set)
 
       birth_address_map.each do |key, attribute|
         if r = data_export_identifier_indexed_responses[key]
@@ -744,44 +746,47 @@ module OperationalDataExtractor
       type
     end
 
-    def process_institution(map, response_set, type = other_institute_type)
-      unless type && type.local_code != -5
-        type = find_institution_type(map, type)
-      end
-      institution = get_institution(response_set, type)
-      map.each do |key, attribute|
-        if r = data_export_identifier_indexed_responses[key]
-          value = response_value(r)
-          unless value.blank?
-            set_value(institution, attribute, value)
+    def process_institution(map, response_set)
+      type = find_institution_type(map, type)
+      if type
+        institution = find_or_build_institution(response_set, type)
+        map.each do |key, attribute|
+          if r = data_export_identifier_indexed_responses[key]
+            value = response_value(r)
+            unless value.blank?
+              set_value(institution, attribute, value)
+            end
           end
         end
+        institution_valid?(institution) ? institution : nil
       end
-      institution
+    end
+
+    def institution_valid?(institution)
+      institute_type_ok = !institution.institute_type.blank? && institution.institute_type != MISSING_IN_ERROR
+      institute_name_ok = !institution.institute_name.blank?
+      institute_type_ok && institute_name_ok
     end
 
     def finalize_institution(institute)
-      begin
-        institute.save!
-        InstitutionPersonLink.find_or_create_by_institution_id_and_person_id(institute.id, person.id)
-      rescue ActiveRecord::RecordNotUnique
-        log.warn("IPL with person_id of #{person.id} and institution_id of #{institute.id} already exists, not creating")
+      if institute
+        begin
+          institute.save!
+          InstitutionPersonLink.find_or_create_by_institution_id_and_person_id(institute.id, person.id)
+        rescue ActiveRecord::RecordNotUnique
+          log.warn("IPL with person_id of #{person.id} and institution_id of #{institute.id} already exists, not creating")
+        end
       end
     end
 
     def finalize_institution_with_birth_address(birth_address, institute)
-      ActiveRecord::Base.transaction do
-         finalize_institution(institute)
-         birth_address.save! unless birth_address.blank?
-         institute.addresses << birth_address unless birth_address.blank?
-       end
-    end
-
-    def institution_empty?(institution)
-      institution_contents = []
-      institution_components = [:institute_name, :institute_type]
-      institution_components.each { |ic| institution_contents << institution.send(ic) }
-      institution_contents.all? { |ic| ic == MISSING_IN_ERROR || ic.nil? }
+      if institute
+        ActiveRecord::Base.transaction do
+           finalize_institution(institute)
+           birth_address.save! unless birth_address.blank?
+           institute.addresses << birth_address unless birth_address.blank?
+         end
+      end
     end
 
     def finalize_ppg_status_history(ppg_status_history)
