@@ -85,6 +85,9 @@ module NcsNavigator::Core::Warehouse::ThreePointOne
     )
 
     produce_one_for_one(:participant_person_links, :LinkPersonParticipant,
+      :selects => [
+        '-4 AS primary_caregiver_flag'
+      ],
       :public_ids => [
         { :table => :people, :join_column => :person_id },
         :participants
@@ -93,7 +96,7 @@ module NcsNavigator::Core::Warehouse::ThreePointOne
         :relationship_code => :relation,
         :relationship_other => :relation_oth,
       },
-      :ignored_columns => %w(response_set_id)
+      :ignored_columns => %w(response_set_id primary_caregiver_flag_code)
     )
 
     produce_one_for_one(:ppg_details, :PpgDetails,
