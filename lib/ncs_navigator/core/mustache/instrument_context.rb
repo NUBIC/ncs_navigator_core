@@ -589,23 +589,23 @@ module NcsNavigator::Core::Mustache
     end
 
     def date_of_preg_visit_1
-      participant.completed_events.select{|e| e.event_type_code = 13}.map{|e| e.event_end_date}.sort.last
+      participant.completed_events.select{|e| e.event_type_code == 13}.map{|e| e.event_end_date}.sort.last
     end
 
     def date_of_preg_visit_2
-      participant.completed_events.select{|e| e.event_type_code = 15}.map{|e| e.event_end_date}.sort.last
+      participant.completed_events.select{|e| e.event_type_code == 15}.map{|e| e.event_end_date}.sort.last
     end
 
     def in_the_past
-      participant.completed_events.select{|e| e.event_type_code = 13}.blank? ? "in the past" : ""
+      participant.completed_events.select{|e| e.event_type_code == 13}.blank? ? "in the past" : ""
     end
 
     def since
-      participant.completed_events.select{|e| e.event_type_code = 13}.blank? ? "" : "since"
+      participant.completed_events.select{|e| e.event_type_code == 13}.blank? ? "" : "since"
     end
 
     def ever
-      participant.completed_events.select{|e| e.event_type_code = 13}.blank? ? "ever" : ""
+      participant.completed_events.select{|e| e.event_type_code == 13}.blank? ? "ever" : ""
     end
 
     # For PART_TWO_BIRTH_3_0 Medical History handle:
@@ -615,6 +615,7 @@ module NcsNavigator::Core::Mustache
       result = "[DATE OF PV1 VISIT/DATE OF PV2 VISIT]"
       if not date_of_preg_visit_2.blank?
         result = date_of_preg_visit_2
+      else
         if not date_of_preg_visit_1.blank?
           result = date_of_preg_visit_1
         end

@@ -1039,11 +1039,19 @@ module NcsNavigator::Core::Mustache
 
       describe ".date_of_last_pv_visit" do
 
-        it "returnt '[DATE OF PV1 VISIT/DATE OF PV2 VISIT]' if there are no completed events for pv1 and pv2" do
+        it "returnt '[DATE OF PV1 VISIT/DATE OF PV2 VISIT]' if there are no events for participant" do
           @participant  = @response_set.participant
           @person = @participant.person
           instrument_context.date_of_last_pv_visit.should == "[DATE OF PV1 VISIT/DATE OF PV2 VISIT]"
+        end
 
+        it "returnt '[DATE OF PV1 VISIT/DATE OF PV2 VISIT]' if there are no pv1 and pv2 events" do
+          @participant  = @response_set.participant
+          @person = @participant.person
+          birth = Factory(:event, :event_type_code => 18, :event_end_date => "2013-11-21", :participant => @participant)
+          @response_set.instrument.event = birth
+          @participant.events.reload
+          instrument_context.date_of_last_pv_visit.should == "[DATE OF PV1 VISIT/DATE OF PV2 VISIT]"
         end
 
         it "returns the end date for pv1" do
@@ -1064,9 +1072,20 @@ module NcsNavigator::Core::Mustache
           @response_set.instrument.event = Factory(:event, :event_type_code => 15, :event_end_date => date, :participant => @participant)
           @participant.events.reload
           instrument_context.date_of_last_pv_visit.should == date
-
         end
 
+        it "returns the end date of pv2 when both pv1 and pv2 have event_end_date" do
+          date_pv1 = Date.today
+          date_pv2 = date_pv1 + 10.days
+          @participant  = @response_set.participant
+          @person = @participant.person
+          pv1 = Factory(:event, :event_type_code => 13, :event_end_date => date_pv1, :participant => @participant)
+          pv2 = Factory(:event, :event_type_code => 15, :event_end_date => date_pv2, :participant => @participant)
+          @response_set.instrument.event = pv1
+          @response_set.instrument.event = pv2
+          @participant.events.reload
+          instrument_context.date_of_last_pv_visit.should == date_pv2
+        end
       end
 
       describe "overall sentence call for 'in the past', 'ever' and 'since'" do
