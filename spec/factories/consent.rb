@@ -8,7 +8,7 @@ Factory.define :participant_consent do |pc|
   pc.association :person_who_consented, :factory => :person
   pc.person_wthdrw_consent nil
 
-  pc.psu_code                      2000030
+  pc.psu_code                      20000030
   pc.consent_type_code             1
   pc.consent_form_type_code        1
   pc.consent_given_code            1
@@ -32,7 +32,7 @@ Factory.define :participant_visit_consent do |pc|
   pc.association :contact, :factory => :contact
   pc.association :vis_person_who_consented, :factory => :person
 
-  pc.psu_code                  2000030
+  pc.psu_code                  20000030
   pc.vis_consent_type_code     1
   pc.vis_consent_response_code 1
   pc.vis_language_code         1
@@ -47,7 +47,7 @@ Factory.define :participant_authorization_form do |paf|
   paf.association :contact, :factory => :contact
   paf.association :provider, :factory => :provider
 
-  paf.psu_code            2000030
+  paf.psu_code            20000030
   paf.auth_form_type_code 1
   paf.auth_status_code    1
 
@@ -58,7 +58,7 @@ Factory.define :participant_consent_sample do |pcs|
   pcs.association :participant, :factory => :participant
   pcs.association :participant_consent, :factory => :participant_consent
 
-  pcs.psu_code                   2000030
+  pcs.psu_code                   20000030
   pcs.sample_consent_type_code   1
   pcs.sample_consent_given_code  1
 
@@ -70,7 +70,7 @@ Factory.define :participant_visit_record do |pc|
   pc.association :contact, :factory => :contact
   pc.association :rvis_person, :factory => :person
 
-  pc.psu_code                  2000030
+  pc.psu_code                  20000030
   pc.rvis_language_code        1
   pc.rvis_who_consented_code   2
   pc.rvis_translate_code       1
