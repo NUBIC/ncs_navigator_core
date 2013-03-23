@@ -381,7 +381,7 @@ http_interactions:
   recorded_at: Thu, 10 Jan 2013 18:04:42 GMT
 - request:
     method: get
-    uri: https://ncsn-psc.local/api/v1/studies/NCS+Hi-Lo/sites/20000029/subject-assignments
+    uri: https://ncsn-psc.local/api/v1/studies/NCS+Hi-Lo/sites/20000030/subject-assignments
     body:
       encoding: US-ASCII
       string: ''

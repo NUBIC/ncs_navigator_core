@@ -78,8 +78,8 @@ describe PatientStudyCalendar do
     end
   end
 
-  it "use the Study Center ID for the PSC site identifier" do
-    subject.site_identifier.should == "20000029"
+  it "use the PSU ID for the PSC site identifier" do
+    subject.site_identifier.should == '20000030'
   end
 
   it "gets the segments for the study" do
