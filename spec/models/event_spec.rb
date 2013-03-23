@@ -672,8 +672,8 @@ describe Event do
           Event.schedule_and_create_placeholder(psc, participant, "2012-08-09")
           participant.events.reload
           participant.events.size.should == 8
-          participant.events.second.event_type.to_s.should == "Birth"
-          participant.events.last.event_type.to_s.should == "24 Month"
+          participant.events.chronological.first.event_type.to_s.should == "Birth"
+          participant.events.chronological.last.event_type.to_s.should == "24 Month"
         end
       end
 
