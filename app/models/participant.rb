@@ -1343,10 +1343,10 @@ class Participant < ActiveRecord::Base
     # The date from the most_recent_contact/last_contact.
     # @return[Date]
     def get_date_to_schedule_next_event_from_contact_link
-      if last_contact
+      if last_contact && last_contact.contact_date_date
         last_contact.contact_date_date
       else
-        fail 'Could not decide the next scheduled event date without the contact.'
+        fail 'Could not decide the next scheduled event date without the contact date'
       end
     end
 

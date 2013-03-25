@@ -771,7 +771,12 @@ describe Participant do
 
           it 'fails if no contacts' do
             Participant.any_instance.stub(:last_contact).and_return(nil)
-            expect { @participant.next_scheduled_event.date }.should raise_error(/Could not decide the next scheduled event date without the contact./)
+            expect { @participant.next_scheduled_event.date }.to raise_error(/Could not decide the next scheduled event date without the contact date/)
+          end
+
+          it 'fails if last_contact without contact_date' do
+            Factory(:contact_link, :person => @participant.person, :event => @event, :contact => Factory(:contact))
+            expect { @participant.next_scheduled_event.date }.to raise_error(/Could not decide the next scheduled event date without the contact date/)
           end
 
           context "with due_date" do
@@ -1804,8 +1809,6 @@ describe Participant do
     it "returns nil if the participant has no next_study_segment" do
       Factory(:low_intensity_ppg6_participant).next_scheduled_event.should be_nil
     end
-
-    it "returns the next scheduled event"
   end
 
   describe '#advance' do
@@ -1853,7 +1856,7 @@ describe Participant do
         let!(:e) { Factory(:event, :participant => p, :event_type_code => 34, :event_end_date => Date.parse('2000-01-01')) }
 
         before do
-          ContactLink.create!(:contact => Factory(:contact), :event => e, :staff_id => 'test')
+          ContactLink.create!(:contact => Factory(:contact, :contact_date_date => Date.new(2000, 01, 01)), :event => e, :staff_id => 'test')
 
           p.person = pe
           p.save!
@@ -2036,7 +2039,7 @@ describe Participant do
               end
 
               before do
-                ContactLink.create!(:contact => Factory(:contact), :event => e, :staff_id => 'test')
+                ContactLink.create!(:contact => Factory(:contact, :contact_date_date => Date.new(2000, 01, 01)), :event => e, :staff_id => 'test')
                 psc.stub!(:unique_label_ideal_date_pairs_for_scheduled_segment => pairs)
               end
 
