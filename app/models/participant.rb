@@ -732,9 +732,8 @@ class Participant < ActiveRecord::Base
   # @param [PatientStudyCalendar]
   def unenroll(psc, reason = "Participant has been un-enrolled from the study.")
     self.enrollment_status_comment = reason
-    self.enroll_status = NcsCode.for_attribute_name_and_local_code(:enroll_status_code, NcsCode::NO)
     self.pending_events.each { |e| e.cancel_and_close_or_delete!(psc, reason) }
-    self.being_followed = false
+    self.update_enrollment_status(false)
   end
 
   ##
@@ -750,9 +749,7 @@ class Participant < ActiveRecord::Base
   # and the enroll_date to the given date
   # @param enroll_date [Date]
   def enroll(enroll_date)
-    self.enroll_status = NcsCode.for_attribute_name_and_local_code(:enroll_status_code, NcsCode::YES)
-    self.enroll_date = enroll_date
-    self.being_followed = true
+    update_enrollment_status(true)
   end
 
   ##
@@ -760,6 +757,28 @@ class Participant < ActiveRecord::Base
   # @param enroll_date [Date]
   def enroll!(enroll_date)
     self.enroll(enroll_date)
+    self.save!
+  end
+
+  ##
+  # Sets the enroll_status, enroll_date, and being_followed
+  # attributes on the Participant
+  # @param [Boolean]
+  # @param [Date]
+  def update_enrollment_status(enrollment_state, date = nil)
+    self.being_followed = enrollment_state
+    status = enrollment_state ? NcsCode::YES : NcsCode::NO
+    self.enroll_status = NcsCode.for_attribute_name_and_local_code(:enroll_status_code, status)
+    self.enroll_date = date
+  end
+
+  ##
+  # Sets the enroll_status, enroll_date, and being_followed
+  # attributes on the Participant
+  # @param [Boolean]
+  # @param [Date]
+  def update_enrollment_status!(enrollment_state, date = nil)
+    self.update_enrollment_status(enrollment_state, date)
     self.save!
   end
 
