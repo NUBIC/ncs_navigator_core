@@ -119,10 +119,46 @@ class ScheduledActivity
   end
 
   ##
+  # Returns true if this activity is a reconsent
+  # @return [Boolean]
+  def reconsent?
+    @activity_name == "Reconsent"
+  end
+
+  ##
+  # Returns true if this activity is a withdrawal
+  # @return [Boolean]
+  def withdrawal?
+    @activity_name == "Withdrawal"
+  end
+
+  ##
+  # All other consent activities that are not a child consent
+  # reconsent or withdrawal
+  # @return [Boolean]
+  def informed_consent?
+    consent_activity? && !reconsent? && !withdrawal? && !child_consent?
+  end
+
+  ##
   # True if activity_name == "Child Consent"
   # @return [Boolean]
   def child_consent?
-    @activity_name == "Child Consent"
+    @activity_name.include? "Child Consent"
+  end
+
+  ##
+  # True if activity_name == "Child Consent Birth to Six Months"
+  # @return [Boolean]
+  def child_consent_birth_to_6_months?
+    @activity_name == "Child Consent Birth to Six Months"
+  end
+
+  ##
+  # True if activity_name == "Child Consent Six Months to Age of Majority"
+  # @return [Boolean]
+  def child_consent_6_months_to_age_of_majority?
+    @activity_name == "Child Consent Six Months to Age of Majority"
   end
 
   ##
