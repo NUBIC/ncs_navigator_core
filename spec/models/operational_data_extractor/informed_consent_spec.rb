@@ -6,7 +6,7 @@ describe OperationalDataExtractor::InformedConsent do
   include SurveyCompletion
 
   let(:person) { Factory(:person) }
-  let(:participant) { Factory(:participant) }
+  let(:participant) { Factory(:participant, :enroll_status_code => -4, :enroll_date => nil) }
   let(:survey) { Survey.last }
   let(:contact) { Factory(:contact) }
 
@@ -84,6 +84,58 @@ describe OperationalDataExtractor::InformedConsent do
           end
         end
       end
+
+      context "when consent given" do
+        it "updates the enrollment status on the participant to true" do
+          participant.should_not be_enrolled
+
+          consent = prepare_consent(person, participant, survey, contact)
+          response_set = consent.response_set
+
+          take_survey(survey, response_set) do |a|
+            a.choice "PARTICIPANT_CONSENT.CONSENT_GIVEN_CODE", yes
+            a.str "PARTICIPANT_CONSENT.CONSENT_DATE", date
+          end
+
+          response_set.responses.reload
+          response_set.responses.size.should == 2
+
+          OperationalDataExtractor::InformedConsent.new(response_set).extract_data
+
+          consent = ParticipantConsent.find(consent.id)
+          consent.consent_given.should == yes
+
+          consent.participant.should be_enrolled
+          consent.participant.enroll_date.should == Date.parse(date)
+        end
+      end
+
+      context "when consent is not given" do
+        it "updates the enrollment status on the participant to false" do
+          participant.should_not be_enrolled
+
+          consent = prepare_consent(person, participant, survey, contact)
+          response_set = consent.response_set
+
+          take_survey(survey, response_set) do |a|
+            a.choice "PARTICIPANT_CONSENT.CONSENT_GIVEN_CODE", no
+            a.str "PARTICIPANT_CONSENT.CONSENT_DATE", date
+          end
+
+          response_set.responses.reload
+          response_set.responses.size.should == 2
+
+          OperationalDataExtractor::InformedConsent.new(response_set).extract_data
+
+          consent = ParticipantConsent.find(consent.id)
+          consent.consent_given.should == no
+
+          consent.participant.should be_unenrolled
+          consent.participant.enroll_date.should be_nil
+        end
+      end
+
+
     end
   end
 
@@ -99,6 +151,8 @@ describe OperationalDataExtractor::InformedConsent do
     end
 
     describe "extracting ParticipantConsent data" do
+      let!(:consent) { prepare_consent(person, participant, survey, contact) }
+      let(:response_set) { consent.response_set }
 
       it "sets the ParticipantConsent attributes to the Response values" do
         consent = prepare_consent(person, participant, survey, contact)
@@ -110,18 +164,24 @@ describe OperationalDataExtractor::InformedConsent do
           r.a "PARTICIPANT_CONSENT.CONSENT_WITHDRAW_REASON_CODE", wdraw2
           r.a "PARTICIPANT_CONSENT.CONSENT_WITHDRAW_DATE", "consent_date", :value => date
         end
-
         response_set.responses.reload
         response_set.responses.size.should == 5
-
         OperationalDataExtractor::InformedConsent.new(response_set).extract_data
+      end
 
-        consent = ParticipantConsent.find(consent.id)
-        consent.consent_withdraw.should == yes
-        consent.consent_withdraw_type.should == wdraw1
-        consent.consent_withdraw_reason.should == wdraw2
-        consent.consent_withdraw_date.should == Date.parse(date)
-        consent.who_wthdrw_consent.should == who
+      it "sets the ParticipantConsent attributes to the Response values" do
+        c = ParticipantConsent.find(consent.id)
+        c.consent_withdraw.should == yes
+        c.consent_withdraw_type.should == wdraw1
+        c.consent_withdraw_reason.should == wdraw2
+        c.consent_withdraw_date.should == Date.parse(date)
+        c.who_wthdrw_consent.should == who
+      end
+
+      it "updates the enrollment status" do
+        c = ParticipantConsent.find(consent.id)
+        c.participant.should be_unenrolled
+        c.participant.enroll_date.should be_nil
       end
     end
   end
