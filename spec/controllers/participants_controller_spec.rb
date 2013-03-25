@@ -20,15 +20,34 @@ describe ParticipantsController do
     end
 
      # id sort for paginate
-    it "defaults to sorting participants by id" do 
+    it "defaults to sorting participants by id" do
       get :index
       assigns(:q).sorts[0].name.should == "id"
     end
-    
-    it "performs user selected sort first; id second" do 
+
+    it "performs user selected sort first; id second" do
       get :index, :q => { :s => "p_id asc" }
       assigns(:q).sorts[0].name.should == "p_id"
       assigns(:q).sorts[1].name.should == "id"
+    end
+
+    describe "for a participant with many ppg_statuses" do
+      let(:person) { Factory(:person)}
+      let(:participant) { Factory(:participant, :being_followed => true) }
+      before do
+        participant.person = person
+        participant.save!
+        Factory(:ppg_detail, :participant => participant, :ppg_first_code => 1)
+        [1,4].each { |x| Factory(:ppg_status_history, :participant => participant, :ppg_status_code => x) }
+      end
+
+      it "returns only one record for that participant" do
+        get :index, :q => { :ppg_status_histories_ppg_status_code_eq => '',
+          :ppg_details_ppg_first_code_eq => '',
+          :participant_person_links_relationship_code_eq => 1,
+          :participant_person_links_person_first_name_start => person.first_name }
+        assigns(:participants).all.size.should == 1
+      end
     end
 
   end
