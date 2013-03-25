@@ -747,6 +747,42 @@ class Event < ActiveRecord::Base
   end
 
   ##
+  # Schedule the Parental Permission for Child Participation
+  # Birth to 6 Months Segment in PSC.
+  # If successful, create a corresponding, pending Event record
+  #
+  # @see PatientStudyCalendar#schedule_child_consent_birth_to_six_months
+  # @see Event#create_event_placeholder_and_cancel_activities
+  #
+  # @param[PatientStudyCalendar]
+  # @param[Participant]
+  # @param[Date] (optional)
+  # @return[Response]
+  def self.schedule_child_consent_birth_to_six_months(psc, participant, date = nil)
+    resp = psc.schedule_child_consent_birth_to_six_months(participant, date)
+    create_event_placeholder_and_cancel_activities(psc, participant, date, resp)
+    resp
+  end
+
+  ##
+  # Schedule the Parental Permission for Child Participation
+  # 6 Months to Age of Majority Segment in PSC.
+  # If successful, create a corresponding, pending Event record
+  #
+  # @see PatientStudyCalendar#schedule_child_consent_six_months_to_age_of_majority
+  # @see Event#create_event_placeholder_and_cancel_activities
+  #
+  # @param[PatientStudyCalendar]
+  # @param[Participant]
+  # @param[Date] (optional)
+  # @return[Response]
+  def self.schedule_child_consent_six_month_to_age_of_majority(psc, participant, date = nil)
+    resp = psc.schedule_child_consent_six_months_to_age_of_majority(participant, date)
+    create_event_placeholder_and_cancel_activities(psc, participant, date, resp)
+    resp
+  end
+
+  ##
   # After successfully scheduling the next segment for the Participant
   # in PSC, create a corresponding Event using the scheduled ideal date as
   # the Event#start_date and the Ncs EVENT_TYPE_CL1 code matching the PSC activity
