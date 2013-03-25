@@ -341,6 +341,9 @@ collection:biological event:3_month instrument:3.1:ins_bio_breastmilkcoll_saqspe
 6 Month - 24
 ------------
 
+# Parental Permission for Child Participation - 6 months to age of majority
+event:informed_consent instrument:2.0:irb_con_informed_consent instrument:2.1:irb_con_informed_consent instrument:2.2:irb_con_informed_consent instrument:3.0:irb_con_informed_consent instrument:3.1:irb_con_informed_consent instrument:3.2:irb_con_informed_consent order:01_02 participant_type:child
+
 # 6-Month Mother Interview Part 1
 event:6_month instrument:2.0:ins_que_6mmother_int_ehpbhi_p2_v1.1_part_one instrument:2.1:ins_que_6mmother_int_ehpbhi_p2_v1.1_part_one instrument:2.2:ins_que_6mmother_int_ehpbhi_p2_v1.1_part_one instrument:3.0:ins_que_6mmother_int_ehpbhi_p2_v1.1_part_one instrument:3.1:ins_que_6month_int_ehpbhipbs_m3.1_v2.0_part_one instrument:3.2:ins_que_6month_int_ehpbhipbs_m3.1_v2.0_part_one order:01_01 participant_type:mother
 
