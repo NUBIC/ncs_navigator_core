@@ -22,6 +22,35 @@ module ParticipantsHelper
   end
 
   ##
+  # Get all the consents for the participant which match
+  # the activity type (InformedConsent, Reconsent, or Withdrawal)
+  # @param [ScheduledActivity]
+  # @param [Survey]
+  # @return [Array<ParticipantConsent>]
+  def consents_for_activity(activity, survey)
+    return [] unless activity.consent_activity?
+    participant = activity.participant
+    # find those consent records that are associated with a response_set
+    # this is done to handle consents prior to change to using a Survey for consent
+    survey_consents = participant.participant_consents.select{ |pc| !pc.response_set.nil? }
+    # then match the consent to the current survey
+    consents = survey_consents.select { |pc| pc.response_set.survey.title == survey.title }
+    # and filter by activity_type
+    if activity.reconsent?
+      consents = consents.select { |c| c.reconsent? }
+    elsif activity.withdrawal?
+      consents = consents.select { |c| c.withdrawal? }
+    elsif activity.child_consent_birth_to_6_months?
+      consents = consents.select { |c| c.child_consent_birth_to_six_months? }
+    elsif activity.child_consent_6_months_to_age_of_majority?
+      consents = consents.select { |c| c.child_consent_six_month_to_age_of_majority? }
+    else
+      consents = consents.select { |c| !c.reconsent? && !c.withdrawal? }
+    end
+    consents
+  end
+
+  ##
   # Determine the path for the Participant's ParticipantConsent
   # record. Basically this determines if this is an edit or a new
   # action on the ParticipantConsent and build the url link accordingly.
