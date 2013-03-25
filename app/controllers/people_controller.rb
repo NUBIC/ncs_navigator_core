@@ -106,6 +106,10 @@ class PeopleController < ApplicationController
   def edit
     @person = Person.find(params[:id])
     set_person_attribute_defaults(@person)
+    if @participant
+      ppl = ParticipantPersonLink.where(:participant_id => @participant.id, :person_id => @person.id).first
+      @relationship_code = ppl.relationship_code if ppl
+    end
     @provider = Provider.find(params[:provider_id]) unless params[:provider_id].blank?
   end
 
@@ -140,6 +144,7 @@ class PeopleController < ApplicationController
     set_person_attribute_defaults(@person, true)
     @participant = Participant.find(params[:participant_id])
     @contact_link = ContactLink.find(params[:contact_link_id])
+    @relationship_code = '8'
     respond_to do |format|
       format.html # new.html.haml
       format.json  { render :json => @person }
@@ -172,6 +177,7 @@ class PeopleController < ApplicationController
     set_person_attribute_defaults(@person, true)
     @participant = Participant.find(params[:participant_id])
     @contact_link = ContactLink.find(params[:contact_link_id])
+    @relationship_code = '8'
     respond_to do |format|
       format.html # new.html.haml
       format.json  { render :json => @person }
