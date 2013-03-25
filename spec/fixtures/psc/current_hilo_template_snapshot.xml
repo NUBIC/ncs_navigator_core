@@ -303,18 +303,6 @@
             <label id="7871e31a-f302-4a6b-87dd-bb68b0185eb3" name="participant_type:mother"/>
             <activity-reference code="PVI" source="NCS"/>
           </planned-activity>
-          <planned-activity id="e40443d8-b9d0-47d1-a676-10417a0d5179" day="1" condition="If Participant will not have PV2 event">
-            <label id="63ef45e4-2828-4e23-b2b5-27f1113288e9" name="event:pregnancy_visit_1"/>
-            <label id="76976e26-7fa5-45ef-9932-ff585fca6c4a" name="instrument:2.0:irb_con_informed_consent"/>
-            <label id="b976995f-1309-4ffb-a063-79a08345014b" name="instrument:2.1:irb_con_informed_consent"/>
-            <label id="e90b6462-672e-44a5-9eed-9a8e31224227" name="instrument:2.2:irb_con_informed_consent"/>
-            <label id="ee6c924c-7c9f-4361-91d4-b4071e959f69" name="instrument:3.0:irb_con_informed_consent"/>
-            <label id="3cd076c5-9894-4ea3-af4d-363e053e7011" name="instrument:3.1:irb_con_informed_consent"/>
-            <label id="f722373c-ac8d-4142-a8bc-9420b2503101" name="instrument:3.2:irb_con_informed_consent"/>
-            <label id="b3db5234-374c-4e53-b7ba-b9cc36a9a333" name="order:90_99"/>
-            <label id="7538819f-55f8-4bd4-98e3-76ca655850cc" name="participant_type:child"/>
-            <activity-reference code="CC" source="NCS"/>
-          </planned-activity>
           <planned-activity id="2543d77d-d3c4-49f9-92b3-df3753a675de" day="1">
             <label id="6d40394e-b208-4308-b903-a8c5694ba6f1" name="collection:environmental"/>
             <label id="99214872-7c68-4432-a6a1-1d93cbbc0246" name="event:pregnancy_visit_1"/>
@@ -366,6 +354,18 @@
             <label id="ace7baa8-bf45-4447-91db-5b02c7bb16fe" name="order:94_01"/>
             <label id="0be8bab1-5769-4acf-abec-9a33dbb54a02" name="participant_type:mother"/>
             <activity-reference code="RI" source="NCS"/>
+          </planned-activity>
+          <planned-activity id="d1525606-d2eb-4292-acf8-e72819bcd73f" day="1" condition="If Participant will not have PV2 event">
+            <label id="45300714-4588-48d2-85c7-d5e1dfe2c4cd" name="event:pregnancy_visit_1"/>
+            <label id="74eab508-01e1-44d7-ad0e-5b06d3a183b4" name="instrument:2.0:irb_con_informed_consent"/>
+            <label id="9264fd2a-0b56-4623-b123-3305e162f782" name="instrument:2.1:irb_con_informed_consent"/>
+            <label id="d58d904a-c9d1-4f86-bf7b-41df0bfa8f20" name="instrument:2.2:irb_con_informed_consent"/>
+            <label id="1b613383-ece9-4ef8-b4f5-a51a33235cee" name="instrument:3.0:irb_con_informed_consent"/>
+            <label id="908a9be6-61d9-4faa-83ee-f0fff46d895e" name="instrument:3.1:irb_con_informed_consent"/>
+            <label id="9907c253-4edb-4bd1-b244-c1022977e098" name="instrument:3.2:irb_con_informed_consent"/>
+            <label id="d91d7855-534a-48b8-9870-16af6806fc00" name="order:90_99"/>
+            <label id="2ba471bd-b9f3-42d1-87d1-554eda2d51af" name="participant_type:child"/>
+            <activity-reference code="CCB6" source="NCS"/>
           </planned-activity>
         </period>
       </study-segment>
@@ -513,18 +513,6 @@
             <label id="5d8ef26a-a491-4d35-9c76-bab8793a70ee" name="participant_type:mother"/>
             <activity-reference code="PVI" source="NCS"/>
           </planned-activity>
-          <planned-activity id="46ce7427-6039-4393-89f5-9ed5a8b39826" day="1">
-            <label id="fc6f5a4d-1fed-411f-8cd9-8fd85e108a2e" name="event:pregnancy_visit_2"/>
-            <label id="68286391-56bb-4a05-ae81-a49372daf76d" name="instrument:2.0:irb_con_informed_consent"/>
-            <label id="e4e3faaa-5496-4927-85da-e815abaf0c11" name="instrument:2.1:irb_con_informed_consent"/>
-            <label id="30b91e5c-d6fe-49b8-ae93-dbe2dae47fa2" name="instrument:2.2:irb_con_informed_consent"/>
-            <label id="1f5a9147-dc12-4406-bb67-02502d41fd97" name="instrument:3.0:irb_con_informed_consent"/>
-            <label id="ff8e8d5e-a8f8-4cd0-8c12-1c7dc470db6d" name="instrument:3.1:irb_con_informed_consent"/>
-            <label id="de68f8f2-27d3-4bd0-8f3a-e3525a24538e" name="instrument:3.2:irb_con_informed_consent"/>
-            <label id="2106f704-1216-48eb-90a1-6906a7a7f04a" name="order:90_99"/>
-            <label id="05e698c4-f08c-469b-b830-14457caee0c7" name="participant_type:child"/>
-            <activity-reference code="CC" source="NCS"/>
-          </planned-activity>
           <planned-activity id="435c01f9-f55f-4621-b12c-4475d4decca6" day="1">
             <label id="df7b1c03-3121-4ced-a61f-27e23d1b5d97" name="event:pregnancy_visit_2"/>
             <label id="b15f51dd-5ebd-4aa9-bed1-f178aecbae18" name="instrument:3.1:ins_con_reconsideration_dci_ehpbhi_m3.1_v1.0"/>
@@ -532,6 +520,18 @@
             <label id="05e30794-0d46-4d12-be09-e9956af055cb" name="order:94_01"/>
             <label id="356a4409-7139-41ec-b4da-433463ae23ce" name="participant_type:mother"/>
             <activity-reference code="RI" source="NCS"/>
+          </planned-activity>
+          <planned-activity id="d6fab6a3-bcb9-4481-b6d8-c9f1951de245" day="1">
+            <label id="7f298a3f-ae47-460e-8d9e-de1b214655ab" name="event:pregnancy_visit_2"/>
+            <label id="5238df6b-90d8-4124-bfc1-bceffd4ca58e" name="instrument:2.0:irb_con_informed_consent"/>
+            <label id="364b65d6-2db6-46c5-9f3b-24d0cd1f71c1" name="instrument:2.1:irb_con_informed_consent"/>
+            <label id="11bffa64-ead8-4559-9449-1a713d972da3" name="instrument:2.2:irb_con_informed_consent"/>
+            <label id="78651727-b823-42a0-8ff4-fb68f5cd6b7e" name="instrument:3.0:irb_con_informed_consent"/>
+            <label id="77ae5a35-c5ce-4d43-a637-a3e936811a35" name="instrument:3.1:irb_con_informed_consent"/>
+            <label id="9cb257a0-c8f0-4a19-9578-4b9698e1461c" name="instrument:3.2:irb_con_informed_consent"/>
+            <label id="65ddf975-a149-4a95-9175-4d4743ae4e6d" name="order:90_99"/>
+            <label id="6f8d630e-9dd3-41f3-ab8c-ba3dfa5d0880" name="participant_type:child"/>
+            <activity-reference code="CCB6" source="NCS"/>
           </planned-activity>
         </period>
       </study-segment>
@@ -1163,18 +1163,6 @@
             <label id="58a0a5ee-dd7a-450c-a30d-cb49c086a6dd" name="references:3.2:ins_que_pbspartverbirth_int_m3.2_v1.0_part_one"/>
             <activity-reference code="PVI2" source="NCS"/>
           </planned-activity>
-          <planned-activity id="86134b47-52d3-4b44-8373-3095287a5214" day="1" condition="If child participation consent does not yet exist">
-            <label id="c8cbe50b-4bcd-4033-a43a-6aaa129b867f" name="event:birth"/>
-            <label id="ffe7472d-6ceb-4ea9-916d-9de539b82468" name="instrument:2.0:irb_con_informed_consent"/>
-            <label id="465aa36e-0fe6-4d80-b820-c6401fee4579" name="instrument:2.1:irb_con_informed_consent"/>
-            <label id="4beeff2a-e574-4014-8b88-5f18365a8259" name="instrument:2.2:irb_con_informed_consent"/>
-            <label id="82642599-3668-4032-b99d-de4af6683b05" name="instrument:3.0:irb_con_informed_consent"/>
-            <label id="6d284841-cdff-442c-89be-d796d44bbb6b" name="instrument:3.1:irb_con_informed_consent"/>
-            <label id="12a73400-2881-4a5a-b5dc-6ab71fb8d1b4" name="instrument:3.2:irb_con_informed_consent"/>
-            <label id="521fb623-ea97-4398-bc60-5bae7977bacc" name="order:00_00"/>
-            <label id="1e1467d3-765d-4172-a2ca-e70ad8a82cef" name="participant_type:child"/>
-            <activity-reference code="CC" source="NCS"/>
-          </planned-activity>
           <planned-activity id="03d1aad7-bc53-446b-b4d7-940f1faa6afc" day="92">
             <label id="79d91b2a-48d8-4551-afdb-bd2d19acf2a8" name="event:3_month"/>
             <label id="31fe7165-ca9d-46af-b0fd-ac4d6f54d111" name="instrument:3.0:ins_que_tracing_int_ehpbhilipbs_m3.0_v1.0"/>
@@ -1530,6 +1518,30 @@
             <label id="73f617cb-012e-4153-8b8c-2ffc9b24b06e" name="participant_type:child"/>
             <activity-reference code="MCHATSAQ" source="NCS"/>
           </planned-activity>
+          <planned-activity id="590b2910-76be-4dc6-826f-fd893850693a" day="1" condition="If no child consent exists for the child">
+            <label id="a7fcacb6-32da-423c-8cbb-adb9e566f3a5" name="event:birth"/>
+            <label id="05351372-ae79-42c9-9fd7-df338e5a8d2d" name="instrument:2.0:irb_con_informed_consent"/>
+            <label id="23fa3152-ea45-43ea-aef7-ead93e32ab61" name="instrument:2.1:irb_con_informed_consent"/>
+            <label id="1764aa00-1e81-4261-b058-2e2d4df9acf4" name="instrument:2.2:irb_con_informed_consent"/>
+            <label id="a498a217-7082-48bb-8873-635710966b06" name="instrument:3.0:irb_con_informed_consent"/>
+            <label id="b7f1eae7-9d10-4195-a21d-0024e660d8cf" name="instrument:3.1:irb_con_informed_consent"/>
+            <label id="96da79f5-c71f-470d-9fdb-f1490b05cb28" name="instrument:3.2:irb_con_informed_consent"/>
+            <label id="0affde12-6d33-41df-b72d-50a2ed67989a" name="order:00_00"/>
+            <label id="5c3aebe8-2fc0-4d28-b121-e450372934d3" name="participant_type:child"/>
+            <activity-reference code="CCB6" source="NCS"/>
+          </planned-activity>
+          <planned-activity id="98388c40-a1ae-4e26-8939-9d1f23f25a6f" day="183" condition="If child consent six months to age of majority does not yet exist">
+            <label id="09b3d3df-fb84-46e9-860b-3ece0d841e79" name="event:birth"/>
+            <label id="87bb2541-ab16-47f9-b310-c0c9e4c0beb6" name="instrument:2.0:irb_con_informed_consent"/>
+            <label id="868e3ea7-48fd-456b-a8e2-a85da44fbd63" name="instrument:2.1:irb_con_informed_consent"/>
+            <label id="b01bdd2c-933e-43f4-b038-d878e50a0e68" name="instrument:2.2:irb_con_informed_consent"/>
+            <label id="1dd15f18-8d68-43bf-bc24-8f0816329264" name="instrument:3.0:irb_con_informed_consent"/>
+            <label id="536e5e75-df45-4f36-960c-1948cf91d4de" name="instrument:3.1:irb_con_informed_consent"/>
+            <label id="1cc0455c-628a-422d-a68e-2a8596eb5cf1" name="instrument:3.2:irb_con_informed_consent"/>
+            <label id="178f8afe-be84-4ea4-b8b4-68d5a85138b1" name="order:00_00"/>
+            <label id="efff60c4-d51e-45d1-bc50-9c7d0d69b0c6" name="participant_type:child"/>
+            <activity-reference code="CC6AM" source="NCS"/>
+          </planned-activity>
         </period>
         <period id="5889ade0-19c3-4d28-9449-bdc669bd8b4d" name="30 Month" repetitions="1" start-day="913" duration-quantity="1" duration-unit="day">
           <planned-activity id="5e335b92-f448-47a7-bf3c-f49de5164dd0" day="1">
@@ -1682,18 +1694,6 @@
     <epoch id="439ad51e-5277-4f14-b786-c516909a970a" name="Informed Consent">
       <study-segment id="183e9d42-8341-4980-ada4-3b399db57b43" name="Informed Consent">
         <period id="1dc689b8-1798-4189-88a2-b76f23324294" name="Informed Consent" repetitions="1" start-day="1" duration-quantity="1" duration-unit="day">
-          <planned-activity id="728c0594-dac4-4e10-8b45-b570fb5bc7ad" day="1">
-            <label id="67f8b87a-9f07-40b0-a09a-d26badf4bf64" name="event:informed_consent"/>
-            <label id="0ddcc890-8cb6-4100-886a-86534a56e6c5" name="instrument:2.0:irb_con_informed_consent"/>
-            <label id="8a4ba30f-13aa-4ab5-a659-5fa58dcb0670" name="instrument:2.1:irb_con_informed_consent"/>
-            <label id="496b56d1-2981-4030-ac3d-afb7d0ad1c96" name="instrument:2.2:irb_con_informed_consent"/>
-            <label id="351c357e-ea68-4c97-bf33-59be5b9fd413" name="instrument:3.0:irb_con_informed_consent"/>
-            <label id="73e889f1-384f-4776-8c54-cf99520ea05f" name="instrument:3.1:irb_con_informed_consent"/>
-            <label id="c84e50dd-84f5-41e0-87ed-b1b8594af15d" name="instrument:3.2:irb_con_informed_consent"/>
-            <label id="2013856d-fa58-41e2-8673-b4ea79620607" name="order:01_01"/>
-            <label id="41ea2018-499f-4f3a-b727-4d2142e89629" name="participant_type:mother"/>
-            <activity-reference code="IC" source="NCS"/>
-          </planned-activity>
           <planned-activity id="807edf81-f8f2-47c1-92ac-8099ca2f9575" day="1">
             <label id="02c4b3e7-b9a1-4935-b5e7-68ab53e68589" name="event:informed_consent"/>
             <label id="7f7d6b91-1239-4ff7-b04e-1ac455f16f7a" name="instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one"/>
@@ -1721,22 +1721,22 @@
             <label id="7d6f7a62-e455-494c-8c80-a974f74a9364" name="participant_type:mother"/>
             <activity-reference code="NIR" source="NCS"/>
           </planned-activity>
+          <planned-activity id="b2c5ac3d-cf43-4a35-988d-64cd6bdec6aa" day="1">
+            <label id="9a3c7fec-34db-44c8-be8f-38f85202a265" name="event:informed_consent"/>
+            <label id="d171763b-e166-4958-830e-bb7131fe6f0c" name="instrument:2.0:irb_con_informed_consent"/>
+            <label id="4fc1f52c-1f20-4301-982b-e6b07651a143" name="instrument:2.1:irb_con_informed_consent"/>
+            <label id="31add423-c1dd-4c15-8363-845393a63684" name="instrument:2.2:irb_con_informed_consent"/>
+            <label id="f1b84fc1-329d-4a08-bbce-84e0455495ab" name="instrument:3.0:irb_con_informed_consent"/>
+            <label id="b0e70254-e793-4704-ab66-15190e7c4e6b" name="instrument:3.1:irb_con_informed_consent"/>
+            <label id="c8954bfd-b615-4225-9ac0-3ab9219b7a19" name="instrument:3.2:irb_con_informed_consent"/>
+            <label id="499c7495-5bab-4f62-b79c-f5bf326091ff" name="order:01_01"/>
+            <label id="01c4aaaf-53be-46f6-872c-90b8c8ac2380" name="participant_type:mother"/>
+            <activity-reference code="GIC" source="NCS"/>
+          </planned-activity>
         </period>
       </study-segment>
       <study-segment id="c9bd6beb-7861-4eab-958e-cad971eb8647" name="Parental Permission for Child Participation Birth to 6 months">
         <period id="a8bca937-cc9a-4640-bd94-6d99483ac8b5" name="Parental Permission for Child Participation" repetitions="1" start-day="1" duration-quantity="1" duration-unit="day">
-          <planned-activity id="0db6452c-93e5-4c95-ae26-b898b583d82b" day="1">
-            <label id="1033214a-401c-4063-bcec-b9392bad0143" name="event:informed_consent"/>
-            <label id="721b9d64-ff46-4a21-a32d-364fba088e82" name="instrument:2.0:irb_con_informed_consent"/>
-            <label id="051d4cc9-f32a-4b72-a16e-b1148fa7cdfc" name="instrument:2.1:irb_con_informed_consent"/>
-            <label id="49271539-9d10-41af-a844-9457a4910a19" name="instrument:2.2:irb_con_informed_consent"/>
-            <label id="04a93161-1019-41be-9168-5866189d540a" name="instrument:3.0:irb_con_informed_consent"/>
-            <label id="bb739102-151b-4147-b009-17e32b49e182" name="instrument:3.1:irb_con_informed_consent"/>
-            <label id="29a35842-67ff-46e0-8586-ebd6090af46f" name="instrument:3.2:irb_con_informed_consent"/>
-            <label id="b4d9f816-2ffa-4ba1-8c5d-5d28d7336751" name="order:01_02"/>
-            <label id="c2d0f110-eb26-4dbb-8438-79efe05d6759" name="participant_type:child"/>
-            <activity-reference code="CC" source="NCS"/>
-          </planned-activity>
           <planned-activity id="f9cd1b41-a3c1-4639-ae36-dce58422b885" day="1">
             <label id="62f7d8fe-ca30-4c47-94a4-aee60a1cca0d" name="event:informed_consent"/>
             <label id="b632cc63-b63f-4254-b12f-a26863e4fa92" name="instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_two"/>
@@ -1758,6 +1758,18 @@
             <label id="16794fff-b7e7-45f5-bb93-bf9bf805ef05" name="participant_type:mother"/>
             <activity-reference code="PVI" source="NCS"/>
           </planned-activity>
+          <planned-activity id="6bc7119e-3ad2-4731-924c-25fcbb09f3bd" day="1">
+            <label id="5ba23346-7c9f-4756-92ba-26b720cc5983" name="event:informed_consent"/>
+            <label id="dcc9c42d-6be6-4d69-9279-f0a5304b0305" name="instrument:2.0:irb_con_informed_consent"/>
+            <label id="de640e2a-1005-40a2-8b4c-6c808296cb5f" name="instrument:2.1:irb_con_informed_consent"/>
+            <label id="fd164bec-56d3-4b31-850a-eee0209d75cd" name="instrument:2.2:irb_con_informed_consent"/>
+            <label id="e7ea9fb4-2273-4156-a128-c6908bda848c" name="instrument:3.0:irb_con_informed_consent"/>
+            <label id="7f68d6f5-c634-4350-a73d-31205919b9ae" name="instrument:3.1:irb_con_informed_consent"/>
+            <label id="b014c7f3-02d7-426c-8f7c-bd97dba00616" name="instrument:3.2:irb_con_informed_consent"/>
+            <label id="b5c79c9b-f939-4c98-afa8-1472cc95aebb" name="order:01_02"/>
+            <label id="3cba66a1-56cf-45c1-b975-9085ab8d36d0" name="participant_type:child"/>
+            <activity-reference code="CCB6" source="NCS"/>
+          </planned-activity>
         </period>
       </study-segment>
       <study-segment id="9f12ffcb-51af-4f24-89ce-6d0f7f9e95f3" name="Withdrawal">
@@ -1770,18 +1782,6 @@
             <label id="6f05de80-429f-42a3-b8f3-7ec23c01bd83" name="order:00_01"/>
             <label id="63d8d48d-0dd0-490a-84eb-0460fc820cb1" name="participant_type:mother"/>
             <activity-reference code="PVI" source="NCS"/>
-          </planned-activity>
-          <planned-activity id="bef9a258-a3a7-4669-880a-6a8a04fd5f48" day="1">
-            <label id="aa5a2dba-a0f3-456f-9291-da3f179e8e4b" name="event:informed_consent"/>
-            <label id="1bb7de39-bd71-489c-ba56-16da6e1f4763" name="instrument:2.0:irb_con_informed_consent"/>
-            <label id="db09d9fb-26b7-47f1-bdd9-76bb83759180" name="instrument:2.1:irb_con_informed_consent"/>
-            <label id="2510f630-0a2d-41fc-a3fe-67b442dec68d" name="instrument:2.2:irb_con_informed_consent"/>
-            <label id="03626701-9297-4910-ac41-644db21f5a16" name="instrument:3.0:irb_con_informed_consent"/>
-            <label id="3aafff5c-770f-46fb-b96d-6c12d656fb81" name="instrument:3.1:irb_con_informed_consent"/>
-            <label id="b0bcbc8c-69ab-4ffe-8bc0-63aaed76af7b" name="instrument:3.2:irb_con_informed_consent"/>
-            <label id="546c668d-665d-4b0a-8686-502add407079" name="order:01_01"/>
-            <label id="9dfa45bb-6db2-4470-8242-35690d80fac6" name="participant_type:mother"/>
-            <activity-reference code="IC" source="NCS"/>
           </planned-activity>
           <planned-activity id="55b60d95-b490-4aba-86cb-8b679326e812" day="1">
             <label id="d6678a0a-0730-4fb2-84cd-ee6ce0a87d10" name="event:informed_consent"/>
@@ -1801,22 +1801,22 @@
             <label id="ee1acd17-37a2-4ffd-96de-8afec54f1d1f" name="participant_type:mother"/>
             <activity-reference code="NIR" source="NCS"/>
           </planned-activity>
+          <planned-activity id="13e9c06d-abd5-44b8-b462-664e92b5b6b5" day="1">
+            <label id="d160fe81-99ff-413a-98fb-c30e1ff7db67" name="event:informed_consent"/>
+            <label id="6ff33759-72ad-4891-ab21-4944b8bf5a28" name="instrument:2.0:irb_con_informed_consent"/>
+            <label id="45c8afdb-e784-45f2-b8cc-0ccd6f0efcf2" name="instrument:2.1:irb_con_informed_consent"/>
+            <label id="04fc7c17-9cad-41b6-a1f6-f751182ccae0" name="instrument:2.2:irb_con_informed_consent"/>
+            <label id="61b73d05-2643-4609-a191-a5d1ec746d4f" name="instrument:3.0:irb_con_informed_consent"/>
+            <label id="522a334f-6cf4-4116-a742-587fcf8f11a2" name="instrument:3.1:irb_con_informed_consent"/>
+            <label id="30bded18-b134-45a5-b411-a477b176702c" name="instrument:3.2:irb_con_informed_consent"/>
+            <label id="efefc206-3648-4cb1-9eee-cf27fc5e96ad" name="order:01_01"/>
+            <label id="7c8a57a8-ee75-4090-82da-f04fe5387e34" name="participant_type:mother"/>
+            <activity-reference code="WIC" source="NCS"/>
+          </planned-activity>
         </period>
       </study-segment>
       <study-segment id="e97cf97c-6855-4a4b-8abc-c7599fc43c9b" name="Reconsent">
         <period id="e06ae8ff-a8e0-4792-8570-dceb3c34af22" name="Reconsent" repetitions="1" start-day="1" duration-quantity="1" duration-unit="day">
-          <planned-activity id="b5f9c876-e6b7-461e-becb-dd51836386d3" day="1">
-            <label id="b9eed444-6d9d-425a-b3b8-0718c9763ccc" name="event:informed_consent"/>
-            <label id="ed5cb042-3006-4acf-b072-8915b2f3a2e3" name="instrument:2.0:irb_con_informed_consent"/>
-            <label id="0b9c732f-379a-42ef-8baa-fbc8ade09968" name="instrument:2.1:irb_con_informed_consent"/>
-            <label id="c483e0ce-1bb7-4bf8-8b84-0ee27ed7a1f5" name="instrument:2.2:irb_con_informed_consent"/>
-            <label id="124738d1-e5b0-4db9-9ea7-366d859e5ddf" name="instrument:3.0:irb_con_informed_consent"/>
-            <label id="3783000e-07c2-426a-8c1e-523845e59d52" name="instrument:3.1:irb_con_informed_consent"/>
-            <label id="ef2acb92-52e0-45b0-9a6b-21ee9e5b8006" name="instrument:3.2:irb_con_informed_consent"/>
-            <label id="dc10d57d-b337-4a4b-9341-e9c0bfa41d31" name="order:01_01"/>
-            <label id="9e23c903-182a-42c4-8193-54e49bfda049" name="participant_type:mother"/>
-            <activity-reference code="IC" source="NCS"/>
-          </planned-activity>
           <planned-activity id="c85ea38b-32a0-41a9-a441-7d0c60882214" day="1">
             <label id="c63a7eb2-ee83-4882-afcb-b44632f35cf1" name="event:informed_consent"/>
             <label id="c938e5f4-7bb1-49d9-9f39-4b0cbb4dec3c" name="instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one"/>
@@ -1844,22 +1844,22 @@
             <label id="7a745aeb-6196-4d5f-bb80-ee7cd5cf098f" name="participant_type:mother"/>
             <activity-reference code="NIR" source="NCS"/>
           </planned-activity>
+          <planned-activity id="34b48aef-5502-40a5-bcff-4f72898d3a6d" day="1">
+            <label id="a75bee10-0922-44c4-b098-ee00bc0628d6" name="event:informed_consent"/>
+            <label id="1fefcc5c-ba48-429a-a5d6-1eff46d7b817" name="instrument:2.0:irb_con_informed_consent"/>
+            <label id="8bc3b58a-728a-414f-99ca-ae8d1d368a0a" name="instrument:2.1:irb_con_informed_consent"/>
+            <label id="9b2f9d4c-bfff-4bbf-8a2f-4393bcaa0d10" name="instrument:2.2:irb_con_informed_consent"/>
+            <label id="d49ecd3b-cb9b-4c20-9fe3-331b2ad8925b" name="instrument:3.0:irb_con_informed_consent"/>
+            <label id="d42766d4-5306-4ec0-8f03-5996658d8ce0" name="instrument:3.1:irb_con_informed_consent"/>
+            <label id="2999c1a2-ef22-46fd-a566-3dea50374985" name="instrument:3.2:irb_con_informed_consent"/>
+            <label id="36b14abf-5ee9-4255-9bf1-75beeccb3393" name="order:01_01"/>
+            <label id="34f3fb16-f613-4177-a25a-9b4407e2c13d" name="participant_type:mother"/>
+            <activity-reference code="RIC" source="NCS"/>
+          </planned-activity>
         </period>
       </study-segment>
       <study-segment id="f326c501-98c7-448a-949a-ed556228fe72" name="Parental Permission for Child Participation 6 months to Age of Majority">
         <period id="567cbdb9-4b31-4496-9c1c-7e96ecad2dcc" name="Parental Permission for Child Participation" repetitions="1" start-day="1" duration-quantity="1" duration-unit="day">
-          <planned-activity id="f2b05457-ae86-4d96-b88d-1b28014595e5" day="1">
-            <label id="55b67994-3671-48e8-a464-ffb23298b9ec" name="event:informed_consent"/>
-            <label id="576e6231-1dfc-4353-9a48-3d68de4afb85" name="instrument:2.0:irb_con_informed_consent"/>
-            <label id="a76e4867-6d60-4df8-bad8-0c77402e5a97" name="instrument:2.1:irb_con_informed_consent"/>
-            <label id="37d8e367-7088-4389-a35c-f57c84c4390c" name="instrument:2.2:irb_con_informed_consent"/>
-            <label id="afac2b2b-8f97-4dfd-a5ac-8b37684a8102" name="instrument:3.0:irb_con_informed_consent"/>
-            <label id="2982d6ac-40ea-44ec-ac00-c07ca352182c" name="instrument:3.1:irb_con_informed_consent"/>
-            <label id="0cbd83e1-42e2-4c1c-85d8-1361d808e596" name="instrument:3.2:irb_con_informed_consent"/>
-            <label id="719886fa-affd-40ee-8382-693a1de9f1e3" name="order:01_02"/>
-            <label id="54fc1eee-cd42-473b-a0c8-d328e735a72d" name="participant_type:child"/>
-            <activity-reference code="CC" source="NCS"/>
-          </planned-activity>
           <planned-activity id="b3284c89-c4ec-424a-a4a4-7f97022a2c38" day="1">
             <label id="89d14327-c208-47de-bd7e-e4333c2e4c48" name="event:informed_consent"/>
             <label id="91ffdfea-b678-4758-8add-8106f4268aff" name="instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one"/>
@@ -1880,6 +1880,18 @@
             <label id="49b54589-143e-4511-9152-13673f5c3983" name="references:3.1:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one"/>
             <label id="433d2650-f378-4fe7-b8cd-e21d45874f1d" name="references:3.2:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one"/>
             <activity-reference code="PVI2" source="NCS"/>
+          </planned-activity>
+          <planned-activity id="e5cdcf16-1504-47ed-b185-573e2ea1e424" day="1">
+            <label id="b5e83436-411e-46ba-89b5-55c6e1e155df" name="event:informed_consent"/>
+            <label id="f6f2e976-ef4b-4919-ad65-54b064a06962" name="instrument:2.0:irb_con_informed_consent"/>
+            <label id="e8ebb596-4b24-403a-84ab-8ef9e3e97c34" name="instrument:2.1:irb_con_informed_consent"/>
+            <label id="6a4a3039-6893-4d57-a31e-b3da885a0e78" name="instrument:2.2:irb_con_informed_consent"/>
+            <label id="7df4010a-8e1b-4e24-b313-db975a689a02" name="instrument:3.0:irb_con_informed_consent"/>
+            <label id="1f6508d6-0d55-43e3-875e-d1bdb81e62b3" name="instrument:3.1:irb_con_informed_consent"/>
+            <label id="90a4f4c1-777d-4759-8ca6-db5930188c19" name="instrument:3.2:irb_con_informed_consent"/>
+            <label id="0b099da7-0281-4ad5-abd2-eb46bf51bc58" name="order:01_02"/>
+            <label id="1382e6c6-c545-48d7-8a96-aec86d6013a2" name="participant_type:child"/>
+            <activity-reference code="CC6AM" source="NCS"/>
           </planned-activity>
         </period>
       </study-segment>
@@ -1908,6 +1920,7 @@
       <activity name="Environmental Tap Water TWF Participant Collect SAQ Specification" code="ETWPharmPCSAQS" description="Environmental Tap Water TWF Participant Collect SAQ Specification" type="Environment"/>
       <activity name="Environmental Vacuum Bag Dust Technician Collect Instrument" code="EVBDTCI" description="Environmental Vacuum Bag Dust Technician Collect Instrument" type="Environment"/>
       <activity name="Pregnant Woman Informed Consent" code="IC" description="Pregnant Woman Informed Consent" type="Consent"/>
+      <activity name="Child Consent Six Months to Age of Majority" code="CC6AM" description="Child Consent Six Months to Age of Majority" type="Consent"/>
       <activity name="Biospecimen Child Saliva Collection Instrument" code="BCSCI" description="Biospecimen Child Saliva Collection Instrument" type="Biospecimen"/>
       <activity name="30-Month Interview Child" code="30MIC" description="30-Month Interview Child" type="Instrument"/>
       <activity name="18-Month Mother Interview Part Four" code="18MMI4" description="18-Month Mother Interview Part Four" type="Instrument"/>
@@ -1918,6 +1931,7 @@
       <activity name="30-Month Interview Part One" code="30MI1" description="30-Month Interview Part " type="Instrument"/>
       <activity name="Non-Pregnant Woman Informed Consent" code="IC (non)" description="Non-Pregnant Woman Informed Consent" type="Consent"/>
       <activity name="Environmental Sample Kit Distribution Instrument" code="ESKDI" description="Environmental Sample Kit Distribution Instrument" type="Environment"/>
+      <activity name="Reconsent" code="RIC" description="Reconsent" type="Consent"/>
       <activity name="Pre-Pregnancy Visit Information Sheet" code="VIS (pre)" description="Pre-Pregnancy Visit Information Sheet" type="Information Sheet"/>
       <activity name="12-Month Mother SAQ" code="12MMSAQ" description="12-Month Mother SAQ" type="Instrument"/>
       <activity name="6-Month Mother Interview Mother Detail" code="6MMI MD" description="6-Month Mother Interview Mother Detail - Child Loop" type="Instrument"/>
@@ -1963,6 +1977,7 @@
       <activity name="24-Month Mother Interview Part Three" code="24MMI3" description="24-Month Mother Interview Part Three" type="Instrument"/>
       <activity name="24-Month Mother Interview Part Four" code="24MMI4" description="24-Month Mother Interview Part Four" type="Instrument"/>
       <activity name="3-Month Mother Phone Interview Part One" code="3MMPI1" description="3-Month Mother Phone Interview Part One" type="Instrument"/>
+      <activity name="Withdrawal" code="WIC" description="Withdrawal" type="Consent"/>
       <activity name="12-Month Visit Information Sheet" code="12MVIS" description="12-Month Visit Information Sheet" type="Information Sheet"/>
       <activity name="3-Month Mother Phone Interview Part Two" code="3MMPI2" description="3-Month Mother Phone Interview Part Two" type="Instrument"/>
       <activity name="3-Month Mother Phone Interview Part Three" code="3MMPI3" description="3-Month Mother Phone Interview Part Three" type="Instrument"/>
@@ -1973,8 +1988,10 @@
       <activity name="Low-Intensity Birth Interview" code="LIBI" description="Low-Intensity Birth Interview" type="Instrument"/>
       <activity name="Pregnancy Probability Group Follow-Up Interview" code="PPGFUI" description="Pregnancy Probability Group Follow-Up Interview" type="Instrument"/>
       <activity name="Biospecimen Cord Blood Instrument" code="BCBI" description="Biospecimen Cord Blood Instrument" type="Biospecimen"/>
+      <activity name="Informed Consent" code="GIC" description="Informed Consent" type="Consent"/>
       <activity name="12-Month Mother Interview Part Two" code="12MMI2" description="12-Month Mother Interview Part Two" type="Instrument"/>
       <activity name="12-Month Mother Interview Part One" code="12MMI1" description="12-Month Mother Interview Part One" type="Instrument"/>
+      <activity name="Child Consent Birth to Six Months" code="CCB6" description="Child Consent Birth to Six Months" type="Consent"/>
       <activity name="Low-Intensity Birth Interview Part Two" code="LIBI B2" description="Low-Intensity Birth Interview Part Two" type="Instrument"/>
       <activity name="Pregnancy Probability Group Follow-Up SAQ" code="PPGFUSAQ" description="Pregnancy Probability Group Follow-Up SAQ" type="Instrument"/>
       <activity name="30 Month Ages And Stages-3 SAQ" code="30MAS3SAQ" description="30 Month Ages And Stages-3 SAQ" type="Instrument"/>
