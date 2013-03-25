@@ -35,11 +35,21 @@ module NcsNavigator::Core::Mdes
       "@#{attribute_name}"
     end
 
+    def validate_method_name
+      "validate_ncs_coded_attribute_#{attribute_name}"
+    end
+
     protected
 
     def extensions_module
       nca = self
       @extensions_module ||= Module.new do
+        extend ActiveSupport::Concern
+
+        included do
+          validate nca.validate_method_name
+        end
+
         define_method(nca.attribute_name) do
           get_ncs_code(nca)
         end
@@ -51,10 +61,16 @@ module NcsNavigator::Core::Mdes
         define_method(nca.foreign_key_setter) do |value|
           super(value).tap { instance_variable_set(nca.instance_variable_name, nil) }
         end
+
+        define_method(nca.validate_method_name) do
+          validate_ncs_code(nca)
+        end
       end
     end
 
     module NcsCodedAttributeValueHelpers
+      protected
+
       def get_ncs_code(ncs_coded_attribute)
         if curr_val = instance_variable_get(ncs_coded_attribute.instance_variable_name)
           curr_val
@@ -81,6 +97,30 @@ module NcsNavigator::Core::Mdes
           instance_variable_set(instance_var, nil) # to force reload
         else
           fail "Cannot resolve an NcsCode from #{ncs_code_value.inspect} (#{ncs_code_value.class})"
+        end
+      end
+
+      def validate_ncs_code(ncs_coded_attribute)
+        validate_ncs_code_value(ncs_coded_attribute)
+        validate_ncs_code_list_name(ncs_coded_attribute)
+      end
+
+      def validate_ncs_code_value(ncs_coded_attribute)
+        value = send(ncs_coded_attribute.foreign_key_getter)
+        legal_values = ncs_coded_attribute.code_list.collect(&:local_code)
+        unless legal_values.include?(value)
+          errors.add(ncs_coded_attribute.foreign_key_name,
+            "illegal code value #{value.inspect}; legal values are #{legal_values.sort.inspect}")
+        end
+      end
+
+      def validate_ncs_code_list_name(ncs_coded_attribute)
+        ncs_code = send(ncs_coded_attribute.attribute_name)
+        return unless ncs_code
+
+        unless ncs_code.list_name == ncs_coded_attribute.list_name
+          errors.add(ncs_coded_attribute.attribute_name,
+            "wrong code list #{ncs_code.list_name.inspect}; should be #{ncs_coded_attribute.list_name.inspect}")
         end
       end
     end

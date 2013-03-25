@@ -128,8 +128,59 @@ module NcsNavigator::Core::Mdes
       end
 
       describe 'validation' do
-        it 'complains about an NcsCode of the wrong list'
-        it 'complains about a coded value that is not acceptable'
+        describe 'of NcsCode attribute' do
+          it 'is reported valid when valid' do
+            instance.event_type = an_event_type
+            instance.should be_valid
+          end
+
+          it 'is valid when nil' do
+            instance.event_type = nil
+            instance.should be_valid
+          end
+
+          it 'is invalid when set to an NcsCode of the wrong list' do
+            instance.event_type = NcsCode.for_list_name_and_local_code('PSU_CL1', -4)
+            instance.should_not be_valid
+
+            instance.errors[:event_type].should == [
+              "wrong code list \"PSU_CL1\"; should be \"EVENT_TYPE_CL1\""
+            ]
+          end
+
+          it 'is invalid when set to an NcsCode with an invalid code' do
+            instance.event_type = NcsCode.new(:local_code => -100000, :list_name => 'EVENT_TYPE_CL1')
+            instance.should_not be_valid
+
+            instance.errors[:event_type_code].first.should =~
+              /\Aillegal code value -100000; legal values are \[[\d,\- ]+\]\Z/
+          end
+        end
+
+        describe 'of the coded value attribute' do
+          it 'is valid when valid' do
+            instance.event_type_code = 10
+            instance.should be_valid
+          end
+
+          it 'is valid when nil' do
+            instance.event_type_code = nil
+            instance.should be_valid
+          end
+
+          it 'is valid when set to a String' do
+            instance.event_type_code = "10"
+            instance.should be_valid
+          end
+
+          it 'is invalid when set to an NcsCode with an invalid code' do
+            instance.event_type_code = -900236
+            instance.should_not be_valid
+
+            instance.errors[:event_type_code].first.should =~
+              /\Aillegal code value -900236; legal values are \[[\d,\- ]+\]\Z/
+          end
+        end
       end
     end
 
