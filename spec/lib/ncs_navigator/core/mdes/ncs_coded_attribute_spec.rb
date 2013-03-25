@@ -132,5 +132,22 @@ module NcsNavigator::Core::Mdes
         it 'complains about a coded value that is not acceptable'
       end
     end
+
+    describe '#code_list' do
+      let(:actual) { Quux.ncs_coded_attributes[:event_type].code_list }
+
+      it 'returns an array of NcsCodes' do
+        actual.collect(&:class).uniq.should == [NcsCode]
+      end
+
+      it 'returns codes for the configured list only' do
+        actual.collect(&:list_name).uniq.should == ['EVENT_TYPE_CL1']
+      end
+
+      it 'returns the coded values for the configured list' do
+        actual.collect(&:local_code).sort.should ==
+          NcsCode.where(:list_name => 'EVENT_TYPE_CL1').collect(&:local_code).sort
+      end
+    end
   end
 end

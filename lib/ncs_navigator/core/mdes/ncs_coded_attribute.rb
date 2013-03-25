@@ -16,7 +16,7 @@ module NcsNavigator::Core::Mdes
     end
 
     def code_list
-      NcsCode.where(:list_name => list_name)
+      NcsCode.for_list_name(list_name)
     end
 
     def foreign_key_name

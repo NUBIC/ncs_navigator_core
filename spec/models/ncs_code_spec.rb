@@ -70,6 +70,24 @@ describe NcsCode do
     end
   end
 
+  describe '.for_list_name' do
+    let(:list_name) { 'EXPERIENCE_LEVEL_CL1' }
+    let(:actual) { NcsCode.for_list_name(list_name) }
+
+    it 'returns an array of NcsCodes' do
+      actual.collect(&:class).uniq.should == [NcsCode]
+    end
+
+    it 'returns codes for the configured list only' do
+      actual.collect(&:list_name).uniq.should == [list_name]
+    end
+
+    it 'returns the coded values for the configured list' do
+      actual.collect(&:local_code).sort.should ==
+        NcsCode.where(:list_name => list_name).collect(&:local_code).sort
+    end
+  end
+
   describe '.for_list_name_and_local_code' do
     let(:actual) { NcsCode.for_list_name_and_local_code('GENDER_CL2', 2) }
 
