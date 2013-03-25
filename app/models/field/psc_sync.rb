@@ -109,8 +109,10 @@ module Field
     #
     # @return void
     def sync_with_psc
+      raise "responsible_user is not set" unless responsible_user
+
       load_for_sync
-      psc_importer.import
+      psc_importer.import(responsible_user)
     end
 
     ##
