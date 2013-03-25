@@ -24,7 +24,7 @@
       .participant_relationship
       = label_tag "name","Select Relationship to #{@participant.person}"
       %br
-      = select_tag("relationship_code",options_for_select( NcsCode.ncs_code_lookup(:relationship_code)), { :prompt => "-- Select Relationship to Participant -- " })
+      = select_tag("relationship_code",options_for_select( NcsCode.ncs_code_lookup(:relationship_code), :selected => @relationship_code.to_s), { :prompt => "-- Select Relationship to Participant -- " })
 
     - if @provider.nil?
 
