@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-
 require 'spec_helper'
 
 describe EventsController do
@@ -23,14 +22,14 @@ describe EventsController do
       EventsController.any_instance.stub(:mark_activity_occurred).and_return(true)
     end
 
-    describe "GET index" do 
+    describe "GET index" do
       # id sort for paginate
-      it "defaults to sorting events by id" do 
+      it "defaults to sorting events by id" do
         get :index
         assigns(:q).sorts[0].name.should == "id"
       end
-      
-      it "performs user selected sort first; id second" do 
+
+      it "performs user selected sort first; id second" do
         get :index, :q => { :s => "event_type_code asc" }
         assigns(:q).sorts[0].name.should == "event_type_code"
         assigns(:q).sorts[1].name.should == "id"

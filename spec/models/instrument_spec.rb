@@ -130,11 +130,11 @@ describe Instrument do
           end
 
           it "creates a response_set for the instrument" do
-            instrument.response_set.should_not be_nil
+            instrument.response_sets.first.should_not be_nil
           end
 
           it "creates a responses for the instrument" do
-            instrument.response_set.responses.should be_empty
+            instrument.response_sets.first.responses.should be_empty
           end
         end
       end
@@ -209,37 +209,6 @@ describe Instrument do
         end
       end
     end
-
-    context "prepopulation" do
-
-      let(:birth_survey_with_prepopulated_fields) { create_birth_survey_with_prepopulated_mode_of_contact }
-      let(:instrument) { Instrument.start(person, mother, nil, birth_survey_with_prepopulated_fields, event) }
-
-      it "prepopulates the response set associated with the Instrument" do
-        instrument.response_set.should_not be_nil
-        responses = instrument.response_set.responses
-        responses.should_not be_empty
-
-        prepopulated_response = responses.first
-        prepopulated_response.question.reference_identifier.should == "prepopulated_mode_of_contact"
-        prepopulated_response.to_s.should == "CAPI"
-      end
-
-      it "does not persist the prepopulated response set" do
-        instrument.response_set.should be_new_record
-      end
-
-      it "does not persist the prepopulated responses" do
-        instrument.response_set.responses.first.should be_new_record
-      end
-
-    end
-
-    it "does not persist the Instrument record" do
-      inst = Instrument.start(person, mother, nil, survey, event)
-      inst.should be_new_record
-    end
-
   end
 
   describe '#response_set' do
@@ -287,8 +256,9 @@ describe Instrument do
       response_set.stub!(:has_responses_in_each_section_with_questions?).and_return(true)
 
       instrument = Factory(:instrument)
+      instrument.response_sets << response_set
 
-      instrument.set_instrument_breakoff(response_set)
+      instrument.set_instrument_breakoff
       instrument.instrument_breakoff.should == @n
     end
 
@@ -297,8 +267,9 @@ describe Instrument do
       response_set.stub!(:has_responses_in_each_section_with_questions?).and_return(false)
 
       instrument = Factory(:instrument)
+      instrument.response_sets << response_set
 
-      instrument.set_instrument_breakoff(response_set)
+      instrument.set_instrument_breakoff
       instrument.instrument_breakoff.should == @y
     end
 
@@ -816,6 +787,50 @@ describe Instrument do
 
     it 'is "Synchronized from Cases"' do
       instrument.sa_state_change_reason.should == 'Synchronized from Cases'
+    end
+  end
+
+  context "Setting up instrument variables" do
+    before do
+      @instrument                = Factory(:instrument)
+      @person                    = Factory(:person)
+    end
+
+    describe "#set_instrument_repeat_key" do
+      it "sets the repeat key to the lowest repeat value with the associated response set's survey" do
+        preexisting_survey        = Factory(:survey, :title => 'survey title')
+        survey                    = Factory(:survey, :title => 'survey title' )
+        preexisting_response_set1 = Factory(:response_set, :survey => preexisting_survey)
+        preexisting_response_set2 = Factory(:response_set, :survey => preexisting_survey)
+        current_response_set      = Factory(:response_set, :survey => preexisting_survey)
+        response_set              = Factory(:response_set, :survey => survey)
+        @person.response_sets << preexisting_response_set1  << preexisting_response_set2 << current_response_set
+        @instrument.response_sets << response_set
+
+        @instrument.set_instrument_repeat_key(@person)
+
+        @instrument.instrument_repeat_key.should == 2
+      end
+    end
+
+    describe "#set_instrument_type" do
+      it "only sets if instrument type is blank or less than or equal to zero" do
+        survey  = Factory(:survey, :title => 'survey title' )
+        surveys = [survey]
+        preg_one_interview = NcsCode.for_list_name_and_local_code('INSTRUMENT_TYPE_CL1', 9)
+        @instrument.instrument_type = preg_one_interview
+        @instrument.set_instrument_type(surveys)
+        @instrument.instrument_type.should == preg_one_interview
+      end
+
+      it "sets the instrument type to any one of its associated survey instrument types, since they should all be the same" do
+        preg_one_interview = NcsCode.for_list_name_and_local_code('INSTRUMENT_TYPE_CL1', 9)
+        survey  = Factory(:survey, :title => 'survey title', :instrument_type => preg_one_interview)
+        surveys = [survey]
+        @instrument.instrument_type = nil
+        @instrument.set_instrument_type(surveys)
+        @instrument.instrument_type.should == preg_one_interview
+      end
     end
   end
 end

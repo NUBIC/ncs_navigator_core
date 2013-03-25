@@ -486,33 +486,6 @@ describe Event do
         event.event_disposition_category.local_code.should == 3
 
       end
-
-    end
-
-    describe "the breakoff code" do
-
-      it "should set the breakoff code to no if the reponse set has questions answered" do
-        response_set = Factory(:response_set)
-        response_set.stub!(:has_responses_in_each_section_with_questions?).and_return(true)
-        event = Event.create(
-          :participant => @participant, :event_type => @preg_screen,
-          :psu_code => NcsNavigatorCore.psu_code)
-        event.populate_post_survey_attributes(nil, response_set)
-        event.save!
-        event.event_breakoff.should == @n
-      end
-
-      it "should set the breakoff code to yes if the reponse set does not have questions answered in each section" do
-        response_set = Factory(:response_set)
-        response_set.stub!(:has_responses_in_each_section_with_questions?).and_return(false)
-        event = Event.create(
-          :participant => @participant, :event_type => @preg_screen,
-          :psu_code => NcsNavigatorCore.psu_code)
-        event.populate_post_survey_attributes(nil, response_set)
-        event.save!
-        event.event_breakoff.should == @y
-      end
-
     end
   end
 
@@ -1065,6 +1038,122 @@ describe Event do
       event.event_start_date = Date.new(2010, 2, 1)
       consent_mar.consent_date = nil
       matches.should == [consent_feb]
+    end
+  end
+
+  context "Setting suggest values for event" do
+    before do
+      @person       = Factory(:person)
+      @participant  = Factory(:participant)
+      @contact      = Factory(:contact)
+      @event        = Factory(:event)
+      @instrument   = Factory(:instrument)
+      @contact_link = Factory(:contact_link,
+                              :person => @person,
+                              :contact => @contact,
+                              :event => @event,
+                              :instrument => @instrument)
+      @person.participant = @participant
+      @event.participant  = @participant
+      @event.event_disposition_category_code = -4
+    end
+
+    describe "#set_suggested_event_disposition" do
+      it "equals associated contact link's contact contact disposition" do
+        @contact.contact_disposition = 3
+        @event.set_suggested_event_disposition(@contact_link).should == 3
+      end
+    end
+
+    describe "#set_suggested_event_disposition_category" do
+      it "returns event disposition category code with local
+          code of 5 when particpant associated with event is low
+          intensity" do
+        # Givens
+        @participant.stub(:low_intensity => true)
+        @event.event_type = NcsCode.for_attribute_name_and_local_code(:event_type_code, 33)
+        @event.set_suggested_event_disposition_category(@contact_link)
+        @event.event_disposition_category.local_code.should == 5
+      end
+      it "leaves event_disposition as is when event disposition category code is positive" do
+        @event.event_disposition_category_code = 1
+        ed_before = @event.event_disposition
+        @event.set_suggested_event_disposition_category(@contact_link)
+        @event.event_disposition = ed_before
+      end
+
+      it "returns event disposition category code with local
+          code of 8 when event is PBS eligibility screener" do
+        @event.event_type = NcsCode.for_attribute_name_and_local_code(:event_type_code, 34)
+        @event.set_suggested_event_disposition_category(@contact_link)
+        @event.event_disposition_category.local_code.should == 8
+      end
+
+      it "returns event disposition category code with local
+          code of 6 when contact is from a website (with high intensity participant" do
+        @participant.stub(:low_intensity? => false)
+        @contact.contact_type = NcsCode.for_attribute_name_and_local_code(:contact_type_code, 6)
+        @event.event_type = NcsCode.for_attribute_name_and_local_code(:event_type_code, 18)
+        @event.set_suggested_event_disposition_category(@contact_link)
+        @event.event_disposition_category.local_code.should == 6
+      end
+    end
+
+    describe "#set_suggested_event_repeat_key" do
+      it "returns count how many times associated participant has repeated this type of event" do
+        past_event_one = Factory(:event, :participant => @participant, :event_type_code => 1)
+        past_event_two = Factory(:event, :participant => @participant, :event_type_code => 1)
+        @event.set_suggested_event_repeat_key.should == 1
+      end
+    end
+
+    describe "#set_suggested_event_breakoff" do
+      include NcsNavigator::Core::Surveyor::SurveyTaker
+
+      let(:survey) do
+        Surveyor::Parser.new.parse <<-END
+          survey "Test survey" do
+            section "Section 1" do
+              q_foo "A question"
+              a :string
+            end
+
+            section "Section 2" do
+              q_bar "Another question"
+              a :string
+            end
+          end
+        END
+      end
+
+      let(:rs) { Factory(:response_set, :survey => survey, :user_id => @person.id) }
+
+      before do
+        @instrument.response_sets << rs
+      end
+
+      it "returns no if associated instrument response sets does not have any sections with zero responses" do
+        respond(rs) do |r|
+          r.answer 'foo', :value => 'abc'
+          r.answer 'bar', :value => 'def'
+        end
+
+        rs.save!
+
+        @event.set_suggested_event_breakoff(@contact_link)
+        @event.event_breakoff.local_code.should == NcsCode::NO
+      end
+
+      it "returns yes if associated instrument response sets have any sections with zero responses" do
+        respond(rs) do |r|
+          r.answer 'foo', :value => 'abc'
+        end
+
+        rs.save!
+
+        @event.set_suggested_event_breakoff(@contact_link)
+        @event.event_breakoff.local_code.should == NcsCode::YES
+      end
     end
   end
 end
