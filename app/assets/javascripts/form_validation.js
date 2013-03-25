@@ -87,6 +87,10 @@ $(document).ready(function() {
       'contact[contact_distance]': {
         maxlength: 6,
         number: true
+      },
+      'contact[contact_date_date]': {
+        minlength: 10,
+        maxlength: 10
       }
     }
   });
@@ -95,6 +99,10 @@ $(document).ready(function() {
       'contact[contact_distance]': {
         maxlength: 6,
         number: true
+      },
+      'contact[contact_date_date]': {
+        minlength: 10,
+        maxlength: 10
       }
     }
   });
