@@ -69,8 +69,24 @@ module OperationalDataExtractor
           end
         end
       end
+      update_enrollment_status(consent)
 
       consent.save!
+    end
+
+    ##
+    # Either enroll or unenroll the participant based on the
+    # recently updated participant consent
+    # @param [ParticipantConsent]
+    def update_enrollment_status(consent)
+      participant = consent.participant
+      if consent.consented?
+        participant.update_enrollment_status!(true, consent.consent_date) unless participant.enrolled?
+      elsif consent.withdrawn?
+        participant.update_enrollment_status!(false)
+      else
+        participant.update_enrollment_status!(false)
+      end
     end
   end
 
