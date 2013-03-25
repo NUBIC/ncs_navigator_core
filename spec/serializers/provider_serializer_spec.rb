@@ -42,4 +42,14 @@ describe ProviderSerializer do
     provider.stub!(:recruited? => false)
     json['provider']['recruited'].should be_false
   end
+
+  it "writes address.address_one to address_one" do
+    provider.build_address(:address_one => '31 Foo St')
+    json['provider']['address_one'].should == '31 Foo St'
+  end
+
+  it "writes address.unit to unit" do
+    provider.build_address(:unit => '9')
+    json['provider']['unit'].should == '9'
+  end
 end
