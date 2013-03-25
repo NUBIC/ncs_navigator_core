@@ -19,8 +19,6 @@
 #
 
 
-
-
 # Each Contact Link record associates a unique combination
 # of Staff Member, Person, Event, and/or Instrument that occurs during a Contact. 
 # There should be at least 1 contact link record for every contact.
@@ -71,17 +69,34 @@ class ContactLink < ActiveRecord::Base
     event.event_disposition_text
   end
 
-  comma do
 
+  comma do
     contact :contact_type => 'Contact Type', :contact_date_date => 'Contact Date'
     contact :contact_start_time => 'Start Time', :contact_end_time => 'End Time'
     person :first_name => 'First Name', :last_name => 'Last Name'
+    provider
     contact_disposition
     event :event_type => 'Event Type'
     event_disposition
     event :event_disposition_category => 'Event Disposition Category'
     contact :contact_comment => 'Contact Comment'
+    staff_name
+  end
 
+  private
+
+  def staff_name
+    return "" if staff_id.blank?
+    staff_list[staff_id]
+  end
+
+  def staff_list
+    @staff_list ||= build_staff_list
+  end
+
+  def build_staff_list
+    users = Aker.authority.find_users
+    Hash[users.map{|key| [key.identifiers[:staff_id], key.full_name]}]
   end
 
 end

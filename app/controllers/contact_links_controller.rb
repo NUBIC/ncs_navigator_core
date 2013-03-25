@@ -8,7 +8,7 @@ class ContactLinksController < ApplicationController
   def index
     params[:page] ||= 1
 
-     @q, @contact_links = ransack_paginate(ContactLink)
+    @q, @contact_links = ransack_paginate(ContactLink)
 
     respond_to do |format|
       format.html # index.html.haml
