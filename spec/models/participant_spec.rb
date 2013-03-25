@@ -676,7 +676,7 @@ describe Participant do
 
             before(:each) do
               Factory(:ppg_detail, :participant => @participant,
-                :ppg_first => NcsCode.for_list_name_and_local_code("PPG_STATUS_CL1", 1), :orig_due_date => due_date)
+                :ppg_first_code => 1, :orig_due_date => due_date)
               @participant.due_date.should == due_date
             end
 
@@ -721,7 +721,7 @@ describe Participant do
           context "with due_date" do
             before(:each) do
               Factory(:ppg_detail, :participant => @participant,
-                :ppg_first => NcsCode.for_list_name_and_local_code("PPG_STATUS_CL1", 1), :orig_due_date => Date.new(2012, 10, 01))
+                :ppg_first_code => 1, :orig_due_date => Date.new(2012, 10, 01))
               @participant.due_date.should == Date.new(2012, 10, 01)
             end
 
@@ -770,7 +770,7 @@ describe Participant do
           context "with due_date" do
             before(:each) do
               Factory(:ppg_detail, :participant => @participant,
-                :ppg_first => NcsCode.for_list_name_and_local_code("PPG_STATUS_CL1", 1), :orig_due_date => Date.new(2012, 10, 01))
+                :ppg_first_code => 1, :orig_due_date => Date.new(2012, 10, 01))
               @participant.due_date.should == Date.new(2012, 10, 01)
             end
 
