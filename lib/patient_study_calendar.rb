@@ -132,7 +132,7 @@ class PatientStudyCalendar
   end
 
   def site_identifier
-    NcsNavigator.configuration.study_center_id
+    NcsNavigatorCore.psu
   end
 
   # TODO: put in configuration
