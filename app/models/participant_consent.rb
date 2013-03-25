@@ -75,8 +75,20 @@ class ParticipantConsent < ActiveRecord::Base
   CHILD            = 6
   LOW_INTENSITY    = 7
 
+  PREGNANT_WOMAN_CONSENT = 1
+  NON_PREGNANT_WOMAN_CONSENT = 2
+  FATHER_CONSENT = 3
+  CHILD_CONSENT_BIRTH_TO_6_MONTHS = 4
+  CHILD_CONSENT_6_MONTHS_TO_AGE_OF_MAJORITY = 5
+  NEW_ADULT_CONSENT = 6
+
   def self.consent_types
     NcsNavigatorCore.mdes.types.find { |t| t.name == 'consent_type_cl1' }.
+      code_list.collect { |cl| [cl.value, cl.label.to_s.strip] }
+  end
+
+  def self.consent_form_types
+    NcsNavigatorCore.mdes.types.find { |t| t.name == 'consent_type_cl3' }.
       code_list.collect { |cl| [cl.value, cl.label.to_s.strip] }
   end
 
@@ -115,6 +127,20 @@ class ParticipantConsent < ActiveRecord::Base
   end
 
   ##
+  # Returns the consent_type_code for the "Child Consent Birth to 6 Months" - 4
+  # @return [NcsCode]
+  def self.child_consent_birth_to_6_months_form_type_code
+    NcsCode.for_list_name_and_local_code("CONSENT_TYPE_CL3", CHILD_CONSENT_BIRTH_TO_6_MONTHS)
+  end
+
+  ##
+  # Returns the consent_type_code for the "Child Consent 6 Months to Age of Majority" - 5
+  # @return [NcsCode]
+  def self.child_consent_6_months_to_age_of_majority_form_type_code
+    NcsCode.for_list_name_and_local_code("CONSENT_TYPE_CL3", CHILD_CONSENT_6_MONTHS_TO_AGE_OF_MAJORITY)
+  end
+
+  ##
   # True if the participant gave consent in the affirmative
   # and has not withdrawn that consent
   # @return [Boolean]
@@ -127,6 +153,22 @@ class ParticipantConsent < ActiveRecord::Base
   # @return [Boolean]
   def reconsent?
     consent_reconsent_code == NcsCode::YES
+  end
+
+  ##
+  # True if this consent is a withdrawal
+  # If the consent_withdraw_code was answered.
+  # @return [Boolean]
+  def withdrawal?
+    consent_withdraw_code > NcsCode::MISSING_IN_ERROR
+  end
+
+  def child_consent_birth_to_six_months?
+    consent_form_type_code == CHILD_CONSENT_BIRTH_TO_6_MONTHS
+  end
+
+  def child_consent_six_month_to_age_of_majority?
+    consent_form_type_code == CHILD_CONSENT_6_MONTHS_TO_AGE_OF_MAJORITY
   end
 
   ##
@@ -210,4 +252,3 @@ class ParticipantConsent < ActiveRecord::Base
   end
 
 end
-
