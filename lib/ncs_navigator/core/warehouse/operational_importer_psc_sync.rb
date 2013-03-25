@@ -1,13 +1,10 @@
 # -*- coding: utf-8 -*-
 
-
 require 'forwardable'
 
 module NcsNavigator::Core::Warehouse
   class OperationalImporterPscSync
     extend Forwardable
-
-    WHODUNNIT = 'operational_importer_psc_sync'
 
     ##
     # The default Redis key generator.
@@ -26,9 +23,11 @@ module NcsNavigator::Core::Warehouse
       @sync_key = sync_key
     end
 
-    def import
+    def import(responsible_user)
+      old_whodunnit = PaperTrail.whodunnit
+
       begin
-        PaperTrail.whodunnit = WHODUNNIT
+        PaperTrail.whodunnit = responsible_user
         init_participants_cache
 
         backup_participants
@@ -55,7 +54,7 @@ module NcsNavigator::Core::Warehouse
 
         report_about_indefinitely_deferred_events
       ensure
-        PaperTrail.whodunnit = nil
+        PaperTrail.whodunnit = old_whodunnit
       end
     end
 
@@ -83,7 +82,7 @@ module NcsNavigator::Core::Warehouse
     end
     private :report_about_indefinitely_deferred_events
 
-    def reset
+    def reset(responsible_user)
       p_backup_key = sync_key['participants_backup']
       if redis.exists p_backup_key
         redis.sunionstore(sync_key['participants'], p_backup_key)
@@ -98,14 +97,13 @@ module NcsNavigator::Core::Warehouse
       end
 
       core_placeholder_event_ids =
-        Version.select(:item_id).where(:whodunnit => WHODUNNIT, :item_type => 'Event', :event => 'create').collect(&:item_id)
+        Version.select(:item_id).where(:whodunnit => responsible_user, :item_type => 'Event', :event => 'create').collect(&:item_id)
       Event.where('id IN (?)', core_placeholder_event_ids).destroy_all
 
-      core_updated_event_ids_and_changes = Version.where(:whodunnit => WHODUNNIT, :item_type => 'Event', :event => 'update').order(:created_at).collect { |v| [v.item_id, v.changeset] }
+      core_updated_event_ids_and_changes = Version.where(:whodunnit => responsible_user, :item_type => 'Event', :event => 'update').order(:created_at).collect { |v| [v.item_id, v.changeset] }
       core_updated_events_by_id = Event.where(:id => core_updated_event_ids_and_changes.collect { |e_and_c| e_and_c.first }).each_with_object({}) { |evt, index| index[evt.id] = evt }
       core_updated_event_ids_and_changes.each { |event_id, changes| reverse_changes(core_updated_events_by_id[event_id], changes) }
     end
-
 
     def reverse_changes(event, changes)
       changes.each { |att, att_changes| event.update_attributes(att.to_sym => att_changes.first) }
