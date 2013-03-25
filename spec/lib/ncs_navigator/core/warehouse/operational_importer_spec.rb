@@ -726,21 +726,15 @@ module NcsNavigator::Core::Warehouse
     end
 
     def code_for_event_type(event_type_name)
-      code = NcsNavigatorCore.mdes.types.
+      NcsNavigatorCore.mdes.types.
         find { |type| type.name == 'event_type_cl1' }.code_list.
         find { |cle| cle.label == event_type_name }.value
-      NcsCode.find_or_create_by_local_code_and_list_name(
-        code, 'EVENT_TYPE_CL1', :display_text => event_type_name)
-      code
     end
 
     def code_for_instrument_type(instrument_type_name)
-      code = NcsNavigatorCore.mdes.types.
+      NcsNavigatorCore.mdes.types.
         find { |type| type.name == 'instrument_type_cl1' }.code_list.
         find { |cle| cle.label == instrument_type_name }.value
-      NcsCode.find_or_create_by_local_code_and_list_name(
-        code, 'INSTRUMENT_TYPE_CL1', :display_text => instrument_type_name)
-      code
     end
 
     ##
@@ -749,9 +743,7 @@ module NcsNavigator::Core::Warehouse
     def related_core_records(core_records, found=[])
       core_records.each do |core_record|
         found << core_record
-        core_record.class.reflect_on_all_associations.
-          reject { |a| a.class_name == 'NcsCode' }.
-          each do |association|
+        core_record.class.reflect_on_all_associations.each do |association|
 
           values = if association.collection?
                      core_record.send(association.name)
