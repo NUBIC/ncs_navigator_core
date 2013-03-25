@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-
 require 'spec_helper'
 require Rails.root + 'spec/warehouse_setup'
 
@@ -98,7 +97,6 @@ module NcsNavigator::Core::Warehouse
           )
         }
       end
-
 
       before do
         psc_participant.stub!(:registered?).and_return(true)
@@ -279,7 +277,6 @@ module NcsNavigator::Core::Warehouse
           psc_participant.stub!(:scheduled_events).and_return([])
           psc_participant.stub!(:scheduled_activities).and_return(scheduled_activities)
           psc_participant.stub!(:update_scheduled_activity_states)
-
 
           redis.sadd("#{ns}:psc_sync:participants", p_id)
           add_event_hash('e1', '2010-09-30',

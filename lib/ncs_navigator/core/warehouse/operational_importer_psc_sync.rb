@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-
 require 'forwardable'
 
 module NcsNavigator::Core::Warehouse
@@ -105,7 +104,6 @@ module NcsNavigator::Core::Warehouse
       core_updated_events_by_id = Event.where(:id => core_updated_event_ids_and_changes.collect { |e_and_c| e_and_c.first }).each_with_object({}) { |evt, index| index[evt.id] = evt }
       core_updated_event_ids_and_changes.each { |event_id, changes| reverse_changes(core_updated_events_by_id[event_id], changes) }
     end
-
 
     def reverse_changes(event, changes)
       changes.each { |att, att_changes| event.update_attributes(att.to_sym => att_changes.first) }
