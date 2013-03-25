@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # == Schema Information
-# Schema version: 20130129202515
+# Schema version: 20130325201322
 #
 # Table name: institution_person_links
 #
@@ -12,7 +12,7 @@
 #  is_active_code           :integer          not null
 #  person_id                :integer          not null
 #  person_institute_id      :string(36)       not null
-#  psu_code                 :string(36)       not null
+#  psu_code                 :integer          not null
 #  transaction_type         :string(36)
 #  updated_at               :datetime
 #

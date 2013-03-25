@@ -1,4 +1,5 @@
 # == Schema Information
+# Schema version: 20130325201322
 #
 # Table name: sampled_persons_ineligibilities
 #
@@ -11,7 +12,7 @@
 #  person_id                 :integer
 #  pregnancy_eligible_code   :integer
 #  provider_id               :integer
-#  psu_code                  :string(36)       not null
+#  psu_code                  :integer          not null
 #  sampled_persons_inelig_id :string(36)       not null
 #  transaction_type          :string(36)
 #  updated_at                :datetime
