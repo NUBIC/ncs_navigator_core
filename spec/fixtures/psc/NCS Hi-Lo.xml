@@ -183,18 +183,6 @@
       <add id="b1e68bf0-63e0-496c-bef0-fe24ac085a4a" index="4">
         <study-segment id="f326c501-98c7-448a-949a-ed556228fe72" name="Parental Permission for Child Participation 6 months to Age of Majority">
           <period id="567cbdb9-4b31-4496-9c1c-7e96ecad2dcc" name="Parental Permission for Child Participation" repetitions="1" start-day="1" duration-quantity="1" duration-unit="day">
-            <planned-activity id="f2b05457-ae86-4d96-b88d-1b28014595e5" day="1">
-              <label id="55b67994-3671-48e8-a464-ffb23298b9ec" name="event:informed_consent"/>
-              <label id="576e6231-1dfc-4353-9a48-3d68de4afb85" name="instrument:2.0:irb_con_informed_consent"/>
-              <label id="a76e4867-6d60-4df8-bad8-0c77402e5a97" name="instrument:2.1:irb_con_informed_consent"/>
-              <label id="37d8e367-7088-4389-a35c-f57c84c4390c" name="instrument:2.2:irb_con_informed_consent"/>
-              <label id="afac2b2b-8f97-4dfd-a5ac-8b37684a8102" name="instrument:3.0:irb_con_informed_consent"/>
-              <label id="2982d6ac-40ea-44ec-ac00-c07ca352182c" name="instrument:3.1:irb_con_informed_consent"/>
-              <label id="0cbd83e1-42e2-4c1c-85d8-1361d808e596" name="instrument:3.2:irb_con_informed_consent"/>
-              <label id="719886fa-affd-40ee-8382-693a1de9f1e3" name="order:01_02"/>
-              <label id="54fc1eee-cd42-473b-a0c8-d328e735a72d" name="participant_type:child"/>
-              <activity-reference code="CC" source="NCS"/>
-            </planned-activity>
             <planned-activity id="b3284c89-c4ec-424a-a4a4-7f97022a2c38" day="1">
               <label id="89d14327-c208-47de-bd7e-e4333c2e4c48" name="event:informed_consent"/>
               <label id="91ffdfea-b678-4758-8add-8106f4268aff" name="instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one"/>
