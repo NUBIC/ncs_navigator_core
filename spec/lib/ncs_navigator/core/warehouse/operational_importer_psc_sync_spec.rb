@@ -24,6 +24,7 @@ module NcsNavigator::Core::Warehouse
 
     let(:redis) { Rails.application.redis }
     let(:ns) { 'NcsNavigator::Core::Warehouse::OperationalImporter' }
+    let(:responsible_user) { 'foobar' }
 
     let(:psc) { double(PatientStudyCalendar) }
     let(:psc_participant) { double(PscParticipant) }
@@ -124,7 +125,7 @@ module NcsNavigator::Core::Warehouse
 
         psc_participant.should_receive(:append_study_segment).with('2010-01-11', SEGMENT_IDS[:pv1])
 
-        importer.import
+        importer.import(responsible_user)
       end
 
       it 'updates activity states from linked contacts' do
@@ -138,7 +139,7 @@ module NcsNavigator::Core::Warehouse
             }
           })
 
-        importer.import
+        importer.import(responsible_user)
       end
 
       it 'updates activity states for closed events' do
@@ -152,7 +153,7 @@ module NcsNavigator::Core::Warehouse
             }
           })
 
-        importer.import
+        importer.import(responsible_user)
       end
 
       it 'creates events implied by the PSC events list' do
@@ -160,16 +161,16 @@ module NcsNavigator::Core::Warehouse
         Event.should_receive(:create_placeholder_record).
           with(participant, '2011-03-09', 18, nil)
 
-        importer.import
+        importer.import(responsible_user)
       end
 
       it 'destroys the participants list' do
-        importer.import
+        importer.import(responsible_user)
         redis.smembers("#{ns}:psc_sync:participants").should == []
       end
 
       it 'copies the participants list to a backup key for reset' do
-        importer.import
+        importer.import(responsible_user)
         redis.smembers("#{ns}:psc_sync:participants_backup").should == [p_id]
       end
 
@@ -180,7 +181,7 @@ module NcsNavigator::Core::Warehouse
         redis.sadd("#{ns}:psc_sync:participants_backup", p_id)
         redis.sadd("#{ns}:psc_sync:participants_backup", 'another')
 
-        importer.import
+        importer.import(responsible_user)
         redis.smembers("#{ns}:psc_sync:participants_backup").sort.should == ['another', p_id]
       end
 
@@ -188,7 +189,7 @@ module NcsNavigator::Core::Warehouse
         redis.del "#{ns}:psc_sync:p:#{p_id}:events"
         psc_participant.stub!(:scheduled_events).and_return(scheduled_events)
 
-        expect { importer.import }.to_not raise_error
+        expect { importer.import(responsible_user) }.to_not raise_error
       end
     end
 
@@ -199,14 +200,14 @@ module NcsNavigator::Core::Warehouse
       end
 
       it 'copies the participant set back from the backup key' do
-        importer.reset
+        importer.reset(responsible_user)
 
         redis.smembers("#{ns}:psc_sync:participants").should == %w(par-bar)
       end
 
       it 'does not blank out the participant list if reset twice' do
-        importer.reset
-        importer.reset
+        importer.reset(responsible_user)
+        importer.reset(responsible_user)
 
         redis.smembers("#{ns}:psc_sync:participants").should == %w(par-bar)
       end
@@ -215,7 +216,7 @@ module NcsNavigator::Core::Warehouse
         redis.sadd("#{ns}:psc_sync:participants", 'par-quux')
         redis.del("#{ns}:psc_sync:participants_backup")
 
-        importer.reset
+        importer.reset(responsible_user)
 
         redis.smembers("#{ns}:psc_sync:participants").should == %w(par-quux)
       end
@@ -223,7 +224,7 @@ module NcsNavigator::Core::Warehouse
       it "clears every participant's postnatal flag" do
         redis.set("#{ns}:psc_sync:p:gil:postnatal", 'true')
 
-        importer.reset
+        importer.reset(responsible_user)
 
         redis.exists("#{ns}:psc_sync:p:gil:postnatal").should be_false
       end
@@ -231,7 +232,7 @@ module NcsNavigator::Core::Warehouse
       it "wipes every participant's events_order list" do
         redis.lpush("#{ns}:psc_sync:p:gil:events_order", 'a')
 
-        importer.reset
+        importer.reset(responsible_user)
 
         redis.exists("#{ns}:psc_sync:p:gil:events_order").should be_false
       end
@@ -240,7 +241,7 @@ module NcsNavigator::Core::Warehouse
         it "wipes every participant's #{set} set" do
           redis.sadd("#{ns}:psc_sync:p:gil:#{set}", 'a')
 
-          importer.reset
+          importer.reset(responsible_user)
 
           redis.exists("#{ns}:psc_sync:p:gil:#{set}").should be_false
         end
@@ -291,13 +292,13 @@ module NcsNavigator::Core::Warehouse
 
           before(:each) do
             psc_participant.stub!(:scheduled_events).and_return(scheduled_events)
-            with_versioning { importer.import }
+            with_versioning { importer.import(responsible_user) }
           end
 
           it 'deletes placeholder events created by import' do
             Event.where(:event_type_code => 23).size.should == 1
 
-            importer.reset
+            importer.reset(responsible_user)
 
             Event.where(:event_type_code => 23).should == []
           end
@@ -306,14 +307,14 @@ module NcsNavigator::Core::Warehouse
             with_versioning { Factory(:event) }
             Event.count.should == 2
 
-            importer.reset
+            importer.reset(responsible_user)
 
             Event.count.should == 1
           end
 
           it 'does not fail when reset twice' do
-            importer.reset
-            importer.reset
+            importer.reset(responsible_user)
+            importer.reset(responsible_user)
           end
         end
 
@@ -322,20 +323,20 @@ module NcsNavigator::Core::Warehouse
             Factory(:event, :participant => participant, :event_id => 'e1',
               :event_type_code => 18, :event_start_date => Date.new(2010, 10, 11))
             psc_participant.stub!(:scheduled_events).and_return(scheduled_events)
-            with_versioning { importer.import }
+            with_versioning { importer.import(responsible_user) }
           end
 
           it 'update the affected event attribute updated by import' do
             Event.where(:event_type_code => 18).first.psc_ideal_date.to_s.should == '2010-09-30'
 
-            importer.reset
+            importer.reset(responsible_user)
 
             Event.where(:event_type_code => 18).first.psc_ideal_date.to_s.should == '2010-10-11'
           end
 
           it 'does not fail when reset twice' do
-            importer.reset
-            importer.reset
+            importer.reset(responsible_user)
+            importer.reset(responsible_user)
           end
         end
       end
@@ -984,7 +985,7 @@ module NcsNavigator::Core::Warehouse
         Factory(:event, :participant => participant,
           :event_type_code => 24, :event_start_date => Date.new(2011, 3, 16))
         psc_participant.stub!(:scheduled_events).and_return(scheduled_events)
-        with_versioning { importer.import }
+        with_versioning { importer.import(responsible_user) }
       end
 
       it 'does not create events for PSC events that are earlier than some imported event' do
@@ -1017,9 +1018,9 @@ module NcsNavigator::Core::Warehouse
         participant.events.count.should == 2
       end
 
-      it 'audits the new events as coming from the PSC sync' do
+      it 'assigns change responsibility to the given user' do
         versions = Version.where(:item_id => participant.event_ids, :item_type => Event.to_s)
-        versions.map(&:whodunnit).uniq.should == ['operational_importer_psc_sync']
+        versions.map(&:whodunnit).uniq.should == [responsible_user]
       end
     end
   end
