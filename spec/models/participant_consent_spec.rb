@@ -129,14 +129,6 @@ describe ParticipantConsent do
     before(:each) do
       @yes = NcsCode.for_list_name_and_local_code("CONFIRM_TYPE_CL2", 1)
       @no  = NcsCode.for_list_name_and_local_code("CONFIRM_TYPE_CL2", 2)
-
-      @general       = NcsCode.for_list_name_and_local_code("CONSENT_TYPE_CL1", 1)
-      @biospecimens  = NcsCode.for_list_name_and_local_code("CONSENT_TYPE_CL1", 2)
-      @environmental = NcsCode.for_list_name_and_local_code("CONSENT_TYPE_CL1", 3)
-      @genetic       = NcsCode.for_list_name_and_local_code("CONSENT_TYPE_CL1", 4)
-      @birth         = NcsCode.for_list_name_and_local_code("CONSENT_TYPE_CL1", 5)
-      @child         = NcsCode.for_list_name_and_local_code("CONSENT_TYPE_CL1", 6)
-      @low_intensity = NcsCode.for_list_name_and_local_code("CONSENT_TYPE_CL1", 7)
     end
 
     it "cannot have consented without a participant_consent record" do
@@ -146,6 +138,16 @@ describe ParticipantConsent do
     end
 
     context "phase one consent" do
+      before do
+        @general       = NcsCode.for_list_name_and_local_code("CONSENT_TYPE_CL1", 1)
+        @biospecimens  = NcsCode.for_list_name_and_local_code("CONSENT_TYPE_CL1", 2)
+        @environmental = NcsCode.for_list_name_and_local_code("CONSENT_TYPE_CL1", 3)
+        @genetic       = NcsCode.for_list_name_and_local_code("CONSENT_TYPE_CL1", 4)
+        @birth         = NcsCode.for_list_name_and_local_code("CONSENT_TYPE_CL1", 5)
+        @child         = NcsCode.for_list_name_and_local_code("CONSENT_TYPE_CL1", 6)
+        @low_intensity = NcsCode.for_list_name_and_local_code("CONSENT_TYPE_CL1", 7)
+      end
+
       it "knows if the participant has consented" do
         pc = Factory(:participant_consent, :consent_given => @yes, :consent_withdraw => @no,
                      :consent_type => @low_intensity, :consent_form_type_code => -4)
@@ -165,6 +167,11 @@ describe ParticipantConsent do
     end
 
     context "phase two consent" do
+      before do
+        @general       = NcsCode.for_list_name_and_local_code("CONSENT_TYPE_CL3", 1)
+        @low_intensity = NcsCode.for_list_name_and_local_code("CONSENT_TYPE_CL3", 7)
+      end
+
       it "knows if the participant has consented" do
         pc = Factory(:participant_consent, :consent_given => @yes, :consent_withdraw => @no,
                      :consent_form_type => @low_intensity, :consent_type_code => -4)
