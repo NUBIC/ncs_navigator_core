@@ -11,7 +11,7 @@
     .participant_relationship
       = label_tag "name","Relationship to #{@participant.person.full_name}"
       %br
-      = select_tag("relationship_code", options_for_select(NcsCode.ncs_code_lookup(:relationship_code), :selected => "8"), { :prompt => "-- Relationship to Participant -- " })
+      = select_tag("relationship_code", options_for_select(NcsCode.ncs_code_lookup(:relationship_code), :selected => @relationship_code), { :prompt => "-- Relationship to Participant -- " })
 
     %p
       = f.label :first_name, "First Name"
