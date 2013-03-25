@@ -662,18 +662,21 @@ describe Event do
               File.expand_path('../../fixtures/psc/current_hilo_template_snapshot.xml', __FILE__))))
 
         VCR.use_cassette('psc/schedule_and_create_child_placeholder') do
-
           participant.person = person
           participant.save!
-          Factory(:contact_link, :contact => Factory(:contact, :contact_date_date => Date.parse("2000-01-01")),
-          :event => Factory(:event, :participant => participant), :person => participant.person)
+          existing_event_date = '2010-01-01'
+
+          Factory(:contact_link,
+            :contact => Factory(:contact, :contact_date_date => existing_event_date),
+            :event => Factory(:event, :participant => participant,
+              :event_start_date => existing_event_date, :event_end_date => existing_event_date),
+            :person => participant.person)
 
           participant.stub!(:eligible?).and_return(true)
           Event.schedule_and_create_placeholder(psc, participant, "2012-08-09")
-          participant.events.reload
-          participant.events.size.should == 8
-          participant.events.chronological.first.event_type.to_s.should == "Birth"
-          participant.events.chronological.last.event_type.to_s.should == "24 Month"
+
+          participant.pending_events.chronological.first.event_type.to_s.should == "Birth"
+          participant.pending_events.chronological.last.event_type.to_s.should == "24 Month"
         end
       end
 
