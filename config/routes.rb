@@ -54,6 +54,8 @@ NcsNavigatorCore::Application.routes.draw do
       put :schedule_informed_consent_event
       put :schedule_reconsent_event
       put :schedule_withdrawal_event
+      put :schedule_child_consent_birth_to_six_months_event
+      put :schedule_child_consent_six_month_to_age_of_majority_event
       get :schedule
       get :edit_ppg_status
       put :update_ppg_status

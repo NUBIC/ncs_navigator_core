@@ -164,6 +164,22 @@ class ParticipantsController < ApplicationController
     redirect_to(participant_path(@participant), :notice => msg)
   end
 
+  ##
+  # Schedule a Child Consent Birth to 6 month segment in PSC
+  def schedule_child_consent_birth_to_six_months_event
+    resp = Event.schedule_child_consent_birth_to_six_months(psc, @participant, params[:date])
+    msg = resp.success? ? 'Child Consent event scheduled for Participant.' : 'Could not schedule informed consent'
+    redirect_to(participant_path(@participant), :notice => msg)
+  end
+
+  ##
+  # Schedule a Child Consent 6 month to Age of Majority segment in PSC
+  def schedule_child_consent_six_month_to_age_of_majority_event
+    resp = Event.schedule_child_consent_six_month_to_age_of_majority(psc, @participant, params[:date])
+    msg = resp.success? ? 'Child Consent event scheduled for Participant.' : 'Could not schedule informed consent'
+    redirect_to(participant_path(@participant), :notice => msg)
+  end
+
   # GET /participants/new
   # GET /participants/new.json
   def new
