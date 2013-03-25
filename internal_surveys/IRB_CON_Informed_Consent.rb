@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-survey "IRB_CON_Informed_Consent", :instrument_type => 10, :description => "Informed Consent", :instrument_version => "1.0" do
+survey "IRB_CON_Informed_Consent", :instrument_type => "-5", :description => "Informed Consent", :instrument_version => "1.0" do
 
   section "Informed Consent" do
 
@@ -148,7 +148,7 @@ survey "IRB_CON_Informed_Consent", :instrument_type => 10, :description => "Info
       a_2 "NO"
       dependency :rule => "A and B"
       condition_A :q_consent_type, "!=", :a_3
-      condition_B :q_consent_given_code, "==", :a_2
+      condition_B :q_consent_given_code, "==", :a_1
 
     group "Specimen/Sample Consent" do
       dependency :rule => "A"
