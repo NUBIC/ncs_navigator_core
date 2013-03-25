@@ -123,19 +123,17 @@ module ApplicationHelper
     event.continuable?
   end
 
-## Displaying the Staff name that is associated with the Participant(Initiated the Contact)
-#  Used in the Participants,Contact_Links excel reports to display the Originating Staff and Current Staff.
   def staff_name(staff_id)
     return "" if staff_id.blank?
     staff_list[staff_id]
   end
 
   def staff_list
-    @staff_list || build_staff_list
+    @staff_list ||= build_staff_list
   end
 
   def build_staff_list
-    users = NcsNavigator::Authorization::Core::Authority.new.find_users
+    users = Aker.authority.find_users
     Hash[users.map{|key| [key.identifiers[:staff_id], key.full_name]}]
   end
 

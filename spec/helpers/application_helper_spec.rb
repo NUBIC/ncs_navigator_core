@@ -62,7 +62,7 @@ describe ApplicationHelper do
     end
   end
 
-  describe "staffname" do
+  describe "staff_name" do
 
     before do
       user = mock(Aker::User)
@@ -73,9 +73,7 @@ describe ApplicationHelper do
 
 
       users_array = [user, user2]
-      x = Object.new
-      NcsNavigator::Authorization::Core::Authority.stub!(:new).and_return(x)
-      x.stub!(:find_users).and_return(users_array)
+      Aker.authority.stub!(:find_users).and_return(users_array)
     end
 
     it "should display full_name if the staff_id is present in staff_list" do
