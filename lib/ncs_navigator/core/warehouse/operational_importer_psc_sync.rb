@@ -27,33 +27,36 @@ module NcsNavigator::Core::Warehouse
     end
 
     def import
-      init_participants_cache
+      begin
+        PaperTrail.whodunnit = WHODUNNIT
+        init_participants_cache
 
-      backup_participants
+        backup_participants
 
-      i = 1
-      p_count = redis.scard(sync_key['participants'])
-      while p_id = redis.spop(sync_key['participants'])
-        shell.clear_line_and_say("PSC sync of #{p_id} (#{i}/#{p_count}): %#{SUBTASK_MSG_LEN}s" % '')
-        p = participants[p_id]
-        unless p
-          log.error("Participant #{p_id} was registered for PSC sync but not found in core.")
-          say_subtask_message("not found in core.")
-          next
+        i = 1
+        p_count = redis.scard(sync_key['participants'])
+        while p_id = redis.spop(sync_key['participants'])
+          shell.clear_line_and_say("PSC sync of #{p_id} (#{i}/#{p_count}): %#{SUBTASK_MSG_LEN}s" % '')
+          p = participants[p_id]
+          unless p
+            log.error("Participant #{p_id} was registered for PSC sync but not found in core.")
+            say_subtask_message("not found in core.")
+            next
+          end
+          psc_participant = psc.psc_participant(participants[p_id])
+          schedule_events(psc_participant)
+          update_sa_histories(psc_participant)
+          close_pending_activities_for_closed_events(psc_participant)
+          create_placeholders_for_implied_events(psc_participant)
+          i += 1
         end
+        shell.clear_line_and_say(
+          "PSC sync complete. #{i - 1}/#{p_count} participant#{'s' if p_count != 1} processed.\n")
 
-        psc_participant = psc.psc_participant(participants[p_id])
-        schedule_events(psc_participant)
-        update_sa_histories(psc_participant)
-        close_pending_activities_for_closed_events(psc_participant)
-        create_placeholders_for_implied_events(psc_participant)
-
-        i += 1
+        report_about_indefinitely_deferred_events
+      ensure
+        PaperTrail.whodunnit = nil
       end
-      shell.clear_line_and_say(
-        "PSC sync complete. #{i - 1}/#{p_count} participant#{'s' if p_count != 1} processed.\n")
-
-      report_about_indefinitely_deferred_events
     end
 
     def report_about_indefinitely_deferred_events
@@ -95,9 +98,19 @@ module NcsNavigator::Core::Warehouse
       end
 
       core_placeholder_event_ids =
-        Version.where(:whodunnit => WHODUNNIT, :item_type => 'Event').collect(&:item_id)
+        Version.select(:item_id).where(:whodunnit => WHODUNNIT, :item_type => 'Event', :event => 'create').collect(&:item_id)
       Event.where('id IN (?)', core_placeholder_event_ids).destroy_all
+
+      core_updated_event_ids_and_changes = Version.where(:whodunnit => WHODUNNIT, :item_type => 'Event', :event => 'update').order(:created_at).collect { |v| [v.item_id, v.changeset] }
+      core_updated_events_by_id = Event.where(:id => core_updated_event_ids_and_changes.collect { |e_and_c| e_and_c.first }).each_with_object({}) { |evt, index| index[evt.id] = evt }
+      core_updated_event_ids_and_changes.each { |event_id, changes| reverse_changes(core_updated_events_by_id[event_id], changes) }
     end
+
+
+    def reverse_changes(event, changes)
+      changes.each { |att, att_changes| event.update_attributes(att.to_sym => att_changes.first) }
+    end
+    private :reverse_changes
 
     ###### SCHEDULING SEGMENTS FOR EVENTS
 
@@ -143,7 +156,11 @@ module NcsNavigator::Core::Warehouse
       label = event_details['event_type_label']
       say_subtask_message("looking for #{label} on #{start_date}")
 
-      unless find_psc_event(psc_participant, start_date, label)
+      if psc_event = find_psc_event(psc_participant, start_date, label)
+        if existing_event = Event.find_by_event_id(event_id)
+          existing_event.update_attributes(:psc_ideal_date => psc_event[:start_date])
+        end
+      else
         schedule_new_segment_for_event(psc_participant, event_id, event_details, opts)
       end
 
@@ -404,21 +421,16 @@ module NcsNavigator::Core::Warehouse
           say_subtask_message(
             "creating Core #{event_type.display_text} event on #{implied_event[:start_date]} implied by PSC")
 
-          begin
-            PaperTrail.whodunnit = WHODUNNIT
-            existing_count = psc_participant.participant.events.where(
-              :event_type_code => event_type.local_code, :event_start_date => implied_event[:start_date]).count
+          existing_count = psc_participant.participant.events.where(
+            :event_type_code => event_type.local_code, :event_start_date => implied_event[:start_date]).count
 
-            if existing_count == 0
-              Event.create_placeholder_record(
-                psc_participant.participant,
-                implied_event[:start_date],
-                event_type.local_code,
-                nil # skip scheduled segment id because it is no longer used
-                )
-            end
-          ensure
-            PaperTrail.whodunnit = nil
+          if existing_count == 0
+            Event.create_placeholder_record(
+              psc_participant.participant,
+              implied_event[:start_date],
+              event_type.local_code,
+              nil # skip scheduled segment id because it is no longer used
+              )
           end
         else
           log.warn("Cannot find event for MDES version '#{NcsNavigatorCore.mdes.version}' for psc activity label '#{event_type_label}'")

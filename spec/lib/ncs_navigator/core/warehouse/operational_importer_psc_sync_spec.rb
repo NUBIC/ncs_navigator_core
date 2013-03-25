@@ -246,7 +246,7 @@ module NcsNavigator::Core::Warehouse
         end
       end
 
-      describe 'and placeholder events' do
+      describe 'and for' do
         let(:scheduled_events) {
           [
             {
@@ -258,41 +258,85 @@ module NcsNavigator::Core::Warehouse
               :event_type_label => '3_month',
               :start_date => '2010-12-31',
               :scheduled_activities => %w(sa2)
-            },
+            }
           ]
         }
 
+        let(:scheduled_activities) do
+          {
+            'sa1' => Psc::ScheduledActivity.new(
+              :activity_id => 'sa1',
+              :current_state => 'scheduled',
+              :labels => 'event:birth'
+            )
+          }
+        end
+
         before do
+          psc_participant.stub!(:registered?).and_return(true)
+          psc_participant.stub!(:append_study_segment)
+          psc_participant.stub!(:scheduled_events).and_return([])
+          psc_participant.stub!(:scheduled_activities).and_return(scheduled_activities)
+          psc_participant.stub!(:update_scheduled_activity_states)
+
+
+          redis.sadd("#{ns}:psc_sync:participants", p_id)
           add_event_hash('e1', '2010-09-30',
             :event_type_label => 'birth',
             :end_date => '2010-09-30')
           redis.sadd("#{ns}:psc_sync:p:#{p_id}:events", 'e1')
-
-          psc_participant.stub!(:scheduled_events).and_return(scheduled_events)
-
-          with_versioning { importer.create_placeholders_for_implied_events(psc_participant) }
         end
 
-        it 'deletes placeholder events created by import' do
-          Event.where(:event_type_code => 23).size.should == 1
+        describe 'placeholder events' do
 
-          importer.reset
+          before(:each) do
+            psc_participant.stub!(:scheduled_events).and_return(scheduled_events)
+            with_versioning { importer.import }
+          end
 
-          Event.where(:event_type_code => 23).should == []
+          it 'deletes placeholder events created by import' do
+            Event.where(:event_type_code => 23).size.should == 1
+
+            importer.reset
+
+            Event.where(:event_type_code => 23).should == []
+          end
+
+          it 'does not delete other events' do
+            with_versioning { Factory(:event) }
+            Event.count.should == 2
+
+            importer.reset
+
+            Event.count.should == 1
+          end
+
+          it 'does not fail when reset twice' do
+            importer.reset
+            importer.reset
+          end
         end
 
-        it 'does not delete other events' do
-          with_versioning { Factory(:event) }
-          Event.count.should == 2
+        describe 'updated events' do
+          before(:each) do
+            Factory(:event, :participant => participant, :event_id => 'e1',
+              :event_type_code => 18, :event_start_date => Date.new(2010, 10, 11))
+            psc_participant.stub!(:scheduled_events).and_return(scheduled_events)
+            with_versioning { importer.import }
+          end
 
-          importer.reset
+          it 'update the affected event attribute updated by import' do
+            Event.where(:event_type_code => 18).first.psc_ideal_date.to_s.should == '2010-09-30'
 
-          Event.count.should == 1
-        end
+            importer.reset
 
-        it 'does not fail when reset twice' do
-          importer.reset
-          importer.reset
+            Event.where(:event_type_code => 18).first.psc_ideal_date.to_s.should == '2010-10-11'
+          end
+
+          it 'does not fail when reset twice' do
+            importer.reset
+            importer.reset
+          end
         end
       end
     end
@@ -450,6 +494,20 @@ module NcsNavigator::Core::Warehouse
             let(:start_date) { '2525-01-26' }
 
             it_behaves_like 'an already scheduled event'
+          end
+
+          describe 'for existing event' do
+            let(:start_date) { '2010-01-26' }
+
+            it_behaves_like 'an already scheduled event'
+
+            it "does update the event psc_ideal_date to the activity ideal date" do
+              Factory(:event, :participant => participant, :event_id => 'e1',
+              :event_type_code => 13, :event_start_date => Date.new(2010, 01, 11))
+
+              importer.schedule_events(psc_participant)
+              participant.events.where(:event_type_code => 13).first.psc_ideal_date.to_s.should == '2010-01-26'
+            end
           end
         end
       end
@@ -899,18 +957,34 @@ module NcsNavigator::Core::Warehouse
         ]
       }
 
+      let(:scheduled_activities) do
+        {
+          'sa1' => Psc::ScheduledActivity.new(
+            :activity_id => 'sa1',
+            :current_state => 'scheduled',
+            :labels => 'event:birth'
+          )
+        }
+      end
+
       before do
+        psc_participant.stub!(:registered?).and_return(true)
+        psc_participant.stub!(:append_study_segment)
+        psc_participant.stub!(:scheduled_events).and_return([])
+        psc_participant.stub!(:scheduled_activities).and_return(scheduled_activities)
+        psc_participant.stub!(:update_scheduled_activity_states)
+
+        redis.sadd("#{ns}:psc_sync:participants", p_id)
         add_event_hash('e1', '2010-09-30',
           :event_type_label => 'birth',
           :end_date => '2010-09-30')
         redis.sadd("#{ns}:psc_sync:p:#{p_id}:events", 'e1')
 
-        psc_participant.stub!(:scheduled_events).and_return(scheduled_events)
-
         # 6 month already exists
         Factory(:event, :participant => participant,
           :event_type_code => 24, :event_start_date => Date.new(2011, 3, 16))
-        with_versioning { importer.create_placeholders_for_implied_events(psc_participant) }
+        psc_participant.stub!(:scheduled_events).and_return(scheduled_events)
+        with_versioning { importer.import }
       end
 
       it 'does not create events for PSC events that are earlier than some imported event' do
