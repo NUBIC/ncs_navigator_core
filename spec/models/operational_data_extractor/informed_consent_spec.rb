@@ -26,6 +26,25 @@ describe OperationalDataExtractor::InformedConsent do
       Surveyor::Parser.parse File.read(f)
     end
 
+    describe "a response set without an associated consent" do
+      it "should raise an InvalidSurveyException" do
+        consent = prepare_consent(person, participant, survey, contact)
+        response_set = consent.response_set
+
+        take_survey(survey, response_set) do |r|
+          r.a "PARTICIPANT_CONSENT.CONSENT_GIVEN_CODE", yes
+        end
+        response_set.participant_consent = nil
+        response_set.save!
+        response_set.responses.reload
+        response_set.responses.size.should == 1
+
+        expect {
+          OperationalDataExtractor::InformedConsent.new(response_set).extract_data
+        }.to raise_error(OperationalDataExtractor::InvalidSurveyException)
+      end
+    end
+
     describe "extracting ParticipantConsent data" do
 
       it "sets the ParticipantConsent attributes to the Response values" do
@@ -66,10 +85,10 @@ describe OperationalDataExtractor::InformedConsent do
         consent = prepare_consent(person, participant, survey, contact)
         response_set = consent.response_set
 
-        take_survey(survey, response_set) do |a|
-          a.choice "PARTICIPANT_CONSENT_SAMPLE.SAMPLE_CONSENT_GIVEN_CODE_1", yes
-          a.choice "PARTICIPANT_CONSENT_SAMPLE.SAMPLE_CONSENT_GIVEN_CODE_2", no
-          a.choice "PARTICIPANT_CONSENT_SAMPLE.SAMPLE_CONSENT_GIVEN_CODE_3", yes
+        take_survey(survey, response_set) do |r|
+          r.a "PARTICIPANT_CONSENT_SAMPLE.SAMPLE_CONSENT_GIVEN_CODE_1", yes
+          r.a "PARTICIPANT_CONSENT_SAMPLE.SAMPLE_CONSENT_GIVEN_CODE_2", no
+          r.a "PARTICIPANT_CONSENT_SAMPLE.SAMPLE_CONSENT_GIVEN_CODE_3", yes
         end
 
         response_set.responses.reload
@@ -92,9 +111,9 @@ describe OperationalDataExtractor::InformedConsent do
           consent = prepare_consent(person, participant, survey, contact)
           response_set = consent.response_set
 
-          take_survey(survey, response_set) do |a|
-            a.choice "PARTICIPANT_CONSENT.CONSENT_GIVEN_CODE", yes
-            a.str "PARTICIPANT_CONSENT.CONSENT_DATE", date
+          take_survey(survey, response_set) do |r|
+            r.a "PARTICIPANT_CONSENT.CONSENT_GIVEN_CODE", yes
+            r.a "PARTICIPANT_CONSENT.CONSENT_DATE", "consent_date", :value => date
           end
 
           response_set.responses.reload
@@ -117,9 +136,9 @@ describe OperationalDataExtractor::InformedConsent do
           consent = prepare_consent(person, participant, survey, contact)
           response_set = consent.response_set
 
-          take_survey(survey, response_set) do |a|
-            a.choice "PARTICIPANT_CONSENT.CONSENT_GIVEN_CODE", no
-            a.str "PARTICIPANT_CONSENT.CONSENT_DATE", date
+          take_survey(survey, response_set) do |r|
+            r.a "PARTICIPANT_CONSENT.CONSENT_GIVEN_CODE", no
+            r.a "PARTICIPANT_CONSENT.CONSENT_DATE", "consent_date", :value => date
           end
 
           response_set.responses.reload
@@ -155,12 +174,12 @@ describe OperationalDataExtractor::InformedConsent do
       let(:response_set) { consent.response_set }
 
       before do
-        take_survey(survey, response_set) do |a|
-          a.choice "PARTICIPANT_CONSENT.CONSENT_WITHDRAW_CODE", yes
-          a.choice "PARTICIPANT_CONSENT.CONSENT_WITHDRAW_TYPE_CODE", wdraw1
-          a.choice "PARTICIPANT_CONSENT.CONSENT_WITHDRAW_REASON_CODE", wdraw2
-          a.choice "PARTICIPANT_CONSENT.WHO_WITHDREW_CONSENT", who
-          a.str "PARTICIPANT_CONSENT.CONSENT_WITHDRAW_DATE", date
+        take_survey(survey, response_set) do |r|
+          r.a "PARTICIPANT_CONSENT.CONSENT_WITHDRAW_CODE", yes
+          r.a "PARTICIPANT_CONSENT.CONSENT_WITHDRAW_TYPE_CODE", wdraw1
+          r.a "PARTICIPANT_CONSENT.CONSENT_WITHDRAW_REASON_CODE", wdraw2
+          r.a "PARTICIPANT_CONSENT.WHO_WITHDREW_CONSENT", who
+          r.a "PARTICIPANT_CONSENT.CONSENT_WITHDRAW_DATE", "consent_withdraw_date", :value => date
         end
         response_set.responses.reload
         response_set.responses.size.should == 5

@@ -132,7 +132,7 @@ survey "IRB_CON_Informed_Consent", :instrument_type => "-5", :description => "In
 
       q_consent_withdraw_date "Consent Withdraw Date",
         :data_export_identifier => "PARTICIPANT_CONSENT.CONSENT_WITHDRAW_DATE"
-        a_consent_date :string, :custom_class => "date"
+        a_consent_withdraw_date :string, :custom_class => "date"
 
       q_who_wthdrw_consent_code "Who Withdrew Consent",
         :pick => :one,
