@@ -4,7 +4,7 @@ require 'yaml'
 
 module NcsNavigator::Core::Mdes
   class CodeListLoader
-    attr_reader :mdes_version, :automatic_filename, :manual_filename
+    attr_reader :mdes_version, :automatic_filename, :manual_filename, :pg_dump_filename
 
     def initialize(options = {})
       @interactive = options[:interactive]
@@ -17,6 +17,7 @@ module NcsNavigator::Core::Mdes
 
       @automatic_filename = Rails.root + 'db' + "ncs_codes-#{mdes_version.number}.yml"
       @manual_filename = Rails.root + 'db' + "ncs_codes-#{mdes_version.number}-additions.yml"
+      @pg_dump_filename = Rails.root + 'db' + "ncs_codes-#{mdes_version.number}.pgcustom"
     end
 
     def interactive?
@@ -24,7 +25,7 @@ module NcsNavigator::Core::Mdes
     end
 
     # n.b.: if you change the way this method works, you should run
-    # `rake mdes:code_lists:all_yaml` and commit the result.
+    # `rake mdes:code_lists:all` and commit the result.
     def create_yaml
       yml = mdes_version.specification.types.select(&:code_list).collect { |typ|
         # Merge display text for duplicate codes. In MDES 2.0, these only occur in PSU_CL1.
@@ -49,6 +50,42 @@ module NcsNavigator::Core::Mdes
       end
     end
 
+    # Creates a PG custom dump file that contains the code lists in the current
+    # environment's database.
+    #
+    # n.b.: if you change the way this method works, you should run
+    # `rake mdes:code_lists:all` and commit the result.
+    def create_pg_dump
+      create_tmp_pgpass_if_necessary
+
+      cmd = [
+        'pg_dump',
+        '--format', 'custom',
+        '--table', 'ncs_codes',
+        '--no-owner',
+        '--no-acl',
+        '--file', pg_dump_filename
+      ]
+      cmd << '-h' << database_params['host'] if database_params['host']
+      cmd << '-p' << database_params['port'] if database_params['port']
+      cmd << '-U' << database_params['username']
+      cmd << database_params['database']
+
+      if interactive?
+        $stderr.puts cmd.join(' ')
+      end
+      system(cmd.join(' '))
+    end
+
+    ##
+    # Modifies the contents of the ncs_codes table to reflect the selected
+    # MDES version.
+    #
+    # Pro vs {#load_from_pg_dump}: Existing records are updated -- not
+    # removed and replaced. If there are FKs that point to ncs_codes, they
+    # won't be interfered with.
+    #
+    # Con vs. {#load_from_pg_dump}: much, much slower.
     def load_from_yaml
       create_yaml unless automatic_filename.exist?
 
@@ -93,6 +130,37 @@ module NcsNavigator::Core::Mdes
       $stderr.puts "done." if interactive?
     end
 
+    ##
+    # Truncates and replaces the full contents of the ncs_codes table using the
+    # stored `pgcustom` file.
+    #
+    # @see #load_from_yaml for pros and cons.
+    def load_from_pg_dump
+      create_tmp_pgpass_if_necessary
+
+      ActiveRecord::Base.connection.execute('TRUNCATE ncs_codes')
+
+      cmd = [
+        'pg_restore',
+        '--format', 'custom',
+        '--data-only',
+        '--no-owner',
+        '--single-transaction',
+      ]
+      cmd << '-h' << database_params['host'] if database_params['host']
+      cmd << '-p' << database_params['port'] if database_params['port']
+      cmd << '-U' << database_params['username']
+      cmd << '-d' << database_params['database']
+      cmd << pg_dump_filename
+
+      if interactive?
+        $stderr.puts cmd.join(' ')
+      else
+        Rails.logger.info(cmd.join(' '))
+      end
+      system(cmd.join(' '))
+    end
+
     def do_update(sql, params)
       conn = ActiveRecord::Base.connection
       conn.update(sql.gsub('?') { conn.quote(params.shift) })
@@ -124,6 +192,26 @@ module NcsNavigator::Core::Mdes
       modes
     end
     private :select_for_insert_update_delete
+
+    def database_params
+      ActiveRecord::Base.configurations[Rails.env]
+    end
+
+    def create_tmp_pgpass_if_necessary
+      @tmp_pgpass ||= Tempfile.new('cl-pgpass').tap do |tempfile|
+        tempfile.puts [
+          database_params['host'] || 'localhost',
+          database_params['port'] || '*',
+          '*',
+          database_params['username'],
+          database_params['password']
+        ].join(':')
+        tempfile.close
+
+        ENV['PGPASSFILE'] = tempfile.path
+      end
+    end
+    private :create_tmp_pgpass_if_necessary
   end
 end
 
