@@ -32,7 +32,7 @@ module OperationalDataExtractor
 
     def extract_data
       nir = response_set.non_interview_report
-      raise InvalidSurveyException("No Non-Interview Report record associated with Response Set #{response_set.id}") unless nir
+      raise InvalidSurveyException, "No Non-Interview Report record associated with Response Set #{response_set.id}" unless nir
 
       NON_INTERVIEW_REPORT_MAP.each do |key, attribute|
         if r = data_export_identifier_indexed_responses[key]

@@ -43,7 +43,7 @@ module OperationalDataExtractor
 
     def extract_data
       consent = response_set.participant_consent
-      raise InvalidSurveyException("No ParticipantConsent record associated with Response Set") unless consent
+      raise InvalidSurveyException, "No ParticipantConsent record associated with Response Set" unless consent
 
       PARTICIPANT_CONSENT_MAP.each do |key, attribute|
         if r = data_export_identifier_indexed_responses[key]
