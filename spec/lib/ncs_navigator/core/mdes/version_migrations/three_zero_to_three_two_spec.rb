@@ -32,7 +32,7 @@ module NcsNavigator::Core::Mdes::VersionMigrations
 
       after do
         # restore the code list to the current version
-        NcsNavigator::Core::Mdes::CodeListLoader.new.load_from_yaml
+        NcsNavigator::Core::Mdes::CodeListLoader.new.load_from_pg_dump
       end
 
       describe 'changing p_type' do
