@@ -34,10 +34,6 @@ describe HouseholdUnit do
     hh.should_not be_nil
   end
 
-  it { should belong_to(:psu) }
-  it { should belong_to(:hh_status) }
-  it { should belong_to(:hh_eligibility) }
-  it { should belong_to(:hh_structure) }
 
   it { should have_many(:dwelling_household_links) }
   it { should have_many(:dwelling_units).through(:dwelling_household_links) }

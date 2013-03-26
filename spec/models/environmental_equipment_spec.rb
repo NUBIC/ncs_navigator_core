@@ -29,9 +29,6 @@ describe EnvironmentalEquipment do
   end
   
   it { should belong_to(:sample_receipt_shipping_center) }
-  it { should belong_to(:psu) }  
-  it { should belong_to(:equipment_type) }
-  it { should belong_to(:retired_reason) }
   
   context "as mdes record" do
     it "sets the public_id to a uuid" do

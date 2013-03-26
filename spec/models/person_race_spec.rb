@@ -27,8 +27,6 @@ describe PersonRace do
   end
 
   it { should belong_to(:person) }
-  it { should belong_to(:psu) }
-  it { should belong_to(:race) }
 
   it { should validate_presence_of(:person_id) }
 

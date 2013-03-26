@@ -23,9 +23,7 @@ describe ProviderRole do
     provider_role.should_not be_nil
   end
 
-  it { should belong_to(:psu) }
   it { should belong_to(:provider) }
-  it { should belong_to(:provider_ncs_role) }
 
   context "as mdes record" do
 

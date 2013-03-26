@@ -49,14 +49,6 @@ describe Telephone do
   it { should belong_to(:person) }
   it { should belong_to(:provider) }
   # it { should belong_to(:institute) }
-  it { should belong_to(:psu) }
-  it { should belong_to(:phone_info_source) }
-  it { should belong_to(:phone_type) }
-  it { should belong_to(:phone_rank) }
-  it { should belong_to(:phone_share) }
-  it { should belong_to(:phone_landline) }
-  it { should belong_to(:cell_permission) }
-  it { should belong_to(:text_permission) }
   it { should belong_to(:response_set) }
 
   it { should ensure_length_of(:phone_ext).is_at_most(5) }

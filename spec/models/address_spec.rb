@@ -70,13 +70,6 @@ describe Address do
   it { should belong_to(:provider) }
   it { should belong_to(:institute) }
   it { should belong_to(:dwelling_unit) }
-  it { should belong_to(:psu) }
-  it { should belong_to(:address_rank) }
-  it { should belong_to(:address_info_source) }
-  it { should belong_to(:address_info_mode) }
-  it { should belong_to(:address_type) }
-  it { should belong_to(:address_description) }
-  it { should belong_to(:state) }
   it { should belong_to(:response_set) }
 
   it { should ensure_length_of(:address_one).is_at_most(100) }

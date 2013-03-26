@@ -23,9 +23,7 @@ describe NonInterviewProviderRefusal do
     nipr.should_not be_nil
   end
 
-  it { should belong_to(:psu) }
   it { should belong_to(:non_interview_provider) }
-  it { should belong_to(:refusal_reason_pbs) }
 
   context "as mdes record" do
 

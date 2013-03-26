@@ -59,22 +59,6 @@ describe NonInterviewReport do
     nir.should_not be_nil
   end
 
-  it { should belong_to(:psu) }
-  it { should belong_to(:nir_vacancy_information) }
-  it { should belong_to(:nir_no_access) }
-  it { should belong_to(:nir_access_attempt) }
-  it { should belong_to(:nir_type_person) }
-  it { should belong_to(:cog_inform_relation) }
-  it { should belong_to(:permanent_disability) }
-  it { should belong_to(:deceased_inform_relation) }
-  it { should belong_to(:state_of_death) }
-  it { should belong_to(:who_refused) }
-  it { should belong_to(:refuser_strength) }
-  it { should belong_to(:refusal_action) }
-  it { should belong_to(:permanent_long_term) }
-  it { should belong_to(:reason_unavailable) }
-  it { should belong_to(:moved_unit) }
-  it { should belong_to(:moved_inform_relation) }
 
   it { should have_many(:vacant_non_interview_reports) }
   it { should have_many(:no_access_non_interview_reports) }

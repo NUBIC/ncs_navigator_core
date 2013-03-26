@@ -29,11 +29,8 @@ describe PersonProviderLink do
     ppl.should_not be_nil
   end
 
-  it { should belong_to(:psu) }
   it { should belong_to(:provider) }
   it { should belong_to(:person) }
-  it { should belong_to(:is_active) }
-  it { should belong_to(:provider_intro_outcome) }
 
   # it { should validate_presence_of(:person) }
   it { should validate_presence_of(:provider) }

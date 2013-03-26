@@ -74,6 +74,10 @@ module NcsNavigatorCore
                        CSV
                      end
     end
+
+    def code_list_cache
+      @code_list_cache ||= NcsNavigator::Core::Mdes::CodeListCache.new
+    end
   end
 
   # This is done here instead of in an initializer so that all

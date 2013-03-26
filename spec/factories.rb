@@ -6,7 +6,7 @@ require 'rubygems'
 require 'factory_girl'
 
 Factory.define :person do |pers|
-  pers.psu_code                       2000030
+  pers.psu_code                       20000030
   pers.prefix_code                    1
   pers.first_name                     "Fred"
   pers.last_name                      "Rogers"
@@ -43,7 +43,7 @@ Factory.define :person do |pers|
 end
 
 Factory.define :person_race do |pr|
-  pr.psu_code    2000030
+  pr.psu_code    20000030
   pr.race_code   1
   pr.association :person, :factory => :person
 end
@@ -51,7 +51,7 @@ end
 Factory.define :address do |addr|
   addr.association  :person,        :factory => :person
   addr.association  :dwelling_unit, :factory => :dwelling_unit
-  addr.psu_code          2000030
+  addr.psu_code          20000030
   addr.address_rank_code 1
   addr.address_info_source_code 1
   addr.address_info_mode_code 1
@@ -61,7 +61,7 @@ Factory.define :address do |addr|
 end
 
 Factory.define :mdes_min_address, :class => Address do |addr|
-  addr.psu_code          2000030
+  addr.psu_code          20000030
   addr.address_rank_code 1
   addr.address_info_source_code 1
   addr.address_info_mode_code 1
@@ -73,7 +73,7 @@ end
 Factory.define :telephone do |phone|
   phone.association  :person,        :factory => :person
   phone.association  :provider,      :factory => :provider
-  phone.psu_code               2000030
+  phone.psu_code               20000030
   phone.phone_info_source_code 1
   phone.phone_type_code        1
   phone.phone_rank_code        1
@@ -85,7 +85,7 @@ end
 
 Factory.define :email do |email|
   email.association  :person,        :factory => :person
-  email.psu_code               2000030
+  email.psu_code               20000030
   email.email_info_source_code 1
   email.email_type_code        1
   email.email_rank_code        1
@@ -94,7 +94,7 @@ Factory.define :email do |email|
 end
 
 Factory.define :contact do |c|
-  c.psu_code               2000030
+  c.psu_code               20000030
   c.contact_type_code      1
   c.contact_language_code  1
   c.contact_interpret_code 1
@@ -104,7 +104,7 @@ Factory.define :contact do |c|
 end
 
 Factory.define :contact_link do |cl|
-  cl.psu_code               2000030
+  cl.psu_code               20000030
   cl.association :person,     :factory => :person
   cl.association :contact,    :factory => :contact
   cl.association :event,      :factory => :event
@@ -114,14 +114,14 @@ Factory.define :contact_link do |cl|
 end
 
 Factory.define :mdes_min_contact_link, :class => ContactLink do |cl|
-  cl.psu_code    2000030
+  cl.psu_code    20000030
   cl.association :contact,    :factory => :contact
   cl.staff_id    "staff_public_id"
 end
 
 Factory.define :event do |e|
   e.association :participant, :factory => :participant
-  e.psu_code                         2000030
+  e.psu_code                         20000030
   e.event_type_code                  1
   e.event_disposition_category_code  1
   e.event_breakoff_code              1
@@ -130,7 +130,7 @@ Factory.define :event do |e|
 end
 
 Factory.define :mdes_min_event, :class => Event do |e|
-  e.psu_code                         2000030
+  e.psu_code                         20000030
   e.event_type_code                  1
   e.event_disposition                40
   e.event_disposition_category_code  1
@@ -141,7 +141,7 @@ end
 Factory.define :instrument do |ins|
 
   ins.association :event, :factory => :event
-  ins.psu_code                   2000030
+  ins.psu_code                   20000030
   ins.instrument_type_code       1
   ins.instrument_breakoff_code   1
   ins.instrument_status_code     1
@@ -187,7 +187,7 @@ Factory.define :sampled_persons_ineligibility do |spi|
 
   spi.association :person, :factory => :person
   spi.association :provider, :factory => :provider
-  spi.psu_code                   2000030
+  spi.psu_code                   20000030
   spi.age_eligible_code          1
   spi.county_of_residence_code   1
   spi.first_prenatal_visit_code  1

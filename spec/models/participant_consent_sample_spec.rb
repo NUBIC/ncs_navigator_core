@@ -26,12 +26,9 @@ describe ParticipantConsentSample do
     pcs.should_not be_nil
   end
 
-  it { should belong_to(:psu) }
   it { should belong_to(:participant) }
   it { should belong_to(:participant_consent) }
 
-  it { should belong_to(:sample_consent_type) }
-  it { should belong_to(:sample_consent_given) }
 
   context "as mdes record" do
 

@@ -70,5 +70,95 @@ describe NcsCode do
     end
   end
 
+  describe '.for_list_name' do
+    let(:list_name) { 'EXPERIENCE_LEVEL_CL1' }
+    let(:actual) { NcsCode.for_list_name(list_name) }
+
+    it 'returns an array of NcsCodes' do
+      actual.collect(&:class).uniq.should == [NcsCode]
+    end
+
+    it 'returns codes for the configured list only' do
+      actual.collect(&:list_name).uniq.should == [list_name]
+    end
+
+    it 'returns the coded values for the configured list' do
+      actual.collect(&:local_code).sort.should ==
+        NcsCode.where(:list_name => list_name).collect(&:local_code).sort
+    end
+  end
+
+  describe '.for_list_name_and_local_code' do
+    let(:actual) { NcsCode.for_list_name_and_local_code('GENDER_CL2', 2) }
+
+    it 'gives single NcsCode instance' do
+      actual.should be_a NcsCode
+    end
+
+    it 'gives an instance for the correct code value' do
+      actual.local_code.should == 2
+    end
+
+    it 'gives and instance for the correct list' do
+      actual.list_name.should == 'GENDER_CL2'
+    end
+
+    it 'gives nil for an unknown list' do
+      NcsCode.for_list_name_and_local_code('PICKLE_VARIETY_CL3', 1).should be_nil
+    end
+
+    it 'gives nil for an unknown code' do
+      NcsCode.for_list_name_and_local_code('CONFIRM_TYPE_CL10', 24).should be_nil
+    end
+
+    it 'works when the code is a string' do
+      NcsCode.for_list_name_and_local_code('GENDER_CL2', '2').should be_a NcsCode
+    end
+  end
+
+  describe '.for_list_name_and_display_text' do
+    let(:actual) { NcsCode.for_list_name_and_display_text('GENDER_CL2', 'Female') }
+
+    it 'gives single NcsCode instance' do
+      actual.should be_a NcsCode
+    end
+
+    it 'gives an instance for the correct text' do
+      actual.display_text.should == 'Female'
+    end
+
+    it 'gives and instance for the correct list' do
+      actual.list_name.should == 'GENDER_CL2'
+    end
+
+    it 'gives nil for an unknown list' do
+      NcsCode.for_list_name_and_display_text('PICKLE_VARIETY_CL3', 'Garlic').should be_nil
+    end
+
+    it 'gives nil for unknown text' do
+      NcsCode.for_list_name_and_display_text('CONFIRM_TYPE_CL10', 'Most Assuredly').should be_nil
+    end
+  end
+
+  describe '.ncs_code_lookup' do
+    let(:actual) { NcsCode.ncs_code_lookup(:p_tracing_code) }
+
+    it 'produces an array of pairs suitable for passing to a select helper' do
+      NcsCode.ncs_code_lookup(:p_tracing_code).should == [
+        ['Yes', 1],
+        ['No', 2]
+      ]
+    end
+
+    it 'omits Missing in Error by default' do
+      NcsCode.ncs_code_lookup(:p_tracing_code).collect { |p| p.last }.
+        should_not include(-4)
+    end
+
+    it 'will include Missing in Error by request' do
+      NcsCode.ncs_code_lookup(:p_tracing_code, true).
+        should include(['Missing in Error', -4])
+    end
+  end
 end
 

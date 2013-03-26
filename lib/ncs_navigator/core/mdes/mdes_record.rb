@@ -46,7 +46,7 @@ module NcsNavigator::Core::Mdes
 
       def ncs_coded_attribute(attribute_name, list_name)
         ncs_coded_attributes[attribute_name.to_sym] =
-          MdesRecord::NcsCodedAttribute.new(self, attribute_name, list_name)
+          NcsNavigator::Core::Mdes::NcsCodedAttribute.new(self, attribute_name, list_name)
       end
 
       def ncs_coded_attributes
@@ -55,12 +55,6 @@ module NcsNavigator::Core::Mdes
 
       def mdes_time_pattern
         @mdes_time_pattern ||= /^(9\d:\d\d)|(([01]\d|2[0-3]):[0-5]\d)$/
-      end
-
-      def with_codes(*attrs)
-        as = attrs.blank? ? ncs_coded_attributes.keys : attrs
-
-        includes(as)
       end
 
       private
@@ -79,32 +73,6 @@ module NcsNavigator::Core::Mdes
             self.public_id_generator.send(setter, value)
           end
         end
-      end
-    end
-
-    class NcsCodedAttribute
-      attr_reader :attribute_name, :list_name
-
-      def initialize(model_class, attribute_name, list_name)
-        @list_name = list_name.upcase
-        @attribute_name = attribute_name.to_sym
-        belongs_to!(model_class)
-      end
-
-      def foreign_key
-        @foreign_key ||= "#{attribute_name}_code".to_sym
-      end
-
-      def belongs_to!(model)
-        model.belongs_to(attribute_name,
-          :conditions => "list_name = '#{list_name}'",
-          :foreign_key => foreign_key,
-          :class_name => 'NcsCode',
-          :primary_key => :local_code)
-      end
-
-      def code_list
-        NcsCode.where(:list_name => list_name)
       end
     end
 
@@ -135,9 +103,9 @@ module NcsNavigator::Core::Mdes
 
       # If an NCS Code is missing, default the selection to 'Missing in Error' whose local_code value is -4
       def set_missing_in_error
-        self.class.reflect_on_all_associations.each do |association|
-          if association.options[:class_name] == "NcsCode" && not_set?(association.name.to_sym)
-            self.send("#{association.name}_code=", -4)
+        self.class.ncs_coded_attributes.values.each do |nca|
+          if send(nca.foreign_key_getter).nil?
+            send(nca.foreign_key_setter, -4)
           end
         end
       end

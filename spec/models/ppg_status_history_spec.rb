@@ -32,11 +32,7 @@ describe PpgStatusHistory do
     ppg.should_not be_nil
   end
 
-  it { should belong_to(:psu) }
   it { should belong_to(:participant) }
-  it { should belong_to(:ppg_status) }
-  it { should belong_to(:ppg_info_source) }
-  it { should belong_to(:ppg_info_mode) }
   it { should belong_to(:response_set) }
 
   describe ".set_ppg_status_date" do

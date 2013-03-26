@@ -45,13 +45,6 @@ describe Contact do
     c.should_not be_nil
   end
 
-  it { should belong_to(:psu) }
-  it { should belong_to(:contact_type) }
-  it { should belong_to(:contact_language) }
-  it { should belong_to(:contact_interpret) }
-  it { should belong_to(:contact_location) }
-  it { should belong_to(:contact_private) }
-  it { should belong_to(:who_contacted) }
 
   it { should have_many(:contact_links) }
   it { should have_many(:events).through(:contact_links) }

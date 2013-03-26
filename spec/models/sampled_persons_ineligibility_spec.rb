@@ -29,7 +29,6 @@ describe SampledPersonsIneligibility do
     sam_per_inelig.should_not be_nil
   end
 
-  it { should belong_to(:psu) }
   it { should belong_to(:person) }
   it { should belong_to(:provider) }
 

@@ -7,7 +7,7 @@ Factory.define :non_interview_report do |nir|
   nir.association :contact, :factory => :contact
   nir.association :dwelling_unit, :factory => :dwelling_unit
 
-  nir.psu_code                       2000030
+  nir.psu_code                       20000030
 
   nir.nir_vacancy_information_code   1
   nir.nir_vacancy_information_other nil
@@ -50,7 +50,7 @@ Factory.define :vacant_non_interview_report do |vnir|
 
   vnir.association :non_interview_report, :factory => :non_interview_report
 
-  vnir.psu_code               2000030
+  vnir.psu_code               20000030
   vnir.nir_vacant_code        1
   vnir.nir_vacant_other       nil
   vnir.transaction_type       nil
@@ -61,7 +61,7 @@ Factory.define :no_access_non_interview_report do |nanir|
 
   nanir.association :non_interview_report, :factory => :non_interview_report
 
-  nanir.psu_code              2000030
+  nanir.psu_code              20000030
   nanir.nir_no_access_code    1
   nanir.nir_no_access_other   nil
   nanir.transaction_type      nil
@@ -72,7 +72,7 @@ Factory.define :refusal_non_interview_report do |rnir|
 
   rnir.association :non_interview_report, :factory => :non_interview_report
 
-  rnir.psu_code                2000030
+  rnir.psu_code                20000030
   rnir.refusal_reason_code     1
   rnir.refusal_reason_other    nil
   rnir.transaction_type        nil
@@ -83,7 +83,7 @@ Factory.define :dwelling_unit_type_non_interview_report do |dutnir|
 
   dutnir.association :non_interview_report, :factory => :non_interview_report
 
-  dutnir.psu_code                      2000030
+  dutnir.psu_code                      20000030
   dutnir.nir_dwelling_unit_type_code   1
   dutnir.nir_dwelling_unit_type_other nil
   dutnir.transaction_type        nil

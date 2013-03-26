@@ -29,13 +29,10 @@ describe ParticipantAuthorizationForm do
     paf.should_not be_nil
   end
 
-  it { should belong_to(:psu) }
   it { should belong_to(:participant) }
   it { should belong_to(:contact) }
   # it { should belong_to(:provider) }
 
-  it { should belong_to(:auth_form_type) }
-  it { should belong_to(:auth_status) }
 
   context "as mdes record" do
 

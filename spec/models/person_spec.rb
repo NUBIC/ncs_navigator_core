@@ -74,21 +74,6 @@ describe Person do
     end
   end
 
-  it { should belong_to(:psu) }
-  it { should belong_to(:prefix) }
-  it { should belong_to(:suffix) }
-  it { should belong_to(:sex) }
-  it { should belong_to(:age_range) }
-  it { should belong_to(:deceased) }
-  it { should belong_to(:ethnic_group) }
-  it { should belong_to(:language) }
-  it { should belong_to(:marital_status) }
-  it { should belong_to(:preferred_contact_method) }
-  it { should belong_to(:planned_move) }
-  it { should belong_to(:move_info) }
-  it { should belong_to(:when_move) }
-  it { should belong_to(:p_tracing) }
-  it { should belong_to(:p_info_source) }
 
   # it { should validate_presence_of(:first_name) }
   # it { should validate_presence_of(:last_name) }

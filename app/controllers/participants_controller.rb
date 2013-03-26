@@ -35,7 +35,7 @@ class ParticipantsController < ApplicationController
   # GET /participants/in_ppg_group?ppg_group=X
   def in_ppg_group
     params[:ppg_group] ||= 1
-    @ppg_group = NcsCode.where(:list_name => "PPG_STATUS_CL1").where(:local_code => params[:ppg_group]).first
+    @ppg_group = NcsCode.for_list_name_and_local_code("PPG_STATUS_CL1", params[:ppg_group])
     @participants = Participant.in_ppg_group(params[:ppg_group].to_i)
   end
 
