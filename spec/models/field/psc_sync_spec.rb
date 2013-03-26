@@ -140,6 +140,16 @@ module Field
         with_cas_success { sp.prepare_for_sync(merge) }
       end
 
+      describe 'if #responsible_user is not set' do
+        before do
+          sp.responsible_user = nil
+        end
+
+        it 'raises an error' do
+          lambda { sp.sync_with_psc }.should raise_error
+        end
+      end
+
       it 'tells OperationalImporterPscSync to import' do
         sp.psc_importer.should_receive(:import)
 

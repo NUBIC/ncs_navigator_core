@@ -32,6 +32,7 @@ namespace :import do
     password = hl.ask("Password for PSC: ") { |q| q.echo = '*' }
 
     t.user = cas_cli.authenticate(username, password)
+    @import_user = 'operational_importer_psc_sync'
   end
 
   task :find_participants_for_psc => :environment do |t|
@@ -108,7 +109,7 @@ namespace :import do
     require 'ncs_navigator/core'
 
     importer = NcsNavigator::Core::Warehouse::OperationalImporterPscSync.new(psc, import_wh_config)
-    importer.import
+    importer.import(@import_user)
   end
 
   desc 'Reset the PSC sync caches so that the PSC sync can be retried. (You should wipe the subject info in PSC also.)'
@@ -116,7 +117,7 @@ namespace :import do
     require 'ncs_navigator/core'
 
     importer = NcsNavigator::Core::Warehouse::OperationalImporterPscSync.new(psc, import_wh_config)
-    importer.reset
+    importer.reset(@import_user)
   end
 
   desc 'Check for imported participants which are not in PSC'
