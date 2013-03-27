@@ -1,12 +1,12 @@
 - title "Finalize Instrument"
 %p
-  - if @survey
+  - if @surveys.first
     = @person
-    - if @response_set.complete?
+    - if @response_sets.all?(&:complete?)
       has completed
     - else
       has taken
-    = @survey.description
+    = @surveys.first.description
 
 .page_section
   = form_for(@contact_link, :url => finalize_instrument_contact_link_path(@contact_link), :html => {:autocomplete => "off"}) do |f|

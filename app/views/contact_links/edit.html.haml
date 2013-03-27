@@ -4,9 +4,9 @@
   Remember to record the Contact and Event Dispositions.
 
 %p
-  - if @survey
+  - if @surveys.first
     = blank_safe(@person.to_s)
-    - if @response_set.complete?
+    - if @response_sets.all?(&:complete?)
       has completed
     - else
       has taken

@@ -22,15 +22,15 @@ class ContactLinksController < ApplicationController
     @contact_link = ContactLink.find(params[:id])
     @event        = @contact_link.event
     @instrument   = @contact_link.instrument
-    @response_set = @instrument.response_set if @instrument
+    @response_sets= @instrument.response_sets if @instrument
 
     @person  = @contact_link.person
     @contact = @contact_link.contact
-    @survey  = @response_set.survey if @response_set
+    @surveys  = @response_sets.collect { |resp_set| resp_set.survey } if @response_sets
 
     # Some events (e.g. provider recruitment do not have a participant)
     if @event.participant
-      @event.populate_post_survey_attributes(@contact, @response_set) if @response_set
+      @event.populate_post_survey_attributes(@contact, @response_sets) if @response_sets
       @event.event_repeat_key = @event.determine_repeat_key
       @event_activities = psc.activities_for_event(@event)
     end
@@ -69,7 +69,7 @@ class ContactLinksController < ApplicationController
       else
         @event        = @contact_link.event
         @instrument   = @contact_link.instrument
-        @response_set = @instrument.response_set if @instrument
+        @response_sets = @instrument.response_sets if @instrument
         format.html { render :action => "edit" }
         format.json { render :json => @contact_link.errors, :status => :unprocessable_entity }
       end
@@ -97,15 +97,15 @@ class ContactLinksController < ApplicationController
     @instrument    = @contact_link.instrument
     @event         = @contact_link.event
     @participant   = @event.participant if @event
-    @response_set  = @instrument.response_set if @instrument
-    @survey        = @response_set.survey if @response_set
+    @response_sets = @instrument.response_sets.includes(:survey) if @instrument
+    @surveys       = @response_sets.collect { |resp_set| resp_set.survey } if @response_sets
     @contact_links = ContactLink.where(:contact_id => @contact_link.contact_id)
 
     if @participant && @event
       @activity_plan = psc.build_activity_plan(@participant)
       @activities_for_event = @activity_plan.activities_for_event(@event)
       @scheduled_activities = @activity_plan.scheduled_activities_for_event(@event)
-      @current_activity = @activity_plan.current_scheduled_activity(@event, @response_set)
+      @current_activity = @activity_plan.current_scheduled_activity(@event, @response_sets.first)
     end
   end
 
@@ -137,20 +137,16 @@ class ContactLinksController < ApplicationController
   end
 
   def setup_instrument_variables
-    @contact_link = ContactLink.find(params[:id])
-    @person       = @contact_link.person
-    @instrument   = @contact_link.instrument
-    @response_set = @instrument.response_set
-    @survey       = @response_set.survey if @response_set
+    @contact_link  = ContactLink.find(params[:id])
+    @person        = @contact_link.person
+    @instrument    = @contact_link.instrument
+    @response_sets = @instrument.response_sets.includes(:survey)
+    @surveys       = @response_sets.collect { |resp_set| resp_set.survey }
+
     set_instrument_time_and_date(@contact_link.contact)
-
-    repeat_key = @survey.nil? ? 0 : @person.instrument_repeat_key(@survey)
-    @instrument.instrument_repeat_key = repeat_key
-    @instrument.set_instrument_breakoff(@response_set)
-    if @instrument.instrument_type.blank? || @instrument.instrument_type_code <= 0
-      @instrument.instrument_type = @survey.instrument_type
-    end
-
+    @instrument.set_instrument_repeat_key(@person)
+    @instrument.set_instrument_type(@surveys)
+    @instrument.set_instrument_breakoff
   end
 
   def saq_instrument
