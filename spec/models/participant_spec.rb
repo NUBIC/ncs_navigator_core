@@ -2256,4 +2256,105 @@ describe Participant do
     end
   end
 
+  context "determining if participant consented" do
+    let(:participant) { Factory(:participant, :p_type_code => p_type_code) }
+
+    # CONSENT_TYPE_CL3
+    let(:birth_to_sixmo) { 4 }
+    let(:sixmo_to_age) { 5 }
+
+    describe "#consented_birth_to_six_months?" do
+      describe "for a non-child participant" do
+        let(:p_type_code) { 3 } # PARTICIPANT_TYPE_CL1 - pregnant eligible woman
+        it "returns false" do
+          participant.should_not be_consented_birth_to_six_months
+        end
+      end
+
+      describe "for a child participant" do
+        let(:p_type_code) { 6 } # PARTICIPANT_TYPE_CL1 - NCS Child
+        describe "with no consents" do
+          it "returns false" do
+            participant.should_not be_consented_birth_to_six_months
+          end
+        end
+
+        describe "with a consent record" do
+          let!(:participant_consent) {
+            Factory(:participant_consent, :participant => participant,
+              :consent_given_code => consent_given_code, :consent_form_type_code => consent_form_type_code)
+          }
+          describe "not of type birth to six months" do
+            let(:consent_given_code) { NcsCode::YES }
+            let(:consent_form_type_code) { sixmo_to_age }
+            it "returns false" do
+              participant.should_not be_consented_birth_to_six_months
+            end
+          end
+          describe "of type birth to six months" do
+            let(:consent_form_type_code) { birth_to_sixmo }
+            describe "and consent not given" do
+              let(:consent_given_code) { NcsCode::NO }
+              it "returns false" do
+                participant.should_not be_consented_birth_to_six_months
+              end
+            end
+            describe "and consent given" do
+              let(:consent_given_code) { NcsCode::YES }
+              it "returns true" do
+                participant.should be_consented_birth_to_six_months
+              end
+            end
+          end
+        end
+      end
+    end
+
+    describe "#consented_six_months_to_age_of_majority?" do
+      describe "for a non-child participant" do
+        let(:p_type_code) { 3 } # PARTICIPANT_TYPE_CL1 - pregnant eligible woman
+        it "returns false" do
+          participant.should_not be_consented_six_months_to_age_of_majority
+        end
+      end
+
+      describe "for a child participant" do
+        let(:p_type_code) { 6 } # PARTICIPANT_TYPE_CL1 - NCS Child
+        describe "with no consents" do
+          it "returns false" do
+            participant.should_not be_consented_birth_to_six_months
+          end
+        end
+
+        describe "with a consent record" do
+          let!(:participant_consent) {
+            Factory(:participant_consent, :participant => participant,
+              :consent_given_code => consent_given_code, :consent_form_type_code => consent_form_type_code)
+          }
+          describe "not of type six months to age" do
+            let(:consent_given_code) { NcsCode::YES }
+            let(:consent_form_type_code) { birth_to_sixmo }
+            it "returns false" do
+              participant.should_not be_consented_six_months_to_age_of_majority
+            end
+          end
+          describe "of type six months to age" do
+            let(:consent_form_type_code) { sixmo_to_age }
+            describe "and consent not given" do
+              let(:consent_given_code) { NcsCode::NO }
+              it "returns false" do
+                participant.should_not be_consented_six_months_to_age_of_majority
+              end
+            end
+            describe "and consent given" do
+              let(:consent_given_code) { NcsCode::YES }
+              it "returns true" do
+                participant.should be_consented_six_months_to_age_of_majority
+              end
+            end
+          end
+        end
+      end
+    end
+  end
 end

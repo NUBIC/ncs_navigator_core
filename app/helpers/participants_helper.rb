@@ -135,6 +135,10 @@ module ParticipantsHelper
     !participant.ineligible? && !(participant.pending_events.first.try(:event_type_code) == Event.informed_consent_code)
   end
 
+  def child_consent_description(consent)
+    consent.consented? ? "Consent given for #{consent.description}" : "Consent not given for #{consent.description}"
+  end
+
   def upcoming_events_for(person_or_participant)
     result = person_or_participant.upcoming_events.to_sentence
     result = remove_two_tier(result) unless recruitment_strategy.two_tier_knowledgable?

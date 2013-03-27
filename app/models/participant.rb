@@ -656,6 +656,32 @@ class Participant < ActiveRecord::Base
   end
 
   ##
+  # Returns true for a child participant whose most recent
+  # participant_consent record of consent_form_type_code
+  # birth to six months has consent_given_code equal to NcsCode::YES.
+  # @see ParticipantConsent#consented?
+  # @return [Boolean]
+  def consented_birth_to_six_months?
+    child_consented? ParticipantConsent.child_consent_birth_to_6_months_form_type_code
+  end
+
+  ##
+  # Returns true for a child participant whose most recent
+  # participant_consent record of consent_form_type_code
+  # birth to six months has consent_given_code equal to NcsCode::YES.
+  # @see ParticipantConsent#consented?
+  # @return [Boolean]
+  def consented_six_months_to_age_of_majority?
+    child_consented? ParticipantConsent.child_consent_6_months_to_age_of_majority_form_type_code
+  end
+
+  def child_consented?(code)
+    return false unless child_participant? || participant_consents.empty?
+    consents_for_type(code).first.try(:consented?)
+  end
+  private :child_consented?
+
+  ##
   # Returns true if a participant_consent record exists for the given consent type
   # and consent_given_code is true and consent_withdraw_code is not true.
   # If no consent type is given, then check if any consent record exists

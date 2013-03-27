@@ -141,5 +141,11 @@ span.known_instrument {
 .relationships {
   .relation {
     margin: 0.5em;
+    padding-bottom: 0.25em;
+    border-bottom: 1px solid $BORDER_GRAY;
+    .relation_type {
+      font-weight: bold;
+      margin-bottom: 0.125em;
+    }
   }
 }
