@@ -45,6 +45,21 @@ class ResponseSet < ActiveRecord::Base
     populators_for(self).each(&:run)
   end
 
+  ##
+  # Responses in the response set that are targeted for Mustache context helper
+  # questions.
+  def mustache_helper_responses
+    # The reorder(nil) is a hack to work around overly-broad default orders in
+    # Surveyor.
+    responses.reorder(nil).merge(Question.for_mustache_helpers)
+  end
+
+  ##
+  # Generates a Mustache context from this ResponseSet.
+  def to_mustache
+    Mustache.new(self)
+  end
+
   def has_responses_in_each_section_with_questions?
     result = false
     survey.sections_with_questions.each do |section|
@@ -98,4 +113,15 @@ class ResponseSet < ActiveRecord::Base
     !instrument.blank?
   end
 
+  ##
+  # A Mustache-like object that derives all of its context from a response set.
+  #
+  # @private
+  class Mustache < ::Mustache
+    def initialize(rs)
+      rs.mustache_helper_responses.each do |r|
+        self[r.question.reference_identifier.sub('helper_', '')] = r.value
+      end
+    end
+  end
 end

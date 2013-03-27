@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-
 require 'spec_helper'
 require File.expand_path('../../../../../shared/custom_recruitment_strategy', __FILE__)
 
@@ -8,206 +7,180 @@ module NcsNavigator::Core::Mustache
   describe InstrumentContext do
     include SurveyCompletion
 
-    it "should be a child of Mustache" do
-      InstrumentContext.ancestors.should include(Mustache)
-    end
-
     let(:baby_fname) { "#{OperationalDataExtractor::Birth::BABY_NAME_PREFIX}.BABY_FNAME" }
     let(:baby_sex)   { "#{OperationalDataExtractor::Birth::BABY_NAME_PREFIX}.BABY_SEX" }
     let(:multiple)   { "#{OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX}.MULTIPLE" }
 
     let(:multiple_gestation) { "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_2_INTERVIEW_PREFIX}.MULTIPLE_GESTATION" }
-    let(:multiple_num)   { "#{OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX}.MULTIPLE_NUM" }
+    let(:multiple_num) { "#{OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX}.MULTIPLE_NUM" }
 
-    context "without a response set" do
+    let(:instrument_context) { InstrumentContext.new(rs) }
+    let(:rs) { ResponseSet.new }
+    let(:survey) { nil }
+    let(:person) { Person.new }
 
-      let(:instrument_context) { InstrumentContext.new }
+    let(:sc_config) { NcsNavigator.configuration.core }
 
-      describe ".last_year" do
-        it "returns the last_year as a string" do
-          instrument_context.last_year.should == (Time.now.year - 1).to_s
-        end
-      end
-
-      describe ".thirty_days_ago" do
-        it "returns 30 days ago in format MM/DD/YYYY" do
-          instrument_context.thirty_days_ago.should == 30.days.ago.strftime("%m/%d/%Y")
-        end
-      end
-
+    before do
+      rs.person = person
+      rs.survey = survey
     end
 
-    context "configured information" do
-
-      let(:instrument_context) { InstrumentContext.new }
-      let(:sc_config) { NcsNavigator.configuration.core }
-
-      describe ".local_study_affiliate" do
-        it "returns the configured study center name" do
-          instrument_context.local_study_affiliate.should == sc_config["study_center_name"]
-        end
-      end
-
-      describe ".toll_free_number" do
-        it "returns the configured toll free number" do
-          instrument_context.toll_free_number.should == sc_config["toll_free_number"]
-        end
-      end
-
-      describe ".local_age_of_majority" do
-        it "returns the configured local_age_of_majority" do
-          instrument_context.local_age_of_majority.should == sc_config["local_age_of_majority"]
-        end
-      end
-
-      describe ".institution" do
-        it "returns the name of the institution involved in the study" do
-          instrument_context.institution.should == sc_config["study_center_name"]
-        end
-        it "returns [INSTITUTION] if study_center is not configured" do
-          sc_config["study_center_name"] = nil
-          instrument_context.institution.should == '[INSTITUTION]'
-        end
-      end
-
-      describe ".county" do
-        it "returns the county without the wave number, if the raw county name contains text referring to a wave number" do
-          unfiltered_county   = "Cook County, IL (Wave 1)"
-          NcsCode.stub(:for_list_name_and_local_code).and_return(mock(NcsCode, :to_s => unfiltered_county))
-          instrument_context.county.should == "Cook County, IL"
-        end
-
-        it "does not modify county names that do not contain a wave number" do
-          unfiltered_county   = "Los Angeles County, CA"
-          NcsCode.stub(:for_list_name_and_local_code).and_return(mock(NcsCode, :to_s => unfiltered_county))
-          instrument_context.county.should == "Los Angeles County, CA"
-        end
-
-        it "displays an empty string when county name returns nil" do
-          NcsCode.stub(:for_list_name_and_local_code).and_return(nil)
-          instrument_context.county.should == ""
-        end
+    describe ".last_year" do
+      it "returns the last_year as a string" do
+        instrument_context.last_year.should == (Time.now.year - 1).to_s
       end
     end
 
-    context "setting the current_user" do
+    describe ".thirty_days_ago" do
+      it "returns 30 days ago in format MM/DD/YYYY" do
+        instrument_context.thirty_days_ago.should == 30.days.ago.strftime("%m/%d/%Y")
+      end
+    end
 
-      let(:instrument_context) { InstrumentContext.new }
-      let(:usr) { usr = mock(Aker::User, :full_name => "Fred Sanford", :username => "fgs") }
+    describe ".local_study_affiliate" do
+      it "returns the configured study center name" do
+        instrument_context.local_study_affiliate.should == sc_config["study_center_name"]
+      end
+    end
 
-      describe ".current_user" do
-        it "sets the current_user" do
-          instrument_context.current_user = usr
-          instrument_context.current_user.should == usr
-        end
+    describe ".toll_free_number" do
+      it "returns the configured toll free number" do
+        instrument_context.toll_free_number.should == sc_config["toll_free_number"]
+      end
+    end
+
+    describe ".local_age_of_majority" do
+      it "returns the configured local_age_of_majority" do
+        instrument_context.local_age_of_majority.should == sc_config["local_age_of_majority"]
+      end
+    end
+
+    describe ".institution" do
+      it "returns the name of the institution involved in the study" do
+        instrument_context.institution.should == sc_config["study_center_name"]
       end
 
-      describe ".interviewer_name" do
+      it "returns [INSTITUTION] if study_center is not configured" do
+        sc_config["study_center_name"] = nil
+        instrument_context.institution.should == '[INSTITUTION]'
+      end
+    end
 
-        it "returns the current_user.full_name if current_user is set" do
-          instrument_context.current_user = usr
-          instrument_context.interviewer_name.should == usr.full_name
-        end
-
-        it "returns '[INTERVIEWER NAME]' if current_user is not set" do
-          instrument_context.interviewer_name.should == "[INTERVIEWER NAME]"
-        end
+    describe ".county" do
+      it "returns the county without the wave number, if the raw county name contains text referring to a wave number" do
+        unfiltered_county   = "Cook County, IL (Wave 1)"
+        NcsCode.stub(:for_list_name_and_local_code).and_return(mock(NcsCode, :to_s => unfiltered_county))
+        instrument_context.county.should == "Cook County, IL"
       end
 
+      it "does not modify county names that do not contain a wave number" do
+        unfiltered_county   = "Los Angeles County, CA"
+        NcsCode.stub(:for_list_name_and_local_code).and_return(mock(NcsCode, :to_s => unfiltered_county))
+        instrument_context.county.should == "Los Angeles County, CA"
+      end
+
+      it "displays an empty string when county name returns nil" do
+        NcsCode.stub(:for_list_name_and_local_code).and_return(nil)
+        instrument_context.county.should == ""
+      end
+    end
+
+    describe ".interviewer_name" do
+      it "returns '[INTERVIEWER NAME]'" do
+        instrument_context.interviewer_name.should == "[INTERVIEWER NAME]"
+      end
     end
 
     context "obtaining information from the person taking the survey" do
-
       describe ".p_primary_address" do
-
         it "returns \"[What is your street address?]\" if the person has no primary address" do
           person = mock_model(Person, :primary_address => nil)
-          rs = mock_model(ResponseSet, :person => person)
-          InstrumentContext.new(rs).p_primary_address.should == "[What is your street address?]"
+          rs.person = person
+
+          instrument_context.p_primary_address.should == "[What is your street address?]"
         end
 
         it "returns the primary address" do
           address = mock_model(Address, :to_s => "123 Easy Street")
           person = mock_model(Person, :primary_address => address)
-          rs = mock_model(ResponseSet, :person => person)
-          InstrumentContext.new(rs).p_primary_address.should ==
+          rs.person = person
+
+          instrument_context.p_primary_address.should ==
             "Let me confirm your street address. I have it as #{address.to_s}."
         end
       end
 
       describe ".p_phone_number" do
-
         let(:home_phone) { "312-555-1234" }
         let(:cell_phone) { "312-555-9999" }
 
         it "returns nil if there is no person" do
-          InstrumentContext.new.p_phone_number.should be_nil
+          instrument_context.p_phone_number.should be_nil
         end
 
         it "returns nil if the person has no primary home phone or cell phone" do
           person = mock_model(Person, :primary_home_phone => nil, :primary_cell_phone => nil)
-          rs = mock_model(ResponseSet, :person => person)
-          InstrumentContext.new(rs).p_phone_number.should be_nil
+          rs.person = person
+
+          instrument_context.p_phone_number.should be_nil
         end
 
         it "returns the primary home phone" do
           person = mock_model(Person, :primary_home_phone => home_phone, :primary_cell_phone => nil)
-          rs = mock_model(ResponseSet, :person => person)
-          InstrumentContext.new(rs).p_phone_number.should == home_phone
+          rs.person = person
+
+          instrument_context.p_phone_number.should == home_phone
         end
 
         it "returns the primary cell phone" do
           person = mock_model(Person, :primary_home_phone => nil, :primary_cell_phone => cell_phone)
-          rs = mock_model(ResponseSet, :person => person)
-          InstrumentContext.new(rs).p_phone_number.should == cell_phone
+          rs.person = person
+
+          instrument_context.p_phone_number.should == cell_phone
         end
 
         it "prefers the primary home phone" do
           person = mock_model(Person, :primary_home_phone => home_phone, :primary_cell_phone => cell_phone)
-          rs = mock_model(ResponseSet, :person => person)
-          InstrumentContext.new(rs).p_phone_number.should == home_phone
+          rs.person = person
+
+          instrument_context.p_phone_number.should == home_phone
         end
 
         it "formats the phone number" do
           actual   = "3125555656"
           expected = "312-555-5656"
           person = mock_model(Person, :primary_home_phone => actual, :primary_cell_phone => nil)
-          rs = mock_model(ResponseSet, :person => person)
-          InstrumentContext.new(rs).p_phone_number.should == expected
+          rs.person = person
+          instrument_context.p_phone_number.should == expected
         end
       end
-
     end
 
-    context "with a response set" do
-      before(:each) do
-        setup_survey_instrument(create_birth_survey_with_child_operational_data)
+    shared_context 'a saved response set' do
+      before do
+        rs.save!
       end
+    end
 
-      let(:instrument_context) { InstrumentContext.new(@response_set) }
+    describe ".response_for" do
+      include_context 'a saved response set'
 
-      describe ".initialize" do
-        it "sets the response_set on the context" do
-          instrument_context.response_set.should == @response_set
+      let(:survey) { create_birth_survey_with_child_operational_data }
+
+      it "returns the value of the response for the given data_export_identifier" do
+        take_survey(survey, rs) do |r|
+          r.a baby_fname, 'Mary'
         end
-      end
 
-      describe ".response_for" do
-        it "returns the value of the response for the given data_export_identifier" do
-          take_survey(@survey, @response_set) do |r|
-            r.a baby_fname, 'Mary'
-          end
-          instrument_context.response_for(baby_fname).should == 'Mary'
-        end
+        instrument_context.response_for(baby_fname).should == 'Mary'
       end
     end
 
     context "for a lo i birth instrument" do
-      before(:each) do
-        setup_survey_instrument(create_lo_i_birth_survey)
-      end
+      include_context 'a saved response set'
 
-      let(:instrument_context) { InstrumentContext.new(@response_set) }
+      let(:survey) { create_lo_i_birth_survey }
 
       describe ".multiple_release_birth_visit_prefix" do
         it "returns OperationalDataExtractor::Birth::BIRTH_LI_PREFIX" do
@@ -228,15 +201,12 @@ module NcsNavigator::Core::Mustache
             OperationalDataExtractor::Birth::BABY_NAME_LI_PREFIX
         end
       end
-
     end
 
     context "for a birth instrument" do
-      before(:each) do
-        setup_survey_instrument(create_birth_survey_with_child_operational_data)
-      end
+      include_context 'a saved response set'
 
-      let(:instrument_context) { InstrumentContext.new(@response_set) }
+      let(:survey) { create_birth_survey_with_child_operational_data }
 
       describe ".multiple_release_birth_visit_prefix" do
         it "returns OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX" do
@@ -259,14 +229,16 @@ module NcsNavigator::Core::Mustache
       end
 
       describe ".b_fname" do
-
         context "instrument prior to MDES 3.0" do
           before do
             NcsNavigatorCore.stub_chain("mdes.version.to_f").and_return(2.2)
           end
 
           it "returns the entered first name of the baby" do
-            set_first_name 'Mary'
+            take_survey(survey, rs) do |r|
+              r.a baby_fname, 'Mary'
+            end
+
             instrument_context.b_fname.should == 'Mary'
           end
 
@@ -285,7 +257,7 @@ module NcsNavigator::Core::Mustache
           it "returns the childs first name if its a child participant" do
             @part.person = @child
             @part.stub(:child_participant? => true)
-            @response_set.participant = @part
+            rs.participant = @part
             instrument_context.b_fname.should == 'Billy'
           end
 
@@ -297,7 +269,7 @@ module NcsNavigator::Core::Mustache
                                  :participant => @part,
                                  :relationship_code => 8)
             @part.participant_person_links <<  child_link
-            @response_set.participant = @part
+            rs.participant = @part
             instrument_context.b_fname.should == 'Billy'
           end
 
@@ -422,7 +394,6 @@ module NcsNavigator::Core::Mustache
       end
 
       describe ".he_she_they" do
-
         it "returns 'they' if multiple birth" do
           create_multiple_birth
           instrument_context.he_she_they.should == "they"
@@ -452,7 +423,6 @@ module NcsNavigator::Core::Mustache
       end
 
       describe ".his_her_their" do
-
         it "returns 'their' if multiple birth" do
           create_multiple_birth
           instrument_context.his_her_their.should == "their"
@@ -482,7 +452,6 @@ module NcsNavigator::Core::Mustache
       end
 
       describe ".his_her_their_upcase" do
-
         it "returns 'THEIR' if multiple birth" do
           create_multiple_birth
           instrument_context.his_her_their_upcase.should == "THEIR"
@@ -512,7 +481,6 @@ module NcsNavigator::Core::Mustache
       end
 
       describe ".he_she" do
-
         it "returns 'he' if male" do
           create_male_response
           instrument_context.he_she.should == "he"
@@ -530,7 +498,6 @@ module NcsNavigator::Core::Mustache
       end
 
       describe ".he_she_upcase" do
-
         it "returns 'HE' if male" do
           create_male_response
           instrument_context.he_she_upcase.should == "HE"
@@ -548,7 +515,6 @@ module NcsNavigator::Core::Mustache
       end
 
       describe ".he_she_the_child" do
-
         it "returns 'he' if male" do
           create_male_response
           instrument_context.he_she_the_child.should == "he"
@@ -564,7 +530,6 @@ module NcsNavigator::Core::Mustache
         end
 
       end
-
 
       describe ".child_children" do
         it "returns 'Child' if single birth" do
@@ -590,17 +555,18 @@ module NcsNavigator::Core::Mustache
         end
       end
 
-
       describe ".birthing_place" do
+        include_context 'a saved response set'
 
-        before(:each) do
-          setup_survey_instrument(create_birth_3_0_with_release_and_birth_deliver_and_mulitiple)
+        let(:birth_deliver) { "BIRTH_VISIT_3.BIRTH_DELIVER" }
+        let(:survey) { create_birth_3_0_with_release_and_birth_deliver_and_mulitiple }
+
+        before do
           NcsNavigatorCore.mdes_version.stub(:number).and_return("3.0")
         end
-        let(:birth_deliver) { "BIRTH_VISIT_3.BIRTH_DELIVER" }
 
         it "returns 'Hospital' as the most recent response for BIRTH_VISIT_3.BIRTH_DELIVER" do
-          take_survey(@survey, @response_set) do |r|
+          take_survey(survey, rs) do |r|
             at_home = mock(NcsCode, :local_code => 1)
             r.a birth_deliver, at_home
           end
@@ -608,7 +574,7 @@ module NcsNavigator::Core::Mustache
         end
 
         it "returns 'Birthing center' as the most recent response for BIRTH_VISIT_3.BIRTH_DELIVER" do
-          take_survey(@survey, @response_set) do |r|
+          take_survey(survey, rs) do |r|
             at_home = mock(NcsCode, :local_code => 2)
             r.a birth_deliver, at_home
           end
@@ -616,7 +582,7 @@ module NcsNavigator::Core::Mustache
         end
 
         it "returns 'Other place' as the most recent response for BIRTH_VISIT_3.BIRTH_DELIVER" do
-          take_survey(@survey, @response_set) do |r|
+          take_survey(survey, rs) do |r|
             at_home = mock(NcsCode, :local_code => -5)
             r.a birth_deliver, at_home
           end
@@ -644,59 +610,35 @@ module NcsNavigator::Core::Mustache
         it "returns true if child's dob is set" do
           create_multiple_birth
 
-          mom = @response_set.person
-
-          mom.person_dob = "05/06/1980"
-          mom.participant.p_type_code = 1 # 1 age eligilble woman
-          mom.participant.save!
-
+          rs.participant = Factory(:participant)
           person_child = Factory(:person, :person_dob => "09/15/2012")
-          person_child.save!
+          rs.participant.participant_person_links << Factory(:participant_person_link, :person => person_child, :relationship_code => 8) # 8 Child
 
-          Factory(:participant_person_link, :person => person_child, :participant => mom.participant, :relationship_code => 8) # 8 Child
-
-          mom.participant_person_links.reload
-
-          instrument_context.does_participants_children_have_date_of_birth?(mom).should == true
+          instrument_context.does_participants_children_have_date_of_birth?(rs.participant).should == true
         end
 
         it "returns false if child's dob is not set" do
           create_multiple_birth
 
-          mom = @response_set.person
-
-          mom.person_dob = "05/06/1980"
-          mom.participant.p_type_code = 1 # 1 age eligilble woman
-          mom.participant.save!
-
+          rs.participant = Factory(:participant, :p_type_code => 1)
           person_child = Factory(:person)
-          person_child.save!
+          rs.participant.participant_person_links << Factory(:participant_person_link, :person => person_child, :relationship_code => 8) # 8 Child
 
-          Factory(:participant_person_link, :person => person_child, :participant => mom.participant, :relationship_code => 8) # 8 Child
-
-          mom.participant_person_links.reload
-
-          instrument_context.does_participants_children_have_date_of_birth?(mom).should == false
+          instrument_context.does_participants_children_have_date_of_birth?(rs.participant).should == false
         end
-
       end
 
       describe ".c_dob_through_participant" do
         it "returns child's date of birth through mother" do
           create_multiple_birth
 
-          mom = @response_set.person
-
-          mom.person_dob = "05/06/1980"
-          mom.participant.p_type_code = 1 # 1 age eligilble woman
-          mom.participant.save!
+          rs.participant = Factory(:participant, :p_type_code => 1) # 1: age-eligible woman
+          rs.participant.save!
 
           person_child = Factory(:person, :person_dob => "09/15/2012")
           person_child.save!
 
-          Factory(:participant_person_link, :person => person_child, :participant => mom.participant, :relationship_code => 8) # 8 Child
-
-          mom.participant_person_links.reload
+          Factory(:participant_person_link, :person => person_child, :participant => rs.participant, :relationship_code => 8) # 8 Child
 
           instrument_context.c_dob_through_participant.should == "09/15/2012"
         end
@@ -704,104 +646,87 @@ module NcsNavigator::Core::Mustache
         it "returns [CHILD'S DATE OF BIRTH] if child's dob is not set" do
           create_multiple_birth
 
-          mom = @response_set.person
-
-          mom.person_dob = "05/06/1980"
-          mom.participant.p_type_code = 1 # 1 age eligilble woman
-          mom.participant.save!
-
+          rs.participant = Factory(:participant, :p_type_code => 1)
           person_child = Factory(:person)
-          person_child.save!
 
-          Factory(:participant_person_link, :person => person_child, :participant => mom.participant, :relationship_code => 8) # 8 Child
-
-          mom.participant_person_links.reload
+          Factory(:participant_person_link, :person => person_child, :participant => rs.participant, :relationship_code => 8) # 8 Child
 
           instrument_context.c_dob_through_participant.should == "[CHILD'S DATE OF BIRTH]"
         end
-
       end
+
       describe ".do_when_will_live_with_you" do
         describe "with INS_QUE_Birth_INT_LI_M3.1_V2.0_PART_TWO survey" do
-          before(:each) do
-            setup_survey_instrument(create_birth_3_0_with_release_and_birth_deliver_and_mulitiple)
-            NcsNavigatorCore.mdes_version.stub(:number).and_return("3.0")
-            @survey.title = 'INS_QUE_Birth_INT_EHPBHIPBS_M3.0_V3.0'
-            @survey.save!
-          end
           let(:birth_deliver) { "BIRTH_VISIT_3.BIRTH_DELIVER" }
-          let(:release) { "BIRTH_VISIT_3.RELEASE" }
           let(:multiple) {"BIRTH_VISIT_3.MULTIPLE"}
+          let(:release) { "BIRTH_VISIT_3.RELEASE" }
+          let(:survey) { create_birth_3_0_with_release_and_birth_deliver_and_mulitiple }
+
+          before do
+            NcsNavigatorCore.mdes_version.stub(:number).and_return("3.0")
+            survey.title = 'INS_QUE_Birth_INT_EHPBHIPBS_M3.0_V3.0'
+          end
 
           it "returns generic sentence when no conditions met" do
             instrument_context.do_when_will_live_with_you == "[Does [C_FNAME/your baby]]/[Do your babies]/[When [C_FNAME/your babies] leave the]/[When your baby leaves the] [hospital/ birthing center/ other place] will [he/she/they] live with you?"
           end
 
           it "returns 'Does' and name or baby if single birth, released is 'yes' and delivered 'at home'"  do
-            take_survey(@survey, @response_set) do |r|
+            take_survey(survey, rs) do |r|
               r.yes release
               at_home = mock(NcsCode, :local_code => 3)
               r.a birth_deliver, at_home
             end
-            mom = @response_set.person
-            mom.participant.p_type_code = 1 # 1 age eligilble woman
-            mom.participant.save!
 
+            rs.participant = Factory(:participant, :p_type_code => 1)
             person_child = Factory(:person)
-            person_child.save!
 
-            Factory(:participant_person_link, :person => person_child, :participant => mom.participant, :relationship_code => 8) # 8 Child
+            Factory(:participant_person_link, :person => person_child, :participant => rs.participant, :relationship_code => 8) # 8 Child
 
-            mom.participant_person_links.reload
             instrument_context.do_when_will_live_with_you.should == "Does " + instrument_context.child_first_name_your_baby + " live with you?"
           end
 
           it "returns 'When' and 'name or baby' if single birth, released is 'no'"  do
-            take_survey(@survey, @response_set) do |r|
+            take_survey(survey, rs) do |r|
               r.no release
             end
-            mom = @response_set.person
 
-            mom.person_dob = "05/06/1980"
-            mom.participant.p_type_code = 1 # 1 age eligilble woman
-            mom.participant.save!
-
+            rs.participant = Factory(:participant, :p_type_code => 1)
             person_child = Factory(:person, :person_dob => "09/15/2012")
-            person_child.save!
 
-            Factory(:participant_person_link, :person => person_child, :participant => mom.participant, :relationship_code => 8) # 8 Child
+            Factory(:participant_person_link, :person => person_child, :participant => rs.participant, :relationship_code => 8) # 8 Child
 
-            mom.participant_person_links.reload
             instrument_context.do_when_will_live_with_you.should == "When " + instrument_context.child_first_name_your_baby + " leaves the " + instrument_context.birthing_place + " will " + instrument_context.he_she_they + " live with you?"
           end
 
           it "returns 'Do your babies' if multiple birth, released is 'yes' and delivered 'at home'"  do
-            take_survey(@survey, @response_set) do |r|
+            take_survey(survey, rs) do |r|
               r.yes release
               at_home = mock(NcsCode, :local_code => 3)
               r.a birth_deliver, at_home
             end
+
             create_multiple_birth
             instrument_context.do_when_will_live_with_you.should == "Do your babies live with you?"
           end
 
           it "returns 'When your babies leave the' if multiple birth, and released is 'no'"  do
-            take_survey(@survey, @response_set) do |r|
+            take_survey(survey, rs) do |r|
               r.no release
             end
+
             create_multiple_birth
             instrument_context.do_when_will_live_with_you.should == "When your babies leave the "+ instrument_context.birthing_place + " will " + instrument_context.he_she_they + " live with you?"
           end
-
         end
 
         describe "with INS_QUE_Birth_INT_M3.2_V3.1_PART_TWO survey" do
           before(:each) do
-            setup_survey_instrument(create_birth_3_0_with_release_and_birth_deliver_and_mulitiple('BIRTH_VISIT_4'))
             NcsNavigatorCore.mdes_version.stub(:number).and_return("3.0")
-            @survey.title = 'INS_QUE_Birth_INT_M3.2_V3.1_PART_TWO'
-            @survey.save!
+            survey.title = 'INS_QUE_Birth_INT_M3.2_V3.1_PART_TWO'
           end
+
+          let(:survey) { create_birth_3_0_with_release_and_birth_deliver_and_mulitiple('BIRTH_VISIT_4') }
           let(:birth_deliver) { "BIRTH_VISIT_4.BIRTH_DELIVER" }
           let(:release) { "BIRTH_VISIT_4.RELEASE" }
           let(:multiple) {"BIRTH_VISIT_4.MULTIPLE"}
@@ -811,178 +736,170 @@ module NcsNavigator::Core::Mustache
           end
 
           it "returns 'Does' and name or baby if single birth, released is 'yes' and delivered 'at home'"  do
-            take_survey(@survey, @response_set) do |r|
+            take_survey(survey, rs) do |r|
               r.yes release
               at_home = mock(NcsCode, :local_code => 3)
               r.a birth_deliver, at_home
             end
-            mom = @response_set.person
-            mom.participant.p_type_code = 1 # 1 age eligilble woman
-            mom.participant.save!
 
+            rs.participant = Factory(:participant, :p_type_code => 1)
             person_child = Factory(:person)
-            person_child.save!
 
-            Factory(:participant_person_link, :person => person_child, :participant => mom.participant, :relationship_code => 8) # 8 Child
+            Factory(:participant_person_link, :person => person_child, :participant => rs.participant, :relationship_code => 8) # 8 Child
 
-            mom.participant_person_links.reload
             instrument_context.do_when_will_live_with_you.should == "Does " + instrument_context.child_first_name_your_baby + " live with you?"
           end
 
           it "returns 'When' and 'name or baby' if single birth, released is 'no'"  do
-            take_survey(@survey, @response_set) do |r|
+            take_survey(survey, rs) do |r|
               r.no release
             end
-            mom = @response_set.person
 
-            mom.person_dob = "05/06/1980"
-            mom.participant.p_type_code = 1 # 1 age eligilble woman
-            mom.participant.save!
+            rs.participant = Factory(:participant, :p_type_code => 1)
+            person_child = Factory(:person)
 
-            person_child = Factory(:person, :person_dob => "09/15/2012")
-            person_child.save!
+            Factory(:participant_person_link, :person => person_child, :participant => rs.participant, :relationship_code => 8) # 8 Child
 
-            Factory(:participant_person_link, :person => person_child, :participant => mom.participant, :relationship_code => 8) # 8 Child
-
-            mom.participant_person_links.reload
             instrument_context.do_when_will_live_with_you.should == "When " + instrument_context.child_first_name_your_baby + " leaves the " + instrument_context.birthing_place + " will " + instrument_context.he_she_they + " live with you?"
           end
 
           it "returns 'Do your babies' if multiple birth, released is 'yes' and delivered 'at home'"  do
-            take_survey(@survey, @response_set) do |r|
+            take_survey(survey, rs) do |r|
               r.yes release
               at_home = mock(NcsCode, :local_code => 3)
               r.a birth_deliver, at_home
             end
+
             create_multiple_birth
             instrument_context.do_when_will_live_with_you.should == "Do your babies live with you?"
           end
 
           it "returns 'When your babies leave the' if multiple birth, and released is 'no'"  do
-            take_survey(@survey, @response_set) do |r|
+            take_survey(survey, rs) do |r|
               r.no release
             end
+
             create_multiple_birth
             instrument_context.do_when_will_live_with_you.should == "When your babies leave the "+ instrument_context.birthing_place + " will " + instrument_context.he_she_they + " live with you?"
           end
-
         end
 
         describe "with INS_QUE_Birth_INT_LI_M3.1_V2.0_PART_TWO survey" do
           before(:each) do
-            setup_survey_instrument(create_birth_3_0_with_release_and_birth_deliver_and_mulitiple('BIRTH_VISIT_LI_2'))
             NcsNavigatorCore.mdes_version.stub(:number).and_return("3.0")
-            @survey.title = "INS_QUE_Birth_INT_LI_M3.1_V2.0_PART_TWO"
-            @survey.save!
+            survey.title = "INS_QUE_Birth_INT_LI_M3.1_V2.0_PART_TWO"
           end
+
+          let(:survey) { create_birth_3_0_with_release_and_birth_deliver_and_mulitiple('BIRTH_VISIT_LI_2') }
           let(:birth_deliver) { "BIRTH_VISIT_LI_2.BIRTH_DELIVER" }
           let(:release) { "BIRTH_VISIT_LI_2.RELEASE" }
-          let(:multiple) {"BIRTH_VISIT_LI_2.MULTIPLE"}
+          let(:multiple) {"BIRTH_VISIT_LI_2.MULTIPLE" }
 
           it "returns generic sentence when no conditions met" do
             instrument_context.do_when_will_live_with_you == "[Does [C_FNAME/your baby]]/[Do your babies]/[When [C_FNAME/your babies] leave the]/[When your baby leaves the] [hospital/ birthing center/ other place] will [he/she/they] live with you?"
           end
 
           it "returns 'Does' and name or baby if single birth, released is 'yes' and delivered 'at home'"  do
-            take_survey(@survey, @response_set) do |r|
+            take_survey(survey, rs) do |r|
               r.yes release
               at_home = mock(NcsCode, :local_code => 3)
               r.a birth_deliver, at_home
             end
-            mom = @response_set.person
-            mom.participant.p_type_code = 1 # 1 age eligilble woman
-            mom.participant.save!
 
+            rs.participant = Factory(:participant, :p_type_code => 1)
             person_child = Factory(:person)
-            person_child.save!
 
-            Factory(:participant_person_link, :person => person_child, :participant => mom.participant, :relationship_code => 8) # 8 Child
+            Factory(:participant_person_link, :person => person_child, :participant => rs.participant, :relationship_code => 8) # 8 Child
 
-            mom.participant_person_links.reload
             instrument_context.do_when_will_live_with_you.should == "Does " + instrument_context.child_first_name_your_baby + " live with you?"
           end
 
           it "returns 'When' and 'name or baby' if single birth, released is 'no'"  do
-            take_survey(@survey, @response_set) do |r|
+            take_survey(survey, rs) do |r|
               r.no release
             end
-            mom = @response_set.person
 
-            mom.person_dob = "05/06/1980"
-            mom.participant.p_type_code = 1 # 1 age eligilble woman
-            mom.participant.save!
-
+            rs.participant = Factory(:participant, :p_type_code => 1)
             person_child = Factory(:person, :person_dob => "09/15/2012")
-            person_child.save!
 
-            Factory(:participant_person_link, :person => person_child, :participant => mom.participant, :relationship_code => 8) # 8 Child
+            Factory(:participant_person_link, :person => person_child, :participant => rs.participant, :relationship_code => 8) # 8 Child
 
-            mom.participant_person_links.reload
             instrument_context.do_when_will_live_with_you.should == "When " + instrument_context.child_first_name_your_baby + " leaves the " + instrument_context.birthing_place + " will " + instrument_context.he_she_they + " live with you?"
           end
 
           it "returns 'Do your babies' if multiple birth, released is 'yes' and delivered 'at home'"  do
-            take_survey(@survey, @response_set) do |r|
+            take_survey(survey, rs) do |r|
               r.yes release
               at_home = mock(NcsCode, :local_code => 3)
               r.a birth_deliver, at_home
             end
+
             create_multiple_birth
             instrument_context.do_when_will_live_with_you.should == "Do your babies live with you?"
           end
 
           it "returns 'When your babies leave the' if multiple birth, and released is 'no'"  do
-            take_survey(@survey, @response_set) do |r|
+            take_survey(survey, rs) do |r|
               r.no release
             end
+
             create_multiple_birth
             instrument_context.do_when_will_live_with_you.should == "When your babies leave the "+ instrument_context.birthing_place + " will " + instrument_context.he_she_they + " live with you?"
           end
-
         end
-
       end
 
       describe ".child_first_name through the .child_first_name_the_child method" do
         it "returns default ('the child') if participant is mother and no children" do
           instrument_context.child_first_name_the_child.should == "the child"
         end
+
         it "returns child's name if participant is child" do
-          mom = @response_set.person
-          child = @response_set.participant
-
-          mom.participant.p_type_code = 1 # 1 age eligilble woman
-          mom.participant.save!
-
-          person_child = child.person
-          child.p_type_code = 6
-          child.save!
-
-          Factory(:participant_person_link, :person => person_child, :participant => mom.participant, :relationship_code => 8) # 8 Child
-          Factory(:participant_person_link, :person => mom, :participant => child, :relationship_code => 2)
-          mom.participant_person_links.reload
-          child.participant_person_links.reload
+          rs.participant = Factory(:participant, :p_type_code => 6)
+          child = Factory(:person)
+          rs.participant.person = child
 
           instrument_context.child_first_name_the_child.should == child.first_name
         end
-        it "returns the child's name through the mother's name" do
-          mom = @response_set.person
 
-          mom.first_name = "Mommy's Name"
-          mom.participant.p_type_code = 1 # 1 age eligilble woman
-          mom.participant.save!
+        it "returns the child's name through the mother's name" do
+          rs.participant = Factory(:participant, :p_type_code => 1)
 
           person_child = Factory(:person, :first_name => "Child's Name")
           person_child.save!
 
-          Factory(:participant_person_link, :person => person_child, :participant => mom.participant, :relationship_code => 8) # 8 Child
+          Factory(:participant_person_link, :person => person_child, :participant => rs.participant, :relationship_code => 8) # 8 Child
 
-          mom.participant_person_links.reload
           instrument_context.child_first_name_the_child.should == "Child's Name"
         end
       end
 
       describe ".lets_talk_about_baby" do
+        def create_mother_child_graph
+          mother = Factory(:person)
+          child = Factory(:person)
+          mother_p = Factory(:participant, :p_type_code => 1)
+          child_p = Factory(:participant, :p_type_code => 6)
+
+          # Self-links.
+          Factory(:participant_person_link, :person => mother, :participant => mother_p, :relationship_code => 1)
+          Factory(:participant_person_link, :person => child, :participant => child_p, :relationship_code => 1)
+
+          # Mother -> child.  (Relationship code 8: "child")
+          Factory(:participant_person_link, :person => child, :participant => mother_p, :relationship_code => 8)
+
+          # Child -> mother. (Relationship code 2: "biological mother")
+          Factory(:participant_person_link, :person => mother, :participant => child_p, :relationship_code => 2)
+
+          [mother, child, mother_p, child_p]
+        end
+
+        before do
+          mother, _, _, child_p = create_mother_child_graph
+          rs.person = mother
+          rs.participant = child_p
+        end
+
         it "returns 'Let’s talk about your baby.' if single birth" do
           create_single_birth
           instrument_context.lets_talk_about_baby.should == "Let’s talk about your baby."
@@ -990,65 +907,18 @@ module NcsNavigator::Core::Mustache
 
         it "returns 'First, let’s talk about your first higher order birth.' if first loop and more than 3 children" do
           create_multiple_birth
-
-          mom = @response_set.person
-          child = @response_set.participant
-
-          mom.participant.p_type_code = 1 # 1 age eligilble woman
-          mom.participant.save!
-
-          person_child = child.person
-          child.p_type_code = 6
-          child.save!
-
-          Factory(:participant_person_link, :person => person_child, :participant => mom.participant, :relationship_code => 8) # 8 Child
-          Factory(:participant_person_link, :person => mom, :participant => child, :relationship_code => 2)
-          mom.participant_person_links.reload
-          child.participant_person_links.reload
-
           instrument_context.lets_talk_about_baby.should == "First, let’s talk about your first higher order birth."
         end
 
         it "returns 'First let’s talk about your first twin birth.' if first loop and 2 children" do
           create_multiple_birth
           set_multiple_num("2")
-
-          mom = @response_set.person
-          child = @response_set.participant
-
-          mom.participant.p_type_code = 1 # 1 age eligilble woman
-          mom.participant.save!
-
-          person_child = child.person
-          child.p_type_code = 6
-          child.save!
-
-          Factory(:participant_person_link, :person => person_child, :participant => mom.participant, :relationship_code => 8) # 8 Child
-          Factory(:participant_person_link, :person => mom, :participant => child, :relationship_code => 2)
-          mom.participant_person_links.reload
-          child.participant_person_links.reload
-
           instrument_context.lets_talk_about_baby.should == "First let’s talk about your first twin birth."
         end
+
         it "returns 'First let’s talk about your first triplet birth.' if first loop and 2 children" do
           create_multiple_birth
           set_multiple_num("3")
-
-          mom = @response_set.person
-          child = @response_set.participant
-
-          mom.participant.p_type_code = 1 # 1 age eligilble woman
-          mom.participant.save!
-
-          person_child = child.person
-          child.p_type_code = 6
-          child.save!
-
-          Factory(:participant_person_link, :person => person_child, :participant => mom.participant, :relationship_code => 8) # 8 Child
-          Factory(:participant_person_link, :person => mom, :participant => child, :relationship_code => 2)
-          mom.participant_person_links.reload
-          child.participant_person_links.reload
-
           instrument_context.lets_talk_about_baby.should == "First let’s talk about your first triplet birth."
         end
 
@@ -1057,9 +927,9 @@ module NcsNavigator::Core::Mustache
           create_multiple_birth
           # need to set second loop
 
-          mom = @response_set.person
-          child1 = @response_set.participant
-          child2 = @response_set.participant
+          mom = rs.person
+          child1 = rs.participant
+          child2 = rs.participant
 
           mom.participant.p_type_code = 1 # 1 age eligilble woman
           mom.participant.save!
@@ -1076,164 +946,145 @@ module NcsNavigator::Core::Mustache
           instrument_context.lets_talk_about_baby.should == "Now let’s talk about your next baby."
 
         end
-
       end
 
       describe ".date_of_preg_visit_2" do
+        before do
+          rs.participant = Factory(:participant)
+        end
 
         it "returns the most recent event end date for pv2" do
-          date = Date.today
-          @participant  = @response_set.participant
-          @person = @participant.person
-          @response_set.instrument.event = Factory(:event, :event_type_code => 15, :event_end_date => date, :participant => @participant)
-          @participant.events.reload
-          instrument_context.date_of_preg_visit_2.should == date
+          end_date = Date.parse('2000-01-01')
+          rs.participant.events << Factory(:event, :event_type_code => 15, :event_end_date => end_date)
+
+          instrument_context.date_of_preg_visit_2.should == end_date
         end
 
         it "returns nil if there are no completed pv1 events" do
           instrument_context.date_of_preg_visit_2.should be_nil
         end
-
       end
 
       describe ".date_of_last_pv_visit" do
+        before do
+          rs.participant = Factory(:participant)
+        end
 
-        it "returnt '[DATE OF PV1 VISIT/DATE OF PV2 VISIT]' if there are no events for participant" do
-          @participant  = @response_set.participant
-          @person = @participant.person
+        it "returns '[DATE OF PV1 VISIT/DATE OF PV2 VISIT]' if there are no events for participant" do
           instrument_context.date_of_last_pv_visit.should == "[DATE OF PV1 VISIT/DATE OF PV2 VISIT]"
         end
 
-        it "returnt '[DATE OF PV1 VISIT/DATE OF PV2 VISIT]' if there are no pv1 and pv2 events" do
-          @participant  = @response_set.participant
-          @person = @participant.person
-          birth = Factory(:event, :event_type_code => 18, :event_end_date => "2013-11-21", :participant => @participant)
-          @response_set.instrument.event = birth
-          @participant.events.reload
+        it "returns '[DATE OF PV1 VISIT/DATE OF PV2 VISIT]' if there are no pv1 and pv2 events" do
+          rs.participant.events << Factory(:event, :event_type_code => 18, :event_end_date => "2013-11-21")
+
           instrument_context.date_of_last_pv_visit.should == "[DATE OF PV1 VISIT/DATE OF PV2 VISIT]"
         end
 
         it "returns the end date for pv1" do
-          date = Date.today
-          @participant  = @response_set.participant
-          @person = @participant.person
-          @response_set.instrument.event = Factory(:event, :event_type_code => 13, :event_end_date => date, :participant => @participant)
-          @response_set.instrument.event = Factory(:event, :event_type_code => 15, :participant => @participant)
-          @participant.events.reload
+          date = Date.parse('2000-01-01')
+
+          rs.participant.events << Factory(:event, :event_type_code => 13, :event_end_date => date)
+          rs.participant.events << Factory(:event, :event_type_code => 15)
+
           instrument_context.date_of_last_pv_visit.should == date
         end
 
         it "returns the end date for pv2" do
-          date = Date.today
-          @participant  = @response_set.participant
-          @person = @participant.person
-          @response_set.instrument.event = Factory(:event, :event_type_code => 13, :participant => @participant)
-          @response_set.instrument.event = Factory(:event, :event_type_code => 15, :event_end_date => date, :participant => @participant)
-          @participant.events.reload
+          date = Date.parse('2000-01-01')
+
+          rs.participant.events << Factory(:event, :event_type_code => 13)
+          rs.participant.events << Factory(:event, :event_type_code => 15, :event_end_date => date)
+
           instrument_context.date_of_last_pv_visit.should == date
         end
 
         it "returns the end date of pv2 when both pv1 and pv2 have event_end_date" do
-          date_pv1 = Date.today
-          date_pv2 = date_pv1 + 10.days
-          @participant  = @response_set.participant
-          @person = @participant.person
-          pv1 = Factory(:event, :event_type_code => 13, :event_end_date => date_pv1, :participant => @participant)
-          pv2 = Factory(:event, :event_type_code => 15, :event_end_date => date_pv2, :participant => @participant)
-          @response_set.instrument.event = pv1
-          @response_set.instrument.event = pv2
-          @participant.events.reload
-          instrument_context.date_of_last_pv_visit.should == date_pv2
+          date = Date.parse('2000-01-01')
+
+          rs.participant.events << Factory(:event, :event_type_code => 13, :event_end_date => date, :participant => @participant)
+          rs.participant.events << Factory(:event, :event_type_code => 15, :event_end_date => date, :participant => @participant)
+
+          instrument_context.date_of_last_pv_visit.should == date
         end
       end
 
       describe "overall sentence call for 'in the past', 'ever' and 'since'" do
+        before do
+          rs.participant = Factory(:participant)
+        end
+
         # Have you {ever} been told by a doctor or other health care provider that you had asthma {since
         #   {DATE OF FIRST PREGNANCY VISIT 1 INTERVIEW}}/{since {DATE OF MOST RECENT SUBSEQUENT PREGNANCY VISIT 1 INTERVIEW}}
         it "returns ever and in the past for new pv1" do
-          str = "Have you " + instrument_context.ever + " been told by a doctor or other health care provider that you had asthma" + instrument_context.since + " " +
-          instrument_context.date_of_preg_visit_1.to_s
+          str = "Have you " + instrument_context.ever + " been told by a doctor or other health care provider that you had asthma" + instrument_context.since + " " + instrument_context.date_of_preg_visit_1.to_s
+
           str.strip.should == "Have you ever been told by a doctor or other health care provider that you had asthma"
         end
 
         it "returns since and date when completed pv1" do
-          date = Date.today
-          @participant  = @response_set.participant
-          @person = @participant.person
-          @response_set.instrument.event = Factory(:event, :event_end_date => date, :event_type_code => 13, :participant => @participant)
-          @participant.events.reload
-          str = "Have you " + instrument_context.ever + "been told by a doctor or other health care provider that you had asthma " + instrument_context.since + " " +
-          instrument_context.date_of_preg_visit_1.to_s
+          date = Date.parse('2000-01-01')
+          rs.participant.events << Factory(:event, :event_end_date => date, :event_type_code => 13)
+
+          str = "Have you " + instrument_context.ever + "been told by a doctor or other health care provider that you had asthma " + instrument_context.since + " " + instrument_context.date_of_preg_visit_1.to_s
           str.should == "Have you been told by a doctor or other health care provider that you had asthma since "+ date.to_s
         end
       end
 
       describe ".in_the_past" do
+        before do
+          rs.participant = Factory(:participant)
+        end
 
         it "returns 'in the past' if no pv1 is ever complete" do
           instrument_context.in_the_past.should == "in the past"
-
         end
 
         it "returns empty string if pv1 was completed" do
-          @participant  = @response_set.participant
-          @person = @participant.person
-          @response_set.instrument.event = Factory(:event, :event_end_date => Date.today, :event_type_code => 13, :participant => @participant)
-          @participant.events.reload
+          rs.participant.events << Factory(:event, :event_end_date => Date.parse('2000-01-01'), :event_type_code => 13)
+
           instrument_context.in_the_past.should == ""
-
         end
-
       end
 
       describe ".since" do
+        before do
+          rs.participant = Factory(:participant)
+        end
 
         it "returns empty string if no pv1 is ever complete" do
           instrument_context.since.should == ""
         end
 
         it "returns 'since' if pv1 was completed" do
-          @participant  = @response_set.participant
-          @person = @participant.person
-          @response_set.instrument.event = Factory(:event, :event_end_date => Date.today, :event_type_code => 13, :participant => @participant)
-          @participant.events.reload
+          rs.participant.events << Factory(:event, :event_end_date => Date.today, :event_type_code => 13)
+
           instrument_context.since.should == "since"
-
         end
-
       end
 
       describe ".ever" do
+        before do
+          rs.participant = Factory(:participant)
+        end
 
         it "returns 'ever' if no pv1 is ever complete" do
           instrument_context.ever.should == "ever"
         end
 
         it "returns empty string if pv1 was completed" do
-          @participant  = @response_set.participant
-          @person = @participant.person
-          @response_set.instrument.event = Factory(:event, :event_end_date => Date.today, :event_type_code => 13, :participant => @participant)
-          @participant.events.reload
+          rs.participant.events << Factory(:event, :event_end_date => Date.today, :event_type_code => 13)
 
           instrument_context.ever.should == ""
-
         end
-
       end
-
     end
 
     context "for a pregnancy visit one saq" do
-      before(:each) do
-        setup_survey_instrument(create_pregnancy_visit_1_saq_with_father_data)
-      end
-
-      let(:instrument_context) { InstrumentContext.new(@response_set) }
-
+      let(:survey) { create_pregnancy_visit_1_saq_with_father_data }
 
       describe ".f_fname" do
         it "returns the entered father's first name" do
-          take_survey(@survey, @response_set) do |r|
+          take_survey(survey, rs) do |r|
             r.a "PREG_VISIT_1_SAQ_2.FATHER_NAME", 'Fred Sanford'
           end
           instrument_context.f_fname.should == "Fred"
@@ -1242,17 +1093,12 @@ module NcsNavigator::Core::Mustache
         it "returns 'the father' if no name entered" do
           instrument_context.f_fname.should == "the father"
         end
-
       end
-
     end
 
     context "for a pregnancy visit one instrument" do
-      before(:each) do
-        setup_survey_instrument(create_pregnancy_visit_1_survey_with_person_operational_data)
-      end
-
-      let(:instrument_context) { InstrumentContext.new(@response_set) }
+      let(:survey) { create_pregnancy_visit_1_survey_with_person_operational_data }
+      let(:person) { Factory(:person) }
 
       describe ".multiple_release_birth_visit_prefix" do
         it "returns OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_2_INTERVIEW_PREFIX" do
@@ -1311,7 +1157,7 @@ module NcsNavigator::Core::Mustache
 
       describe ".p_full_name" do
         it "returns the full name of the person taking the survey" do
-          instrument_context.p_full_name.should == @person.full_name
+          instrument_context.p_full_name.should == person.full_name
         end
 
         it "returns '[UNKNOWN]' if the full_name is blank" do
@@ -1322,7 +1168,7 @@ module NcsNavigator::Core::Mustache
 
       describe ".participant_parent_caregiver_name" do
         it "returns the full name of the person taking the survey" do
-          instrument_context.participant_parent_caregiver_name.should == @person.full_name
+          instrument_context.participant_parent_caregiver_name.should == person.full_name
         end
 
         it "returns [Participant/Parent/Caregiver Name] if person full_name is blank" do
@@ -1334,24 +1180,24 @@ module NcsNavigator::Core::Mustache
       describe ".p_dob" do
         it "returns the date of birth of the person taking the survey" do
           Person.any_instance.stub(:person_dob).and_return(20.years.ago)
-          instrument_context.p_dob.should == @person.person_dob
+          instrument_context.p_dob.should == person.person_dob
         end
 
         it "returns '[UNKNOWN]' if the person_dob is nil" do
           Person.any_instance.stub(:person_dob).and_return(nil)
           instrument_context.p_dob.should == '[UNKNOWN]'
         end
-
       end
 
       describe ".work_address" do
         let(:person) { Factory(:person) }
         let(:participant) { Factory(:participant) }
-        let(:rs) { Factory(:response_set, :person => person, :participant => participant) }
-        let(:context) { InstrumentContext.new(rs) }
+        let(:context) { instrument_context }
 
         before do
-          participant.person = person; participant.save!
+          rs.participant = participant
+          participant.person = person
+          participant.save!
         end
 
         it "returns the [WORK ADDRESS] if primary_work_address is blank" do
@@ -1383,10 +1229,10 @@ module NcsNavigator::Core::Mustache
 
         let(:provider) {Factory(:provider, :name_practice => "Children's Practice")}
         let(:person_provider_link) {Factory(:person_provider_link, :provider => provider, :person => person)}
-        let(:rs) { Factory(:response_set, :person => person, :participant => participant) }
-        let(:context) { InstrumentContext.new(rs) }
+        let(:context) { instrument_context }
 
         before do
+          rs.participant = participant
           participant.person = person_provider_link.person
         end
 
@@ -1400,112 +1246,88 @@ module NcsNavigator::Core::Mustache
         end
 
         it "returns '[PRACTICE_NAME]' if practice doesn't exist" do
-          person =  Factory(:person)
-          participant = Factory(:participant)
-          rs = Factory(:response_set, :person => person, :participant => participant)
-          context = InstrumentContext.new(rs)
+          participant.person = Factory(:person)
+
           context.practice_name.should == "[PRACTICE_NAME]"
         end
       end
-
     end
 
     context "participant verification instrument" do
+      let(:participant) { Factory(:participant) }
+      let(:child) { Factory(:person) }
 
-      let(:instrument_context) { InstrumentContext.new }
+      before do
+        Factory(:participant_person_link, :participant => participant, :person => child, :relationship_code => 1)
+
+        rs.participant = participant
+      end
 
       describe ".child_primary_address" do
         it "returns '[CHILD'S PRIMARY ADDRESS]' if the child has no primary address" do
-          person = mock_model(Person, :primary_address => nil)
-          participant = mock_model(Participant, :person => person)
-          rs = mock_model(ResponseSet, :participant => participant)
-          InstrumentContext.new(rs).child_primary_address.should == "[CHILD'S PRIMARY ADDRESS]"
+          instrument_context.child_primary_address.should == "[CHILD'S PRIMARY ADDRESS]"
         end
 
         it "returns the primary address" do
-           address = mock_model(Address, :to_s => "123 Easy Street")
-           person = mock_model(Person, :primary_address => address)
-           participant = mock_model(Participant, :person => person)
-           rs = mock_model(ResponseSet, :participant => participant)
-           InstrumentContext.new(rs).child_primary_address.should == "#{address.to_s}"
+          participant.person.stub!(:primary_address => mock_model(Address, :to_s => '123 Easy Street'))
+
+          instrument_context.child_primary_address.should == "123 Easy Street"
         end
       end
 
       describe ".child_secondary_address" do
         it "returns '[CHILD'S SECONDARY ADDRESS]' if the child has no secondary address" do
-          person = mock_model(Person, :secondary_address => nil)
-          participant = mock_model(Participant, :person => person)
-          rs = mock_model(ResponseSet, :participant => participant)
-          InstrumentContext.new(rs).child_secondary_address.should == "[CHILD'S SECONDARY ADDRESS]"
+          instrument_context.child_secondary_address.should == "[CHILD'S SECONDARY ADDRESS]"
         end
 
         it "returns the secondary address" do
-           address = mock_model(Address, :to_s => "123 Easy Street")
-           person = mock_model(Person, :secondary_address => address)
-           participant = mock_model(Participant, :person => person)
-           rs = mock_model(ResponseSet, :participant => participant)
-           InstrumentContext.new(rs).child_secondary_address.should == "#{address.to_s}"
+          participant.person.stub!(:secondary_address => mock_model(Address, :to_s => "123 Easy Street"))
+
+          instrument_context.child_secondary_address.should == "123 Easy Street"
         end
       end
 
       describe ".child_secondary_number" do
         it "returns '[SECONDARY PHONE NUMBER]' if the child has no secondary phone" do
-          person = mock_model(Person, :secondary_phone => nil)
-          participant = mock_model(Participant, :person => person)
-          rs = mock_model(ResponseSet, :participant => participant)
-          InstrumentContext.new(rs).child_secondary_number.should == "[SECONDARY PHONE NUMBER]"
+          instrument_context.child_secondary_number.should == "[SECONDARY PHONE NUMBER]"
         end
 
         it "returns the secondary number" do
-           phone = mock_model(Telephone, :to_s => "555-555-5555")
-           person = mock_model(Person, :secondary_phone => phone)
-           participant = mock_model(Participant, :person => person)
-           rs = mock_model(ResponseSet, :participant => participant)
-           InstrumentContext.new(rs).child_secondary_number.should == "#{phone.to_s}"
+          participant.person.stub!(:secondary_phone => mock_model(Telephone, :to_s => '555-555-5555'))
+
+          instrument_context.child_secondary_number.should == "555-555-5555"
         end
       end
-
     end
 
     context "for a work_place_name method" do
       describe ".work_place_name_for_pv2" do
-
-        before(:each) do
-          setup_survey_instrument(create_pv2_and_birth_with_work_name)
-        end
-
-        let(:instrument_context) { InstrumentContext.new(@response_set) }
+        let(:survey) { create_pv2_and_birth_with_work_name }
         let(:work_name) { "PREG_VISIT_1_3.WORK_NAME" }
 
         it "returns work name as the most recent response for PREG_VISIT_1_3.WORK_NAME" do
-          take_survey(@survey, @response_set) do |r|
+          take_survey(survey, rs) do |r|
             r.a work_name, 'work_name', :value => 'NWU'
           end
-          # @response_set.instrument.event = Factory(:event, :event_type_code => 15)
+
+          # rs.instrument.event = Factory(:event, :event_type_code => 15)
           instrument_context.work_place_name.should == 'NWU'
         end
       end
 
       describe ".work_place_name_for_birth" do
-
-        before(:each) do
-          setup_survey_instrument(create_pv2_and_birth_with_work_name)
-        end
-
-        let(:instrument_context) { InstrumentContext.new(@response_set) }
+        let(:survey) { create_pv2_and_birth_with_work_name }
         let(:work_name) { "PREG_VISIT_2_3.WORK_NAME" }
 
-
         it "returns work name as the most recent response for PREG_VISIT_2_3.WORK_NAME" do
-          take_survey(@survey, @response_set) do |r|
+          take_survey(survey, rs) do |r|
             r.a work_name, 'work_name', :value => 'NUBIC'
           end
-          # @response_set.instrument.event = Factory(:event, :event_type_code => 18)
+          # rs.instrument.event = Factory(:event, :event_type_code => 18)
           instrument_context.work_place_name.should == 'NUBIC'
         end
 
         it "return '[PARTICIPANTS WORKPLACE NAME]' if no reponse for WORK_NAME is provided" do
-          @response_set.instrument.event = Factory(:event)
           instrument_context.work_place_name.should == '[PARTICIPANTS WORKPLACE NAME]'
         end
       end
@@ -1536,33 +1358,31 @@ module NcsNavigator::Core::Mustache
 
     end
 
-
     describe "c_fname_or_the_child" do
-      before(:each) do
-        setup_survey_instrument(create_pv2_and_birth_with_work_name)
+      let(:survey) { create_pv2_and_birth_with_work_name }
+      let(:participant) { Factory(:participant) }
+      let(:child) { Factory(:person) }
+
+      before do
+        Factory(:participant_person_link, :participant => participant, :person => child, :relationship_code => 1)
+
+        rs.participant = participant
       end
-      let(:instrument_context) { InstrumentContext.new(@response_set) }
 
       it "returns child's first name " do
-
-        @participant  = @response_set.participant
-        @person = @participant.person
-        @person.first_name = "Masha"
+        participant.person.first_name = "Masha"
         instrument_context.c_fname_or_the_child.should == "Masha"
       end
 
       it "returns 'the Child' if no first name is provided" do
-        @participant  = @response_set.participant
-        @person = @participant.person
-        @person.first_name = nil
+        participant.person.first_name = nil
         instrument_context.c_fname_or_the_child.should == "the Child"
       end
 
       it "returns 'the Child' if no participant exists" do
-        @response_set.participant  = nil
+        rs.participant  = nil
         instrument_context.c_fname_or_the_child.should == "the Child"
       end
-
     end
 
     describe "are_you_or_is_guardian_name" do
@@ -1575,150 +1395,121 @@ module NcsNavigator::Core::Mustache
     end
 
     describe "c_full_name" do
+      let(:participant) { Factory(:participant) }
+
       it "returns a default message if person is nil" do
-        rs = Factory(:response_set, :person => nil)
-        context = InstrumentContext.new(rs)
-        context.about_person.should be_nil
-        context.c_full_name.should == "[CHILD'S FULL NAME]"
+        rs.person = nil
+
+        instrument_context.c_full_name.should == "[CHILD'S FULL NAME]"
       end
 
       it "returns a default message if full_name is nil" do
-        person =  Factory(:person, :first_name => nil, :last_name => nil)
-        participant = Factory(:participant)
-        participant.person = person
-        person.save!
+        person = Factory(:person, :first_name => nil, :last_name => nil)
+        Factory(:participant_person_link, :participant => participant, :person => person, :relationship_code => 1)
 
-        rs = Factory(:response_set, :participant => participant)
-        context = InstrumentContext.new(rs)
-        context.about_person.should_not be_nil
-        context.about_person.full_name.should be_blank
-        context.c_full_name.should == "[CHILD'S FULL NAME]"
+        rs.participant = participant
+
+        instrument_context.c_full_name.should == "[CHILD'S FULL NAME]"
       end
 
       it "returns the c_full_name if the full_name exists" do
-        person =  Factory(:person, :first_name => "The", :last_name => "King")
-        participant = Factory(:participant)
-        participant.person = person
-        person.save!
+        person = Factory(:person, :first_name => "The", :last_name => "King")
+        Factory(:participant_person_link, :participant => participant, :person => person, :relationship_code => 1)
 
-        rs = Factory(:response_set, :participant => participant)
-        context = InstrumentContext.new(rs)
-        context.c_full_name.should == "The King"
+        rs.participant = participant
+
+        instrument_context.c_full_name.should == "The King"
       end
     end
 
     describe "age_of_child_in_months" do
+      let(:participant) { Factory(:participant) }
+      let(:person) { Factory(:person) }
 
-      let(:instrument_context) { InstrumentContext.new }
+      before do
+        Factory(:participant_person_link, :person => person, :participant => participant, :relationship_code => 1)
 
-      it "returns a default message if person is nil" do
-        rs = Factory(:response_set, :person => nil)
-        context = InstrumentContext.new(rs)
-        context.about_person.should be_nil
-        context.age_of_child_in_months.should == "[AGE OF CHILD IN MONTHS]"
+        rs.participant = participant
+      end
+
+      it "returns a default message if the participant doesn't have a person" do
+        ParticipantPersonLink.delete_all
+
+        instrument_context.age_of_child_in_months.should == "[AGE OF CHILD IN MONTHS]"
       end
 
       it "returns a default message if person dob is blank" do
-        today = Date.parse("2012-12-25")
-        person =  Factory(:person, :person_dob => nil)
-        participant = Factory(:participant)
-        participant.person = person
-        person.save!
+        date = Date.parse("2012-12-25")
+        person.update_attribute(:person_dob, nil)
 
-        rs = Factory(:response_set, :participant => participant)
-        context = InstrumentContext.new(rs)
-        context.about_person.should_not be_nil
-        context.age_of_child_in_months(today).should == "[AGE OF CHILD IN MONTHS]"
+        instrument_context.age_of_child_in_months(date).should == "[AGE OF CHILD IN MONTHS]"
       end
 
       it "returns a default message if person dob is unparseable" do
-        today = Date.parse("2012-12-25")
-        person =  Factory(:person, :person_dob => "1234567890")
-        participant = Factory(:participant)
-        participant.person = person
-        person.save!
+        date = Date.parse("2012-12-25")
+        person.update_attribute(:person_dob, '1234567890')
 
-        rs = Factory(:response_set, :participant => participant)
-        context = InstrumentContext.new(rs)
-        context.about_person.should_not be_nil
-        context.age_of_child_in_months(today).should == "[AGE OF CHILD IN MONTHS]"
+        instrument_context.age_of_child_in_months(date).should == "[AGE OF CHILD IN MONTHS]"
       end
 
       it "returns the child's age in months" do
         dob = Date.parse("2012-01-01")
-        today = Date.parse("2012-12-25")
+        date = Date.parse("2012-12-25")
 
-        person =  Factory(:person, :person_dob => dob)
-        participant = Factory(:participant)
-        participant.person = person
-        person.save!
+        person.update_attribute(:person_dob, dob)
 
-        rs = Factory(:response_set, :participant => participant)
-        context = InstrumentContext.new(rs)
-        context.about_person.should_not be_nil
-        context.age_of_child_in_months(today).should == (today.year*12 + today.month) - (dob.year*12 + dob.month)
+        # date               dob
+        # (2012 * 12 + 12) - (2012 * 12 + 1)
+        instrument_context.age_of_child_in_months(date).should == 11
       end
 
-      context "if dob is greater than today" do
-        it "returns the child's age in months" do
-          dob = Date.parse("2012-10-31")
-          today = Date.parse("2012-12-25")
+      it "rounds down" do
+        dob = Date.parse("2012-10-31")
+        date = Date.parse("2012-12-25")
 
-          person =  Factory(:person, :person_dob => dob)
-          participant = Factory(:participant)
-          participant.person = person
-          person.save!
+        person.update_attribute(:person_dob, dob)
 
-          rs = Factory(:response_set, :participant => participant)
-          context = InstrumentContext.new(rs)
-          context.about_person.should_not be_nil
-          context.age_of_child_in_months(today).should == ((today.year*12 + today.month) - (dob.year*12 + dob.month)) -1
-        end
+        # There's one month and three weeks between 2012-10-31 and 2012-12-25.
+        instrument_context.age_of_child_in_months(date).should == 1
       end
 
-      context "different years" do
-        it "returns the child's age in months" do
-          dob = Date.parse("2012-10-31")
-          today = Date.parse("2013-12-14")
+      it "rounds down across years" do
+        dob = Date.parse("2012-10-31")
+        date = Date.parse("2013-12-14")
 
-          person =  Factory(:person, :person_dob => dob)
-          participant = Factory(:participant)
-          participant.person = person
-          person.save!
+        person.update_attribute(:person_dob, dob)
 
-          rs = Factory(:response_set, :participant => participant)
-          context = InstrumentContext.new(rs)
-          context.about_person.should_not be_nil
-          context.age_of_child_in_months(today).should == ((today.year*12 + today.month) - (dob.year*12 + dob.month)) -1
-        end
+        # There's thirteen months and one week between 2012-10-13 and 2013-12-14.
+        instrument_context.age_of_child_in_months(date).should == 13
       end
-
     end
 
     describe ".c_dob" do
-      before(:each) do
-        setup_survey_instrument(create_participant_verification_survey)
+      let(:survey) { create_participant_verification_survey }
+      let(:participant) { Factory(:participant) }
+      let(:person) { Factory(:person) }
+
+      before do
+        Factory(:participant_person_link, :person => person, :participant => participant, :relationship_code => 1)
+
+        rs.participant = participant
       end
-      let(:instrument_context) { InstrumentContext.new(@response_set) }
 
       it "returns a default message if person is nil" do
-        @response_set.participant.person = nil
+        ParticipantPersonLink.delete_all
+
         instrument_context.c_dob.should == "[CHILD'S DATE OF BIRTH]"
       end
 
       it "returns a default message if child's dob is blank" do
-        today = Date.parse("2012-12-25")
-        @response_set.participant.person.person_dob = nil
+        person.update_attribute(:person_dob, nil)
+
         instrument_context.c_dob.should == "[CHILD'S DATE OF BIRTH]"
       end
 
-      it "returns if child's date of birth" do
-        dob = Date.parse("2012-12-25")
-        take_survey(@survey, @response_set) do |r|
-          r.a('PARTICIPANT_VERIF_CHILD.CHILD_DOB', "2012-12-25")
-        end
-        @response_set.completed_at = "2013-01-25"
-        @response_set.save!
+      it "returns the DOB of the participant's person" do
+        person.update_attribute(:person_dob, '2012-12-25')
+
         instrument_context.c_dob.should == "2012-12-25"
       end
     end
@@ -1733,28 +1524,30 @@ module NcsNavigator::Core::Mustache
     end
 
     context "for multi_mode_visit_info approximate_visit_time" do
-      let(:instrument_context) { InstrumentContext.new(@response_set) }
+      let(:survey) { Factory(:survey, :title => "Stub Survey") }
+      let(:participant) { Factory(:participant) }
+      let(:instrument) { Instrument.new }
 
-      before(:each) do
-        survey = Factory(:survey, :title => "Stub Survey")
-        setup_survey_instrument(survey)
+      before do
+        rs.instrument = instrument
+        rs.participant = participant
       end
 
       def set_high_intensity()
-        @participant.high_intensity = true
-        @participant.save!
+        participant.high_intensity = true
+        participant.save!
       end
 
       def set_low_intensity()
-        @participant.high_intensity = false
-        @participant.save!
+        participant.high_intensity = false
+        participant.save!
       end
 
       def add_event(event_type_code)
-        @response_set.instrument.event = Factory(:event,
-                                         :event_type_code => event_type_code,
-                                         :participant => @participant)
-        @participant.events.reload
+        rs.instrument.event = Factory(:event,
+                                      :event_type_code => event_type_code,
+                                      :participant => participant)
+        participant.events.reload
       end
 
       describe ".approximate_visit_time" do
@@ -1826,16 +1619,11 @@ module NcsNavigator::Core::Mustache
     end
 
     context "for a 30 month visit" do
-      let(:instrument_context) { InstrumentContext.new(@response_set) }
-
-      before(:each) do
-        setup_survey_instrument(
-                    create_participant_verif_child_sex_survey_for_30m)
-      end
+      let(:survey) { create_participant_verif_child_sex_survey_for_30m }
 
       describe ".boys_girls" do
         it "returns 'boys' if CHILD_SEX set to MALE (1)" do
-          take_survey(@survey, @response_set) do |r|
+          take_survey(survey, rs) do |r|
             male = mock(NcsCode, :local_code => 1)
             r.a("PARTICIPANT_VERIF_CHILD.CHILD_SEX", male)
           end
@@ -1843,7 +1631,7 @@ module NcsNavigator::Core::Mustache
         end
 
         it "returns 'girls' if CHILD_SEX set to FEMALE (2)" do
-          take_survey(@survey, @response_set) do |r|
+          take_survey(survey, rs) do |r|
             female = mock(NcsCode, :local_code => 2)
             r.a("PARTICIPANT_VERIF_CHILD.CHILD_SEX", female)
           end
@@ -1851,14 +1639,14 @@ module NcsNavigator::Core::Mustache
         end
 
         it "returns 'boys/girls' if CHILD_SEX set to REFUSED" do
-          take_survey(@survey, @response_set) do |r|
+          take_survey(survey, rs) do |r|
             r.refused("PARTICIPANT_VERIF_CHILD.CHILD_SEX")
           end
           instrument_context.boys_girls.should == "boys/girls"
         end
 
         it "returns 'boys/girls' if CHILD_SEX set to DON'T KNOW" do
-          take_survey(@survey, @response_set) do |r|
+          take_survey(survey, rs) do |r|
             could_not_obtain= mock(NcsCode, :local_code => "neg_2")
             r.a("PARTICIPANT_VERIF_CHILD.CHILD_SEX", could_not_obtain)
           end
@@ -1872,74 +1660,65 @@ module NcsNavigator::Core::Mustache
       end
     end
 
-
     def create_single_birth
-      take_survey(@survey, @response_set) do |r|
+      take_survey(survey, rs) do |r|
         r.no multiple
       end
     end
 
     def create_multiple_birth
-      take_survey(@survey, @response_set) do |r|
+      take_survey(survey, rs) do |r|
         r.yes multiple
       end
     end
 
     def create_singleton_gestation
       @singleton = NcsCode.for_list_name_and_local_code("GESTATION_TYPE_CL1", 1)
-      take_survey(@survey, @response_set) do |r|
+      take_survey(survey, rs) do |r|
         r.a(multiple_gestation, @singleton)
       end
     end
 
     def create_twin_gestation
       @twin = NcsCode.for_list_name_and_local_code("GESTATION_TYPE_CL1", 2)
-      take_survey(@survey, @response_set) do |r|
+      take_survey(survey, rs) do |r|
         r.a(multiple_gestation, @twin)
       end
     end
 
     def set_multiple_num mult_num
-      take_survey(@survey, @response_set) do |r|
+      take_survey(survey, rs) do |r|
         r.a multiple_num, mult_num
       end
     end
 
     def create_triplet_gestation
       @triplet = NcsCode.for_list_name_and_local_code("GESTATION_TYPE_CL1", 3)
-      take_survey(@survey, @response_set) do |r|
+      take_survey(survey, rs) do |r|
         r.a(multiple_gestation, @triplet)
       end
     end
 
     def create_male_response
-      @male = NcsCode.for_list_name_and_local_code("GENDER_CL1", 1)
-      take_survey(@survey, @response_set) do |r|
-        r.a(baby_sex, @male)
+      male = NcsCode.for_list_name_and_local_code("GENDER_CL1", 1)
+
+      take_survey(survey, rs) do |r|
+        r.a(baby_sex, male)
       end
     end
 
     def create_female_response
-      @female = NcsCode.for_list_name_and_local_code("GENDER_CL1", 2)
-      take_survey(@survey, @response_set) do |r|
-        r.a(baby_sex, @female)
+      female = NcsCode.for_list_name_and_local_code("GENDER_CL1", 2)
+
+      take_survey(survey, rs) do |r|
+        r.a baby_sex, female
       end
     end
 
     def set_first_name first_name
-      take_survey(@survey, @response_set) do |r|
+      take_survey(survey, rs) do |r|
         r.a baby_fname, first_name
       end
     end
-
-    def setup_survey_instrument(survey)
-      @survey = survey
-      @person = Factory(:person)
-      @participant = Factory(:participant)
-      @participant.person = @person
-      @participant.save!
-      @response_set, @instrument = prepare_instrument(@person, @participant, @survey)
-    end
-
   end
 end
