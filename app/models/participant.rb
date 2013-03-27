@@ -511,6 +511,9 @@ class Participant < ActiveRecord::Base
       else
         low_intensity_consent! if can_low_intensity_consent?
       end
+    when 32
+      # Low to High Conversion
+      high_intensity_conversion! if can_high_intensity_conversion?
     when 33
       # Lo I Quex
       follow_low_intensity! if can_follow_low_intensity?
