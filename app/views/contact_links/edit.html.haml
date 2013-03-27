@@ -6,7 +6,7 @@
 %p
   - if @surveys.first
     = blank_safe(@person.to_s)
-    - if @response_sets.first.complete?
+    - if @response_sets.all?(&:complete?)
       has completed
     - else
       has taken

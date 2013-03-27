@@ -2,7 +2,7 @@
 %p
   - if @surveys.first
     = @person
-    - if @response_sets.first.complete?
+    - if @response_sets.all?(&:complete?)
       has completed
     - else
       has taken

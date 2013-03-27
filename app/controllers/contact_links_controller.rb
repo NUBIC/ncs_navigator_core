@@ -97,8 +97,8 @@ class ContactLinksController < ApplicationController
     @instrument    = @contact_link.instrument
     @event         = @contact_link.event
     @participant   = @event.participant if @event
-    @response_sets = @instrument.response_sets if @instrument
-    @surveys        = @response_sets.collect { |resp_set| resp_set.survey } if @response_sets
+    @response_sets = @instrument.response_sets.includes(:survey) if @instrument
+    @surveys       = @response_sets.collect { |resp_set| resp_set.survey } if @response_sets
     @contact_links = ContactLink.where(:contact_id => @contact_link.contact_id)
 
     if @participant && @event

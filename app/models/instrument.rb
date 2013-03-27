@@ -314,7 +314,7 @@ class Instrument < ActiveRecord::Base
         break
       end
     end
-    self.instrument_breakoff = NcsCode.for_attribute_name_and_local_code(:instrument_breakoff_code, local_code)
+    self.instrument_breakoff_code = local_code
   end
 
   ##
