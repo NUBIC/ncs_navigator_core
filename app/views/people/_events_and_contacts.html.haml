@@ -5,8 +5,6 @@
         %p
           = "No events exist for #{blank_safe(participant.person.to_s)} at this time."
       - else
-        %b
-          Contact History
         - participant.events.chronological.reverse_order.each do |event|
           - event_name = event.to_s
           - person = participant.person
