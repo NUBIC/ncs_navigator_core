@@ -25,7 +25,6 @@ describe ProviderLogistic do
     pl.should_not be_nil
   end
 
-  it { should belong_to(:psu) }
   it { should belong_to(:provider) }
 
   context "as mdes record" do

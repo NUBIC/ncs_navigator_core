@@ -47,25 +47,11 @@ describe ParticipantConsent do
     pc.should_not be_nil
   end
 
-  it { should belong_to(:psu) }
   it { should belong_to(:participant) }
   it { should belong_to(:contact) }
   it { should belong_to(:person_who_consented) }
   it { should belong_to(:person_wthdrw_consent) }
-  it { should belong_to(:consent_type) }
-  it { should belong_to(:consent_form_type) }
-  it { should belong_to(:consent_given) }
 
-  it { should belong_to(:consent_withdraw) }
-  it { should belong_to(:consent_withdraw_type) }
-  it { should belong_to(:consent_withdraw_reason) }
-  it { should belong_to(:consent_language) }
-  it { should belong_to(:who_consented) }
-  it { should belong_to(:who_wthdrw_consent) }
-  it { should belong_to(:consent_translate) }
-  it { should belong_to(:reconsideration_script_use) }
-  it { should belong_to(:consent_reconsent) }
-  it { should belong_to(:consent_reconsent_reason) }
 
   it { should ensure_length_of(:consent_version).is_at_most(9) }
 
@@ -143,14 +129,6 @@ describe ParticipantConsent do
     before(:each) do
       @yes = NcsCode.for_list_name_and_local_code("CONFIRM_TYPE_CL2", 1)
       @no  = NcsCode.for_list_name_and_local_code("CONFIRM_TYPE_CL2", 2)
-
-      @general       = NcsCode.for_list_name_and_local_code("CONSENT_TYPE_CL1", 1)
-      @biospecimens  = NcsCode.for_list_name_and_local_code("CONSENT_TYPE_CL1", 2)
-      @environmental = NcsCode.for_list_name_and_local_code("CONSENT_TYPE_CL1", 3)
-      @genetic       = NcsCode.for_list_name_and_local_code("CONSENT_TYPE_CL1", 4)
-      @birth         = NcsCode.for_list_name_and_local_code("CONSENT_TYPE_CL1", 5)
-      @child         = NcsCode.for_list_name_and_local_code("CONSENT_TYPE_CL1", 6)
-      @low_intensity = NcsCode.for_list_name_and_local_code("CONSENT_TYPE_CL1", 7)
     end
 
     it "cannot have consented without a participant_consent record" do
@@ -160,6 +138,16 @@ describe ParticipantConsent do
     end
 
     context "phase one consent" do
+      before do
+        @general       = NcsCode.for_list_name_and_local_code("CONSENT_TYPE_CL1", 1)
+        @biospecimens  = NcsCode.for_list_name_and_local_code("CONSENT_TYPE_CL1", 2)
+        @environmental = NcsCode.for_list_name_and_local_code("CONSENT_TYPE_CL1", 3)
+        @genetic       = NcsCode.for_list_name_and_local_code("CONSENT_TYPE_CL1", 4)
+        @birth         = NcsCode.for_list_name_and_local_code("CONSENT_TYPE_CL1", 5)
+        @child         = NcsCode.for_list_name_and_local_code("CONSENT_TYPE_CL1", 6)
+        @low_intensity = NcsCode.for_list_name_and_local_code("CONSENT_TYPE_CL1", 7)
+      end
+
       it "knows if the participant has consented" do
         pc = Factory(:participant_consent, :consent_given => @yes, :consent_withdraw => @no,
                      :consent_type => @low_intensity, :consent_form_type_code => -4)
@@ -179,6 +167,11 @@ describe ParticipantConsent do
     end
 
     context "phase two consent" do
+      before do
+        @general       = NcsCode.for_list_name_and_local_code("CONSENT_TYPE_CL3", 1)
+        @low_intensity = NcsCode.for_list_name_and_local_code("CONSENT_TYPE_CL3", 7)
+      end
+
       it "knows if the participant has consented" do
         pc = Factory(:participant_consent, :consent_given => @yes, :consent_withdraw => @no,
                      :consent_form_type => @low_intensity, :consent_type_code => -4)

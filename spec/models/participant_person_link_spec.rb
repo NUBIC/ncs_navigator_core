@@ -37,12 +37,8 @@ describe ParticipantPersonLink do
     link.should be_active
   end
 
-  it { should belong_to(:psu) }
   it { should belong_to(:person) }
   it { should belong_to(:participant) }
-  it { should belong_to(:relationship) }
-  it { should belong_to(:is_active) }
-  it { should belong_to(:primary_caregiver_flag) }
 
   it { should validate_presence_of(:person_id) }
   it { should validate_presence_of(:participant_id) }

@@ -49,13 +49,6 @@ describe Participant do
     participant.should be_low_intensity
   end
 
-  it { should belong_to(:psu) }
-  it { should belong_to(:p_type) }
-  it { should belong_to(:status_info_source) }
-  it { should belong_to(:status_info_mode) }
-  it { should belong_to(:enroll_status) }
-  it { should belong_to(:pid_entry) }
-  it { should belong_to(:pid_age_eligibility) }
 
   it { should have_many(:ppg_details) }
   it { should have_many(:ppg_status_histories) }
@@ -683,7 +676,7 @@ describe Participant do
 
             before(:each) do
               Factory(:ppg_detail, :participant => @participant,
-                :ppg_first => NcsCode.for_list_name_and_local_code("PPG_STATUS_CL1", 1), :orig_due_date => due_date)
+                :ppg_first_code => 1, :orig_due_date => due_date)
               @participant.due_date.should == due_date
             end
 
@@ -728,7 +721,7 @@ describe Participant do
           context "with due_date" do
             before(:each) do
               Factory(:ppg_detail, :participant => @participant,
-                :ppg_first => NcsCode.for_list_name_and_local_code("PPG_STATUS_CL1", 1), :orig_due_date => Date.new(2012, 10, 01))
+                :ppg_first_code => 1, :orig_due_date => Date.new(2012, 10, 01))
               @participant.due_date.should == Date.new(2012, 10, 01)
             end
 
@@ -782,7 +775,7 @@ describe Participant do
           context "with due_date" do
             before(:each) do
               Factory(:ppg_detail, :participant => @participant,
-                :ppg_first => NcsCode.for_list_name_and_local_code("PPG_STATUS_CL1", 1), :orig_due_date => Date.new(2012, 10, 01))
+                :ppg_first_code => 1, :orig_due_date => Date.new(2012, 10, 01))
               @participant.due_date.should == Date.new(2012, 10, 01)
             end
 

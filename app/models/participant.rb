@@ -1359,9 +1359,9 @@ class Participant < ActiveRecord::Base
     end
 
     def post_transition_ppg_status_update(ppg_status_local_code)
-      new_ppg_status  = NcsCode.where(:list_name => "PPG_STATUS_CL1").where(:local_code => ppg_status_local_code).first
-      ppg_info_source = NcsCode.where(:list_name => "INFORMATION_SOURCE_CL3").where(:local_code => -5).first
-      ppg_info_mode   = NcsCode.where(:list_name => "CONTACT_TYPE_CL1").where(:local_code => -5).first
+      new_ppg_status  = NcsCode.for_list_name_and_local_code("PPG_STATUS_CL1", ppg_status_local_code)
+      ppg_info_source = NcsCode.for_list_name_and_local_code("INFORMATION_SOURCE_CL3", -5)
+      ppg_info_mode   = NcsCode.for_list_name_and_local_code("CONTACT_TYPE_CL1", -5)
       PpgStatusHistory.create(:psu => self.psu, :ppg_status => new_ppg_status, :ppg_info_source => ppg_info_source, :ppg_info_mode => ppg_info_mode, :participant_id => self.id)
     end
 

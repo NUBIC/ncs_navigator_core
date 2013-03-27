@@ -71,23 +71,23 @@ class Telephone < ActiveRecord::Base
   end
 
   def self.home_phone_type
-    NcsCode.where(:list_name => "PHONE_TYPE_CL1").where(:local_code => HOME_PHONE_CODE).first
+    NcsCode.for_list_name_and_local_code("PHONE_TYPE_CL1", HOME_PHONE_CODE)
   end
 
   def self.work_phone_type
-    NcsCode.where(:list_name => "PHONE_TYPE_CL1").where(:local_code => WORK_PHONE_CODE).first
+    NcsCode.for_list_name_and_local_code("PHONE_TYPE_CL1", WORK_PHONE_CODE)
   end
 
   def self.cell_phone_type
-    NcsCode.where(:list_name => "PHONE_TYPE_CL1").where(:local_code => CELL_PHONE_CODE).first
+    NcsCode.for_list_name_and_local_code("PHONE_TYPE_CL1", CELL_PHONE_CODE)
   end
 
   def self.fax_phone_type
-    NcsCode.where(:list_name => "PHONE_TYPE_CL1").where(:local_code => FAX_PHONE_CODE).first
+    NcsCode.for_list_name_and_local_code("PHONE_TYPE_CL1", FAX_PHONE_CODE)
   end
 
   def self.other_phone_type
-    NcsCode.where(:list_name => "PHONE_TYPE_CL1").where(:local_code => -5).first
+    NcsCode.for_list_name_and_local_code("PHONE_TYPE_CL1", -5)
   end
 
   def phone_nbr=(nbr)

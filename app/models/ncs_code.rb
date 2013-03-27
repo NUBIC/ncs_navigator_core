@@ -357,11 +357,11 @@ class NcsCode < ActiveRecord::Base
   end
 
   def self.ncs_code_lookup(attribute_name, show_missing_in_error = false)
-    codes = for_attributes(attribute_name)
     list_name = attribute_lookup(attribute_name)
+    codes = for_list_name(list_name)
 
     unless show_missing_in_error
-      codes = codes.where(%q{display_text <> 'Missing in Error'}).all
+      codes = codes.reject { |ncs_code| ncs_code.local_code == MISSING_IN_ERROR }
     end
 
     list = codes.map { |n| [n.display_text, n.local_code] }
@@ -391,12 +391,18 @@ class NcsCode < ActiveRecord::Base
     for_list_name_and_local_code(attribute_lookup(attribute_name), local_code)
   end
 
+  def self.for_list_name(list_name)
+    Rails.application.code_list_cache.code_list(list_name)
+  end
+
   def self.for_list_name_and_local_code(list_name, local_code)
-    where(:list_name => list_name, :local_code => local_code.to_i).first
+    Rails.application.code_list_cache.code_value(list_name, local_code.to_i)
   end
 
   def self.for_list_name_and_display_text(list_name, display_text)
-    where(:list_name => list_name, :display_text => display_text).first
+    cl = for_list_name(list_name)
+    return nil unless cl
+    cl.find { |ncs_code| ncs_code.display_text == display_text }
   end
 
   def self.find_event_by_lbl(lbl)
@@ -419,6 +425,13 @@ class NcsCode < ActiveRecord::Base
   # Used to determine if participant should be screened
   def self.pbs_eligibility_screener
     for_list_name_and_local_code('EVENT_TYPE_CL1', Event.pbs_eligibility_screener_code)
+  end
+
+  ##
+  # Override to reset cache when called. Should only be used in tests.
+  def self.create!(*args)
+    Rails.application.code_list_cache.reset
+    super
   end
 
   def to_s

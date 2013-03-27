@@ -7,7 +7,7 @@ describe ParticipantConsentsController do
 
   def valid_attributes
     {
-      :psu_code                        => 2000030,
+      :psu_code                        => 20000030,
       :consent_type_code               => 1,
       :consent_form_type_code          => 1,
       :consent_given_code              => 1,

@@ -142,7 +142,7 @@ end
 Factory.define :participant_person_link do |link|
   link.association :participant,  :factory => :participant
   link.association :person,  :factory => :person
-  link.psu_code                2000030
+  link.psu_code                20000030
   link.relationship_code       1
   link.relationship_other nil
   link.is_active_code          1

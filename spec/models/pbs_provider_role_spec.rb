@@ -21,9 +21,7 @@ describe PbsProviderRole do
     pbs_provider_role.should_not be_nil
   end
 
-  it { should belong_to(:psu) }
   it { should belong_to(:provider) }
-  it { should belong_to(:provider_role_pbs) }
 
   context "as mdes record" do
 

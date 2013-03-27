@@ -87,6 +87,8 @@ module NcsNavigator::Core::Mdes
         end
       end
 
+      Rails.application.code_list_cache.reset
+
       Rails.logger.info "Changed NcsCodes: inserted %d, updated %d, deleted %d." % [
         partitioned[:insert].size, partitioned[:update].size, partitioned[:delete].size
       ]

@@ -38,15 +38,6 @@ describe Provider do
     provider.should_not be_nil
   end
 
-  it { should belong_to(:psu) }
-  it { should belong_to(:provider_type) }
-  it { should belong_to(:provider_ncs_role) }
-  it { should belong_to(:practice_info) }
-  it { should belong_to(:practice_patient_load) }
-  it { should belong_to(:practice_size) }
-  it { should belong_to(:public_practice) }
-  it { should belong_to(:provider_info_source) }
-  it { should belong_to(:list_subsampling) }
   it { should belong_to(:institution) }
 
   it { should have_one(:address) }

@@ -75,15 +75,15 @@ class Address < ActiveRecord::Base
   MISSING_IN_ERROR = -4
 
   def self.home_address_type
-    NcsCode.where(:list_name => "ADDRESS_CATEGORY_CL1").where(:local_code => 1).first
+    NcsCode.for_list_name_and_local_code("ADDRESS_CATEGORY_CL1", 1)
   end
 
   def self.work_address_type
-    NcsCode.where(:list_name => "ADDRESS_CATEGORY_CL1").where(:local_code => 2).first
+    NcsCode.for_list_name_and_local_code("ADDRESS_CATEGORY_CL1", 2)
   end
 
   def self.mailing_address_type
-    NcsCode.where(:list_name => "ADDRESS_CATEGORY_CL1").where(:local_code => 4).first
+    NcsCode.for_list_name_and_local_code("ADDRESS_CATEGORY_CL1", 4)
   end
 
   ##

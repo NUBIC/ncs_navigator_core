@@ -42,15 +42,8 @@ describe PbsList do
     pbs_list.should_not be_nil
   end
 
-  it { should belong_to(:psu) }
   it { should belong_to(:provider) }
   it { should belong_to(:substitute_provider) }
-  it { should belong_to(:in_out_frame) }
-  it { should belong_to(:in_sample) }
-  it { should belong_to(:in_out_psu) }
-  it { should belong_to(:cert_flag) }
-  it { should belong_to(:frame_completion_req) }
-  it { should belong_to(:pr_recruitment_status) }
 
   it { should validate_presence_of(:provider) }
 
@@ -280,10 +273,8 @@ describe PbsList do
 
   describe "#hospital?" do
     before do
-      not_hospital = NcsCode.where(:list_name => 'INOUT_FRAME_CL1', :local_code => 1).first.local_code
-      hospital     = NcsCode.where(:list_name => 'INOUT_FRAME_CL1', :local_code => 4).first.local_code
-      @non_hospital_pbs_list = Factory(:pbs_list, :in_out_frame_code => not_hospital)
-      @hospital_pbs_list     = Factory(:pbs_list, :in_out_frame_code => hospital)
+      @non_hospital_pbs_list = Factory(:pbs_list, :in_out_frame_code => 1)
+      @hospital_pbs_list     = Factory(:pbs_list, :in_out_frame_code => 4)
     end
 
     it "true when in_out_frame_code is a hospital value" do

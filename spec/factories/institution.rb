@@ -1,5 +1,5 @@
 Factory.define :institution do |i|
-  i.psu_code         2000030
+  i.psu_code         20000030
   i.institute_comment           nil
   i.institute_info_date         Date.today
   i.institute_info_source_code  1
@@ -20,7 +20,7 @@ end
 Factory.define :institution_person_link do |link|
   link.association :person,  :factory => :person
   link.association :institution, :factory => :institution
-  link.psu_code                   2000030
+  link.psu_code                   20000030
   link.is_active_code             1
   link.institute_relation_code    1
 end

@@ -25,9 +25,7 @@ describe NoAccessNonInterviewReport do
     nanir.should_not be_nil
   end
 
-  it { should belong_to(:psu) }
   it { should belong_to(:non_interview_report) }
-  it { should belong_to(:nir_no_access) }
 
   context "as mdes record" do
 

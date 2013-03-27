@@ -43,12 +43,6 @@ describe Email do
   end
 
   it { should belong_to(:person) }
-  it { should belong_to(:psu) }
-  it { should belong_to(:email_info_source) }
-  it { should belong_to(:email_type) }
-  it { should belong_to(:email_rank) }
-  it { should belong_to(:email_share) }
-  it { should belong_to(:email_active) }
   it { should belong_to(:response_set) }
   it { should belong_to(:provider) }
   it { should belong_to(:institute) }

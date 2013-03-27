@@ -33,16 +33,10 @@ describe ParticipantVisitConsent do
     pvc.should_not be_nil
   end
 
-  it { should belong_to(:psu) }
   it { should belong_to(:participant) }
   it { should belong_to(:contact) }
   it { should belong_to(:vis_person_who_consented) }
 
-  it { should belong_to(:vis_who_consented) }
-  it { should belong_to(:vis_consent_type) }
-  it { should belong_to(:vis_consent_response) }
-  it { should belong_to(:vis_language) }
-  it { should belong_to(:vis_translate) }
 
   context ".visit_types" do
 

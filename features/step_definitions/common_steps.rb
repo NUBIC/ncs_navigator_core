@@ -22,8 +22,8 @@ end
 Given /^the following pregnant participants:$/ do |table|
   dt = Date.parse("2012-12-25")
   table.hashes.each do |hash|
-    status = NcsCode.where(:list_name => "PPG_STATUS_CL1").where(:local_code => 1).first
-    detail_status = NcsCode.where(:list_name => "PPG_STATUS_CL2").where(:local_code => 1).first
+    status = NcsCode.for_list_name_and_local_code("PPG_STATUS_CL1", 1)
+    detail_status = NcsCode.for_list_name_and_local_code("PPG_STATUS_CL2", 1)
 
     person = Factory(:person, hash)
     participant = Factory(:participant, :high_intensity => true, :high_intensity_state => "pregnancy_one")
@@ -44,7 +44,7 @@ end
 Given /^the following registered unconsented trying participants:$/ do |table|
   dt = Date.parse("2012-12-25")
   table.hashes.each do |hash|
-    status = NcsCode.where(:list_name => "PPG_STATUS_CL1").where(:local_code => 2).first
+    status = NcsCode.for_list_name_and_local_code("PPG_STATUS_CL1", 2)
 
     person = Factory(:person, hash)
     participant = Factory(:participant, :high_intensity => false)
@@ -67,7 +67,7 @@ end
 Given /^the following registered unconsented high intensity trying participants:$/ do |table|
   dt = Date.parse("2012-12-25")
   table.hashes.each do |hash|
-    status = NcsCode.where(:list_name => "PPG_STATUS_CL1").where(:local_code => 2).first
+    status = NcsCode.for_list_name_and_local_code("PPG_STATUS_CL1", 2)
 
     person = Factory(:person, hash)
     participant = Factory(:participant, :high_intensity => true)
@@ -92,7 +92,7 @@ end
 
 Given /^the following unregistered pregnant participants:$/ do |table|
   table.hashes.each do |hash|
-    status = NcsCode.where(:list_name => "PPG_STATUS_CL1").where(:local_code => 1).first
+    status = NcsCode.for_list_name_and_local_code("PPG_STATUS_CL1", 1)
 
     person = Factory(:person, hash)
     participant = Factory(:participant)

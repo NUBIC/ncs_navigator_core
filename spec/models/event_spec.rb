@@ -42,12 +42,7 @@ describe Event do
     e.should_not be_nil
   end
 
-  it { should belong_to(:psu) }
   it { should belong_to(:participant) }
-  it { should belong_to(:event_type) }
-  it { should belong_to(:event_disposition_category) }
-  it { should belong_to(:event_breakoff) }
-  it { should belong_to(:event_incentive_type) }
 
   it { should have_many(:contact_links) }
   it { should have_many(:contacts).through(:contact_links) }

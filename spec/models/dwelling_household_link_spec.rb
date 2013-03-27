@@ -28,9 +28,6 @@ describe DwellingHouseholdLink do
     link.should_not be_nil
   end
 
-  it { should belong_to(:psu) }
-  it { should belong_to(:is_active) }
-  it { should belong_to(:du_rank) }
 
   context "as mdes record" do
 

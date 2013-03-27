@@ -35,12 +35,6 @@ describe SampleReceiptStore do
   
   it { should belong_to(:sample_receipt_shipping_center) }
   it { should belong_to(:environmental_equipment) }
-  it { should belong_to(:psu) }  
-  it { should belong_to(:sample_condition) }
-  it { should belong_to(:cooler_temp_condition) }
-  it { should belong_to(:storage_compartment_area) }
-  it { should belong_to(:temp_event_occurred) }
-  it { should belong_to(:temp_event_action) }
   
   context "as mdes record" do
     it "sets the public_id to a uuid" do

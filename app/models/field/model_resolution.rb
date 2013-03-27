@@ -14,7 +14,7 @@ module Field
       :contacts,
 
       # Event resolution
-      { :participant_person_links => { :participant => { :events => :event_type } } }
+      { :participant_person_links => { :participant => [ :events ] } }
     ]
 
     ##

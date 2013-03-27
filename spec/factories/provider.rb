@@ -2,7 +2,7 @@
 FactoryGirl.define do
 
   factory :provider do |prov|
-    prov.psu_code                   2000030
+    prov.psu_code                   20000030
     prov.provider_type_code         1
     prov.provider_info_source_code  1
     prov.provider_ncs_role_code     1
@@ -17,19 +17,19 @@ FactoryGirl.define do
   end
 
   factory :provider_role do |pr|
-    pr.psu_code                   2000030
+    pr.psu_code                   20000030
     pr.association :provider, :factory => :provider
     pr.provider_ncs_role_code     1
   end
 
   factory :pbs_provider_role do |pr|
-    pr.psu_code                   2000030
+    pr.psu_code                   20000030
     pr.association :provider, :factory => :provider
     pr.provider_role_pbs_code     1
   end
 
   factory :person_provider_link do |ppl|
-    ppl.psu_code                   2000030
+    ppl.psu_code                   20000030
     ppl.association :provider, :factory => :provider
     ppl.association :person, :factory => :person
     ppl.provider_intro_outcome_code     1
@@ -44,7 +44,7 @@ FactoryGirl.define do
   end
 
   factory :pbs_list do |pbsl|
-    pbsl.psu_code                       2000030
+    pbsl.psu_code                       20000030
     pbsl.association :provider, :factory => :provider
     pbsl.association :substitute_provider, :factory => :provider
     pbsl.practice_num                   1

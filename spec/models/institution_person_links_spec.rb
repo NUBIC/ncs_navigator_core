@@ -9,9 +9,6 @@ describe InstitutionPersonLink do
 
   it { should belong_to(:institution) }
   it { should belong_to(:person) }
-  it { should belong_to(:psu) }
-  it { should belong_to(:is_active) }
-  it { should belong_to(:institute_relation) }
 
   context "as mdes record" do
 

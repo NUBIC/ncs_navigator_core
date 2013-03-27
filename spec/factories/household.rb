@@ -2,7 +2,7 @@
 
 
 Factory.define :listing_unit do |lu|
-  lu.psu_code         2000030
+  lu.psu_code         20000030
   lu.list_line        1
   lu.list_source_code 1
   lu.list_comment     "comment"
@@ -12,7 +12,7 @@ Factory.define :listing_unit do |lu|
 end
 
 Factory.define :dwelling_unit do |du|
-  du.psu_code           2000030
+  du.psu_code           20000030
   du.duplicate_du_code  1
   du.missed_du_code     1
   du.du_type_code       1
@@ -26,7 +26,7 @@ Factory.define :dwelling_unit do |du|
 end
 
 Factory.define :household_unit do |hh|
-  hh.psu_code                     2000030
+  hh.psu_code                     20000030
   hh.hh_status_code               1
   hh.hh_eligibility_code          1
   hh.number_of_age_eligible_women 1
@@ -43,7 +43,7 @@ end
 Factory.define :dwelling_household_link do |link|
   link.association :dwelling_unit,  :factory => :dwelling_unit
   link.association :household_unit, :factory => :household_unit
-  link.psu_code        2000030
+  link.psu_code        20000030
   link.is_active_code  1
   link.du_rank_code    1
 end
@@ -51,7 +51,7 @@ end
 Factory.define :household_person_link do |link|
   link.association :person,  :factory => :person
   link.association :household_unit, :factory => :household_unit
-  link.psu_code        2000030
+  link.psu_code        20000030
   link.is_active_code  1
   link.hh_rank_code    1
 end

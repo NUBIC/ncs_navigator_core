@@ -39,23 +39,11 @@ describe ParticipantVisitRecord do
     pvr.should_not be_nil
   end
 
-  it { should belong_to(:psu) }
   it { should belong_to(:participant) }
   it { should belong_to(:rvis_person) }
   it { should belong_to(:contact) }
 
-  it { should belong_to(:rvis_who_consented) }
 
-  it { should belong_to(:rvis_language) }
-  it { should belong_to(:rvis_translate) }
-  it { should belong_to(:rvis_sections) }
-  it { should belong_to(:rvis_during_interv) }
-  it { should belong_to(:rvis_during_bio) }
-  it { should belong_to(:rvis_bio_cord) }
-  it { should belong_to(:rvis_during_env) }
-  it { should belong_to(:rvis_during_thanks) }
-  it { should belong_to(:rvis_after_saq) }
-  it { should belong_to(:rvis_reconsideration) }
 
   context "as mdes record" do
 

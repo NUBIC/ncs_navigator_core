@@ -61,8 +61,6 @@ describe ListingUnit do
 
   end
 
-  it { should belong_to(:psu) }
-  it { should belong_to(:list_source) }
   it { should have_one(:dwelling_unit) }
 
   context "as mdes record" do

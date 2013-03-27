@@ -29,10 +29,7 @@ describe HouseholdPersonLink do
   end
 
   it { should belong_to(:person) }
-  it { should belong_to(:psu) }
   it { should belong_to(:household_unit) }
-  it { should belong_to(:hh_rank) }
-  it { should belong_to(:is_active) }
 
   context "as mdes record" do
 
