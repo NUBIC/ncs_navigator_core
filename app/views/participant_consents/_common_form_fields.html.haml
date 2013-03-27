@@ -1,4 +1,4 @@
-- if f.object.withdrawn?
+- if f.object.withdrawal?
   %fieldset{ :class => 'participant_consent_withdrawl' }
     %legend
       Withdrawl
@@ -14,7 +14,8 @@
       = f.text_field :consent_withdraw_date, :class => "date"
 
     = render "shared/ncs_code_select", { :f => f, :code => :who_wthdrw_consent_code, :label_text => "Who Withdrew Consent" }
-- elsif mdes_version_is_after?(3.0)
+
+- if mdes_version_is_after?(3.0)
   %fieldset{ :class => 'participant_consent_reconsent' }
     %legend
       Reconsent

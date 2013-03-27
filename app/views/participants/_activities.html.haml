@@ -1,8 +1,5 @@
 .page_section
   .psc_registration
-    %b
-      Upcoming Activities
-
   - if recruitment_strategy.pbs? && @participant.ineligible?
     CANDIDATE DETERMINED INELIGIBLE.
   - elsif @participant.withdrawn?
