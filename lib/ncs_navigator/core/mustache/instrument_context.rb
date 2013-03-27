@@ -441,8 +441,16 @@ module NcsNavigator::Core::Mustache
       "[CHILD'S DATE OF BIRTH]"
     end
 
+    def does_participants_children_have_date_of_birth?(participant)
+      if (participant.children.blank? || participant.children.first.blank? || participant.children.first.person_dob.blank?)
+        false
+      else
+        true
+      end
+    end
+
     def c_dob_through_participant
-      participant.children.blank? ? "CHILD'S DATE OF BIRTH]" : participant.children.first.person_dob
+      !does_participants_children_have_date_of_birth?(participant) ? "[CHILD'S DATE OF BIRTH]" : participant.children.first.person_dob
     end
 
     def age_of_child_in_months(today = Date.today)
