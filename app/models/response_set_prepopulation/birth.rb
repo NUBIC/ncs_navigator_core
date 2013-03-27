@@ -45,9 +45,11 @@ module ResponseSetPrepopulation
                   when "prepopulated_is_valid_work_address_provided"
                     is_valid_work_address_provided?(question)
                   when "prepopulated_is_pv_one_complete"
-                    answer_for(question, participant.try(:completed_event?, 13))
+                    event_type = NcsCode.for_list_name_and_local_code("EVENT_TYPE_CL1", "13")
+                    answer_for(question, participant.try(:completed_event?, event_type))
                   when "prepopulated_is_pv_two_complete"
-                    answer_for(question, participant.try(:completed_event?, 15))
+                    event_type = NcsCode.for_list_name_and_local_code("EVENT_TYPE_CL1", "15")
+                    answer_for(question, participant.try(:completed_event?, event_type))
                   when "prepopulated_is_p_type_fifteen"
                     is_participant_p_type_15?(question)
                   else

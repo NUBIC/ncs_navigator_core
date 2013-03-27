@@ -378,13 +378,34 @@ module ResponseSetPrepopulation
 
       describe "prepopulated_is_pv_one_complete" do
         it "should be TRUE if the pv1 event was completed" do
-          Participant.any_instance.stub(:completed_event?).and_return(true)
+          # create a completed pv1 event
+          previous_pv1 = Factory(:event, :event_type_code => Event.pregnancy_visit_1_code,
+            :event_end_date => '2025-12-25', :participant => participant)
+          previous_contact = Factory(:contact)
+          previous_contact_link = Factory(:contact_link, :person => person, :contact => previous_contact, :event => previous_pv1)
+          # ensure that the event has been completed
+          pv1_code = NcsCode.for_list_name_and_local_code('EVENT_TYPE_CL1', Event.pregnancy_visit_1_code)
+          person.participant.completed_event?(pv1_code).should be_true
           run_populator
           assert_response_value(@response_set_pt2, "prepopulated_is_pv_one_complete", "TRUE")
+
         end
 
         it "should be FALSE if the pv1 event was NOT completed" do
-          Participant.any_instance.stub(:completed_event?).and_return(false)
+          # create a pv1 event that was not complete
+          previous_pv1 = Factory(:event, :event_type_code => Event.pregnancy_visit_1_code,
+            :event_end_date => nil, :participant => participant)
+          previous_contact = Factory(:contact)
+          previous_contact_link = Factory(:contact_link, :person => person, :contact => previous_contact, :event => previous_pv1)
+          # ensure that the event has been completed
+          pv1_code = NcsCode.for_list_name_and_local_code('EVENT_TYPE_CL1', Event.pregnancy_visit_1_code)
+          person.participant.completed_event?(pv1_code).should be_false
+
+          run_populator
+          assert_response_value(@response_set_pt2, "prepopulated_is_pv_one_complete", "FALSE")
+        end
+
+        it "should be FALSE if no pv1 event was scheduled" do
           run_populator
           assert_response_value(@response_set_pt2, "prepopulated_is_pv_one_complete", "FALSE")
         end
@@ -392,13 +413,33 @@ module ResponseSetPrepopulation
 
       describe "prepopulated_is_pv_two_complete" do
         it "should be TRUE if the pv2 event was completed" do
-          Participant.any_instance.stub(:completed_event?).and_return(true)
+          # create a completed pv2 event
+          previous_pv2 = Factory(:event, :event_type_code => Event.pregnancy_visit_2_code,
+            :event_end_date => '2025-12-25', :participant => participant)
+          previous_contact = Factory(:contact)
+          previous_contact_link = Factory(:contact_link, :person => person, :contact => previous_contact, :event => previous_pv2)
+          # ensure that the event has been completed
+          pv2_code = NcsCode.for_list_name_and_local_code('EVENT_TYPE_CL1', Event.pregnancy_visit_2_code)
+          person.participant.completed_event?(pv2_code).should be_true
+
           run_populator
           assert_response_value(@response_set_pt2, "prepopulated_is_pv_two_complete", "TRUE")
         end
 
         it "should be FALSE if the pv2 event was NOT completed" do
-          Participant.any_instance.stub(:completed_event?).and_return(false)
+          # create a pv2 event that was not complete
+          previous_pv2 = Factory(:event, :event_type_code => Event.pregnancy_visit_2_code,
+            :event_end_date => nil, :participant => participant)
+          previous_contact = Factory(:contact)
+          previous_contact_link = Factory(:contact_link, :person => person, :contact => previous_contact, :event => previous_pv2)
+          # ensure that the event has been completed
+          pv2_code = NcsCode.for_list_name_and_local_code('EVENT_TYPE_CL1', Event.pregnancy_visit_2_code)
+          person.participant.completed_event?(pv2_code).should be_false
+          run_populator
+          assert_response_value(@response_set_pt2, "prepopulated_is_pv_two_complete", "FALSE")
+        end
+
+        it "should be FALSE if no pv2 event was scheduled" do
           run_populator
           assert_response_value(@response_set_pt2, "prepopulated_is_pv_two_complete", "FALSE")
         end
