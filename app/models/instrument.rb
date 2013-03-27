@@ -306,11 +306,15 @@ class Instrument < ActiveRecord::Base
     !instrument_end_date.blank? && !instrument_end_time.blank? && instrument_status.to_s == "Complete"
   end
 
-  def set_instrument_breakoff(response_set)
-    if response_set
-      local_code = response_set.has_responses_in_each_section_with_questions? ? 2 : 1
-      self.instrument_breakoff = NcsCode.for_attribute_name_and_local_code(:instrument_breakoff_code, local_code)
+  def set_instrument_breakoff
+    local_code = NcsCode::NO
+    response_sets.each do |rs|
+      if !rs.has_responses_in_each_section_with_questions?
+        local_code = NcsCode::YES
+        break
+      end
     end
+    self.instrument_breakoff_code = local_code
   end
 
   ##
@@ -415,16 +419,6 @@ class Instrument < ActiveRecord::Base
     response_sets.last
   end
 
-  # FIXME: This is temporary until we fix all places that call Instrument.response_set
-  def response_set
-    response_sets.first
-  end
-
-  # FIXME: This is temporary until we fix all places that call Instrument.response_set=
-  def response_set=(rs)
-    response_sets[0] = rs
-  end
-
   def enumerable_to_warehouse?
     return false unless event_id
 
@@ -433,6 +427,17 @@ class Instrument < ActiveRecord::Base
       FROM events e
       WHERE e.id=#{event_id} AND e.event_disposition IS NOT NULL
     QUERY
+  end
+
+  def set_instrument_repeat_key(person)
+    lowest = response_sets.min_by { |r_set|  person.instrument_repeat_key(r_set.survey) }
+    self.instrument_repeat_key = person.instrument_repeat_key(lowest.survey)
+  end
+
+  def set_instrument_type(surveys)
+    if instrument_type.blank? || instrument_type_code <= 0
+      self.instrument_type_code = surveys.first.instrument_type
+    end
   end
 
   private

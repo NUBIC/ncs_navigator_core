@@ -658,11 +658,20 @@ class Event < ActiveRecord::Base
     end
   end
 
-  def set_event_breakoff(response_set)
-    if response_set
-      local_code = response_set.has_responses_in_each_section_with_questions? ? NcsCode::NO : NcsCode::YES
-      self.event_breakoff = NcsCode.for_attribute_name_and_local_code(:event_breakoff_code, local_code)
-    end
+  def set_event_breakoff(resp_sets)
+     return nil if resp_sets.nil?
+     target = ResponseSet.where(:id => resp_sets.map(&:id))
+
+     responded = SurveySection.scoped.joins('INNER JOIN response_sets ON response_sets.survey_id = survey_sections.survey_id
+                                                   INNER JOIN responses ON responses.response_set_id = response_sets.id
+                                                   INNER JOIN questions ON responses.question_id = questions.id
+                                                   AND questions.survey_section_id = survey_sections.id').select('survey_sections.id').merge(target).uniq
+
+     referenced = SurveySection.scoped.joins(:questions, :survey => :response_sets)
+                              .select('survey_sections.id')
+                              .merge(target).where("questions.display_type IS NULL OR questions.display_type != 'label'").uniq
+
+    self.event_breakoff_code = (referenced - responded).empty? ? NcsCode::NO : NcsCode::YES
   end
 
   ##
@@ -830,6 +839,26 @@ class Event < ActiveRecord::Base
         ic.send("#{a}=", self.send(a)) if ic.send(a).blank? || ic.send(a) == -4
       end
       ic.save!
+    end
+  end
+
+  def set_suggested_event_disposition(contact_link)
+    event_disposition = contact_link.contact.contact_disposition if event_disposition.blank? || event_disposition < 0
+  end
+
+  def set_suggested_event_disposition_category(contact_link)
+    if (event_disposition_category.blank? || event_disposition_category_code < 0) && contact_link.try(:contact)
+      set_event_disposition_category(contact_link.contact)
+    end
+  end
+
+  def set_suggested_event_repeat_key
+    self.participant.events.where(:event_type_code => self.event_type_code).count - 1
+  end
+
+  def set_suggested_event_breakoff(contact_link)
+    if contact_link.instrument && contact_link.instrument.response_sets.exists?
+      set_event_breakoff(contact_link.instrument.response_sets)
     end
   end
 

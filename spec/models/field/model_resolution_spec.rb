@@ -147,7 +147,7 @@ module Field
             end
 
             it 'has a response set' do
-              instrument.response_set.should_not be_nil
+              instrument.response_sets.first.should_not be_nil
             end
 
             it 'is linked to the event' do
