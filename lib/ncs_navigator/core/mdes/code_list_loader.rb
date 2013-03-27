@@ -72,9 +72,9 @@ module NcsNavigator::Core::Mdes
       cmd << database_params['database']
 
       if interactive?
-        $stderr.puts cmd.join(' ')
+        $stderr.puts quoted_cmd_string(cmd)
       end
-      system(cmd.join(' '))
+      system(quoted_cmd_string(cmd))
     end
 
     ##
@@ -156,12 +156,17 @@ module NcsNavigator::Core::Mdes
       cmd << pg_dump_filename
 
       if interactive?
-        $stderr.puts cmd.join(' ')
+        $stderr.puts quoted_cmd_string(cmd)
       else
-        Rails.logger.info(cmd.join(' '))
+        Rails.logger.info(quoted_cmd_string(cmd))
       end
-      system(cmd.join(' '))
+      system(quoted_cmd_string(cmd)) or fail "load_from_pg_dump failed. See output."
     end
+
+    def quoted_cmd_string(cmd)
+      "'#{cmd.join("' '")}'"
+    end
+    private :quoted_cmd_string
 
     def do_update(sql, params)
       conn = ActiveRecord::Base.connection
