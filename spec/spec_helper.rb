@@ -115,7 +115,7 @@ Spork.prefork do
     config.before(:suite) do
       DatabaseCleaner.strategy = :transaction
       DatabaseCleaner.clean_with(:truncation)
-      NcsNavigator::Core::Mdes::CodeListLoader.new.load_from_yaml
+      NcsNavigator::Core::Mdes::CodeListLoader.new.load_from_pg_dump
 
       # The truncation wipes out the persisted event type order, so we restore
       # it here.

@@ -48,7 +48,7 @@ Rails.logger.silence do
 
   LOG.info 'Loading code lists'
   NcsNavigatorCore.mdes_version = '3.1'
-  NcsNavigator::Core::Mdes::CodeListLoader.new.load_from_yaml
+  NcsNavigator::Core::Mdes::CodeListLoader.new.load_from_pg_dump
 
   surveys = Dir["#{Rails.root}/{internal_surveys,surveys}/**/*.rb"]
   surveys.map { |fn| s.future(:load_survey, fn) }.all?(&:value)

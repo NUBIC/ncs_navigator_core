@@ -79,7 +79,7 @@ Spork.each_run do
 
   DatabaseCleaner.clean_with(:truncation)
   NcsNavigatorCore.mdes_version = '2.0' # TODO: testing with different MDES versions
-  NcsNavigator::Core::Mdes::CodeListLoader.new.load_from_yaml
+  NcsNavigator::Core::Mdes::CodeListLoader.new.load_from_pg_dump
 
   DatabaseCleaner.strategy = :transaction
   Cucumber::Rails::Database.javascript_strategy = [:truncation, { :except => %w(ncs_codes) }]
