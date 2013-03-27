@@ -18,8 +18,10 @@
           .events_for_date
             %b
               = date
-            - @events[date].each do |e|
+            - place_activities_with_blank_times_at_the_bottom_of_list(@events[date]).each do |e|
               .event_participant
+                %span.activity_time
+                  = convert_24_hour_time_to_am_pm_time(e.activity_time) if e.activity_time
                 %span.participant_link
                   - path = e.person.participant? ? participant_path(e.person.participant) : person_path(e.person)
                   = link_to e.person.to_s, path, :class => "show_link icon_link"

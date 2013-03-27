@@ -134,11 +134,12 @@ class WelcomeController < ApplicationController
       events = []
       if rows = scheduled_activities['rows']
         rows.each do |row|
+          activity_time = row['activity_time'] if row && row['activity_time']
           if row && row['subject']
             person = Person.find_by_person_id(row['subject']['person_id'])
             if person
               event_label = Event.parse_label(row['labels'].first)
-              events << ScheduledEvent.new(row['scheduled_date'], person, event_label.titleize) if event_label
+              events << ScheduledEvent.new(row['scheduled_date'], activity_time, person, event_label.titleize) if event_label
             end
           end
         end
@@ -181,6 +182,6 @@ class WelcomeController < ApplicationController
       end
     end
 
-    ScheduledEvent = Struct.new(:date, :person, :event_type)
+    ScheduledEvent = Struct.new(:date, :activity_time, :person, :event_type)
 
 end

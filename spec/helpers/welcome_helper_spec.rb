@@ -5,6 +5,42 @@ require 'spec_helper'
 
 describe ApplicationHelper do
 
+  describe "#place_activities_with_blank_times_at_the_bottom_of_list" do
+    ScheduledEvent = Struct.new(:date, :activity_time, :person, :event_type)
+
+    before do
+      @early_activity  = ScheduledEvent.new(nil, '09:33', nil, nil)
+      @middle_activity = ScheduledEvent.new(nil, '14:33', nil, nil)
+      @later_activity  = ScheduledEvent.new(nil, '21:33', nil, nil)
+      @blank_time_activity1   = ScheduledEvent.new(nil, nil, nil, nil)
+      @blank_time_activity2   = ScheduledEvent.new(nil, nil, nil, nil)
+      @unsorted_activities = [@later_activity, @blank_time_activity1, @early_activity, @blank_time_activity1, @middle_activity]
+    end
+
+    it "places blank time events to the end of the list" do
+      sorted = helper.place_activities_with_blank_times_at_the_bottom_of_list(@unsorted_activities)
+      sorted.index(@blank_time_activity2).should be > 2
+      sorted.index(@blank_time_activity1).should be > 2
+    end
+
+    it "places events with times in ascending chronological order" do
+      sorted = helper.place_activities_with_blank_times_at_the_bottom_of_list(@unsorted_activities)
+      sorted.index(@early_activity).should  == 0
+      sorted.index(@middle_activity).should == 1
+      sorted.index(@later_activity).should  == 2
+    end
+
+  end
+
+  describe "#convert_24_hour_time_to_am_pm_time" do
+    it "converts 24 hour style time to AM/PM style time" do
+      helper.convert_24_hour_time_to_am_pm_time("17:45").should == " 5:45 PM"
+      helper.convert_24_hour_time_to_am_pm_time("07:17").should == " 7:17 AM"
+      helper.convert_24_hour_time_to_am_pm_time("22:01").should == "10:01 PM"
+      helper.convert_24_hour_time_to_am_pm_time("11:32").should == "11:32 AM"
+    end
+  end
+
   it "is included in the helper object" do
     included_modules = (class << helper; self; end).send :included_modules
     included_modules.should include(WelcomeHelper)
