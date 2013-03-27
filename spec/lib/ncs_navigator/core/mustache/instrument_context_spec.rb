@@ -640,8 +640,49 @@ module NcsNavigator::Core::Mustache
         end
       end
 
+      describe ".does_participants_children_have_date_of_birth" do
+        it "returns true if child's dob is set" do
+          create_multiple_birth
+
+          mom = @response_set.person
+
+          mom.person_dob = "05/06/1980"
+          mom.participant.p_type_code = 1 # 1 age eligilble woman
+          mom.participant.save!
+
+          person_child = Factory(:person, :person_dob => "09/15/2012")
+          person_child.save!
+
+          Factory(:participant_person_link, :person => person_child, :participant => mom.participant, :relationship_code => 8) # 8 Child
+
+          mom.participant_person_links.reload
+
+          instrument_context.does_participants_children_have_date_of_birth?(mom).should == true
+        end
+
+        it "returns false if child's dob is not set" do
+          create_multiple_birth
+
+          mom = @response_set.person
+
+          mom.person_dob = "05/06/1980"
+          mom.participant.p_type_code = 1 # 1 age eligilble woman
+          mom.participant.save!
+
+          person_child = Factory(:person)
+          person_child.save!
+
+          Factory(:participant_person_link, :person => person_child, :participant => mom.participant, :relationship_code => 8) # 8 Child
+
+          mom.participant_person_links.reload
+
+          instrument_context.does_participants_children_have_date_of_birth?(mom).should == false
+        end
+
+      end
+
       describe ".c_dob_through_participant" do
-        it "returns 'child's date of birth' if first loop and more than 3 children" do
+        it "returns child's date of birth through mother" do
           create_multiple_birth
 
           mom = @response_set.person
@@ -660,6 +701,24 @@ module NcsNavigator::Core::Mustache
           instrument_context.c_dob_through_participant.should == "09/15/2012"
         end
 
+        it "returns [CHILD'S DATE OF BIRTH] if child's dob is not set" do
+          create_multiple_birth
+
+          mom = @response_set.person
+
+          mom.person_dob = "05/06/1980"
+          mom.participant.p_type_code = 1 # 1 age eligilble woman
+          mom.participant.save!
+
+          person_child = Factory(:person)
+          person_child.save!
+
+          Factory(:participant_person_link, :person => person_child, :participant => mom.participant, :relationship_code => 8) # 8 Child
+
+          mom.participant_person_links.reload
+
+          instrument_context.c_dob_through_participant.should == "[CHILD'S DATE OF BIRTH]"
+        end
 
       end
       describe ".do_when_will_live_with_you" do
