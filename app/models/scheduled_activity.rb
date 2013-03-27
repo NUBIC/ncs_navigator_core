@@ -1,14 +1,24 @@
 class ScheduledActivity
   include Comparable
 
-  attr_accessor :study_segment, :activity_id, :current_state, :ideal_date, :date, :activity_name, :activity_type, :labels, :person_id, :activity_time
-  attr_accessor :event, :references_collection, :references, :instruments, :instrument, :order, :participant_type, :collection, :mode
+  attr_accessor :study_segment, :activity_id, :activity_time, :ideal_date, :date, :activity_name, :activity_type
+  attr_accessor :event, :person_id, :current_state, :order, :participant_type, :collection, :mode
+  attr_accessor :labels, :references_collection, :references, :instruments, :instrument, :forms, :form
 
   def initialize(attrs={})
     attrs.each { |k, v| send("#{k}=", v) if respond_to?("#{k}=") }
     @instruments ||= []
     @references_collection ||= []
+    @forms ||= []
     parse_labels if @labels
+  end
+
+  ##
+  # Return the 'form' (internal_survey) or
+  # 'instrument' (survey) from the parsed labels
+  # or nil if neither exist
+  def survey_identifier
+    @form || @instrument
   end
 
   ##
@@ -19,6 +29,8 @@ class ScheduledActivity
       vals = lbl.split(':')
       v = vals.first
       case v
+      when "form"
+        handle_form_label vals
       when "instrument"
         handle_instrument_label vals
       when "references"
@@ -42,6 +54,17 @@ class ScheduledActivity
     end
   end
   private :valid_setters
+
+  ##
+  # Takes the form label values and adds
+  # the form label value to the forms collection.
+  # If the form label matches the mdes version, also
+  # set the form value.
+  def handle_form_label(vals)
+    @forms << vals.last
+    @form = vals.last if matches_mdes_version(vals)
+  end
+  private :handle_form_label
 
   ##
   # Takes the instrument label values and adds

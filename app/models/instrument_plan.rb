@@ -250,7 +250,7 @@ class InstrumentPlan
     result = []
     if a = scheduled_activity_for_survey(survey_title, event)
       result = scheduled_activities_for_event(event).select do |sa|
-        sa.instrument == a.survey_root || sa.references == a.survey_root
+        sa.survey_identifier == a.survey_root || sa.references == a.survey_root
       end.sort
     end
     result
@@ -265,7 +265,7 @@ class InstrumentPlan
   # @return [ScheduledActivity]
   def scheduled_activity_for_survey(survey_title, event)
     survey_title = survey_title.to_s.downcase
-    scheduled_activities_for_event(event).select { |sa| sa.instrument == survey_title }.first
+    scheduled_activities_for_event(event).select { |sa| sa.survey_identifier == survey_title }.first
   end
 
 end

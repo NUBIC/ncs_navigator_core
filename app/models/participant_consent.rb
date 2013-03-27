@@ -234,8 +234,12 @@ class ParticipantConsent < ActiveRecord::Base
   # @param [Contact]
   # @return[ParticipantConsent]
   def self.start!(person, participant, survey, contact)
-    where_clause = "response_sets.survey_id = ? AND response_sets.user_id = ? and participant_consents.contact_id = ?"
-    rs = ResponseSet.includes(:participant_consent).where(where_clause, survey.id, person.id, contact.id).first
+    where_clause =  "response_sets.survey_id = ? AND "
+    where_clause << "response_sets.user_id = ? AND "
+    where_clause << "response_sets.participant_id = ? AND "
+    where_clause << "participant_consents.contact_id = ?"
+    rs = ResponseSet.includes(:participant_consent).where(
+            where_clause, survey.id, participant.id, person.id, contact.id).first
     rs.nil? ? create_consent(person, participant, survey, contact) : rs.participant_consent
   end
 
