@@ -17,6 +17,7 @@ module ResponseSetPrepopulation
     Birth,
     ChildAndAdhoc,
     LowIntensity,
+    MustacheContext,
     NonInterview,
     ParticipantVerification,
     PbsEligibilityScreener,

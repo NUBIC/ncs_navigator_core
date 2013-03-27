@@ -1,21 +1,17 @@
 # -*- coding: utf-8 -*-
 
-
-require 'ncs_navigator/core/mustache'
-require 'mustache'
+require 'ncs_navigator/core'
 
 
 module NcsNavigator::Core::Mustache
-
   ##
   # This is an instrument context object that provides a
   # Mustache object with keys known to NCS instruments.
-  class InstrumentContext < ::Mustache
+  class InstrumentContext
 
-    attr_accessor :response_set
-    attr_accessor :current_user
+    attr_reader :response_set
 
-    def initialize(response_set = nil)
+    def initialize(response_set)
       @response_set = response_set
     end
 
@@ -26,21 +22,9 @@ module NcsNavigator::Core::Mustache
                       @response_set.person.id, data_export_identifier).last.to_s
     end
 
-    ### Current Logged in User ###
-
-    def current_user=(usr)
-      @current_user = usr
-    end
-
-    def current_user
-      @current_user
-    end
-
     def interviewer_name
-      @current_user ? @current_user.full_name : "[INTERVIEWER NAME]"
+      '[INTERVIEWER NAME]'
     end
-
-    ### Person taking survey ###
 
     def p_full_name
       full_name = @response_set.person.try(:full_name)

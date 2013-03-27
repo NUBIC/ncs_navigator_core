@@ -66,12 +66,8 @@ class SurveyorController < ApplicationController
     end
   end
 
-  ##
-  # Create and return InstrumentContext object associated with the current user
   def build_instrument_context
-    ctxt = NcsNavigator::Core::Mustache::InstrumentContext.new(@response_set)
-    ctxt.current_user = current_user
-    ctxt
+    @response_set.to_mustache
   end
 
   ##
