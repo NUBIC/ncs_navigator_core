@@ -320,6 +320,18 @@ module PbsEligibilityScreener
     a = Factory(:answer, :question_id => q.id, :text => "DOES NOT LIVE IN [COUNTY]", :response_class => "answer", :reference_identifier => "2")
     a = Factory(:answer, :question_id => q.id, :text => "[COUNTY] ELIGIBILITY IS UNKNOWN", :response_class => "answer", :reference_identifier => "-6")
 
+    # Birth Cohort Eligibility Questions --start--
+    q = Factory(:question, :reference_identifier => "AGE_ELIG", :data_export_identifier => "PBS_ELIG_SCREENER_HOSP.AGE_ELIG", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "RESPONDENT IS AGE-ELIGIBLE", :response_class => "answer", :reference_identifier => "1")
+    a = Factory(:answer, :question_id => q.id, :text => "RESPONDENT IS UNDER AGE 18", :response_class => "answer", :reference_identifier => "2")
+    a = Factory(:answer, :question_id => q.id, :text => "AGE ELIGIBILITY IS UNKNOWN", :response_class => "answer", :reference_identifier => "-6")
+
+    q = Factory(:question, :reference_identifier => "PSU_ELIG_CONFIRM", :data_export_identifier => "PBS_ELIG_SCREENER_HOSP.PSU_ELIG_CONFIRM", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "LIVES IN [COUNTY]", :response_class => "answer", :reference_identifier => "1")
+    a = Factory(:answer, :question_id => q.id, :text => "DOES NOT LIVE IN [COUNTY]", :response_class => "answer", :reference_identifier => "2")
+    a = Factory(:answer, :question_id => q.id, :text => "[COUNTY] ELIGIBILITY IS UNKNOWN", :response_class => "answer", :reference_identifier => "-6")
+    # Birth Cohort Eligibility Questions --finish--
+
     q = Factory(:question, :reference_identifier => "PREGNANT", :data_export_identifier => "PBS_ELIG_SCREENER.PREGNANT", :survey_section_id => survey_section.id)
     a = Factory(:answer, :question_id => q.id, :text => "YES", :response_class => "answer", :reference_identifier => "1")
     a = Factory(:answer, :question_id => q.id, :text => "NO, NO ADDITIONAL INFORMATION PROVIDED (IF VOLUNTEERED BY RESONDENT)", :response_class => "answer", :reference_identifier => "2")
