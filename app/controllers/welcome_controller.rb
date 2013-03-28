@@ -139,7 +139,7 @@ class WelcomeController < ApplicationController
             person = Person.find_by_person_id(row['subject']['person_id'])
             if person
               event_label = Event.parse_label(row['labels'].first)
-              events << ScheduledEvent.new(row['scheduled_date'], activity_time, person, event_label.titleize) if event_label
+              events << ScheduledEventStruct.new(row['scheduled_date'], activity_time, person, event_label.titleize) if event_label
             end
           end
         end
@@ -182,6 +182,6 @@ class WelcomeController < ApplicationController
       end
     end
 
-    ScheduledEvent = Struct.new(:date, :activity_time, :person, :event_type)
+    ScheduledEventStruct = Struct.new(:date, :activity_time, :person, :event_type)
 
 end
