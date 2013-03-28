@@ -1,7 +1,9 @@
 require 'spec_helper'
 
 module NcsNavigator::Core::Mdes::VersionMigrations
-  describe Basic do
+  # clean_with_truncation because CodeListLoader#load_from_pg_dump hangs
+  # when there's an open transaction that's touched ncs_codes.
+  describe Basic, :clean_with_truncation do
     let(:migrator) { Basic.new(NcsNavigatorCore.mdes_version.number, '2.2') }
 
     describe '#initialize' do

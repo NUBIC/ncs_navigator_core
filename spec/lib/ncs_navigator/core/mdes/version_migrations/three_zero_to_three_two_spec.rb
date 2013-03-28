@@ -1,7 +1,9 @@
 require 'spec_helper'
 
 module NcsNavigator::Core::Mdes::VersionMigrations
-  describe ThreeZeroToThreeTwo do
+  # clean_with_truncation because CodeListLoader#load_from_pg_dump hangs
+  # when there's an open transaction that's touched ncs_codes.
+  describe ThreeZeroToThreeTwo, :clean_with_truncation do
     let(:migration) {
       ThreeZeroToThreeTwo.new
     }
