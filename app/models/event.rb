@@ -429,6 +429,13 @@ class Event < ActiveRecord::Base
   end
 
   ##
+  # Returns true if event is Informed Consent
+  # @return[Boolean]
+  def consent_event?
+    self.event_type_code == Event.informed_consent_code
+  end
+
+  ##
   # Returns true for all post-natal events (includes Birth)
   # @return [Boolean]
   def postnatal?
