@@ -16,7 +16,7 @@ module NcsNavigator::Core::Mdes
     end
 
     def code_list
-      NcsCode.for_list_name(list_name)
+      NcsCode.for_list_name(list_name) or fail "No values found for code list #{list_name.inspect}"
     end
 
     def foreign_key_name

@@ -199,6 +199,12 @@ module NcsNavigator::Core::Mdes
         actual.collect(&:local_code).sort.should ==
           NcsCode.where(:list_name => 'EVENT_TYPE_CL1').collect(&:local_code).sort
       end
+
+      it 'fails usefully when there is no such code list' do
+        NcsCode.should_receive(:for_list_name).with('EVENT_TYPE_CL1').and_return(nil)
+
+        expect { actual }.to raise_error('No values found for code list "EVENT_TYPE_CL1"')
+      end
     end
   end
 end
