@@ -294,6 +294,11 @@ module NcsNavigator::Core::Warehouse
           next
         end
 
+        open_activity_ids = psc_participant.scheduled_activities(:sa_list).select{ |_, activity| activity.open? }.keys
+
+        activity_ids = psc_event.delete(:scheduled_activities)
+        psc_event[:scheduled_activities] = activity_ids & open_activity_ids
+
         sas = scheduled_activity_selector.call(psc_event, ex_lc_details)
         if sas.empty?
           log.warn("Found no scheduled activities for LC set\n" <<

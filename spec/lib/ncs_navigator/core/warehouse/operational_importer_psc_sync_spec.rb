@@ -664,7 +664,7 @@ module NcsNavigator::Core::Warehouse
         }.merge(overrides).to_a.flatten)
     end
 
-    describe 'updating activities for contact links' do
+    describe 'updating open activities for contact links' do
       before do
         add_event_hash('e1', '2010-01-11',
           :event_type_label => 'pregnancy_visit_1')
@@ -675,6 +675,7 @@ module NcsNavigator::Core::Warehouse
         add_event_hash('e2', '2010-04-01',
           :event_type_label => 'pregnancy_visit_2')
         add_link_contact_hash('e2_lc4', 'e2', '2010-04-04')
+        add_link_contact_hash('e2_lc5', 'e2', '2010-04-06')
 
         psc_participant.stub!(:scheduled_events).and_return(scheduled_events)
         psc_participant.stub!(:scheduled_activities).and_return(scheduled_activities)
@@ -682,7 +683,7 @@ module NcsNavigator::Core::Warehouse
 
         {
           'e1' => %w(e1_lc3 e1_lc2 e1_lc1),
-          'e2' => %w(e2_lc4)
+          'e2' => %w(e2_lc4 e2_lc5)
         }.each do |event_id, lc_ids|
           lc_ids.each do |lc_id|
             redis.sadd(
@@ -704,7 +705,7 @@ module NcsNavigator::Core::Warehouse
           {
             :event_type_label => 'pregnancy_visit_2',
             :start_date => '2010-04-04',
-            :scheduled_activities => %w(sa2)
+            :scheduled_activities => %w(sa2 sa5)
           }
         ]
       }
@@ -726,6 +727,10 @@ module NcsNavigator::Core::Warehouse
           'sa4' => Psc::ScheduledActivity.new(
             :current_state => 'scheduled',
             :labels => 'event:pregnancy_visit_1'
+          ),
+          'sa5' => Psc::ScheduledActivity.new(
+            :current_state => 'canceled',
+            :labels => 'event:pregnancy_visit_2'
           )
         }
       }
