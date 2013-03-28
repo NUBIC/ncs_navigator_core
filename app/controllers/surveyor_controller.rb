@@ -22,11 +22,12 @@ class SurveyorController < ApplicationController
         psc.update_activity_state(a.activity_id, @participant, Psc::ScheduledActivity::OCCURRED)
       end
 
-      # judge eligibility then go to contact_link.edit_instrument
-      EligibilityAdjudicator.adjudicate_eligibility(@response_set.person)
-
       # determine redirect action - whether consent survey or instrument survey
-      @response_set.instrument_associated? ?  edit_instrument_contact_link_path(contact_link.id) : decision_page_contact_link_path(contact_link)
+      if @response_set.instrument_associated?
+        edit_instrument_contact_link_path(contact_link.id)
+      else
+        decision_page_contact_link_path(contact_link)
+      end
     else
       # go to next part of the survey
       access_code = Survey.to_normalized_string(activity.instrument)

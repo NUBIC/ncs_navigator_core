@@ -7,7 +7,7 @@ class EligibilityAdjudicator
 
   def self.adjudicate_eligibility(person)
     me = EligibilityAdjudicator.new(person)
-    me.make_ineligible if person.participant.ineligible?
+    me.make_ineligible if person.participant.try(:ineligible?)
   end
 
   def make_ineligible
