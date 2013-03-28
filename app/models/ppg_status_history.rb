@@ -37,6 +37,14 @@ class PpgStatusHistory < ActiveRecord::Base
 
   before_create :set_ppg_status_date
 
+  # PPG_STATUS_CL1
+  PREGNANT   = 1
+  TRYING     = 2
+  LOSS       = 3
+  NOT_TRYING = 4
+  INEGLIBLE  = 5
+  WITHDRAWN  = 6
+
   scope :current_ppg_status, joins("inner join (select participant_id, max(updated_at) as updated_at from ppg_status_histories group by participant_id) as inner_ppg on inner_ppg.participant_id = ppg_status_histories.participant_id and inner_ppg.updated_at = ppg_status_histories.updated_at")
   scope :for_participant, lambda { |participant| where(:participant_id => participant.id) }
   scope :with_status, lambda { |code| where(:ppg_status_code => code) }

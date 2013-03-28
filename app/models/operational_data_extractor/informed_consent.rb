@@ -82,10 +82,24 @@ module OperationalDataExtractor
       participant = consent.participant
       if consent.consented?
         participant.update_enrollment_status!(true, consent.consent_date) unless participant.enrolled?
-      elsif consent.withdrawn?
-        participant.update_enrollment_status!(false)
       else
         participant.update_enrollment_status!(false)
+        create_withdrawn_ppg_status(participant, consent.consent_date)
+      end
+    end
+
+    ##
+    # If the most recent status history is not withdrawn create
+    # a PpgStatusHistory record for the participant
+    # only if the participant is not a child participant
+    def create_withdrawn_ppg_status(participant, date)
+      return if participant.child_participant?
+
+      unless participant.ppg_status_histories.first.try(:ppg_status_code) == PpgStatusHistory::WITHDRAWN
+        PpgStatusHistory.create(:participant => participant,
+                                :psu => participant.psu,
+                                :ppg_status_date => date,
+                                :ppg_status_code => PpgStatusHistory::WITHDRAWN)
       end
     end
   end

@@ -199,6 +199,12 @@ describe OperationalDataExtractor::InformedConsent do
         c.participant.should be_unenrolled
         c.participant.enroll_date.should be_nil
       end
+
+      it "creates a withdrawn ppg status history record" do
+        pt = Participant.find consent.participant.id
+        pt.ppg_status_histories.last.ppg_status_code.should == PpgStatusHistory::WITHDRAWN
+      end
+
     end
   end
 
@@ -233,6 +239,38 @@ describe OperationalDataExtractor::InformedConsent do
         consent.consent_reconsent_reason.should == reason
         consent.consent_reconsent_reason_other.should == "other"
       end
+
+      describe "not giving consent" do
+        let!(:consent) { prepare_consent(person, participant, survey, contact) }
+        let(:response_set) { consent.response_set }
+
+        before do
+          take_survey(survey, response_set) do |r|
+            r.a "PARTICIPANT_CONSENT.CONSENT_GIVEN_CODE", no
+            r.a "PARTICIPANT_CONSENT.CONSENT_RECONSENT_CODE", yes
+            r.a "PARTICIPANT_CONSENT.CONSENT_RECONSENT_REASON_CODE", reason
+            r.a "PARTICIPANT_CONSENT.CONSENT_RECONSENT_REASON_OTHER", "consent_reconsent_reason_other", :value => "other"
+          end
+
+          response_set.responses.reload
+          response_set.responses.size.should == 4
+
+          OperationalDataExtractor::InformedConsent.new(response_set).extract_data
+        end
+
+        it "updates the enrollment status" do
+          c = ParticipantConsent.find(consent.id)
+          c.participant.should be_unenrolled
+          c.participant.enroll_date.should be_nil
+        end
+
+        it "creates a withdrawn ppg status history record" do
+          pt = Participant.find consent.participant.id
+          pt.ppg_status_histories.last.ppg_status_code.should == PpgStatusHistory::WITHDRAWN
+        end
+
+      end
+
     end
   end
 
