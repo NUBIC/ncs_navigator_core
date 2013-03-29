@@ -532,6 +532,22 @@ describe OperationalDataExtractor::PregnancyScreener do
 
     end
 
+    it "does not set the due date if number of months is nil" do
+      take_survey(@survey, @response_set) do |r|
+        r.a "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.PREGNANT", ppg1
+        r.a"#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.MONTH_PREG", nil
+      end
+
+      @response_set.responses.reload
+      @response_set.responses.size.should == 2
+
+      OperationalDataExtractor::PregnancyScreener.new(@response_set).extract_data
+
+      person  = Person.find(@person.id)
+      participant = person.participant
+      participant.due_date.should be_nil
+    end
+
     # 1ST TRIMESTER:      ORIG_DUE_DATE = TODAY’S DATE + (280 DAYS – 46 DAYS).
     # 2ND TRIMESTER:      ORIG_DUE_DATE = TODAY’S DATE + (280 DAYS – 140 DAYS).
     # 3RD TRIMESTER:      ORIG_DUE_DATE = TODAY’S DATE + (280 DAYS – 235 DAYS).

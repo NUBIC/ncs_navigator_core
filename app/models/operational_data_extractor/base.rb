@@ -132,11 +132,11 @@ module OperationalDataExtractor
                   when "DUE_DATE_MM", "DUE_DATE_DD", "DUE_DATE_YY"
                     value
                   when "DATE_PERIOD"
-                    value + 280.days
+                    value + 280.days if value
                   when "WEEKS_PREG"
-                    (Date.today + 280.days) - ((value * 7).days)
+                    (Date.today + 280.days) - ((value * 7).days) if value
                   when "MONTH_PREG"
-                    (Date.today + 280.days) - ((value * 30) - 15)
+                    (Date.today + 280.days) - ((value * 30) - 15) if value
                   when "TRIMESTER"
                     case value
                     when 1
