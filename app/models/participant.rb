@@ -644,15 +644,22 @@ class Participant < ActiveRecord::Base
   end
 
   ##
+  # Return the most recent ParticipantConsent record
+  # for this Participant as determined by the
+  # consent_date or consent_withdraw_date
+  # @return[ParticipantConsent]
+  def most_recent_consent
+    @most_recent_consent ||= participant_consents.sort { |c| c.consent_date || c.consent_withdraw_date }.last
+  end
+
+  ##
   # Returns true if a participant_consent record exists for the given consent type
   # and consent_given_code is true and consent_withdraw_code is not true.
   # If no consent type is given, then check if any consent record exists
-  # @param [NcsCode]
   # @return [Boolean]
-  def consented?(consent_type = nil)
-    return false if participant_consents.empty?
-    consents = consents_for_type(determine_consent_type(consent_type))
-    consents.select { |c| c.consented? }.size > 0 && !withdrawn?(consent_type)
+  def consented?
+    return false unless most_recent_consent
+    most_recent_consent.consented? && !most_recent_consent.withdrawn?
   end
 
   ##
@@ -675,9 +682,11 @@ class Participant < ActiveRecord::Base
     child_consented? ParticipantConsent.child_consent_6_months_to_age_of_majority_form_type_code
   end
 
-  def child_consented?(code)
-    return false unless child_participant? || participant_consents.empty?
-    consents_for_type(code).first.try(:consented?)
+  def child_consented?(consent_form_type)
+    return false unless child_participant?
+    return false unless most_recent_consent.try(:consent_form_type) == consent_form_type
+
+    most_recent_consent.consented? && !most_recent_consent.withdrawn?
   end
   private :child_consented?
 
@@ -685,58 +694,20 @@ class Participant < ActiveRecord::Base
   # Returns true if a participant_consent record exists for the given consent type
   # and consent_given_code is true and consent_withdraw_code is not true.
   # If no consent type is given, then check if any consent record exists
-  # @param [NcsCode]
   # @return [Boolean]
-  def reconsented?(consent_type = nil)
-    return false if participant_consents.empty?
-    consents = consents_for_type(determine_consent_type(consent_type))
-    consents.select { |c| c.reconsented? }.size > 0 && !withdrawn?(consent_type)
+  def reconsented?
+    return false unless most_recent_consent
+    most_recent_consent.reconsented? && !most_recent_consent.withdrawn?
   end
 
   ##
   # Returns true if a participant_consent record exists for the given consent type
   # and consent_withdraw_code is true.
   # If no consent type is given, then check if any consent record exists that was withdrawn
-  # @param [NcsCode]
   # @return [Boolean]
-  def withdrawn?(consent_type = nil)
-    return false if participant_consents.empty?
-    consents = consent_type.nil? ? participant_consents : consents_for_type(consent_type)
-    consents.select { |c| c.withdrawn? }.size > 0
-  end
-
-  def determine_consent_type(consent_type)
-    if consent_type.nil?
-      consent_type = low_intensity? ? ParticipantConsent.low_intensity_consent_type_code : ParticipantConsent.general_consent_type_code
-    end
-    consent_type
-  end
-  private :determine_consent_type
-
-  ##
-  # Gets all ParticipantConsent records matching the given consent type
-  # ordered by consent date
-  # @param consent_type [NcsCode] The CONSENT_TYPE_CL* from the MDES Code List
-  # @return [Array<ParticipantConsent>]
-  def consents_for_type(consent_type)
-    participant_consents.where(
-      "consent_type_code = ? OR consent_form_type_code = ?",
-        consent_type.local_code, consent_type.local_code).order("consent_date").all
-  end
-
-  ##
-  # Gets the most recent ParticipantConsent record that matches
-  # the given consent type
-  # @param consent_type [NcsCode] The CONSENT_TYPE_CL* from the MDES Code List
-  # @return [ParticipantConsent]
-  def consent_for_type(consent_type)
-    current_consent = nil
-    cs = consents_for_type(consent_type)
-    current_consent = cs.first
-    if cs.size > 1
-      cs.each { |c| current_consent = c if c.phase_two? }
-    end
-    current_consent
+  def withdrawn?
+    return false unless most_recent_consent
+    most_recent_consent.withdrawn?
   end
 
   ##

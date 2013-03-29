@@ -239,7 +239,7 @@ class ParticipantConsent < ActiveRecord::Base
     where_clause << "response_sets.participant_id = ? AND "
     where_clause << "participant_consents.contact_id = ?"
     rs = ResponseSet.includes(:participant_consent).where(
-            where_clause, survey.id, participant.id, person.id, contact.id).first
+            where_clause, survey.id, person.id, participant.id, contact.id).first
     rs.nil? ? create_consent(person, participant, survey, contact) : rs.participant_consent
   end
 

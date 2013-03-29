@@ -65,12 +65,10 @@ module ParticipantsHelper
 
     consent_type_code = consent.local_code
     consent_type = NcsCode.for_attribute_name_and_local_code(:consent_type_code, consent_type_code)
-    if participant.consented?(consent_type)
+    if participant.consented?
 
-      participant_consent = participant.consent_for_type(consent_type)
-
-      if participant_consent.consent_event == contact_link.event
-        build_edit_participant_consent_path(participant, participant_consent, contact_link, current_activity)
+      if participant.most_recent_consent.consent_event == contact_link.event
+        build_edit_participant_consent_path(participant, participant.most_recent_consent, contact_link, current_activity)
       else
         build_new_participant_consent_path(participant, consent_type_code, contact_link, current_activity)
       end

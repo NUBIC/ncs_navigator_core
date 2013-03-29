@@ -152,8 +152,6 @@ describe ParticipantConsent do
         pc = Factory(:participant_consent, :consent_given => @yes, :consent_withdraw => @no,
                      :consent_type => @low_intensity, :consent_form_type_code => -4)
         pc.participant.should be_consented
-        pc.participant.consented?(@low_intensity).should be_true
-        pc.participant.consented?(@general).should be_false
         pc.participant.should_not be_withdrawn
       end
 
@@ -161,8 +159,6 @@ describe ParticipantConsent do
         pc = Factory(:participant_consent, :consent_given => @yes, :consent_withdraw => @yes,
                      :consent_type => @low_intensity, :consent_form_type_code => -4)
         pc.participant.should be_withdrawn
-        pc.participant.withdrawn?(@low_intensity).should be_true
-        pc.participant.withdrawn?(@general).should be_false
       end
     end
 
@@ -176,8 +172,6 @@ describe ParticipantConsent do
         pc = Factory(:participant_consent, :consent_given => @yes, :consent_withdraw => @no,
                      :consent_form_type => @low_intensity, :consent_type_code => -4)
         pc.participant.should be_consented
-        pc.participant.consented?(@low_intensity).should be_true
-        pc.participant.consented?(@general).should be_false
         pc.participant.should_not be_withdrawn
       end
 
@@ -185,8 +179,6 @@ describe ParticipantConsent do
         pc = Factory(:participant_consent, :consent_given => @yes, :consent_withdraw => @yes,
                      :consent_form_type => @low_intensity, :consent_type_code => -4)
         pc.participant.should be_withdrawn
-        pc.participant.withdrawn?(@low_intensity).should be_true
-        pc.participant.withdrawn?(@general).should be_false
       end
     end
   end
