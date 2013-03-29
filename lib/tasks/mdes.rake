@@ -19,7 +19,7 @@ namespace :mdes do
     # n.b.: this touches your development database
     desc 'Generate the code list YAML and pg_dump files for every supported MDES version'
     task :all => :base do
-      versions = %w(2.0 2.1 2.2 3.0 3.1 3.2)
+      versions = NcsNavigator::Core::Mdes::SUPPORTED_VERSIONS.dup
 
       # move current version to end so that it is the one left in the database.
       current_version = NcsNavigator::Core::Mdes::Version.new.number
