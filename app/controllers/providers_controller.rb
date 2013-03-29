@@ -13,7 +13,7 @@ class ProvidersController < ApplicationController
 
     respond_to do |format|
       format.html
-      format.json { render :json => result.all }
+      format.json { render :json => @q.result.all }
     end
   end
 

@@ -24,8 +24,8 @@ class ParticipantsController < ApplicationController
 
     respond_to do |format|
       format.html # index.html.haml
-      format.json { render :json => result.all }
-      format.csv { render :csv => result.all, :force_quotes => true, :filename => 'participants' }
+      format.json { render :json => @q.result.all }
+      format.csv { render :csv => @q.result.all, :force_quotes => true, :filename => 'participants' }
     end
   end
 
