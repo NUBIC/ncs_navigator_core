@@ -91,5 +91,25 @@ module NcsNavigator::Core::Mdes
         nil
       end
     end
+
+    ##
+    # Indicates whether this version matches the given comparison operation and
+    # version string. Supported operations are:
+    #
+    # * `>`
+    # * `>=`
+    # * `=`
+    # * `<=`
+    # * `<`
+    #
+    # @param [String] version_operation a string of the form [operator] ' ' [version].
+    #   Ex: `">= 2.2"`.
+    def matches?(version_operation)
+      pattern_match = version_operation.scan(/\A([<>]?=?)\s*(\d+\.\d+)\z/).first
+      fail "Unsupported comparison operation or version name in #{version_operation.inspect}" unless pattern_match
+      operator, other_version = pattern_match
+      operator = '==' if operator.empty? || operator == '='
+      send(operator, other_version)
+    end
   end
 end

@@ -148,5 +148,105 @@ module NcsNavigator::Core::Mdes
           SUPPORTED_VERSIONS
       end
     end
+
+    describe '#matches?' do
+      def v(number)
+        Version.new(number)
+      end
+
+      describe 'with a single version' do
+        it 'matches the same version' do
+          v('2.2').matches?('2.2').should be_true
+        end
+
+        it 'does not match a lesser version' do
+          v('2.2').matches?('2.1').should be_false
+        end
+
+        it 'does not match a greater version' do
+          v('2.2').matches?('3.1').should be_false
+        end
+      end
+
+      describe 'with =' do
+        it 'matches the same version' do
+          v('2.2').matches?('= 2.2').should be_true
+        end
+
+        it 'does not match a lesser version' do
+          v('2.2').matches?('= 2.1').should be_false
+        end
+
+        it 'does not match a greater version' do
+          v('2.2').matches?('= 2.4').should be_false
+        end
+      end
+
+      describe 'with <' do
+        it 'does not match the same version' do
+          v('2.2').matches?('< 2.2').should be_false
+        end
+
+        it 'does not match a lesser version' do
+          v('2.2').matches?('< 2.0').should be_false
+        end
+
+        it 'matches a greater version' do
+          v('2.2').matches?('< 2.4').should be_true
+        end
+      end
+
+      describe 'with <=' do
+        it 'matches the same version' do
+          v('2.2').matches?('<= 2.2').should be_true
+        end
+
+        it 'does not match a lesser version' do
+          v('2.2').matches?('<= 2.1').should be_false
+        end
+
+        it 'matches a greater version' do
+          v('2.2').matches?('<= 3.0').should be_true
+        end
+      end
+
+      describe 'with >' do
+        it 'does not match the same version' do
+          v('2.2').matches?('> 2.2').should be_false
+        end
+
+        it 'matches a lesser version' do
+          v('2.2').matches?('> 2.0').should be_true
+        end
+
+        it 'does not match a greater version' do
+          v('2.2').matches?('> 2.3').should be_false
+        end
+      end
+
+      describe 'with >=' do
+        it 'matches the same version' do
+          v('2.2').matches?('>= 2.2').should be_true
+        end
+
+        it 'matches a lesser version' do
+          v('2.2').matches?('>= 2.1').should be_true
+        end
+
+        it 'does not match a greater version' do
+          v('2.2').matches?('>= 3.8').should be_false
+        end
+      end
+
+      it 'throws an exception with some other comparator op' do
+        expect { v('2.0').matches?('<< 3.4') }.
+          to raise_error('Unsupported comparison operation or version name in "<< 3.4"')
+      end
+
+      it 'throws an exception without a version' do
+        expect { v('2.0').matches?('<=') }.
+          to raise_error('Unsupported comparison operation or version name in "<="')
+      end
+    end
   end
 end
