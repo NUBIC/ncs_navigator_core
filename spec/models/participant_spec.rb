@@ -2270,7 +2270,8 @@ describe Participant do
 
     describe "#most_recent_consent" do
       describe "for a pregnant eligible woman participant" do
-      let(:p_type_code) { 3 } # PARTICIPANT_TYPE_CL1 - pregnant eligible woman
+        let(:p_type_code) { 3 } # PARTICIPANT_TYPE_CL1 - pregnant eligible woman
+
         describe "without any consents" do
           it "returns nil" do
             participant.most_recent_consent.should be_nil
@@ -2329,7 +2330,148 @@ describe Participant do
           end
         end
       end
+    end
 
+    describe "#consented?" do
+      describe "for a guardian participant" do
+        let(:p_type_code) { 3 } # PARTICIPANT_TYPE_CL1 - pregnant eligible woman
+
+        describe "without any consents" do
+          it "returns false" do
+            participant.should_not be_consented
+          end
+        end
+
+        describe "with one consent" do
+          let!(:participant_consent) {
+            Factory(:participant_consent,
+              :participant => participant,
+              :consent_date => "2020-12-25",
+              :consent_given_code => consent_given_code,
+              :consent_form_type_code => pregnant_woman)
+          }
+
+          describe "in the affirmative" do
+            let(:consent_given_code) { NcsCode::YES }
+            it "returns true" do
+              participant.should be_consented
+            end
+
+            describe "and a re-consent" do
+              let!(:re_consent) {
+                Factory(:participant_consent,
+                  :consent_reconsent_code => NcsCode::YES,
+                  :participant => participant,
+                  :consent_date => "2222-12-25",
+                  :consent_given_code => reconsent_given_code,
+                  :consent_form_type_code => pregnant_woman)
+              }
+
+              describe "in the affirmative" do
+                let(:reconsent_given_code) { NcsCode::YES }
+                it "returns true" do
+                  participant.should be_consented
+                end
+              end
+
+              describe "in the negative" do
+                let(:reconsent_given_code) { NcsCode::NO }
+                it "returns false" do
+                  participant.should_not be_consented
+                end
+              end
+            end
+
+            describe "and a withdrawal (at a later date)" do
+              let!(:withdrawal) {
+                Factory(:participant_consent,
+                  :consent_reconsent_code => NcsCode::NO,
+                  :participant => participant,
+                  :consent_withdraw_date => "2222-12-25",
+                  :consent_given_code => nil,
+                  :consent_withdraw_code => NcsCode::YES,
+                  :consent_form_type_code => pregnant_woman)
+              }
+              it "returns false" do
+                participant.should_not be_consented
+              end
+            end
+
+          end
+
+          describe "in the negative" do
+            let(:consent_given_code) { NcsCode::NO }
+            it "returns false" do
+              participant.should_not be_consented
+            end
+          end
+
+        end
+
+      end
+    end
+
+    describe "#consented_environmental?" do
+      describe "for a participant" do
+        let(:p_type_code) { 3 }
+
+        describe "without any participant_consent records" do
+          it "returns false" do
+            participant.should_not be_consented_environmental
+          end
+        end
+
+        describe "with one participant_consent record" do
+          let!(:participant_consent) {
+            Factory(:participant_consent,
+              :participant => participant,
+              :consent_date => "2020-12-25",
+              :consent_given_code => consent_given_code,
+              :consent_form_type_code => pregnant_woman)
+          }
+
+          describe "in the negative" do
+            let(:consent_given_code) { NcsCode::NO }
+            it "returns false" do
+              participant.should_not be_consented_environmental
+            end
+          end
+
+          describe "in the affirmative" do
+            let(:consent_given_code) { NcsCode::YES }
+
+            describe "and an enivronmental participant_consent_sample record" do
+              let!(:participant_consent_sample) {
+                Factory(:participant_consent_sample,
+                  :participant => participant,
+                  :participant_consent => participant_consent,
+                  :sample_consent_type_code => ParticipantConsentSample::ENVIRONMENTAL,
+                  :sample_consent_given_code => sample_consent_given_code)
+              }
+              describe "in the affirmative" do
+                let(:sample_consent_given_code) { NcsCode::YES }
+                it "returns true" do
+                  participant.should be_consented_environmental
+                end
+              end
+
+              describe "in the negative" do
+                let(:sample_consent_given_code) { NcsCode::NO }
+                it "returns false" do
+                  participant.should_not be_consented_environmental
+                end
+              end
+            end
+          end
+
+        end
+      end
+    end
+
+    describe "#consented_biospecimen?" do
+    end
+
+    describe "#consented_genetic?" do
     end
 
     describe "#consented_birth_to_six_months?" do

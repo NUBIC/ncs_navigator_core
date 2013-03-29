@@ -638,9 +638,9 @@ class Participant < ActiveRecord::Base
 
   ##
   # Returns true if the participant is not ineligible and
-  # has not withdrawn
+  # has consented
   def in_study?
-    !ineligible? && !withdrawn?
+    !ineligible? && consented?
   end
 
   ##
@@ -709,6 +709,42 @@ class Participant < ActiveRecord::Base
     return false unless most_recent_consent
     most_recent_consent.withdrawn?
   end
+
+  def consented_environmental?
+    consented_sample?(ParticipantConsentSample::ENVIRONMENTAL)
+  end
+
+  def consented_biospecimen?
+    consented_sample?(ParticipantConsentSample::BIOSPECIMEN)
+  end
+
+  def consented_genetic?
+    consented_sample?(ParticipantConsentSample::GENETIC)
+  end
+
+  ##
+  # True if the ParticipantConsentSample of type for the
+  # most recent consent is consented?
+  # @see ParticipantConsentSample#consented?
+  # @param [Integer]
+  # @return [Boolean]
+  def consented_sample?(sample_consent_type_code)
+    sample_consent(sample_consent_type_code).try(:consented?)
+  end
+  private :consented_sample?
+
+  ##
+  # Return the ParticipantConsentSample of type for the
+  # most recent consent
+  # @param [Integer]
+  # @return [ParticipantConsentSample]
+  def sample_consent(sample_consent_type_code)
+    if most_recent_consent
+      most_recent_consent.participant_consent_samples.where(
+        :sample_consent_type_code => sample_consent_type_code).first
+    end
+  end
+  private :sample_consent
 
   ##
   # Returns true if participant enroll status is 'Yes' (i.e. local_code == 1)
