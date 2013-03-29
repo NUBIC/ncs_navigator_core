@@ -9,6 +9,7 @@ log
 tmp
 *.patch
 *.tar
+*.diff
 
 # General temp files
 .DS_Store
