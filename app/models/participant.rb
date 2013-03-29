@@ -646,10 +646,17 @@ class Participant < ActiveRecord::Base
   ##
   # Return the most recent ParticipantConsent record
   # for this Participant as determined by the
-  # consent_date or consent_withdraw_date
+  # consent_date or consent_withdraw_date.
+  #
+  # There is a possibility that a ParticipantConsent has
+  # been started by not completed and in that case we
+  # do not use those ParticipantConsent records to determine
+  # most recent.
+  #
   # @return[ParticipantConsent]
   def most_recent_consent
-    @most_recent_consent ||= participant_consents.sort { |c| c.consent_date || c.consent_withdraw_date }.last
+    sortable_consents = participant_consents.select { |c| c.consent_date || c.consent_withdraw_date }
+    @most_recent_consent ||= sortable_consents.last
   end
 
   ##
