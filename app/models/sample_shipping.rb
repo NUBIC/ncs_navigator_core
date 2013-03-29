@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # == Schema Information
+# Schema version: 20130329150304
 #
 # Table name: sample_shippings
 #
@@ -19,7 +20,7 @@
 #  shipper_destination_code          :integer          not null
 #  shipper_id                        :string(36)       not null
 #  staff_id                          :string(36)       not null
-#  staff_id_track                    :string(36)
+#  staff_id_track                    :string(36)       not null
 #  transaction_type                  :string(36)
 #  updated_at                        :datetime
 #
@@ -39,7 +40,8 @@ class SampleShipping < ActiveRecord::Base
   ncs_coded_attribute :shipment_coolant,            'SHIPMENT_TEMPERATURE_CL2'
   ncs_coded_attribute :sample_shipped_by,           'SAMPLES_SHIPPED_BY_CL1'
 
-  validates_presence_of :staff_id 
+  validates_presence_of :staff_id
+  validates_presence_of :staff_id_track
   validates_presence_of :shipper_id
   validates_presence_of :shipper_destination
   validates_presence_of :shipment_date 
