@@ -94,5 +94,59 @@ module NcsNavigator::Core::Mdes
         Version.new.number.should == '2.1'
       end
     end
+
+    describe '#<=>' do
+      let(:version) { Version.new('3.1') }
+
+      shared_context 'Mdes::Version comparisons' do
+        it 'is -1 when compared to a greater value' do
+          (version <=> greater_value).should == -1
+        end
+
+        it 'is 0 when compared to an equivalent value' do
+          (version <=> same_value).should == 0
+        end
+
+        it 'is +1 when compared to a lesser value' do
+          (version <=> lesser_value).should == 1
+        end
+      end
+
+      describe 'with another Mdes::Version' do
+        let(:greater_value) { Version.new('3.5') }
+        let(:same_value)    { Version.new('3.1') }
+        let(:lesser_value)  { Version.new('2.2') }
+
+        include_context 'Mdes::Version comparisons'
+      end
+
+      describe 'with a string' do
+        let(:greater_value) { '4.8' }
+        let(:same_value)    { '3.1' }
+        let(:lesser_value)  { '1.1' }
+
+        include_context 'Mdes::Version comparisons'
+      end
+
+      it 'is not comparable to a float' do
+        (version <=> 3.1).should be_nil
+      end
+
+      it 'is not comparable to an integer' do
+        (version <=> 3).should be_nil
+      end
+
+      it 'is not comparable to nil' do
+        (version <=> nil).should be_nil
+      end
+
+      it 'reproduces the ordering for all known MDES versions' do
+        scrambled_versions = SUPPORTED_VERSIONS.
+          sort_by { rand }.collect { |n| Version.new(n) }
+
+        scrambled_versions.sort.collect(&:number).should ==
+          SUPPORTED_VERSIONS
+      end
+    end
   end
 end

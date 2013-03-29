@@ -4,6 +4,8 @@ module NcsNavigator::Core
   module Mdes
     ##
     # All the MDES versions supported by this version of Cases.
+    # This should be kept in order so that sanity checks for Mdes::Version#<=>
+    # are useful.
     SUPPORTED_VERSIONS = %w(2.0 2.1 2.2 3.0 3.1 3.2).freeze
 
     autoload :CodeListCache,  'ncs_navigator/core/mdes/code_list_cache'

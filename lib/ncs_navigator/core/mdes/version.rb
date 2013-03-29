@@ -2,6 +2,8 @@ module NcsNavigator::Core::Mdes
   ##
   # The current MDES version for this particular Cases deployment.
   class Version
+    include Comparable
+
     ##
     # Set the MDES version for a new deployment.
     #
@@ -70,6 +72,24 @@ module NcsNavigator::Core::Mdes
 
     def specification=(spec)
       @specification = spec
+    end
+
+    ##
+    # Compares to another value. An instance of this class is comparable to:
+    #
+    # * Other instances. {#number} is compared lexicographically (good till 10.0).
+    # * `String`s. This instance's {#number} is compared to the string lexicographically.
+    #
+    # @return [-1, 0, 1, nil] per the contract defined in `Comparable`.
+    def <=>(other)
+      case other
+      when self.class
+        number <=> other.number
+      when String
+        number <=> other
+      else
+        nil
+      end
     end
   end
 end
