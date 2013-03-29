@@ -44,9 +44,13 @@ module NcsNavigator::Core::Mdes
         end
       end
 
-      def ncs_coded_attribute(attribute_name, list_name)
+      def ncs_coded_attribute(attribute_name, options)
+        if String === options
+          options = { :list_name => options }
+        end
+
         ncs_coded_attributes[attribute_name.to_sym] =
-          NcsNavigator::Core::Mdes::NcsCodedAttribute.new(self, attribute_name, list_name)
+          NcsNavigator::Core::Mdes::NcsCodedAttribute.new(self, attribute_name, options)
       end
 
       def ncs_coded_attributes

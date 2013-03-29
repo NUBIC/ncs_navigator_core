@@ -10,7 +10,7 @@ module NcsNavigator::Core::Mdes
     acts_as_mdes_record
 
     ncs_coded_attribute :psu, 'PSU_CL1'
-    ncs_coded_attribute :event_type, 'EVENT_TYPE_CL1'
+    ncs_coded_attribute :event_type, :list_name => 'EVENT_TYPE_CL1'
   end
 
   class Bar < ActiveRecord::Base
@@ -177,6 +177,14 @@ module NcsNavigator::Core::Mdes
     describe 'a coded attribute' do
       it 'exposes the list name' do
         Foo.ncs_coded_attributes[:psu].list_name.should == 'PSU_CL1'
+      end
+
+      it 'can be configured with a flat list name' do
+        Foo.ncs_coded_attributes[:psu].list_name.should == 'PSU_CL1'
+      end
+
+      it 'can be configured with the list name in an options hash' do
+        Foo.ncs_coded_attributes[:event_type].list_name.should == 'EVENT_TYPE_CL1'
       end
     end
 
