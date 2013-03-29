@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130325201322) do
+ActiveRecord::Schema.define(:version => 20130329150304) do
 
   create_table "addresses", :force => true do |t|
     t.integer  "psu_code",                                                :null => false
@@ -1013,7 +1013,6 @@ ActiveRecord::Schema.define(:version => 20130325201322) do
     t.integer  "instrument_id"
     t.string   "api_id"
     t.integer  "participant_id"
-    t.integer  "event_id"
     t.integer  "participant_consent_id"
   end
 
@@ -1111,7 +1110,7 @@ ActiveRecord::Schema.define(:version => 20130325201322) do
     t.integer  "shipment_coolant_code",                           :null => false
     t.string   "shipment_tracking_number",          :limit => 36, :null => false
     t.string   "shipment_issues_other"
-    t.string   "staff_id_track",                    :limit => 36
+    t.string   "staff_id_track",                    :limit => 36, :null => false
     t.integer  "sample_shipped_by_code",                          :null => false
     t.string   "transaction_type",                  :limit => 36
     t.datetime "created_at"
