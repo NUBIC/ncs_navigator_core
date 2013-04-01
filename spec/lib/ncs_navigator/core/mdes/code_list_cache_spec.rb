@@ -47,6 +47,68 @@ module NcsNavigator::Core::Mdes
           cache.code_list('CONFIRM_TYPE_CL21')
         }.to_not execute_more_queries_than(3)
       end
+
+      describe 'adapting to code reloading' do
+        # Classes are only reloaded in development mode, so have to use a
+        # subshell to test this.
+        def development_mode_check(options={})
+          pre_reload_expressions = [*options.delete(:pre_reload)].compact
+          post_reload_expressions = [*options.delete(:post_reload)].compact
+
+          script_name = Rails.root + 'tmp' + 'code_list_cache_spec_development_test.rb'
+
+          script_name.open('w') do |f|
+            f.puts [
+              'cache = NcsNavigator::Core::Mdes::CodeListCache.new',
+              "cache.code_list(#{a_list_name.inspect}).size > 1 or fail 'Code list not pre-cached'",
+              pre_reload_expressions,
+              # this is what reload! in the console does; ditto per-request reloading when cache_classes = false
+              "ActionDispatch::Reloader.cleanup!",
+              "ActionDispatch::Reloader.prepare!",
+              post_reload_expressions
+            ].flatten.join("\n")
+          end
+
+          cmd = Shellwords.join([
+            (Rails.root + 'script' + 'rails').to_s,
+            'runner',
+            '-e', 'development',
+            script_name.to_s
+          ])
+
+          result = `#{cmd}`.chomp
+          unless $? == 0
+            fail "Development-mode subshell failed.\n#{cmd}\n#{result}\n#{script_name.read}"
+          end
+
+          result
+        end
+
+        it 'reloads instances after a code reload' do
+          development_mode_check(
+            :post_reload =>
+              "puts(cache.code_list(#{a_list_name.inspect}).collect(&:class).uniq == [NcsCode])"
+            ).should == 'true'
+        end
+
+        it 'gives equivalent codes after a reload' do
+          development_mode_check(
+            :pre_reload =>
+              "original_codes = cache.code_list(#{a_list_name.inspect}).collect(&:local_code)",
+            :post_reload =>
+              "puts(cache.code_list(#{a_list_name.inspect}).collect(&:local_code) == original_codes)"
+            ).should == 'true'
+        end
+
+        it 'gives equivalent text after a reload' do
+          development_mode_check(
+            :pre_reload =>
+              "original_codes = cache.code_list(#{a_list_name.inspect}).collect(&:display_text)",
+            :post_reload =>
+              "puts(cache.code_list(#{a_list_name.inspect}).collect(&:display_text) == original_codes)"
+            ).should == 'true'
+        end
+      end
     end
 
     describe '#code_value' do
