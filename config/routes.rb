@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
 NcsNavigatorCore::Application.routes.draw do
+  mount Surveyor::Engine => "/surveys", :as => "surveyor"
+
   resources :dwelling_units do
     member do
       put :create_household_unit
