@@ -51,7 +51,7 @@ FactoryGirl.define do
     ss.shipment_coolant_code            1
     ss.shipment_tracking_number         {"ABCDE234325"}
     ss.shipment_issues_other            nil
-    ss.staff_id_track                   nil
+    ss.staff_id_track                   {"newStaff123"}
     ss.sample_shipped_by_code           1
     ss.transaction_type                 nil
   end

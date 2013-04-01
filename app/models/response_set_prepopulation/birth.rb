@@ -1,6 +1,7 @@
 module ResponseSetPrepopulation
   class Birth < Populator
     include OldAccessMethods
+    include BirthCohortPrepopulator
 
     def self.applies_to?(rs)
       rs.survey.title.include?('_Birth_')
@@ -51,7 +52,7 @@ module ResponseSetPrepopulation
                     event_type = NcsCode.for_list_name_and_local_code("EVENT_TYPE_CL1", "15")
                     answer_for(question, participant.try(:completed_event?, event_type))
                   when "prepopulated_is_p_type_fifteen"
-                    is_participant_p_type_15?(question)
+                    is_participant_p_type_15?(question, participant)
                   else
                     nil
                   end
@@ -105,9 +106,5 @@ module ResponseSetPrepopulation
       ri
     end
     private :work_attr_provided?
-
-    def is_participant_p_type_15?(question)
-      answer_for(question, participant.p_type.local_code == 15 ? true : false)
-    end
   end
 end

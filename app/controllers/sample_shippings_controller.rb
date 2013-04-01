@@ -25,6 +25,7 @@ class SampleShippingsController < ApplicationController
     @params = params[:sample_shipping]
     @params.merge!(:sample_shipped_by_code => NcsCode.for_list_name_and_local_code("SAMPLES_SHIPPED_BY_CL1", "1"),
       :staff_id => current_staff_id,
+      :staff_id_track => current_staff_id,
       :psu_code => @psu_code, 
       :sample_receipt_shipping_center_id => SampleReceiptShippingCenter.last.id)
     @sample_shipping = SampleShipping.new(@params)
