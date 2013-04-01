@@ -20,13 +20,8 @@ module SurveyorHelper
   end
 
   # Questions
-  def q_text(obj, context=nil)
-    @n ||= 0
-    return image_tag(obj.text) if obj.is_a?(Question) and obj.display_type == "image"
-    return obj.render_question_text(context) if obj.is_a?(Question) and (obj.dependent? or obj.display_type == "label" or obj.part_of_group?)
-    "#{obj.render_question_text(context)}"
+  def q_text(q, context=nil, locale=nil)
+    "#{q.text_for(nil, context, locale)}"
   end
-
-
 
 end

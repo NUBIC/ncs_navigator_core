@@ -1,5 +1,6 @@
 //= require_self
 //= require jquery
+//= require jquery-migrate-1.1.1.js
 //= require jquery_ujs
 //= require 'surveyor_all'
 //= require 'jquery.tooltip.min'

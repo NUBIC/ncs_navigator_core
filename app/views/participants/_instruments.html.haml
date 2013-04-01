@@ -18,7 +18,7 @@
             - instrument.response_sets.each do |rs|
               .response_set
                 = link_to "#{rs.survey.title}",
-                  view_my_survey_path(:survey_code => rs.survey.access_code, :response_set_code => rs.access_code),
+                  surveyor.view_my_survey_path(:survey_code => rs.survey.access_code, :response_set_code => rs.access_code),
                   :class => "show_link icon_link"
                 = "(#{rs.participant.person})" if rs.participant
 
