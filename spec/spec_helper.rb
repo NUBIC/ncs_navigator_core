@@ -155,7 +155,8 @@ Spork.prefork do
       SamplesAndSpecimens,
       PostNatal,
       NonInterview,
-      ChildAndAdHoc
+      ChildAndAdHoc,
+      PbsParticipantVerification
     ].each { |test_survey| config.include test_survey }
 
     require 'support/matchers'

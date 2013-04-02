@@ -20,6 +20,7 @@ module ResponseSetPrepopulation
     MustacheContext,
     NonInterview,
     ParticipantVerification,
+    PbsParticipantVerification,
     PbsEligibilityScreener,
     PregnancyScreener,
     PregnancyVisit,
