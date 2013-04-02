@@ -97,7 +97,6 @@ module ParticipantsHelper
   def remove_two_tier(txt)
     txt.to_s.gsub("#{PatientStudyCalendar::HIGH_INTENSITY}: ", '').gsub("#{PatientStudyCalendar::LOW_INTENSITY}: ", '')
   end
-  private :remove_two_tier
 
   ##
   # Remove the 'Part One' or 'Part Two' (etc.) from the

@@ -59,16 +59,20 @@ describe ParticipantsHelper do
 
     describe "#displayable_next_scheduled_event" do
 
-      let(:next_scheduled_lo_i_event) {
+      let(:next_scheduled_lo_i_event) do
         lo_i_participant2.person = Factory(:person)
-        Factory(:contact_link, :person => lo_i_participant2.person, :event => Factory( :event, :participant => lo_i_participant2),
-                :contact => Factory(:contact, :contact_date_date => Date.new(2012, 02, 01)))
-        lo_i_participant2.next_scheduled_event.event }
-      let(:next_scheduled_hi_i_event) {
+        event = Factory(:event, :participant => lo_i_participant2)
+        contact = Factory(:contact, :contact_date_date => Date.new(2012, 02, 01))
+        Factory(:contact_link, :person => lo_i_participant2.person, :event => event, :contact => contact)
+        lo_i_participant2.next_scheduled_event.event
+      end
+      let(:next_scheduled_hi_i_event) do
         hi_i_participant2.person = Factory(:person)
-        Factory(:contact_link, :person => lo_i_participant2.person, :event => Factory( :event, :participant => hi_i_participant2),
-        :contact => Factory(:contact, :contact_date_date => Date.new(2012, 02, 01)))
-        hi_i_participant2.next_scheduled_event.event }
+        event = Factory( :event, :participant => hi_i_participant2)
+        contact = Factory(:contact, :contact_date_date => Date.new(2012, 02, 01))
+        Factory(:contact_link, :person => lo_i_participant2.person, :event => event, :contact => contact)
+        hi_i_participant2.next_scheduled_event.event
+      end
 
       describe "non two-tier recruitment strategy" do
 
@@ -77,11 +81,13 @@ describe ParticipantsHelper do
         end
 
         it "returns next_scheduled_event.to_s for a lo I participant" do
-          helper.displayable_next_scheduled_event(next_scheduled_lo_i_event).should == next_scheduled_lo_i_event.to_s
+          helper.displayable_next_scheduled_event(next_scheduled_lo_i_event).should ==
+            helper.remove_two_tier(next_scheduled_lo_i_event.to_s)
         end
 
         it "returns next_scheduled_event.to_s for a hi I participant" do
-          helper.displayable_next_scheduled_event(next_scheduled_hi_i_event).should == next_scheduled_hi_i_event.to_s
+          helper.displayable_next_scheduled_event(next_scheduled_hi_i_event).should ==
+            helper.remove_two_tier(next_scheduled_hi_i_event.to_s)
         end
 
       end
