@@ -99,6 +99,8 @@ class Person < ActiveRecord::Base
   has_many :providers, :through => :person_provider_links
   has_many :sampled_persons_ineligibilities
 
+  has_many :non_interview_reports
+
   validates :title,       :length => { :maximum => 5 },  :allow_blank => true
   validates :person_dob,  :length => { :is => 10 },      :allow_blank => true
   validates :date_move,   :length => { :is => 7 },       :allow_blank => true

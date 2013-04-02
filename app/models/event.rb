@@ -63,6 +63,7 @@ class Event < ActiveRecord::Base
   before_validation :strip_time_whitespace
   before_create :set_start_time
   before_save :set_psc_ideal_date
+  after_save :adjudicate_eligibility
 
   POSTNATAL_EVENTS = [
     18, # Birth
@@ -337,6 +338,17 @@ class Event < ActiveRecord::Base
   end
   private :set_psc_ideal_date
 
+  ##
+  # After saving a screener event we should check if the participant
+  # is eligibile or not.
+  # @see EligibilityAdjudicator.adjudicate_eligibility
+  def adjudicate_eligibility
+    if self.screener_event? && person = self.participant.try(:person)
+      EligibilityAdjudicator.adjudicate_eligibility(person)
+    end
+  end
+  private :adjudicate_eligibility
+
   def event_start_time=(t)
     self['event_start_time'] = format_event_time(t)
   end
@@ -426,6 +438,13 @@ class Event < ActiveRecord::Base
   # @return[Boolean]
   def screener_event?
     [Event.pregnancy_screener_code, Event.pbs_eligibility_screener_code].include? event_type_code
+  end
+
+  ##
+  # Returns true if event is Informed Consent
+  # @return[Boolean]
+  def consent_event?
+    self.event_type_code == Event.informed_consent_code
   end
 
   ##
@@ -753,6 +772,42 @@ class Event < ActiveRecord::Base
   # @return[Response]
   def self.schedule_withdrawal(psc, participant, date = nil)
     resp = psc.schedule_withdrawal(participant, date)
+    create_event_placeholder_and_cancel_activities(psc, participant, date, resp)
+    resp
+  end
+
+  ##
+  # Schedule the Parental Permission for Child Participation
+  # Birth to 6 Months Segment in PSC.
+  # If successful, create a corresponding, pending Event record
+  #
+  # @see PatientStudyCalendar#schedule_child_consent_birth_to_six_months
+  # @see Event#create_event_placeholder_and_cancel_activities
+  #
+  # @param[PatientStudyCalendar]
+  # @param[Participant]
+  # @param[Date] (optional)
+  # @return[Response]
+  def self.schedule_child_consent_birth_to_six_months(psc, participant, date = nil)
+    resp = psc.schedule_child_consent_birth_to_six_months(participant, date)
+    create_event_placeholder_and_cancel_activities(psc, participant, date, resp)
+    resp
+  end
+
+  ##
+  # Schedule the Parental Permission for Child Participation
+  # 6 Months to Age of Majority Segment in PSC.
+  # If successful, create a corresponding, pending Event record
+  #
+  # @see PatientStudyCalendar#schedule_child_consent_six_months_to_age_of_majority
+  # @see Event#create_event_placeholder_and_cancel_activities
+  #
+  # @param[PatientStudyCalendar]
+  # @param[Participant]
+  # @param[Date] (optional)
+  # @return[Response]
+  def self.schedule_child_consent_six_month_to_age_of_majority(psc, participant, date = nil)
+    resp = psc.schedule_child_consent_six_months_to_age_of_majority(participant, date)
     create_event_placeholder_and_cancel_activities(psc, participant, date, resp)
     resp
   end

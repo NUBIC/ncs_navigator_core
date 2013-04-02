@@ -27,6 +27,7 @@ describe ResponseSet do
   it { should belong_to(:instrument) }
   it { should belong_to(:participant) }
   it { should belong_to(:participant_consent) }
+  it { should belong_to(:non_interview_report) }
 
   it_should_behave_like 'a publicly identified record' do
     let(:o1) { Factory(:response_set) }
@@ -69,6 +70,91 @@ describe ResponseSet do
     end
   end
 
+  describe "#contact_link" do
+    let(:contact) { Factory(:contact) }
+    let!(:contact_link) { Factory(:contact_link, :contact => contact) }
+
+    context "for a ParticipantConsent Survey" do
+      let(:consent) { Factory(:participant_consent, :contact => contact) }
+      let(:rs) { Factory(:response_set, :participant_consent => consent) }
+
+      it "returns the first contact_link for the consent's contact" do
+        rs.contact_link.should == contact_link
+      end
+    end
+
+    context "for a NonInterviewReport Survey" do
+      let(:nir) { Factory(:non_interview_report, :contact => contact) }
+      let(:rs) { Factory(:response_set, :non_interview_report => nir) }
+
+      it "returns the first contact_link for the nir's contact" do
+        rs.contact_link.should == contact_link
+      end
+    end
+
+    context "for an Instrument Survey" do
+      let(:inst) { Factory(:instrument) }
+      let!(:cl) { Factory(:contact_link, :instrument => inst) }
+      let(:rs) { Factory(:response_set, :instrument => inst) }
+
+      it "returns the contact_link for the instrument" do
+        rs.contact_link.should == cl
+      end
+    end
+
+    context "without an MDES association" do
+      let(:rs) { Factory(:response_set, :instrument => nil,
+                                        :participant_consent => nil,
+                                        :non_interview_report => nil) }
+      it "returns nil" do
+        rs.contact_link.should be_nil
+      end
+    end
+  end
+
+  describe "#event" do
+    let(:contact) { Factory(:contact) }
+    let(:event) { Factory(:event) }
+    let!(:contact_link) { Factory(:contact_link, :contact => contact, :event => event) }
+
+    context "for a ParticipantConsent Survey" do
+      let(:consent) { Factory(:participant_consent, :contact => contact) }
+      let(:rs) { Factory(:response_set, :participant_consent => consent) }
+
+      it "returns the event associated with the consent" do
+        rs.event.should == event
+      end
+    end
+
+    context "for a NonInterviewReport Survey" do
+      let(:nir) { Factory(:non_interview_report, :contact => contact) }
+      let(:rs) { Factory(:response_set, :non_interview_report => nir) }
+
+      it "returns the event associated with the non_interview_report" do
+        rs.event.should == event
+      end
+    end
+
+    context "for an Instrument Survey" do
+      let(:inst) { Factory(:instrument) }
+      let!(:cl) { Factory(:contact_link, :instrument => inst, :event => event) }
+      let(:rs) { Factory(:response_set, :instrument => inst) }
+
+      it "returns the event associated with the instrument" do
+        rs.event.should == event
+      end
+    end
+
+    context "without an MDES association" do
+      let(:rs) { Factory(:response_set, :instrument => nil,
+                                        :participant_consent => nil,
+                                        :non_interview_report => nil) }
+      it "returns nil" do
+        rs.event.should be_nil
+      end
+    end
+  end
+
   describe "#associated_response_sets" do
 
     context "for a ParticipantConsent Survey" do
@@ -79,6 +165,16 @@ describe ResponseSet do
         rs.associated_response_sets.should == [rs]
       end
     end
+
+    context "for a NonInterviewReport Survey" do
+      let(:nir) { Factory(:non_interview_report) }
+      let(:rs) { Factory(:response_set, :non_interview_report => nir) }
+
+      it "returns an Array of one element - itself" do
+        rs.associated_response_sets.should == [rs]
+      end
+    end
+
 
     context "for an Instrument Survey" do
       let(:instrument) { Factory(:instrument) }

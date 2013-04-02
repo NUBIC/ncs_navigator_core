@@ -2,5 +2,5 @@
 - t = survey.nil? ? activity.activity_name : survey.title
 %div{ :class =>  "instrument", :title => t }
   %a{ :href => "javascript:alert('Please choose instruments in order')", :class => "add_link icon_link"}
-    = activity.activity_name
+    = activity_link_name(activity)
   = render "activity_psc_action", :activity => activity

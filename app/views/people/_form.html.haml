@@ -1,18 +1,19 @@
 - is_edit = action_name == "edit"
 - if is_edit
   %h3
-    = @person.to_s
+    = @person.full_name
 
 .page_section
   - if @person.participant?
     #edit_participant_link
       = link_to "Edit Participant Record", edit_participant_path(@person.participant), :class => "edit_link icon_link"
   - else
-    - if permit?(Role::SYSTEM_ADMINISTRATOR) && !is_edit
+    - if permit?(Role::SYSTEM_ADMINISTRATOR) && is_edit
       #create_participant_link
         = link_to "Create Participant Record", new_participant_path(:person_id => @person.id),
           :class => "edit_link icon_link",
           :confirm => "Are you certain that #{@person} should be made a Participant?"
+
   - form_objs = @provider.nil? ? @person : [@provider, @person]
   = form_for(form_objs, :html => {:autocomplete => "off"}) do |f|
     = render "shared/full_error_messages", :object => f.object
@@ -23,7 +24,7 @@
       .participant_relationship
       = label_tag "name","Select Relationship to #{@participant.person}"
       %br
-      = select_tag("relationship_code",options_for_select( NcsCode.ncs_code_lookup(:relationship_code)), { :prompt => "-- Select Relationship to Participant -- " })
+      = select_tag("relationship_code",options_for_select( NcsCode.ncs_code_lookup(:relationship_code), :selected => @relationship_code.to_s), { :prompt => "-- Select Relationship to Participant -- " })
 
     - if @provider.nil?
 
@@ -162,9 +163,9 @@
             { :f => builder, :code => :sampled_person_code, :label_text => "Sampled Person?", :html_attrs => { :class => "required sampled_person_code_selector" } }
 
           %p
-          = builder.label :date_first_visit, "Date of First Visit"  
+          = builder.label :date_first_visit, "Date of First Visit"
           %br
-          = builder.text_field :date_first_visit, :class => "datepicker"  
+          = builder.text_field :date_first_visit, :class => "datepicker"
 
           = render "shared/ncs_code_select",
             { :f => builder, :code => :provider_intro_outcome_code, :label_text => "Outcome of Provider Introduction", :other => :provider_intro_outcome_other }

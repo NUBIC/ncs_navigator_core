@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # == Schema Information
-# Schema version: 20130301164426
+# Schema version: 20130314152336
 #
 # Table name: response_sets
 #
@@ -10,6 +10,7 @@
 #  created_at                                :datetime
 #  id                                        :integer          not null, primary key
 #  instrument_id                             :integer
+#  non_interview_report_id                   :integer
 #  participant_consent_id                    :integer
 #  participant_id                            :integer
 #  processed_for_operational_data_extraction :boolean
@@ -28,6 +29,7 @@ class ResponseSet < ActiveRecord::Base
   belongs_to :instrument, :inverse_of => :response_sets
   belongs_to :participant, :inverse_of => :response_sets
   belongs_to :participant_consent, :inverse_of => :response_set
+  belongs_to :non_interview_report, :inverse_of => :response_set
 
   after_save :extract_operational_data
 
@@ -89,8 +91,8 @@ class ResponseSet < ActiveRecord::Base
   # This method returns itself and all ResponseSets associated with
   # the Instrument class. If this ResponseSet is associated with a
   # ParticipantConsent record, then this method will return an Array
-  # with one element, itself (since the ParticipantConsent ResponseSets
-  # are not multi-part).
+  # with one element, itself (since the ParticipantConsent and
+  # NonInterviewReport ResponseSets are not multi-part).
   # @return [Array<ReponseSet>]
   def associated_response_sets
     instrument_associated? ? instrument.response_sets : [self]
@@ -98,12 +100,59 @@ class ResponseSet < ActiveRecord::Base
 
   ##
   # The ResponseSet is associated with a contact link through
-  # the Instrument or ParticipantConsent.
+  # the Instrument, ParticipantConsent, or Non-Interview Report.
   # Determine the MDES associated class and act accordingly to
   # get the ContactLink record.
   # @return [ContactLink]
   def contact_link
-    instrument_associated? ? instrument.contact_link : participant_consent.contact.contact_links.first
+    if instrument_associated?
+      instrument.contact_link
+    elsif contact
+      contact.contact_links.first
+    end
+  end
+
+  ##
+  # Return the Contact associated with the associated
+  # MDES record to this ResponseSet.
+  #
+  # This is only used in the contact_link method above.
+  #
+  # @return [Contact]
+  def contact
+    if participant_consent_associated?
+      participant_consent.contact
+    elsif non_interview_report_associated?
+      non_interview_report.contact
+    elsif instrument_associated?
+      instrument.contact_link.contact
+    end
+  end
+  private :contact
+
+  ##
+  # Similar to the contact method, this returns the Event
+  # associated with the MDES record associated with the
+  # ResponseSet.
+  #
+  # @see surveyor_controller#set_activity_plan_for_participant
+  # @return [Event]
+  def event
+    contact_link.try(:event)
+  end
+
+  ##
+  # True if the NonInterviewReport association exists.
+  # @return [Boolean]
+  def non_interview_report_associated?
+    !non_interview_report.blank?
+  end
+
+  ##
+  # True if the ParticipantConsent association exists.
+  # @return [Boolean]
+  def participant_consent_associated?
+    !participant_consent.blank?
   end
 
   ##

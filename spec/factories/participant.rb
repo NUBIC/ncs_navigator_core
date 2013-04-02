@@ -154,3 +154,24 @@ Factory.define :participant_staff_relationship do |rel|
   rel.staff_id    "staff_id"
   rel.primary     true
 end
+
+Factory.define :scheduled_activity do |sa|
+  sa.study_segment "study_segment"
+  sa.activity_id "activity_id"
+  sa.current_state "scheduled"
+  sa.ideal_date "2525-12-25"
+  sa.date "2525-12-25"
+  sa.activity_name "activity_name"
+  sa.activity_type "activity_type"
+  sa.labels "labels"
+  sa.person_id "id"
+  sa.event "event_type"
+  sa.references_collection ["references"]
+  sa.references "references"
+  sa.instruments ["instrument"]
+  sa.instrument "instrument"
+  sa.order "00_00"
+  sa.participant_type "p_type"
+  sa.collection "collection"
+  sa.mode "mode"
+end

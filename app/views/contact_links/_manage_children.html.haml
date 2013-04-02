@@ -1,0 +1,20 @@
+.manage_children
+  - participant = contact_link.event.participant
+  - if participant.children.blank?
+    .instructional_note
+      The activities for this event include an activity that is associated with a child participant.
+      %br
+      In order to perform those activities a child participant record must exist.
+      %br
+      You can create a child participant record via the 'New Child' link.
+  - participant.children.each do |child|
+    = link_to "Edit #{blank_safe(child.full_name)}",
+      edit_child_person_path(child, :participant_id => participant.id, :contact_link_id => @contact_link.id),
+      :class => "edit_link icon_link"
+    %br
+  - new_child_msg = "Are you certain you would like to create a new child record?"
+  - multi_child_msg = "A child already exists for this participant. Are you certain that this is a multiple birth and would like to create another child record?"
+  - confirm_msg = participant.children.size == 0 ? new_child_msg : multi_child_msg
+  = link_to "New Child",
+    new_child_people_path(:participant_id => participant.id, :contact_link_id => @contact_link.id),
+    :class => "add_link icon_link", :confirm => confirm_msg

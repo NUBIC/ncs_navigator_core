@@ -1,4 +1,4 @@
-- title "Select Instrument to Administer"
+- page_title "Select Instrument to Administer"
 
 %h3
   = @person
@@ -9,14 +9,16 @@
 
   = render 'instruments_for_upcoming_events', :initial_instrument_for_contact => true
 
-.page_section
-  %h3
-    Non-Interview Report
-  .instructional_note
-    In cases where you attempt to make contact with a person and you are unable to administer an instrument,
-    %br
-    choose the 'Create Non-Interview Report' link to first fill out a report before completing the Contact record.
-  = link_to "Create Non-Interview Report", new_non_interview_report_path(:contact_link_id => @contact_link.id), :class => "add_link icon_link"
+- unless @event.consent_event?
+  .page_section
+    %h3
+      Non-Interview Report
+    .instructional_note
+      In cases where you attempt to make contact with a person and you are unable to administer an instrument,
+      %br
+      choose the 'Create Non-Interview Report' link to first fill out a report before completing the Contact record.
+    = link_to "Create Non-Interview Report", new_non_interview_report_path(:contact_link_id => @contact_link.id),
+      :class => "add_link icon_link"
 
 .page_section
   %h3

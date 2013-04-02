@@ -5,16 +5,6 @@ module SurveyorHelper
   include Surveyor::Helpers::SurveyorHelperMethods
 
   ##
-  # Override to handle datepicker for dates and times
-  def rc_to_as(type_sym)
-    case type_sym.to_s
-    when /(integer|float)/ then :string
-    when /(datetime)/ then :string
-    else type_sym
-    end
-  end
-
-  ##
   # Override to handle multi-part surveys
   def next_section
     # use copy in memory instead of making extra db calls

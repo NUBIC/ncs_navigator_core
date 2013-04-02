@@ -8,7 +8,8 @@ class NonInterviewReportsController < ApplicationController
   # GET /non_interview_reports/new
   # GET /non_interview_reports/new.json
   def new
-    @non_interview_report = NonInterviewReport.new(:psu_code => NcsNavigatorCore.psu_code, :contact => @contact, :person => @person)
+    @non_interview_report = NonInterviewReport.new(:psu_code => NcsNavigatorCore.psu_code,
+      :contact => @contact, :person => @person)
 
     respond_to do |format|
       format.html # new.html.erb
@@ -44,7 +45,7 @@ class NonInterviewReportsController < ApplicationController
 
     respond_to do |format|
       if @non_interview_report.update_attributes(params[:non_interview_report])
-        format.html { redirect_to edit_contact_link_path(@contact_link.id, :close_contact => true), :notice => 'Non-Interview Report was successfully updated.' }
+        format.html { redirect_to decision_page_contact_link_path(@contact_link), :notice => 'Non-Interview Report was successfully updated.' }
         format.json { head :ok }
       else
         format.html { render :action => "edit" }

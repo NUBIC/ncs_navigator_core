@@ -62,7 +62,12 @@
   padding-right: 1em;
 }
 
-.new_contact_for_previous_event,
+.event_actions {
+  a {
+    font-size: 0.9em;
+  }
+}
+
 .switch_arm {
   float: right;
 }
@@ -131,4 +136,16 @@ span.known_instrument {
 .participant_consent_samples {
   padding: 0.5em 2em;
   margin: 0.5em;
+}
+
+.relationships {
+  .relation {
+    margin: 0.5em;
+    padding-bottom: 0.25em;
+    border-bottom: 1px solid $BORDER_GRAY;
+    .relation_type {
+      font-weight: bold;
+      margin-bottom: 0.125em;
+    }
+  }
 }

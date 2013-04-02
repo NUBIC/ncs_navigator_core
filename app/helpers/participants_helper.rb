@@ -22,61 +22,33 @@ module ParticipantsHelper
   end
 
   ##
-  # Determine the path for the Participant's ParticipantConsent
-  # record. Basically this determines if this is an edit or a new
-  # action on the ParticipantConsent and build the url link accordingly.
-  #
-  # @param participant [Participant]
-  # @param contact_link [ContactLink]
-  # @param current_activity [Boolean]
-  # @return [String] link tag
-  def determine_participant_consent_path(participant, contact_link, current_activity = false)
-    consent = consent_type_for(participant)
-    return nil if should_hide_consent?(consent.display_text)
-
-    consent_type_code = consent.local_code
-    consent_type = NcsCode.for_attribute_name_and_local_code(:consent_type_code, consent_type_code)
-    if participant.consented?(consent_type)
-
-      participant_consent = participant.consent_for_type(consent_type)
-
-      if participant_consent.consent_event == contact_link.event
-        build_edit_participant_consent_path(participant, participant_consent, contact_link, current_activity)
-      else
-        build_new_participant_consent_path(participant, consent_type_code, contact_link, current_activity)
-      end
+  # Get all the consents for the participant which match
+  # the activity type (InformedConsent, Reconsent, or Withdrawal)
+  # @param [ScheduledActivity]
+  # @param [Survey]
+  # @return [Array<ParticipantConsent>]
+  def consents_for_activity(activity, survey)
+    return [] unless activity.consent_activity?
+    participant = activity.participant
+    # find those consent records that are associated with a response_set
+    # this is done to handle consents prior to change to using a Survey for consent
+    survey_consents = participant.participant_consents.select{ |pc| !pc.response_set.nil? }
+    # then match the consent to the current survey
+    consents = survey_consents.select { |pc| pc.response_set.survey.title == survey.title }
+    # and filter by activity_type
+    if activity.reconsent?
+      consents = consents.select { |c| c.reconsent? }
+    elsif activity.withdrawal?
+      consents = consents.select { |c| c.withdrawal? }
+    elsif activity.child_consent_birth_to_6_months?
+      consents = consents.select { |c| c.child_consent_birth_to_six_months? }
+    elsif activity.child_consent_6_months_to_age_of_majority?
+      consents = consents.select { |c| c.child_consent_six_month_to_age_of_majority? }
     else
-      build_new_participant_consent_path(participant, consent_type_code, contact_link, current_activity)
+      consents = consents.select { |c| !c.reconsent? && !c.withdrawal? }
     end
+    consents
   end
-
-  ##
-  # Build the url path for the new participant consent action
-  # @param participant [Participant]
-  # @param consent_type_code [NcsCode]
-  # @param contact_link [ContactLink]
-  # @param current_activity [Boolean]
-  # @return [String] link tag
-  def build_new_participant_consent_path(participant, consent_type_code, contact_link, current_activity)
-    path = new_participant_participant_consent_path(participant,
-             {:contact_link_id => contact_link.id, :consent_type_code => consent_type_code})
-    informed_consent_link("New", path, current_activity)
-  end
-  private :build_new_participant_consent_path
-
-  ##
-  # Build the url path for the edit participant consent action
-  # @param participant [Participant]
-  # @param participant_consent [ParticipantConsent]
-  # @param contact_link [ContactLink]
-  # @param current_activity [Boolean]
-  # @return [String] link tag
-  def build_edit_participant_consent_path(participant, participant_consent, contact_link, current_activity)
-    path = edit_participant_participant_consent_path(participant, participant_consent,
-             {:contact_link_id => contact_link.id})
-    informed_consent_link("Edit", path, current_activity)
-  end
-  private :build_edit_participant_consent_path
 
   ##
   # If this is the current activity use the star_link css style
@@ -106,6 +78,10 @@ module ParticipantsHelper
     !participant.ineligible? && !(participant.pending_events.first.try(:event_type_code) == Event.informed_consent_code)
   end
 
+  def child_consent_description(consent)
+    consent.consented? ? "Consent given for #{consent.description}" : "Consent not given for #{consent.description}"
+  end
+
   def upcoming_events_for(person_or_participant)
     result = person_or_participant.upcoming_events.to_sentence
     result = remove_two_tier(result) unless recruitment_strategy.two_tier_knowledgable?
@@ -121,7 +97,6 @@ module ParticipantsHelper
   def remove_two_tier(txt)
     txt.to_s.gsub("#{PatientStudyCalendar::HIGH_INTENSITY}: ", '').gsub("#{PatientStudyCalendar::LOW_INTENSITY}: ", '')
   end
-  private :remove_two_tier
 
   ##
   # Remove the 'Part One' or 'Part Two' (etc.) from the
@@ -133,11 +108,25 @@ module ParticipantsHelper
     name.to_s.sub(/(.*?)\s*Part\b.*\Z/i) { $1 }
   end
 
+  def activity_link_name(activity)
+    name = "#{strip_part_from_activity_name(activity.activity_name)}"
+    if activity.participant.has_children? || activity.participant.child_participant?
+      name << " (#{activity.participant.person.full_name})"
+    end
+    name
+  end
+
   def saq_confirmation_message(event)
     msg = event.closed? ? "This event is already closed.\n\n" : ""
     msg << "Would you like to record or add more information to the Self-Administered Questionnaire (SAQ)\n"
     msg << "for the #{event.event_type.to_s} Event?"
     msg
+  end
+
+  ##
+  # Determine if the activities include a child consent
+  def activities_include_child_consent?(activities_for_event)
+    activities_for_event.find{ |sa| sa.child_consent? }
   end
 
   ##

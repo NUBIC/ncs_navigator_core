@@ -1,12 +1,12 @@
-- title "Sample Receipt Shipping Centers"
-  
+- page_title "Sample Receipt Shipping Centers"
+
 .page_section
   - if @sample_receipt_shipping_centers.empty?
     #no_records
       No sample receipt shipping centers were found.
     .links
       = link_to 'New Sample Receipt Shipping Center', new_sample_receipt_shipping_center_path, :class => "add_link icon_link"
-      
+
   - else
     %table.records
       %tr

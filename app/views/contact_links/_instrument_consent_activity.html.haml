@@ -1,0 +1,14 @@
+- consents = consents_for_activity(activity, survey)
+- if consents.blank?
+  -# if there are no existing consents this activity has not been done
+  -# cf. the contact_links/_activity.html.haml to see how current activity acts differently
+  -# we should be able to obtain consent at any point in the activity list
+  - cls = (@current_activity && (@current_activity == activity)) ? "star_link icon_link" : "asterisk_link icon_link"
+  = link_to activity_link_name(activity),
+    determine_consent_activity_path(person, activity, survey, contact_link),
+    :class => cls
+- else
+  - consents.each do |consent|
+    - participant = consent.participant
+    - path = edit_participant_participant_consent_path(participant, consent, { :contact_link_id => contact_link.id })
+    = render "known_consent_instrument", :activity => activity, :survey => survey, :contact_link => contact_link, :path => path, :obj => consent

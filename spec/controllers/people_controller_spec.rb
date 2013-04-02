@@ -18,14 +18,14 @@ describe PeopleController do
       before(:each) do
         Person.count.should == 3
       end
-      
+
       # id sort for paginate
-      it "defaults to sorting people by id" do 
+      it "defaults to sorting people by id" do
         get :index
         assigns(:q).sorts[0].name.should == "id"
       end
-      
-      it "performs user selected sort first; id second" do 
+
+      it "performs user selected sort first; id second" do
         get :index, :q => { :s => "last_name asc" }
         assigns(:q).sorts[0].name.should == "last_name"
         assigns(:q).sorts[1].name.should == "id"
@@ -139,32 +139,115 @@ describe PeopleController do
       end
     end
 
-    describe "GET start_consent" do
+    describe "GET new_child" do
+      it "raises exception when no participant is given" do
+        expect do
+          get :new_child, :participant_id => nil
+        end.to raise_error(ActiveRecord::RecordNotFound)
+      end
+
+      it "raises exception when no contact_link is given" do
+        expect do
+          get :new_child, :contact_link_id => nil, :participant => Factory(:participant)
+        end.to raise_error(ActiveRecord::RecordNotFound)
+      end
+    end
+
+    describe "POST create_child" do
+
+      let(:mother) { Factory(:person) }
+      let(:mother_participant) { Factory(:participant) }
+      let(:contact_link) { Factory(:contact_link) }
+      let(:fname) { "John" }
+      let(:lname) { "Doe" }
+
+      before do
+        mother_participant.person = mother
+        mother_participant.save!
+      end
+
+      it "creates a child person and participant record associated with the mother participant" do
+        mother_participant.children.should be_empty
+
+        post :create_child, :participant_id => mother_participant.id, :contact_link_id => contact_link.id, :relationship_code => '8',
+             :person => { :first_name => fname, :last_name => lname, :sex_code => "1",  }
+
+        pt = Participant.find(mother_participant.id)
+        pt.children.size.should == 1
+        child = pt.children.first
+        child.first_name.should == fname
+        child.last_name.should == lname
+
+        child_participant = child.participant
+        child_participant.should_not be_nil
+        child_participant.mother.should == mother
+      end
+
+      it "redirects to the contact link decision page" do
+        post :create_child, :participant_id => mother_participant.id, :contact_link_id => contact_link.id, :relationship_code => '8',
+             :person => { :first_name => fname, :last_name => lname, :sex_code => "1",  }
+        response.should redirect_to(decision_page_contact_link_path(contact_link))
+      end
+    end
+
+    context "starting an internal survey" do
       let(:person) { Factory(:person) }
       let(:participant) { Factory(:participant) }
       let(:contact) { Factory(:contact) }
       let!(:contact_link) { Factory(:contact_link, :contact => contact, :person => person) }
       let(:survey) { Factory(:survey, :access_code => "asdf") }
 
-      before do
-        participant.participant_consents.size.should == 0
+      describe "GET start_consent" do
+        before do
+          participant.participant_consents.size.should == 0
+        end
+
+        it "creates a new ParticipantConsent record for the Participant" do
+          get :start_consent, :id => person.id,
+                              :participant_id => participant.id,
+                              :survey_access_code => survey.access_code,
+                              :contact_link_id => contact_link.id
+          pt = Participant.find participant.id
+          pt.participant_consents.size.should == 1
+        end
+
+        it "redirects to the edit_my_survey_path" do
+          get :start_consent, :id => person.id,
+                              :participant_id => participant.id,
+                              :survey_access_code => survey.access_code,
+                              :contact_link_id => contact_link.id
+          pt = Participant.find participant.id
+          rs_access_code = pt.participant_consents.first.response_set.try(:access_code)
+          response.should redirect_to(edit_my_survey_path(:survey_code => survey.access_code,
+            :response_set_code => rs_access_code))
+        end
       end
 
-      it "creates a new ParticipantConsent record for the Participant" do
-        get :start_consent, :id => person.id, :participant_id => participant.id,
-                            :survey_access_code => survey.access_code, :contact_link_id => contact_link.id
-        pt = Participant.find participant.id
-        pt.participant_consents.size.should == 1
-      end
+      describe "GET start_non_interview_report" do
+        before do
+          person.non_interview_reports.size.should == 0
+        end
 
-      it "redirects to the edit_my_survey_path" do
-        get :start_consent, :id => person.id, :participant_id => participant.id,
-                            :survey_access_code => survey.access_code, :contact_link_id => contact_link.id
-        pt = Participant.find participant.id
-        rs_access_code = pt.participant_consents.first.response_set.try(:access_code)
-        response.should redirect_to(edit_my_survey_path(:survey_code => survey.access_code, :response_set_code => rs_access_code))
-      end
+        it "creates a new ParticipantConsent record for the Participant" do
+          get :start_non_interview_report, :id => person.id,
+                                           :participant_id => participant.id,
+                                           :survey_access_code => survey.access_code,
+                                           :contact_link_id => contact_link.id
+          pr = Person.find person.id
+          pr.non_interview_reports.size.should == 1
+        end
 
+        it "redirects to the edit_my_survey_path" do
+          get :start_non_interview_report, :id => person.id,
+                                           :participant_id => participant.id,
+                                           :survey_access_code => survey.access_code,
+                                           :contact_link_id => contact_link.id
+          pr = Person.find person.id
+          rs_access_code = pr.non_interview_reports.first.response_set.try(:access_code)
+          response.should redirect_to(edit_my_survey_path(:survey_code => survey.access_code,
+            :response_set_code => rs_access_code))
+        end
+      end
     end
 
     context "with a provider" do
@@ -178,6 +261,7 @@ describe PeopleController do
         end
       end
     end
+
   end
 
   context "with an authenticated yet unauthorized user"  do

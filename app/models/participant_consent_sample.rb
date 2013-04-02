@@ -53,5 +53,9 @@ class ParticipantConsentSample < ActiveRecord::Base
     NcsCode.for_list_name_and_local_code("CONSENT_TYPE_CL2", GENETIC)
   end
 
+  def consented?
+    sample_consent_given_code == NcsCode::YES
+  end
+
 end
 
