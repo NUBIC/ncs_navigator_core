@@ -2,18 +2,52 @@ require 'ncs_navigator/core'
 
 module NcsNavigator::Core::Mdes
   class NcsCodedAttribute
-    attr_reader :attribute_name, :list_name, :model_class
+    attr_reader :attribute_name, :list_name_rules, :model_class
 
-    def initialize(model_class, attribute_name, list_name)
-      @list_name = list_name.upcase
+    def initialize(model_class, attribute_name, options)
+      @list_name_rules = options.delete(:list_name)
       @attribute_name = attribute_name.to_sym
       @model_class = model_class
 
-      unless model_class.ancestors.include?(NcsCodedAttributeValueHelpers)
-        model_class.send(:include, NcsCodedAttributeValueHelpers)
+      # allow model class to be omitted for testing non-model bits
+      if model_class
+        unless model_class.ancestors.include?(NcsCodedAttributeValueHelpers)
+          model_class.send(:include, NcsCodedAttributeValueHelpers)
+        end
+        model_class.send(:include, extensions_module)
+      elsif %w(development staging production).include?(Rails.env)
+        fail "NcsCodedAttribute(#{attribute_name.inspect}) created without model class. This should not be possible."
       end
-      model_class.send(:include, extensions_module)
     end
+
+    def list_name(mdes_version=NcsNavigatorCore.mdes_version)
+      unless Version === mdes_version
+        mdes_version = Version.new(mdes_version)
+      end
+
+      case list_name_rules
+      when String
+        list_name_rules
+      when Hash
+        determine_list_name_from_hash(mdes_version, list_name_rules)
+      end
+    end
+
+    def determine_list_name_from_hash(mdes_version, rules)
+      applicable_rules = rules.select do |list, criteria|
+        [*criteria].all? { |operator_version| mdes_version.matches?(operator_version) }
+      end
+
+      case applicable_rules.size
+      when 0
+        fail "No code list for #{attribute_name} specified for MDES #{mdes_version.number}"
+      when 1
+        applicable_rules.first.first
+      else
+        fail "Ambiguous code list assigment for #{attribute_name} in MDES #{mdes_version.number}: #{applicable_rules.collect(&:first).join(', ')}"
+      end
+    end
+    private :determine_list_name_from_hash
 
     def code_list
       NcsCode.for_list_name(list_name) or fail "No values found for code list #{list_name.inspect}"
@@ -38,8 +72,6 @@ module NcsNavigator::Core::Mdes
     def validate_method_name
       "validate_ncs_coded_attribute_#{attribute_name}"
     end
-
-    protected
 
     def extensions_module
       nca = self
@@ -67,6 +99,7 @@ module NcsNavigator::Core::Mdes
         end
       end
     end
+    protected :extensions_module
 
     module NcsCodedAttributeValueHelpers
       protected
