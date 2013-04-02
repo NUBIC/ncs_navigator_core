@@ -245,7 +245,7 @@ class PeopleController < ApplicationController
     contact = cl.contact
 
     # start consent
-    consent = ParticipantConsent.start!(person, participant, survey, contact)
+    consent = ParticipantConsent.start!(person, participant, survey, contact, cl)
 
     # redirect
     rs_access_code = consent.response_set.try(:access_code)
