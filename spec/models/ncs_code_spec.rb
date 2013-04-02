@@ -160,5 +160,29 @@ describe NcsCode do
         should include(['Missing in Error', -4])
     end
   end
+
+  describe '.attribute_lookup' do
+    it 'returns a code list name for a single known attribute symbol' do
+      NcsCode.attribute_lookup('centrifuge_comment_code').should == 'SPECIMEN_STATUS_CL4'
+    end
+
+    it 'returns a code list name for a single known attribute string' do
+      NcsCode.attribute_lookup(:centrifuge_comment_code).should == 'SPECIMEN_STATUS_CL4'
+    end
+
+    it 'returns nil for an unknown attribute' do
+      NcsCode.attribute_lookup(:foobar).should be_nil
+    end
+
+    it 'is MDES version aware'
+
+    describe 'for an attribute which appears in multiple models' do
+      it 'returns the sole code list when all the attributes use the same code list'
+
+      it 'fails when there is more than one code list possibility and no model is specified'
+
+      it 'returns the code list for the specified model when specified'
+    end
+  end
 end
 
