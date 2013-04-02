@@ -140,6 +140,23 @@ describe NcsCode do
     end
   end
 
+  describe '.for_attribute_name_and_local_code' do
+    let(:actual) { NcsCode.for_attribute_name_and_local_code(:p_tracing_code, 2) }
+
+    it 'uses the code list looked up from the attribute name' do
+      actual.list_name.should == NcsCode.attribute_lookup(:p_tracing_code)
+    end
+
+    it 'gives the NcsCode for the specified value' do
+      actual.local_code.should == 2
+    end
+
+    it 'passes along options to attribute_lookup' do
+      expect { NcsCode.for_attribute_name_and_local_code(:refuser_strength_code, 1, :model_class => 'NonInterviewProvider') }.
+        to_not raise_error
+    end
+  end
+
   describe '.ncs_code_lookup' do
     let(:actual) { NcsCode.ncs_code_lookup(:p_tracing_code) }
 
@@ -155,9 +172,24 @@ describe NcsCode do
         should_not include(-4)
     end
 
-    it 'will include Missing in Error by request' do
+    it 'will include Missing in Error by request with boolean' do
       NcsCode.ncs_code_lookup(:p_tracing_code, true).
         should include(['Missing in Error', -4])
+    end
+
+    it 'omits Missing in Error with an explicit option' do
+      NcsCode.ncs_code_lookup(:p_tracing_code, :include_missing_in_error => false).collect { |p| p.last }.
+        should_not include(-4)
+    end
+
+    it 'will include Missing in Error by request with an option' do
+      NcsCode.ncs_code_lookup(:p_tracing_code, :include_missing_in_error => true).
+        should include(['Missing in Error', -4])
+    end
+
+    it 'passes options to attribute_lookup' do
+      expect { NcsCode.ncs_code_lookup('refuser_strength_code', :model_class => 'NonInterviewReport') }.
+        to_not raise_error
     end
   end
 

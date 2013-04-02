@@ -48,8 +48,17 @@ class NcsCode < ActiveRecord::Base
     maximum(:updated_at)
   end
 
-  def self.ncs_code_lookup(attribute_name, show_missing_in_error = false)
-    list_name = attribute_lookup(attribute_name)
+  def self.ncs_code_lookup(attribute_name, options={})
+    show_missing_in_error =
+      case options
+      when true
+        options = {}
+        true
+      else
+        options[:include_missing_in_error]
+      end
+
+    list_name = attribute_lookup(attribute_name, options)
     codes = for_list_name(list_name)
 
     unless show_missing_in_error
@@ -136,8 +145,9 @@ class NcsCode < ActiveRecord::Base
     end
   end
 
-  def self.for_attribute_name_and_local_code(attribute_name, local_code)
-    for_list_name_and_local_code(attribute_lookup(attribute_name), local_code)
+  def self.for_attribute_name_and_local_code(attribute_name, local_code, attribute_lookup_options={})
+    for_list_name_and_local_code(
+      attribute_lookup(attribute_name, attribute_lookup_options), local_code)
   end
 
   def self.for_list_name(list_name)
