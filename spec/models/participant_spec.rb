@@ -1857,7 +1857,7 @@ describe Participant do
 
         describe 'and is eligible for PBS' do
           before do
-            p.stub!(:eligible_for_pbs? => true)
+            Participant.any_instance.stub(:eligible_for_pbs? => true)
           end
 
           describe 'and completed the informed consent activity' do
@@ -2267,6 +2267,8 @@ describe Participant do
     let(:sixmo_to_age) { 5 }
     let(:new_adult) { 6 }
     let(:lo_i) { 7 }
+    let(:early_date) { Date.parse('2010-01-01') }
+    let(:late_date) { Date.parse('2525-12-25') }
 
     describe "#most_recent_consent" do
       describe "for a pregnant eligible woman participant" do
@@ -2283,6 +2285,7 @@ describe Participant do
             Factory(:participant_consent,
               :participant => participant,
               :consent_given_code => NcsCode::YES,
+              :consent_date => late_date,
               :consent_form_type_code => pregnant_woman)
           }
           it "returns that consent record" do
@@ -2294,14 +2297,14 @@ describe Participant do
           let!(:earlier_participant_consent) {
             Factory(:participant_consent,
               :participant => participant,
-              :consent_date => Date.parse("2020-12-25"),
+              :consent_date => early_date,
               :consent_given_code => NcsCode::YES,
               :consent_form_type_code => pregnant_woman)
           }
           let!(:later_participant_consent) {
             Factory(:participant_consent,
               :participant => participant,
-              :consent_date => Date.parse("2525-12-25"),
+              :consent_date => late_date,
               :consent_given_code => NcsCode::YES,
               :consent_form_type_code => pregnant_woman)
           }
@@ -2314,14 +2317,14 @@ describe Participant do
           let!(:participant_consent) {
             Factory(:participant_consent,
               :participant => participant,
-              :consent_date => Date.parse("2020-12-25"),
+              :consent_date => early_date,
               :consent_given_code => NcsCode::YES,
               :consent_form_type_code => pregnant_woman)
           }
           let!(:withdrawal) {
             Factory(:participant_consent,
               :participant => participant,
-              :consent_withdraw_date => Date.parse("2525-12-25"),
+              :consent_withdraw_date => late_date,
               :consent_given_code => NcsCode::NO,
               :consent_form_type_code => pregnant_woman)
           }
@@ -2494,6 +2497,7 @@ describe Participant do
           let!(:participant_consent) {
             Factory(:participant_consent, :participant => participant,
               :consent_given_code => consent_given_code,
+              :consent_date => Date.parse('2525-12-25'),
               :consent_form_type_code => consent_form_type_code)
           }
           describe "not of type birth to six months" do
@@ -2504,14 +2508,15 @@ describe Participant do
             end
           end
           describe "of type birth to six months" do
-            let(:consent_form_type_code) { birth_to_sixmo }
             describe "and consent not given" do
+              let(:consent_form_type_code) { birth_to_sixmo }
               let(:consent_given_code) { NcsCode::NO }
               it "returns false" do
                 participant.should_not be_consented_birth_to_six_months
               end
             end
             describe "and consent given" do
+              let(:consent_form_type_code) { birth_to_sixmo }
               let(:consent_given_code) { NcsCode::YES }
               it "returns true" do
                 participant.should be_consented_birth_to_six_months
@@ -2541,6 +2546,7 @@ describe Participant do
         describe "with a consent record" do
           let!(:participant_consent) {
             Factory(:participant_consent, :participant => participant,
+              :consent_date => Date.parse('2525-12-25'),
               :consent_given_code => consent_given_code, :consent_form_type_code => consent_form_type_code)
           }
           describe "not of type six months to age" do

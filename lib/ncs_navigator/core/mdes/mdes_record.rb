@@ -151,7 +151,7 @@ module NcsNavigator::Core::Mdes
       def set_psu_code
         if (NcsNavigatorCore && !NcsNavigatorCore.psu.blank? &&
             self.attribute_names.include?('psu_code') && self.psu_code.blank?)
-          self.psu_code = NcsNavigatorCore.psu
+          self.psu_code = NcsNavigatorCore.psu.to_i
         end
       end
 

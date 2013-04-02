@@ -179,7 +179,7 @@ class Participant < ActiveRecord::Base
     after_transition :on => :high_intensity_conversion, :do => :process_high_intensity_conversion!
     after_transition :on => :pregnancy_one_visit, :do => :process_pregnancy_visit_one!
     after_transition :on => :birth_event, :do => :update_ppg_status_after_birth
-    # TODO: probably need a PPG update trigger for :lose_pregnancy
+    after_transition :on => :lose_pregnancy, :do => :update_ppg_status_after_child_loss
 
     event :high_intensity_conversion do
       transition :in_high_intensity_arm => :converted_high_intensity
@@ -656,7 +656,7 @@ class Participant < ActiveRecord::Base
   # @return[ParticipantConsent]
   def most_recent_consent
     sortable_consents = participant_consents.select { |c| c.consent_date || c.consent_withdraw_date }
-    @most_recent_consent ||= sortable_consents.last
+    sortable_consents.sort_by { |c| c.consent_date || c.consent_withdraw_date }.last
   end
 
   ##
@@ -691,8 +691,7 @@ class Participant < ActiveRecord::Base
 
   def child_consented?(consent_form_type)
     return false unless child_participant?
-    return false unless most_recent_consent.try(:consent_form_type) == consent_form_type
-
+    return false unless most_recent_consent.try(:consent_form_type_code) == consent_form_type.local_code
     most_recent_consent.consented? && !most_recent_consent.withdrawn?
   end
   private :child_consented?
@@ -1213,9 +1212,11 @@ class Participant < ActiveRecord::Base
   end
 
   def ineligible?
-    ( birth_cohort? && !eligible_for_birth_cohort?) ||
-    ( pbs? && !birth_cohort? && !eligible_for_pbs? ) ||
-    ( !pbs? && !has_eligible_ppg_status? )
+    ineligible_for_birth_cohort = (birth_cohort? && !eligible_for_birth_cohort?)
+    ineligible_for_pbs = (pbs? && !birth_cohort? && !eligible_for_pbs?)
+    ineligible_for_study = (!pbs? && !has_eligible_ppg_status?)
+
+    ineligible_for_birth_cohort || ineligible_for_pbs || ineligible_for_study
   end
 
   def pbs_eligibility_prefix

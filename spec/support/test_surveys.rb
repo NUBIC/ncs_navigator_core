@@ -6,8 +6,8 @@ module TestSurveys
   # Creates a ParticipantConsent for a {Person} person, {Participant} participant and {Survey} survey,
   # saves it, and returns it along with the associated ResponseSet.
   # @see ParticipantConsent.start!
-  def prepare_consent(person, participant, survey, contact)
-    ParticipantConsent.start!(person, participant, survey, contact)
+  def prepare_consent(person, participant, survey, contact, contact_link)
+    ParticipantConsent.start!(person, participant, survey, contact, contact_link)
   end
 
   ##

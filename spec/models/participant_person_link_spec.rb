@@ -76,7 +76,7 @@ describe ParticipantPersonLink do
     end
 
     describe "when is_active_code is not 1" do
-      let(:is_active_code) { 0 }
+      let(:is_active_code) { -4 }
       it "is false" do
         ppl.should_not be_self_relationship
       end
@@ -93,7 +93,7 @@ describe ParticipantPersonLink do
     end
 
     describe "when relationship_code is not 1" do
-      let(:relationship_code) { 0 }
+      let(:relationship_code) { -4 }
       it "is false" do
         ppl.should_not be_self_relationship
       end
