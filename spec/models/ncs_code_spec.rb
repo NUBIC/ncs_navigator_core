@@ -174,14 +174,42 @@ describe NcsCode do
       NcsCode.attribute_lookup(:foobar).should be_nil
     end
 
-    it 'is MDES version aware'
+    it 'is MDES version aware' do
+      [
+        NcsCode.attribute_lookup('text_permission_code', :mdes_version => '2.0'),
+        NcsCode.attribute_lookup('text_permission_code', :mdes_version => '2.1')
+      ].should == %w(CONFIRM_TYPE_CL2 CONFIRM_TYPE_CL10)
+    end
 
     describe 'for an attribute which appears in multiple models' do
-      it 'returns the sole code list when all the attributes use the same code list'
+      it 'returns the sole code list when all the attributes use the same code list' do
+        NcsCode.attribute_lookup('psu_code').should == 'PSU_CL1'
+      end
 
-      it 'fails when there is more than one code list possibility and no model is specified'
+      it 'fails when there is more than one code list possibility and no model is specified' do
+        expect { NcsCode.attribute_lookup('refuser_strength_code') }.
+          to raise_error("refuser_strength_code maps to 2 code lists in different models. Please use :model_class => 'Foo' to disambiguate.")
+      end
 
-      it 'returns the code list for the specified model when specified'
+      it 'returns the code list for the specified model when specified as a class' do
+        NcsCode.attribute_lookup('refuser_strength_code', :model_class => NonInterviewProvider).
+          should == 'REFUSAL_INTENSITY_CL2'
+      end
+
+      it 'returns the code list for the specified model when specified as a name' do
+        NcsCode.attribute_lookup('refuser_strength_code', :model_class => 'NonInterviewReport').
+          should == 'REFUSAL_INTENSITY_CL1'
+      end
+
+      it 'returns the code list for the specified model when specified as a symbol' do
+        NcsCode.attribute_lookup('refuser_strength_code', :model_class => :NonInterviewReport).
+          should == 'REFUSAL_INTENSITY_CL1'
+      end
+
+      it 'fails when the specified model does not have that attribute' do
+        expect { NcsCode.attribute_lookup('refuser_strength_code', :model_class => 'Contact') }.
+          to raise_error('Contact#refuser_strength_code is not a coded attribute (it may not be an attribute at all)')
+      end
     end
   end
 end
