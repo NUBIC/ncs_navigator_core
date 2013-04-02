@@ -4,30 +4,30 @@ module OperationalDataExtractor
   class InformedConsent < Base
 
     PARTICIPANT_CONSENT_MAP = {
-      "PARTICIPANT_CONSENT.CONSENT_FORM_TYPE_CODE"              => "consent_form_type_code",
-      "PARTICIPANT_CONSENT.CONSENT_GIVEN_CODE"                  => "consent_given_code",
-      "PARTICIPANT_CONSENT.CONSENT_DATE"                        => "consent_date",
-      "PARTICIPANT_CONSENT.CONSENT_VERSION"                     => "consent_version",
-      "PARTICIPANT_CONSENT.CONSENT_EXPIRATION"                  => "consent_expiration",
-      "PARTICIPANT_CONSENT.WHO_CONSENTED_CODE"                  => "who_consented_code",
-      "PARTICIPANT_CONSENT.CONSENT_LANGUAGE_CODE"               => "consent_language_code",
-      "PARTICIPANT_CONSENT.CONSENT_TRANSLATE_CODE"              => "consent_translate_code",
-      "PARTICIPANT_CONSENT.RECONSIDERATION_SCRIPT_USE_CODE"     => "reconsideration_script_use_code",
-      "PARTICIPANT_CONSENT.CONSENT_COMMENTS"                    => "consent_comments",
-      "PARTICIPANT_CONSENT.CONSENT_WITHDRAW_CODE"               => "consent_withdraw_code",
-      "PARTICIPANT_CONSENT.CONSENT_WITHDRAW_TYPE_CODE"          => "consent_withdraw_type_code",
-      "PARTICIPANT_CONSENT.CONSENT_WITHDRAW_REASON_CODE"        => "consent_withdraw_reason_code",
-      "PARTICIPANT_CONSENT.CONSENT_WITHDRAW_DATE"               => "consent_withdraw_date",
-      "PARTICIPANT_CONSENT.WHO_WITHDREW_CONSENT"                => "who_wthdrw_consent_code",
-      "PARTICIPANT_CONSENT.CONSENT_RECONSENT_CODE"              => "consent_reconsent_code",
-      "PARTICIPANT_CONSENT.CONSENT_RECONSENT_REASON_CODE"       => "consent_reconsent_reason_code",
-      "PARTICIPANT_CONSENT.CONSENT_RECONSENT_REASON_OTHER"      => "consent_reconsent_reason_other",
+      "consent_form_type_code"              => "consent_form_type_code",
+      "consent_given_code"                  => "consent_given_code",
+      "consent_date"                        => "consent_date",
+      "consent_version"                     => "consent_version",
+      "consent_expiration"                  => "consent_expiration",
+      "who_consented_code"                  => "who_consented_code",
+      "consent_language_code"               => "consent_language_code",
+      "consent_translate_code"              => "consent_translate_code",
+      "reconsideration_script_use_code"     => "reconsideration_script_use_code",
+      "consent_comments"                    => "consent_comments",
+      "consent_withdraw_code"               => "consent_withdraw_code",
+      "consent_withdraw_type_code"          => "consent_withdraw_type_code",
+      "consent_withdraw_reason_code"        => "consent_withdraw_reason_code",
+      "consent_withdraw_date"               => "consent_withdraw_date",
+      "who_withdrew_consent"                => "who_wthdrw_consent_code",
+      "consent_reconsent_code"              => "consent_reconsent_code",
+      "consent_reconsent_reason_code"       => "consent_reconsent_reason_code",
+      "consent_reconsent_reason_other"      => "consent_reconsent_reason_other",
     }
 
     PARTICIPANT_CONSENT_SAMPLE_MAP = {
-      "PARTICIPANT_CONSENT_SAMPLE.SAMPLE_CONSENT_GIVEN_CODE_1"  => "sample_consent_given_code",
-      "PARTICIPANT_CONSENT_SAMPLE.SAMPLE_CONSENT_GIVEN_CODE_2"  => "sample_consent_given_code",
-      "PARTICIPANT_CONSENT_SAMPLE.SAMPLE_CONSENT_GIVEN_CODE_3"  => "sample_consent_given_code",
+      "sample_consent_given_code_1"  => "sample_consent_given_code",
+      "sample_consent_given_code_2"  => "sample_consent_given_code",
+      "sample_consent_given_code_3"  => "sample_consent_given_code",
     }
 
     def initialize(response_set)
