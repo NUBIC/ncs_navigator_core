@@ -21,9 +21,9 @@
   - cls = "nir_section nir_type_provider_2"
   - cls += " hide" if obj.nir_type_provider_code != 2
   %div{ :class => cls }
-    = render "shared/ncs_code_select", { :f => f, :code => :who_refused_code, :label_text => "Person in the provider's office who refused participation", :other => :who_refused_other }
+    = render "shared/ncs_code_select", { :f => f, :code => :who_refused_code, :model_class => 'NonInterviewProvider', :label_text => "Person in the provider's office who refused participation", :other => :who_refused_other }
 
-    = render "shared/ncs_code_select", { :f => f, :code => :refuser_strength_code, :label_text => "Strength/Intensity of Refusal" }
+    = render "shared/ncs_code_select", { :f => f, :code => :refuser_strength_code, :model_class => 'NonInterviewProvider', :label_text => "Strength/Intensity of Refusal" }
 
     = render "shared/ncs_code_select", { :f => f, :code => :ref_action_provider_code, :label_text => "Recommended next steps for case" }
 

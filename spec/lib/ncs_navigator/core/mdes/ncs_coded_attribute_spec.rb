@@ -5,8 +5,8 @@ module NcsNavigator::Core::Mdes
     include MdesRecord
     acts_as_mdes_record
 
-    ncs_coded_attribute :psu, 'PSU_CL1'
-    ncs_coded_attribute :event_type, 'EVENT_TYPE_CL1'
+    ncs_coded_attribute :psu, :list_name => 'PSU_CL1'
+    ncs_coded_attribute :event_type, :list_name => 'EVENT_TYPE_CL1'
   end
 
   describe NcsCodedAttribute do
@@ -179,6 +179,68 @@ module NcsNavigator::Core::Mdes
 
             instance.errors[:event_type_code].first.should =~
               /\Aillegal code value -900236; legal values are \[[\d,\- ]+\]\Z/
+          end
+        end
+      end
+    end
+
+    describe '#list_name' do
+      let(:attribute) {
+        NcsCodedAttribute.new(nil, :foo_bar, :list_name => list_name_rules)
+      }
+
+      describe 'with a single list name' do
+        let(:list_name_rules) { 'CONFIRM_TYPE_CL30' }
+
+        it 'returns that list name' do
+          attribute.list_name.should == 'CONFIRM_TYPE_CL30'
+        end
+      end
+
+      describe 'with version-dependent list names' do
+        let(:list_name_rules) {
+          {
+            'CONFIRM_TYPE_CL2' => '2.1',
+            'CONFIRM_TYPE_CL3' => ['> 2.1', '< 3.0'],
+            'CONFIRM_TYPE_CL4' => '>= 3.0'
+          }
+        }
+
+        it 'selects the list matching the version exactly' do
+          attribute.list_name('2.1').should == 'CONFIRM_TYPE_CL2'
+        end
+
+        it 'selects a list matching a range' do
+          attribute.list_name('2.2').should == 'CONFIRM_TYPE_CL3'
+        end
+
+        it 'selects a list matching a sole criterion' do
+          attribute.list_name('3.2').should == 'CONFIRM_TYPE_CL4'
+        end
+
+        it 'fails usefully if there is no list for the version' do
+          expect { attribute.list_name('2.0') }.
+            to raise_error(/No code list for foo_bar specified for MDES 2.0/)
+        end
+
+        it 'uses the system MDES version if none specified' do
+          NcsNavigatorCore.should_receive(:mdes_version).and_return(Version.new('3.1'))
+
+          attribute.list_name.should == 'CONFIRM_TYPE_CL4'
+        end
+
+        describe 'when more than one list name could match' do
+          let(:list_name_rules) {
+            {
+              'CONFIRM_TYPE_CL2' => '2.1',
+              'CONFIRM_TYPE_CL3' => ['>= 2.1', '< 3.0'],
+              'CONFIRM_TYPE_CL4' => '>= 3.0'
+            }
+          }
+
+          it 'fails' do
+            expect { attribute.list_name('2.1') }.
+              to raise_error('Ambiguous code list assigment for foo_bar in MDES 2.1: CONFIRM_TYPE_CL2, CONFIRM_TYPE_CL3')
           end
         end
       end

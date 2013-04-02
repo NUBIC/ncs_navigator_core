@@ -28,7 +28,8 @@ class ParticipantConsentSample < ActiveRecord::Base
 
   ncs_coded_attribute :psu,                  'PSU_CL1'
   ncs_coded_attribute :sample_consent_type,  'CONSENT_TYPE_CL2'
-  ncs_coded_attribute :sample_consent_given, 'CONFIRM_TYPE_CL2'
+  ncs_coded_attribute :sample_consent_given,
+    :list_name => { 'CONFIRM_TYPE_CL2' => '2.0', 'CONFIRM_TYPE_CL21' => '> 2.0' }
 
   ENVIRONMENTAL = 1
   BIOSPECIMEN   = 2

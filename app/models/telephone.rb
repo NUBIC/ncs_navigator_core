@@ -53,8 +53,10 @@ class Telephone < ActiveRecord::Base
   ncs_coded_attribute :phone_rank,        'COMMUNICATION_RANK_CL1'
   ncs_coded_attribute :phone_landline,    'CONFIRM_TYPE_CL2'
   ncs_coded_attribute :phone_share,       'CONFIRM_TYPE_CL2'
-  ncs_coded_attribute :cell_permission,   'CONFIRM_TYPE_CL2'
-  ncs_coded_attribute :text_permission,   'CONFIRM_TYPE_CL2'
+  ncs_coded_attribute :cell_permission,
+    :list_name => { 'CONFIRM_TYPE_CL2' => '2.0', 'CONFIRM_TYPE_CL21' => '> 2.0' }
+  ncs_coded_attribute :text_permission,
+    :list_name => { 'CONFIRM_TYPE_CL2' => '2.0', 'CONFIRM_TYPE_CL10' => '> 2.0' }
 
   validates :phone_ext,        :length => { :maximum => 5 },  :allow_blank => true
   validates :phone_nbr,        :length => { :maximum => 10 }, :allow_blank => true, :numericality => true

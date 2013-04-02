@@ -86,9 +86,9 @@
     %b
       Refusal
 
-    = render "shared/ncs_code_select", { :f => f, :code => :who_refused_code, :unambiguous_code => :nir_who_refused_code, :label_text => "Relationship of informant to participant", :other => :who_refused_other }
+    = render "shared/ncs_code_select", { :f => f, :code => :who_refused_code, :model_class => 'NonInterviewReport', :label_text => "Relationship of informant to participant", :other => :who_refused_other }
 
-    = render "shared/ncs_code_select", { :f => f, :code => :refuser_strength_code, :label_text => "Strength/Intensity of Refusal" }
+    = render "shared/ncs_code_select", { :f => f, :code => :refuser_strength_code, :model_class => 'NonInterviewReport', :label_text => "Strength/Intensity of Refusal" }
 
     = render "shared/ncs_code_select", { :f => f, :code => :refusal_action_code, :label_text => "Recommended next steps for case" }
 
