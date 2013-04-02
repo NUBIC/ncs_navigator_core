@@ -21,7 +21,8 @@ describe OperationalDataExtractor::InformedConsent do
   let(:consent_form_type) { NcsCode.for_list_name_and_local_code("CONSENT_TYPE_CL3", 1) }
   let(:yes) { NcsCode.for_list_name_and_local_code("CONFIRM_TYPE_CL2", 1) }
   let(:no) { NcsCode.for_list_name_and_local_code("CONFIRM_TYPE_CL2", 2) }
-  let(:no2) { NcsCode.for_list_name_and_local_code("CONFIRM_TYPE_CL21", 2) }
+  let(:yes21) { NcsCode.for_list_name_and_local_code("CONFIRM_TYPE_CL21", 1) }
+  let(:no21) { NcsCode.for_list_name_and_local_code("CONFIRM_TYPE_CL21", 2) }
   let(:date) { "2525-12-12" }
   let(:who) { NcsCode.for_list_name_and_local_code("AGE_STATUS_CL1", 2) }
   let(:en) { NcsCode.for_list_name_and_local_code("LANGUAGE_CL2", 1) }
@@ -60,7 +61,7 @@ describe OperationalDataExtractor::InformedConsent do
           r.a "who_consented_code", who
           r.a "consent_language_code", en
           r.a "consent_translate_code", no_trans
-          r.a "reconsideration_script_use_code", no2
+          r.a "reconsideration_script_use_code", no21
           r.a "consent_comments", "consent_comments", :value => "comments"
         end
 
@@ -78,7 +79,7 @@ describe OperationalDataExtractor::InformedConsent do
         consent.who_consented.should == who
         consent.consent_language.should == en
         consent.consent_translate.should == no_trans
-        consent.reconsideration_script_use.should == no2
+        consent.reconsideration_script_use.should == no21
         consent.consent_comments.should == "comments"
       end
 
@@ -86,9 +87,9 @@ describe OperationalDataExtractor::InformedConsent do
         response_set = consent.response_set
 
         take_survey(survey, response_set) do |r|
-          r.a "sample_consent_given_code_1", yes
-          r.a "sample_consent_given_code_2", no
-          r.a "sample_consent_given_code_3", yes
+          r.a "sample_consent_given_code_1", yes21
+          r.a "sample_consent_given_code_2", no21
+          r.a "sample_consent_given_code_3", yes21
         end
 
         response_set.responses.reload
@@ -97,7 +98,7 @@ describe OperationalDataExtractor::InformedConsent do
         OperationalDataExtractor::InformedConsent.new(response_set).extract_data
 
         consent = ParticipantConsent.find(consent_id)
-        [ [1, yes], [2, no], [3, yes] ].each do |code, val|
+        [ [1, yes21], [2, no21], [3, yes21] ].each do |code, val|
           consent.participant_consent_samples.where(:sample_consent_type_code => code).all.each do |s|
             s.sample_consent_given.should == val
           end
