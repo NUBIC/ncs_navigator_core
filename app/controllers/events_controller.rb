@@ -50,10 +50,6 @@ class EventsController < ApplicationController
         mark_activity_occurred
         @event.update_associated_informed_consent_event
 
-        if @event.screener_event?
-          EligibilityAdjudicator.adjudicate_eligibility(@event.participant.person)
-        end
-
         notice = 'Event was successfully updated.'
 
         if @event.provider_recruitment_event?
