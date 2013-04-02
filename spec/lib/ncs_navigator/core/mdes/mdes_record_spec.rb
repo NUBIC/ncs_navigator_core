@@ -67,6 +67,12 @@ module NcsNavigator::Core::Mdes
       let(:o2) { Foo.create! }
     end
 
+    describe '.models' do
+      it 'includes all the models' do
+        MdesRecord.models.should include(Baz)
+      end
+    end
+
     describe '.public_id' do
       it 'defaults to :uuid' do
         Foo.public_id_field.should == :uuid

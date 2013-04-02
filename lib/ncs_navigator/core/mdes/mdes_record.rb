@@ -16,6 +16,8 @@ module NcsNavigator::Core::Mdes
       before_save :format_dates
 
       include NcsNavigator::Core::HasPublicId
+
+      MdesRecord.models << self
     end
 
     module ClassMethods
@@ -223,6 +225,10 @@ module NcsNavigator::Core::Mdes
       end
       private :get_value
 
+    end
+
+    def self.models
+      @models ||= []
     end
 
   end
