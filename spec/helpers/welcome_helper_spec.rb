@@ -6,14 +6,14 @@ require 'spec_helper'
 describe ApplicationHelper do
 
   describe "#place_activities_with_blank_times_at_the_bottom_of_list" do
-    ScheduledEvent = Struct.new(:date, :activity_time, :person, :event_type)
+    ScheduledEventSpecStruct = Struct.new(:date, :activity_time, :person, :event_type)
 
     before do
-      @early_activity  = ScheduledEvent.new(nil, '09:33', nil, nil)
-      @middle_activity = ScheduledEvent.new(nil, '14:33', nil, nil)
-      @later_activity  = ScheduledEvent.new(nil, '21:33', nil, nil)
-      @blank_time_activity1   = ScheduledEvent.new(nil, nil, nil, nil)
-      @blank_time_activity2   = ScheduledEvent.new(nil, nil, nil, nil)
+      @early_activity  = ScheduledEventSpecStruct.new(nil, '09:33', nil, nil)
+      @middle_activity = ScheduledEventSpecStruct.new(nil, '14:33', nil, nil)
+      @later_activity  = ScheduledEventSpecStruct.new(nil, '21:33', nil, nil)
+      @blank_time_activity1   = ScheduledEventSpecStruct.new(nil, nil, nil, nil)
+      @blank_time_activity2   = ScheduledEventSpecStruct.new(nil, nil, nil, nil)
       @unsorted_activities = [@later_activity, @blank_time_activity1, @early_activity, @blank_time_activity1, @middle_activity]
     end
 

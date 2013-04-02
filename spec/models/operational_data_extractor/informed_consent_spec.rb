@@ -7,8 +7,16 @@ describe OperationalDataExtractor::InformedConsent do
 
   let(:person) { Factory(:person) }
   let(:participant) { Factory(:participant, :enroll_status_code => -4, :enroll_date => nil) }
-  let(:survey) { Survey.last }
+  let(:survey) do
+    Surveyor::Parser.parse File.read("#{Rails.root}/internal_surveys/IRB_CON_Informed_Consent.rb")
+    Survey.last
+  end
   let(:contact) { Factory(:contact) }
+  let(:event) { Factory(:event, :event_type_code => 10) } # informed consent event
+  let(:contact_link) { Factory(:contact_link, :contact => contact, :person => person, :event => event) }
+
+  let!(:consent) { prepare_consent(person, participant, survey, contact, contact_link) }
+  let(:consent_id) { consent.id }
 
   let(:consent_form_type) { NcsCode.for_list_name_and_local_code("CONSENT_TYPE_CL3", 1) }
   let(:yes) { NcsCode.for_list_name_and_local_code("CONFIRM_TYPE_CL2", 1) }
@@ -21,18 +29,12 @@ describe OperationalDataExtractor::InformedConsent do
 
   context "with an InformedConsent survey" do
 
-    before do
-      f = "#{Rails.root}/internal_surveys/IRB_CON_Informed_Consent.rb"
-      Surveyor::Parser.parse File.read(f)
-    end
-
     describe "a response set without an associated consent" do
       it "should raise an InvalidSurveyException" do
-        consent = prepare_consent(person, participant, survey, contact)
         response_set = consent.response_set
 
         take_survey(survey, response_set) do |r|
-          r.a "PARTICIPANT_CONSENT.CONSENT_GIVEN_CODE", yes
+          r.a "consent_given_code", yes
         end
         response_set.participant_consent = nil
         response_set.save!
@@ -48,19 +50,18 @@ describe OperationalDataExtractor::InformedConsent do
     describe "extracting ParticipantConsent data" do
 
       it "sets the ParticipantConsent attributes to the Response values" do
-        consent = prepare_consent(person, participant, survey, contact)
         response_set = consent.response_set
 
         take_survey(survey, response_set) do |r|
-          r.a "PARTICIPANT_CONSENT.CONSENT_FORM_TYPE_CODE", consent_form_type
-          r.a "PARTICIPANT_CONSENT.CONSENT_GIVEN_CODE", yes
-          r.a "PARTICIPANT_CONSENT.CONSENT_DATE", "consent_date", :value => date
-          r.a "PARTICIPANT_CONSENT.CONSENT_VERSION", "consent_version", :value => "version"
-          r.a "PARTICIPANT_CONSENT.WHO_CONSENTED_CODE", who
-          r.a "PARTICIPANT_CONSENT.CONSENT_LANGUAGE_CODE", en
-          r.a "PARTICIPANT_CONSENT.CONSENT_TRANSLATE_CODE", no_trans
-          r.a "PARTICIPANT_CONSENT.RECONSIDERATION_SCRIPT_USE_CODE", no2
-          r.a "PARTICIPANT_CONSENT.CONSENT_COMMENTS", "consent_comments", :value => "comments"
+          r.a "consent_form_type_code", consent_form_type
+          r.a "consent_given_code", yes
+          r.a "consent_date", "consent_date", :value => date
+          r.a "consent_version", "consent_version", :value => "version"
+          r.a "who_consented_code", who
+          r.a "consent_language_code", en
+          r.a "consent_translate_code", no_trans
+          r.a "reconsideration_script_use_code", no2
+          r.a "consent_comments", "consent_comments", :value => "comments"
         end
 
         response_set.responses.reload
@@ -68,7 +69,7 @@ describe OperationalDataExtractor::InformedConsent do
 
         OperationalDataExtractor::InformedConsent.new(response_set).extract_data
 
-        consent = ParticipantConsent.find(consent.id)
+        consent = ParticipantConsent.find(consent_id)
         consent.consent_form_type.should == consent_form_type
         consent.consent_given.should == yes
         consent.consent_date.should == Date.parse(date)
@@ -82,13 +83,12 @@ describe OperationalDataExtractor::InformedConsent do
       end
 
       it "sets the ParticipantConsentSample attributes to the Response values" do
-        consent = prepare_consent(person, participant, survey, contact)
         response_set = consent.response_set
 
         take_survey(survey, response_set) do |r|
-          r.a "PARTICIPANT_CONSENT_SAMPLE.SAMPLE_CONSENT_GIVEN_CODE_1", yes
-          r.a "PARTICIPANT_CONSENT_SAMPLE.SAMPLE_CONSENT_GIVEN_CODE_2", no
-          r.a "PARTICIPANT_CONSENT_SAMPLE.SAMPLE_CONSENT_GIVEN_CODE_3", yes
+          r.a "sample_consent_given_code_1", yes
+          r.a "sample_consent_given_code_2", no
+          r.a "sample_consent_given_code_3", yes
         end
 
         response_set.responses.reload
@@ -96,7 +96,7 @@ describe OperationalDataExtractor::InformedConsent do
 
         OperationalDataExtractor::InformedConsent.new(response_set).extract_data
 
-        consent = ParticipantConsent.find(consent.id)
+        consent = ParticipantConsent.find(consent_id)
         [ [1, yes], [2, no], [3, yes] ].each do |code, val|
           consent.participant_consent_samples.where(:sample_consent_type_code => code).all.each do |s|
             s.sample_consent_given.should == val
@@ -108,12 +108,11 @@ describe OperationalDataExtractor::InformedConsent do
         it "updates the enrollment status on the participant to true" do
           participant.should_not be_enrolled
 
-          consent = prepare_consent(person, participant, survey, contact)
           response_set = consent.response_set
 
           take_survey(survey, response_set) do |r|
-            r.a "PARTICIPANT_CONSENT.CONSENT_GIVEN_CODE", yes
-            r.a "PARTICIPANT_CONSENT.CONSENT_DATE", "consent_date", :value => date
+            r.a "consent_given_code", yes
+            r.a "consent_date", "consent_date", :value => date
           end
 
           response_set.responses.reload
@@ -121,7 +120,7 @@ describe OperationalDataExtractor::InformedConsent do
 
           OperationalDataExtractor::InformedConsent.new(response_set).extract_data
 
-          consent = ParticipantConsent.find(consent.id)
+          consent = ParticipantConsent.find(consent_id)
           consent.consent_given.should == yes
 
           consent.participant.should be_enrolled
@@ -133,12 +132,11 @@ describe OperationalDataExtractor::InformedConsent do
         it "updates the enrollment status on the participant to false" do
           participant.should_not be_enrolled
 
-          consent = prepare_consent(person, participant, survey, contact)
           response_set = consent.response_set
 
           take_survey(survey, response_set) do |r|
-            r.a "PARTICIPANT_CONSENT.CONSENT_GIVEN_CODE", no
-            r.a "PARTICIPANT_CONSENT.CONSENT_DATE", "consent_date", :value => date
+            r.a "consent_given_code", no
+            r.a "consent_date", "consent_date", :value => date
           end
 
           response_set.responses.reload
@@ -146,7 +144,7 @@ describe OperationalDataExtractor::InformedConsent do
 
           OperationalDataExtractor::InformedConsent.new(response_set).extract_data
 
-          consent = ParticipantConsent.find(consent.id)
+          consent = ParticipantConsent.find(consent_id)
           consent.consent_given.should == no
 
           consent.participant.should be_unenrolled
@@ -169,16 +167,14 @@ describe OperationalDataExtractor::InformedConsent do
     end
 
     describe "extracting ParticipantConsent data" do
-      let!(:consent) { prepare_consent(person, participant, survey, contact) }
       let(:response_set) { consent.response_set }
-
       before do
         take_survey(survey, response_set) do |r|
-          r.a "PARTICIPANT_CONSENT.CONSENT_WITHDRAW_CODE", yes
-          r.a "PARTICIPANT_CONSENT.CONSENT_WITHDRAW_TYPE_CODE", wdraw1
-          r.a "PARTICIPANT_CONSENT.CONSENT_WITHDRAW_REASON_CODE", wdraw2
-          r.a "PARTICIPANT_CONSENT.WHO_WITHDREW_CONSENT", who
-          r.a "PARTICIPANT_CONSENT.CONSENT_WITHDRAW_DATE", "consent_withdraw_date", :value => date
+          r.a "consent_withdraw_code", yes
+          r.a "consent_withdraw_type_code", wdraw1
+          r.a "consent_withdraw_reason_code", wdraw2
+          r.a "who_wthdrw_consent_code", who
+          r.a "consent_withdraw_date", "consent_withdraw_date", :value => date
         end
         response_set.responses.reload
         response_set.responses.size.should == 5
@@ -186,7 +182,7 @@ describe OperationalDataExtractor::InformedConsent do
       end
 
       it "sets the ParticipantConsent attributes to the Response values" do
-        c = ParticipantConsent.find(consent.id)
+        c = ParticipantConsent.find(consent_id)
         c.consent_withdraw.should == yes
         c.consent_withdraw_type.should == wdraw1
         c.consent_withdraw_reason.should == wdraw2
@@ -195,7 +191,7 @@ describe OperationalDataExtractor::InformedConsent do
       end
 
       it "updates the enrollment status" do
-        c = ParticipantConsent.find(consent.id)
+        c = ParticipantConsent.find(consent_id)
         c.participant.should be_unenrolled
         c.participant.enroll_date.should be_nil
       end
@@ -220,13 +216,12 @@ describe OperationalDataExtractor::InformedConsent do
     describe "extracting ParticipantConsent data" do
 
       it "sets the ParticipantConsent attributes to the Response values" do
-        consent = prepare_consent(person, participant, survey, contact)
         response_set = consent.response_set
 
         take_survey(survey, response_set) do |r|
-          r.a "PARTICIPANT_CONSENT.CONSENT_RECONSENT_CODE", yes
-          r.a "PARTICIPANT_CONSENT.CONSENT_RECONSENT_REASON_CODE", reason
-          r.a "PARTICIPANT_CONSENT.CONSENT_RECONSENT_REASON_OTHER", "consent_reconsent_reason_other", :value => "other"
+          r.a "consent_reconsent_code", yes
+          r.a "consent_reconsent_reason_code", reason
+          r.a "consent_reconsent_reason_other", "consent_reconsent_reason_other", :value => "other"
         end
 
         response_set.responses.reload
@@ -234,22 +229,21 @@ describe OperationalDataExtractor::InformedConsent do
 
         OperationalDataExtractor::InformedConsent.new(response_set).extract_data
 
-        consent = ParticipantConsent.find(consent.id)
+        consent = ParticipantConsent.find(consent_id)
         consent.consent_reconsent.should == yes
         consent.consent_reconsent_reason.should == reason
         consent.consent_reconsent_reason_other.should == "other"
       end
 
       describe "not giving consent" do
-        let!(:consent) { prepare_consent(person, participant, survey, contact) }
         let(:response_set) { consent.response_set }
 
         before do
           take_survey(survey, response_set) do |r|
-            r.a "PARTICIPANT_CONSENT.CONSENT_GIVEN_CODE", no
-            r.a "PARTICIPANT_CONSENT.CONSENT_RECONSENT_CODE", yes
-            r.a "PARTICIPANT_CONSENT.CONSENT_RECONSENT_REASON_CODE", reason
-            r.a "PARTICIPANT_CONSENT.CONSENT_RECONSENT_REASON_OTHER", "consent_reconsent_reason_other", :value => "other"
+            r.a "consent_given_code", no
+            r.a "consent_reconsent_code", yes
+            r.a "consent_reconsent_reason_code", reason
+            r.a "consent_reconsent_reason_other", "consent_reconsent_reason_other", :value => "other"
           end
 
           response_set.responses.reload

@@ -18,7 +18,7 @@ module OperationalDataExtractor
       "consent_withdraw_type_code"          => "consent_withdraw_type_code",
       "consent_withdraw_reason_code"        => "consent_withdraw_reason_code",
       "consent_withdraw_date"               => "consent_withdraw_date",
-      "who_withdrew_consent"                => "who_wthdrw_consent_code",
+      "who_wthdrw_consent_code"             => "who_wthdrw_consent_code",
       "consent_reconsent_code"              => "consent_reconsent_code",
       "consent_reconsent_reason_code"       => "consent_reconsent_reason_code",
       "consent_reconsent_reason_other"      => "consent_reconsent_reason_other",
@@ -59,7 +59,7 @@ module OperationalDataExtractor
         samples = consent.participant_consent_samples.where(:sample_consent_type_code => code).all
         # There should be only one - but might as well update all samples associated with this consent
         samples.each do |sample|
-          key = "PARTICIPANT_CONSENT_SAMPLE.SAMPLE_CONSENT_GIVEN_CODE_#{code}"
+          key = "sample_consent_given_code_#{code}"
           if r = data_export_identifier_indexed_responses[key]
             value = response_value(r)
             unless value.blank?
