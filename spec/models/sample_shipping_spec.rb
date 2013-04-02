@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # == Schema Information
+# Schema version: 20130329150304
 #
 # Table name: sample_shippings
 #
@@ -19,7 +20,7 @@
 #  shipper_destination_code          :integer          not null
 #  shipper_id                        :string(36)       not null
 #  staff_id                          :string(36)       not null
-#  staff_id_track                    :string(36)
+#  staff_id_track                    :string(36)       not null
 #  transaction_type                  :string(36)
 #  updated_at                        :datetime
 #
@@ -40,12 +41,13 @@ describe SampleShipping do
       ss.public_id.should_not be_nil
       ss.shipment_tracking_number.should == ss.public_id
       ss.shipment_tracking_number.to_s.should == "ABCDE234325"
+      ss.staff_id_track.should_not be_nil
     end
 
     it "uses the ncs_code 'Missing in Error' for all required ncs codes" do
       @sample = Factory(:sample)
       ss = SampleShipping.create(:staff_id => "me", :shipper_id => "123", 
-      :shipment_date => "02-21-2012", :shipment_tracking_number => "67876f5WERSF98")
+      :shipment_date => "02-21-2012", :shipment_tracking_number => "67876f5WERSF98", :staff_id_track => "me")
       ss.save!
  
       obj = SampleShipping.find(ss.id)
