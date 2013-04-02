@@ -115,9 +115,6 @@ module NavigationHelpers
     when /^the new contact path for the participant$/
       new_person_contact_path(:person_id => Participant.last.person.id)
 
-    when /^the new participant consent page$/
-      new_participant_participant_consent_path(Participant.last)
-
     when /^the field client activity page$/
       fieldwork_index_path
 

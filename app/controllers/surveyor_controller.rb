@@ -25,6 +25,8 @@ class SurveyorController < ApplicationController
       # determine redirect action - whether consent survey or instrument survey
       if @response_set.instrument_associated?
         edit_instrument_contact_link_path(contact_link.id)
+      elsif contact_link.event.closed?
+        participant_path(@response_set.participant)
       else
         decision_page_contact_link_path(contact_link)
       end
