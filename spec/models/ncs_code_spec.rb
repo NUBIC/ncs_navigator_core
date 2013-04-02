@@ -140,6 +140,23 @@ describe NcsCode do
     end
   end
 
+  describe '.for_attribute_name_and_local_code' do
+    let(:actual) { NcsCode.for_attribute_name_and_local_code(:p_tracing_code, 2) }
+
+    it 'uses the code list looked up from the attribute name' do
+      actual.list_name.should == NcsCode.attribute_lookup(:p_tracing_code)
+    end
+
+    it 'gives the NcsCode for the specified value' do
+      actual.local_code.should == 2
+    end
+
+    it 'passes along options to attribute_lookup' do
+      expect { NcsCode.for_attribute_name_and_local_code(:refuser_strength_code, 1, :model_class => 'NonInterviewProvider') }.
+        to_not raise_error
+    end
+  end
+
   describe '.ncs_code_lookup' do
     let(:actual) { NcsCode.ncs_code_lookup(:p_tracing_code) }
 
@@ -155,9 +172,76 @@ describe NcsCode do
         should_not include(-4)
     end
 
-    it 'will include Missing in Error by request' do
+    it 'will include Missing in Error by request with boolean' do
       NcsCode.ncs_code_lookup(:p_tracing_code, true).
         should include(['Missing in Error', -4])
+    end
+
+    it 'omits Missing in Error with an explicit option' do
+      NcsCode.ncs_code_lookup(:p_tracing_code, :include_missing_in_error => false).collect { |p| p.last }.
+        should_not include(-4)
+    end
+
+    it 'will include Missing in Error by request with an option' do
+      NcsCode.ncs_code_lookup(:p_tracing_code, :include_missing_in_error => true).
+        should include(['Missing in Error', -4])
+    end
+
+    it 'passes options to attribute_lookup' do
+      expect { NcsCode.ncs_code_lookup('refuser_strength_code', :model_class => 'NonInterviewReport') }.
+        to_not raise_error
+    end
+  end
+
+  describe '.attribute_lookup' do
+    it 'returns a code list name for a single known attribute symbol' do
+      NcsCode.attribute_lookup('centrifuge_comment_code').should == 'SPECIMEN_STATUS_CL4'
+    end
+
+    it 'returns a code list name for a single known attribute string' do
+      NcsCode.attribute_lookup(:centrifuge_comment_code).should == 'SPECIMEN_STATUS_CL4'
+    end
+
+    it 'returns nil for an unknown attribute' do
+      NcsCode.attribute_lookup(:foobar).should be_nil
+    end
+
+    it 'is MDES version aware' do
+      [
+        NcsCode.attribute_lookup('text_permission_code', :mdes_version => '2.0'),
+        NcsCode.attribute_lookup('text_permission_code', :mdes_version => '2.1')
+      ].should == %w(CONFIRM_TYPE_CL2 CONFIRM_TYPE_CL10)
+    end
+
+    describe 'for an attribute which appears in multiple models' do
+      it 'returns the sole code list when all the attributes use the same code list' do
+        NcsCode.attribute_lookup('psu_code').should == 'PSU_CL1'
+      end
+
+      it 'fails when there is more than one code list possibility and no model is specified' do
+        expect { NcsCode.attribute_lookup('refuser_strength_code') }.
+          to raise_error("refuser_strength_code maps to 2 code lists in different models. Please use :model_class => 'Foo' to disambiguate.")
+      end
+
+      it 'returns the code list for the specified model when specified as a class' do
+        NcsCode.attribute_lookup('refuser_strength_code', :model_class => NonInterviewProvider).
+          should == 'REFUSAL_INTENSITY_CL2'
+      end
+
+      it 'returns the code list for the specified model when specified as a name' do
+        NcsCode.attribute_lookup('refuser_strength_code', :model_class => 'NonInterviewReport').
+          should == 'REFUSAL_INTENSITY_CL1'
+      end
+
+      it 'returns the code list for the specified model when specified as a symbol' do
+        NcsCode.attribute_lookup('refuser_strength_code', :model_class => :NonInterviewReport).
+          should == 'REFUSAL_INTENSITY_CL1'
+      end
+
+      it 'fails when the specified model does not have that attribute' do
+        expect { NcsCode.attribute_lookup('refuser_strength_code', :model_class => 'Contact') }.
+          to raise_error('Contact#refuser_strength_code is not a coded attribute (it may not be an attribute at all)')
+      end
     end
   end
 end
