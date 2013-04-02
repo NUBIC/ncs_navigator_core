@@ -35,7 +35,7 @@
     %span{ :class => "required" } *
     
     %br  
-    = render "shared/ncs_code_select", { :f => f, :code => :shipment_receipt_confirmed_code, :label_text => "Shipment Receipt Confirmed Code:" }  
+    = render "shared/ncs_code_select", { :f => f, :code => :shipment_receipt_confirmed_code, :model_class => f.object.class, :label_text => "Shipment Receipt Confirmed Code:" }
     %br
     = render "shared/ncs_code_select", { :f => f, :code => :shipment_condition_code, :label_text => "Shipment Condition Code:" }  
     %br

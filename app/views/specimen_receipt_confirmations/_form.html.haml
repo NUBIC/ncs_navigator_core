@@ -37,7 +37,7 @@
     %span{ :class => "required" } *    
     %br  
 
-    = render "shared/ncs_code_select", { :f => f, :code => :shipment_receipt_confirmed_code, :label_text => "Shipment Receipt Confirmed Code:", :html_attrs => { :class => "important_field" }}  
+    = render "shared/ncs_code_select", { :f => f, :code => :shipment_receipt_confirmed_code, :model_class => f.object.class, :label_text => "Shipment Receipt Confirmed Code:", :html_attrs => { :class => "important_field" }}
     %span{ :class => "required" } *    
     %br
 
