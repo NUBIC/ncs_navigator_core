@@ -1,6 +1,4 @@
-- if survey = Survey.most_recent_for_access_code(Survey.to_normalized_string(activity.instrument))
+- if survey = Survey.most_recent_for_access_code(Survey.to_normalized_string(activity.survey_identifier))
   = render "activity", :contact_link => contact_link, :survey => survey, :activity => activity, :person => person
-- elsif activity.saq_activity? || activity.consent_activity?
-  = render "activity", :contact_link => contact_link, :survey => nil, :activity => activity, :person => person
 - else
   = render "other_activity", :current_activity => @current_activity, :activity => activity

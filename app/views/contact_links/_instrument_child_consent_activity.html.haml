@@ -1,0 +1,14 @@
+- participant = activity.participant
+- if participant.child_participant?
+  = render "instrument_consent_activity", :activity => activity, :survey => survey, :contact_link => contact_link, :person => person
+- else
+  -# the child activity should be associated with a child participant
+  -# if the child activity is not associated with a child then the participant
+  -# does not yet have children
+  -# @see InstrumentPlan#associate_scheduled_activity_with_participant
+  -# cf.
+  - t = survey.nil? ? activity.activity_name : survey.title
+  %div{ :class =>  "instrument", :title => t }
+    %a{ :href => "javascript:alert('A Child record must exist before obtaining consent.')", :class => "add_link icon_link"}
+      = activity_link_name(activity)
+    = render "activity_psc_action", :activity => activity

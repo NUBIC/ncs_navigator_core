@@ -44,7 +44,7 @@ module OperationalDataExtractor
 
     def extract_data
       instrument = response_set.instrument
-      raise InvalidSurveyException("No Instrument associated with Response Set") unless instrument
+      raise InvalidSurveyException, "No Instrument associated with Response Set" unless instrument
 
       SAMPLE_MAP.each do |key, attribute|
         if r = data_export_identifier_indexed_responses[key]

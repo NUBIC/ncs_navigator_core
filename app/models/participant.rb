@@ -179,7 +179,7 @@ class Participant < ActiveRecord::Base
     after_transition :on => :high_intensity_conversion, :do => :process_high_intensity_conversion!
     after_transition :on => :pregnancy_one_visit, :do => :process_pregnancy_visit_one!
     after_transition :on => :birth_event, :do => :update_ppg_status_after_birth
-    # TODO: probably need a PPG update trigger for :lose_pregnancy
+    after_transition :on => :lose_pregnancy, :do => :update_ppg_status_after_child_loss
 
     event :high_intensity_conversion do
       transition :in_high_intensity_arm => :converted_high_intensity
@@ -511,6 +511,9 @@ class Participant < ActiveRecord::Base
       else
         low_intensity_consent! if can_low_intensity_consent?
       end
+    when 32
+      # Low to High Conversion
+      high_intensity_conversion! if can_high_intensity_conversion?
     when 33
       # Lo I Quex
       follow_low_intensity! if can_follow_low_intensity?
@@ -634,75 +637,120 @@ class Participant < ActiveRecord::Base
   end
 
   ##
-  # Returns true if a participant_consent record exists for the given consent type
-  # and consent_given_code is true and consent_withdraw_code is not true.
-  # If no consent type is given, then check if any consent record exists
-  # @param [NcsCode]
-  # @return [Boolean]
-  def consented?(consent_type = nil)
-    return false if participant_consents.empty?
-    consents = consents_for_type(determine_consent_type(consent_type))
-    consents.select { |c| c.consented? }.size > 0 && !withdrawn?(consent_type)
+  # Returns true if the participant is not ineligible and
+  # has consented
+  def in_study?
+    !ineligible? && consented?
+  end
+
+  ##
+  # Return the most recent ParticipantConsent record
+  # for this Participant as determined by the
+  # consent_date or consent_withdraw_date.
+  #
+  # There is a possibility that a ParticipantConsent has
+  # been started by not completed and in that case we
+  # do not use those ParticipantConsent records to determine
+  # most recent.
+  #
+  # @return[ParticipantConsent]
+  def most_recent_consent
+    sortable_consents = participant_consents.select { |c| c.consent_date || c.consent_withdraw_date }
+    sortable_consents.sort_by { |c| c.consent_date || c.consent_withdraw_date }.last
   end
 
   ##
   # Returns true if a participant_consent record exists for the given consent type
   # and consent_given_code is true and consent_withdraw_code is not true.
   # If no consent type is given, then check if any consent record exists
-  # @param [NcsCode]
   # @return [Boolean]
-  def reconsented?(consent_type = nil)
-    return false if participant_consents.empty?
-    consents = consents_for_type(determine_consent_type(consent_type))
-    consents.select { |c| c.reconsented? }.size > 0 && !withdrawn?(consent_type)
+  def consented?
+    return false unless most_recent_consent
+    most_recent_consent.consented? && !most_recent_consent.withdrawn?
   end
 
+  ##
+  # Returns true for a child participant whose most recent
+  # participant_consent record of consent_form_type_code
+  # birth to six months has consent_given_code equal to NcsCode::YES.
+  # @see ParticipantConsent#consented?
+  # @return [Boolean]
+  def consented_birth_to_six_months?
+    child_consented? ParticipantConsent.child_consent_birth_to_6_months_form_type_code
+  end
+
+  ##
+  # Returns true for a child participant whose most recent
+  # participant_consent record of consent_form_type_code
+  # birth to six months has consent_given_code equal to NcsCode::YES.
+  # @see ParticipantConsent#consented?
+  # @return [Boolean]
+  def consented_six_months_to_age_of_majority?
+    child_consented? ParticipantConsent.child_consent_6_months_to_age_of_majority_form_type_code
+  end
+
+  def child_consented?(consent_form_type)
+    return false unless child_participant?
+    return false unless most_recent_consent.try(:consent_form_type_code) == consent_form_type.local_code
+    most_recent_consent.consented? && !most_recent_consent.withdrawn?
+  end
+  private :child_consented?
+
+  ##
+  # Returns true if a participant_consent record exists for the given consent type
+  # and consent_given_code is true and consent_withdraw_code is not true.
+  # If no consent type is given, then check if any consent record exists
+  # @return [Boolean]
+  def reconsented?
+    return false unless most_recent_consent
+    most_recent_consent.reconsented? && !most_recent_consent.withdrawn?
+  end
 
   ##
   # Returns true if a participant_consent record exists for the given consent type
   # and consent_withdraw_code is true.
   # If no consent type is given, then check if any consent record exists that was withdrawn
-  # @param [NcsCode]
   # @return [Boolean]
-  def withdrawn?(consent_type = nil)
-    return false if participant_consents.empty?
-    consents = consent_type.nil? ? participant_consents : consents_for_type(consent_type)
-    consents.select { |c| c.withdrawn? }.size > 0
+  def withdrawn?
+    return false unless most_recent_consent
+    most_recent_consent.withdrawn?
   end
 
-  def determine_consent_type(consent_type)
-    if consent_type.nil?
-      consent_type = low_intensity? ? ParticipantConsent.low_intensity_consent_type_code : ParticipantConsent.general_consent_type_code
-    end
-    consent_type
+  def consented_environmental?
+    consented_sample?(ParticipantConsentSample::ENVIRONMENTAL)
   end
-  private :determine_consent_type
 
-  ##
-  # Gets all ParticipantConsent records matching the given consent type
-  # ordered by consent date
-  # @param consent_type [NcsCode] The CONSENT_TYPE_CL* from the MDES Code List
-  # @return [Array<ParticipantConsent>]
-  def consents_for_type(consent_type)
-    participant_consents.where(
-      "consent_type_code = ? OR consent_form_type_code = ?",
-        consent_type.local_code, consent_type.local_code).order("consent_date").all
+  def consented_biospecimen?
+    consented_sample?(ParticipantConsentSample::BIOSPECIMEN)
+  end
+
+  def consented_genetic?
+    consented_sample?(ParticipantConsentSample::GENETIC)
   end
 
   ##
-  # Gets the most recent ParticipantConsent record that matches
-  # the given consent type
-  # @param consent_type [NcsCode] The CONSENT_TYPE_CL* from the MDES Code List
-  # @return [ParticipantConsent]
-  def consent_for_type(consent_type)
-    current_consent = nil
-    cs = consents_for_type(consent_type)
-    current_consent = cs.first
-    if cs.size > 1
-      cs.each { |c| current_consent = c if c.phase_two? }
-    end
-    current_consent
+  # True if the ParticipantConsentSample of type for the
+  # most recent consent is consented?
+  # @see ParticipantConsentSample#consented?
+  # @param [Integer]
+  # @return [Boolean]
+  def consented_sample?(sample_consent_type_code)
+    sample_consent(sample_consent_type_code).try(:consented?)
   end
+  private :consented_sample?
+
+  ##
+  # Return the ParticipantConsentSample of type for the
+  # most recent consent
+  # @param [Integer]
+  # @return [ParticipantConsentSample]
+  def sample_consent(sample_consent_type_code)
+    if most_recent_consent
+      most_recent_consent.participant_consent_samples.where(
+        :sample_consent_type_code => sample_consent_type_code).first
+    end
+  end
+  private :sample_consent
 
   ##
   # Returns true if participant enroll status is 'Yes' (i.e. local_code == 1)
@@ -726,9 +774,8 @@ class Participant < ActiveRecord::Base
   # @param [PatientStudyCalendar]
   def unenroll(psc, reason = "Participant has been un-enrolled from the study.")
     self.enrollment_status_comment = reason
-    self.enroll_status = NcsCode.for_attribute_name_and_local_code(:enroll_status_code, NcsCode::NO)
     self.pending_events.each { |e| e.cancel_and_close_or_delete!(psc, reason) }
-    self.being_followed = false
+    self.update_enrollment_status(false)
   end
 
   ##
@@ -744,9 +791,7 @@ class Participant < ActiveRecord::Base
   # and the enroll_date to the given date
   # @param enroll_date [Date]
   def enroll(enroll_date)
-    self.enroll_status = NcsCode.for_attribute_name_and_local_code(:enroll_status_code, NcsCode::YES)
-    self.enroll_date = enroll_date
-    self.being_followed = true
+    update_enrollment_status(true)
   end
 
   ##
@@ -754,6 +799,28 @@ class Participant < ActiveRecord::Base
   # @param enroll_date [Date]
   def enroll!(enroll_date)
     self.enroll(enroll_date)
+    self.save!
+  end
+
+  ##
+  # Sets the enroll_status, enroll_date, and being_followed
+  # attributes on the Participant
+  # @param [Boolean]
+  # @param [Date]
+  def update_enrollment_status(enrollment_state, date = nil)
+    self.being_followed = enrollment_state
+    status = enrollment_state ? NcsCode::YES : NcsCode::NO
+    self.enroll_status = NcsCode.for_attribute_name_and_local_code(:enroll_status_code, status)
+    self.enroll_date = date
+  end
+
+  ##
+  # Sets the enroll_status, enroll_date, and being_followed
+  # attributes on the Participant
+  # @param [Boolean]
+  # @param [Date]
+  def update_enrollment_status!(enrollment_state, date = nil)
+    self.update_enrollment_status(enrollment_state, date)
     self.save!
   end
 
@@ -1145,9 +1212,11 @@ class Participant < ActiveRecord::Base
   end
 
   def ineligible?
-    ( birth_cohort? && !eligible_for_birth_cohort?) ||
-    ( pbs? && !birth_cohort? && !eligible_for_pbs? ) ||
-    ( !pbs? && !has_eligible_ppg_status? )
+    ineligible_for_birth_cohort = (birth_cohort? && !eligible_for_birth_cohort?)
+    ineligible_for_pbs = (pbs? && !birth_cohort? && !eligible_for_pbs?)
+    ineligible_for_study = (!pbs? && !has_eligible_ppg_status?)
+
+    ineligible_for_birth_cohort || ineligible_for_pbs || ineligible_for_study
   end
 
   def pbs_eligibility_prefix

@@ -112,10 +112,10 @@ describe NonInterviewReportsController do
           assigns(:non_interview_report).should eq(non_interview_report)
         end
 
-        it "redirects to the non_interview_report" do
+        it "redirects to the contact_link decision_page" do
           non_interview_report = NonInterviewReport.create! valid_attributes
           put :update, :id => non_interview_report.id, :non_interview_report => valid_attributes, :contact_link_id => @contact_link.id
-          response.should redirect_to(edit_contact_link_path(@contact_link.id, :close_contact => true))
+          response.should redirect_to(decision_page_contact_link_path(@contact_link))
         end
       end
 

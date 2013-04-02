@@ -1,24 +1,6 @@
-- participant = contact_link.event.participant
--# find those consent records that are associated with a response_set
--# this is done to handle consents prior to change to using a Survey for consent
-- survey_consents = participant.participant_consents.select{ |pc| !pc.response_set.nil? }
--# then match the consent to the current survey
-- consents = survey_consents.select { |pc| pc.response_set.survey.try(:title) == survey.title }
-- if consents.blank?
-  -# if there are no existing this activity has not been done
-  -# cf. the contact_links/_activity.html.haml to see how current activity acts differently
-  = render "future_activity", :activity => activity, :survey => survey
+- if survey.title == "IRB_CON_NonInterviewReport"
+  = render "non_interview_report_consent_activity", :activity => activity, :survey => survey, :contact_link => contact_link
+- elsif activity.child_consent?
+  = render "instrument_child_consent_activity", :activity => activity, :survey => survey, :contact_link => contact_link, :person => person
 - else
-  - consents.each do |consent|
-    %div{ :class => "known_instrument", :title => survey.description}
-      - cls = @current_activity == activity ? "star_link icon_link" : "edit_link icon_link"
-      - path = edit_participant_participant_consent_path(participant, consent, { :contact_link_id => contact_link.id })
-      = link_to "Edit #{strip_part_from_activity_name(activity.activity_name)}", path, :class => cls
-      = render "activity_psc_action", :activity => activity
-      - if consent.contact == contact_link.contact
-        - rs = consent.response_set
-        .instrument_response_set
-          - title = "Edit Participant Responses for the #{rs.survey.title} Survey"
-          = link_to "Edit Instrument Responses",
-            edit_my_survey_path(:survey_code => rs.survey.access_code, :response_set_code => rs.access_code),
-            :class => "edit_survey_link icon_link", :title => title
+  = render "instrument_consent_activity", :activity => activity, :survey => survey, :contact_link => contact_link, :person => person

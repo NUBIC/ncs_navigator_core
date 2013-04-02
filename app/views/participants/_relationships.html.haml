@@ -1,25 +1,44 @@
 .page_section
   .relationships
-    %b
-      Relationships
     - if participant.participant_person_links.blank?
       %p
         No relationships exist at this time.
     - else
-      %table.records
-        %tr
-          %th Select
-          %th Name
-          %th Relationship Type
-        - participant.participant_person_links.each do |ppl|
-          %tr{ :class => cycle('even_record', 'odd_record') }
-            %td
-              = link_to "Edit Person Record", edit_person_path(ppl.person), :class => "edit_link icon_link"
-              = link_to "View", person_path(ppl.person), :class => "show_link icon_link"
-            %td
-              = blank_safe(ppl.person.name)
-            %td
-              = ppl.relationship
+      - participant.participant_person_links.each do |ppl|
+        - person = ppl.person
+        .relation
+          .relation_type
+            = ppl.relationship
+          .person
+            = link_to blank_safe(person.name), person_path(person), :class => "show_link icon_link"
+            = link_to "Edit", edit_person_path(person, :participant_id => participant.id), :class => "edit_link icon_link"
+          - if person.participant.try(:child_participant?) && !ppl.self_relationship?
+            - child_participant = person.participant
+            .consents
+              - child_participant.participant_consents.each do |consent|
+                .consent
+                  = child_consent_description(consent)
+            -# Child consent scheduling forms are under the mother participant because that participant is the only one in PSC
+            - msg = "Are you certain you would like to schedule a Child Consent Event for #{person.name}?"
+            - if child_participant.consented_birth_to_six_months?
+              .link
+                = form_for participant, :url => schedule_child_consent_six_month_to_age_of_majority_event_participant_path(participant) do |f|
+                  %b
+                    Date
+                  = text_field_tag :date, Date.today.to_s, :class => 'datepicker'
+                  - if child_participant.consented_six_months_to_age_of_majority?
+                    - txt = "Schedule Child Reconsent/Withdrawal"
+                  - else
+                    - txt = "Schedule Child Consent 6 Months to Age of Majority"
+                  = f.submit txt, :disable_with => 'Scheduling Child Consent...', :confirm => msg
+            - else
+              .link
+                = form_for participant, :url => schedule_child_consent_birth_to_six_months_event_participant_path(participant) do |f|
+                  %b
+                    Date
+                  = text_field_tag :date, Date.today.to_s, :class => 'datepicker'
+                  = f.submit "Schedule Child Consent Birth to 6 Months", :disable_with => 'Scheduling Child Consent...', :confirm => msg
+
 
   .links
     = link_to 'New Person', new_person_path(:participant_id => @participant), :class => "add_link icon_link"

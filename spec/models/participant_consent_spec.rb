@@ -148,21 +148,22 @@ describe ParticipantConsent do
         @low_intensity = NcsCode.for_list_name_and_local_code("CONSENT_TYPE_CL1", 7)
       end
 
+      let(:date) { Date.parse('2525-12-25') }
+
       it "knows if the participant has consented" do
         pc = Factory(:participant_consent, :consent_given => @yes, :consent_withdraw => @no,
-                     :consent_type => @low_intensity, :consent_form_type_code => -4)
-        pc.participant.should be_consented
-        pc.participant.consented?(@low_intensity).should be_true
-        pc.participant.consented?(@general).should be_false
-        pc.participant.should_not be_withdrawn
+                     :consent_type => @low_intensity, :consent_form_type_code => -4, :consent_date => date)
+        pt = Participant.find(pc.participant_id)
+        pt.participant_consents.should == [pc]
+        pt.should be_consented
+        pt.should_not be_withdrawn
       end
 
       it "knows if the participant has withdrawn consented" do
-        pc = Factory(:participant_consent, :consent_given => @yes, :consent_withdraw => @yes,
-                     :consent_type => @low_intensity, :consent_form_type_code => -4)
-        pc.participant.should be_withdrawn
-        pc.participant.withdrawn?(@low_intensity).should be_true
-        pc.participant.withdrawn?(@general).should be_false
+        pc = Factory(:participant_consent, :consent_given => @no, :consent_withdraw => @yes,
+                     :consent_type => @low_intensity, :consent_form_type_code => -4, :consent_date => date)
+        pt = Participant.find(pc.participant_id)
+        pt.should be_withdrawn
       end
     end
 
@@ -172,21 +173,21 @@ describe ParticipantConsent do
         @low_intensity = NcsCode.for_list_name_and_local_code("CONSENT_TYPE_CL3", 7)
       end
 
+      let(:date) { Date.parse('2525-12-25') }
+
       it "knows if the participant has consented" do
         pc = Factory(:participant_consent, :consent_given => @yes, :consent_withdraw => @no,
-                     :consent_form_type => @low_intensity, :consent_type_code => -4)
-        pc.participant.should be_consented
-        pc.participant.consented?(@low_intensity).should be_true
-        pc.participant.consented?(@general).should be_false
-        pc.participant.should_not be_withdrawn
+                     :consent_form_type => @low_intensity, :consent_type_code => -4, :consent_date => date)
+        pt = Participant.find(pc.participant_id)
+        pt.should be_consented
+        pt.should_not be_withdrawn
       end
 
       it "knows if the participant has withdrawn consented" do
-        pc = Factory(:participant_consent, :consent_given => @yes, :consent_withdraw => @yes,
-                     :consent_form_type => @low_intensity, :consent_type_code => -4)
-        pc.participant.should be_withdrawn
-        pc.participant.withdrawn?(@low_intensity).should be_true
-        pc.participant.withdrawn?(@general).should be_false
+        pc = Factory(:participant_consent, :consent_given => @no, :consent_withdraw => @yes,
+                     :consent_form_type => @low_intensity, :consent_type_code => -4, :consent_date => date)
+        pt = Participant.find(pc.participant_id)
+        pt.should be_withdrawn
       end
     end
   end
@@ -329,14 +330,15 @@ describe ParticipantConsent do
         end
       end
     end
-
   end
 
   describe ".start!" do
     let(:contact) { Factory(:contact) }
     let(:person) { Factory(:person) }
     let(:participant) { Factory(:participant) }
+    let(:event) { Factory(:event, :participant => participant) }
     let(:survey) { Survey.last }
+    let(:contact_link) { Factory(:contact_link, :contact => contact, :event => event) }
 
     describe "for a new ParticipantConsent record" do
 
@@ -345,7 +347,7 @@ describe ParticipantConsent do
         Surveyor::Parser.parse File.read(f)
 
         ParticipantConsent.count.should == 0
-        ParticipantConsent.start!(person, participant, survey, contact)
+        ParticipantConsent.start!(person, participant, survey, contact, contact_link)
       end
 
       it "creates a new ParticipantConsent record" do
@@ -358,8 +360,24 @@ describe ParticipantConsent do
         pc.participant.should == participant
       end
 
+      it "creates an associated informed consent event" do
+        pc = ParticipantConsent.first
+        e = Event.last
+        e.should be_informed_consent
+        pc.contact.should == e.contact_links.last.contact
+      end
+
       it "creates an associated ResponseSet" do
         ParticipantConsent.first.response_set.should_not be_nil
+      end
+
+      it "creates a ParticipantConsentSample record for each type of sample consent" do
+        pc = ParticipantConsent.first
+        ParticipantConsentSample::SAMPLE_CONSENT_TYPE_CODES.each do |code|
+          samples = pc.participant_consent_samples.where(:sample_consent_type_code => code).all
+          samples.should_not be_empty
+          samples.size.should == 1
+        end
       end
     end
 
@@ -373,7 +391,7 @@ describe ParticipantConsent do
       it "returns the ParticipantConsent associated with the survey, person, and contact" do
         2.times do |i|
           ParticipantConsent.count.should == i
-          ParticipantConsent.start!(person, participant, survey, contact)
+          ParticipantConsent.start!(person, participant, survey, contact, contact_link)
           ParticipantConsent.count.should == 1
         end
 
@@ -386,6 +404,48 @@ describe ParticipantConsent do
       end
 
     end
+  end
+
+  describe "#associate_response_set" do
+
+    context "when a response_set already is associated" do
+      let(:rs) { Factory(:response_set) }
+      let(:pc) { Factory(:participant_consent, :response_set => rs) }
+
+      before do
+        pc.associate_response_set
+      end
+
+      it "does nothing" do
+        ParticipantConsent.find(pc.id).response_set == rs
+      end
+    end
+
+    context "when response_set is nil" do
+      let(:participant) { Factory(:participant) }
+      let(:person) { Factory(:person) }
+      let(:pc) { Factory(:participant_consent, :response_set => nil, :participant => participant) }
+
+      before do
+        participant.person = person
+        participant.save!
+        f = "#{Rails.root}/internal_surveys/IRB_CON_Informed_Consent.rb"
+        Surveyor::Parser.parse File.read(f)
+        pc.associate_response_set
+      end
+
+      it "creates an associated response_set" do
+        rs = ParticipantConsent.find(pc.id).response_set
+        rs.should_not be_nil
+      end
+
+      it "builds responses based on the participant_consent data" do
+        rs = ParticipantConsent.find(pc.id).response_set
+        rs.should_not be_nil
+      end
+
+    end
+
   end
 
 end

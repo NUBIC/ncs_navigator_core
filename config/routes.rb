@@ -23,14 +23,22 @@ NcsNavigatorCore::Application.routes.draw do
       get :events
       get :start_instrument
       get :start_consent
+      get :start_non_interview_report
       get :responses_for
       put :responses_for
       get :provider_staff_member
       get :provider_staff_member_radio_button
+      get :edit_child
+      put :update_child
+    end
+    collection do
+      get :new_child
+      post :create_child
     end
     resources :contacts, :except => [:index]
     resources :telephones, :except => [:index, :destroy]
     resources :emails, :except => [:index, :destroy]
+    resources :non_interview_reports, :only => [:edit, :update]
   end
   resources :participants do
     collection do
@@ -46,6 +54,8 @@ NcsNavigatorCore::Application.routes.draw do
       put :schedule_informed_consent_event
       put :schedule_reconsent_event
       put :schedule_withdrawal_event
+      put :schedule_child_consent_birth_to_six_months_event
+      put :schedule_child_consent_six_month_to_age_of_majority_event
       get :schedule
       get :edit_ppg_status
       put :update_ppg_status
@@ -57,12 +67,7 @@ NcsNavigatorCore::Application.routes.draw do
       put :unenroll
       put :remove_from_active_followup
     end
-    resources :participant_consents, :except => [:index, :destroy] do
-      collection do
-        get :new_child
-        post :create_child
-      end
-    end
+    resources :participant_consents, :only => [:edit]
     resources :ppg_details, :only => [:edit, :update]
   end
   resources :contact_links do

@@ -99,6 +99,39 @@ describe ScheduledActivity do
     end
   end
 
+  describe "#child_consent?" do
+    let(:sa) { ScheduledActivity.new(:activity_name => activity_name) }
+
+    describe "for a Child Consent" do
+      let(:activity_name) { "Child Consent" }
+      it "is true" do
+        sa.should be_child_consent
+      end
+    end
+
+    describe "for a Child Consent Birth to 6 Months" do
+      let(:activity_name) { "Child Consent Birth to 6 Months" }
+      it "is true" do
+        sa.should be_child_consent
+      end
+    end
+
+    describe "for a Child Consent Birth to 6 Months to Age of Majority" do
+      let(:activity_name) { "Child Consent 6 Months to Age of Majority" }
+      it "is true" do
+        sa.should be_child_consent
+      end
+    end
+
+    describe "for a Pregnant Woman Informed Consent" do
+      let(:activity_name) { "Pregnant Woman Informed Consent" }
+      it "is false" do
+        sa.should_not be_child_consent
+      end
+    end
+
+  end
+
   context "understanding the labels" do
 
     let(:scheduled_activity) { ScheduledActivity.new(attrs) }

@@ -66,5 +66,39 @@ describe ParticipantPersonLink do
     end
   end
 
+  describe "#active?" do
+    let(:ppl) { Factory(:participant_person_link, :relationship_code => is_active_code) }
+    describe "when is_active_code is 1" do
+      let(:is_active_code) { 1 }
+      it "is true" do
+        ppl.should be_self_relationship
+      end
+    end
+
+    describe "when is_active_code is not 1" do
+      let(:is_active_code) { -4 }
+      it "is false" do
+        ppl.should_not be_self_relationship
+      end
+    end
+  end
+
+  describe "#self_relationship?" do
+    let(:ppl) { Factory(:participant_person_link, :relationship_code => relationship_code) }
+    describe "when relationship_code is 1" do
+      let(:relationship_code) { 1 }
+      it "is true" do
+        ppl.should be_self_relationship
+      end
+    end
+
+    describe "when relationship_code is not 1" do
+      let(:relationship_code) { -4 }
+      it "is false" do
+        ppl.should_not be_self_relationship
+      end
+    end
+  end
+
 end
 

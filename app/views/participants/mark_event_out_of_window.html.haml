@@ -1,4 +1,4 @@
-= title "Out of Window Events"
+- page_title "Out of Window Events"
 .page_section
 
   = render "participants/header_information", :person => @person, :participant => @participant
@@ -11,4 +11,6 @@
         = event.to_s
         = form_for(@participant, :url => process_mark_event_out_of_window_participant_path(@participant)) do |f|
           = hidden_field_tag :event_id, event.id
-          = f.submit "Mark Out of Window", :confirm => "Are you certain that you have missed the '#{event}' Event and would like to mark it 'Out of Window'?"
+          = f.submit "Mark Out of Window",
+            :confirm => "Are you certain that you have missed the '#{event}' Event and would like to mark it 'Out of Window'?",
+            :disable_with => 'Marking Event Out of Window ...'

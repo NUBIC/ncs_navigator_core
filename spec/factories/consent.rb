@@ -6,6 +6,7 @@ Factory.define :participant_consent do |pc|
   pc.association :participant, :factory => :participant
   pc.association :contact, :factory => :contact
   pc.association :person_who_consented, :factory => :person
+  pc.association :response_set, :factory => :response_set
   pc.person_wthdrw_consent nil
 
   pc.psu_code                      20000030

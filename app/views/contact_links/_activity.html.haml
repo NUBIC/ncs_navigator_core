@@ -1,11 +1,11 @@
 %div{ :id => "activity_#{activity.activity_id}", :class => "activity_link" }
-  - if contact_link.event.instrument_survey_titles.try(:include?, survey.try(:title) )
+  - if instrument_exists_for_survey?(contact_link, survey)
     = render "previous_activity", :activity => activity, :survey => survey, :contact_link => contact_link
   - elsif @saq_activities.try(:include?, activity)
     = render "saq_activity", :activity => activity, :survey => survey, :event => @event
   - elsif @current_activity == activity
     = render "current_activity", :activity => activity, :survey => survey, :contact_link => contact_link, :person => person
   - elsif activity.consent_activity? && !survey.nil?
-    = render "consent_activity", :activity => activity, :survey => survey, :contact_link => contact_link
+    = render "consent_activity", :activity => activity, :survey => survey, :contact_link => contact_link, :person => person
   - else
     = render "future_activity", :activity => activity, :survey => survey

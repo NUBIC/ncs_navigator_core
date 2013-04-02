@@ -4,6 +4,7 @@
 - help_text ||= nil
 - notify_marker ||= nil
 - html_attrs ||= { :class => "required" }
+- unambiguous_code ||= nil
 
 - html_attrs[:disabled] = "disabled" if code.to_s == "psu_code"
 %p
@@ -17,7 +18,9 @@
     = render help_text
   - f.object.send("#{code}=", default_value) if default_value
   %p{ :class => 'ncs_select' }
-    = f.select(code, NcsCode.ncs_code_lookup(code), { :include_blank => "-- Select #{label_text} --" }, html_attrs)
+    - c = unambiguous_code ? unambiguous_code : code
+    - ncs_code = NcsCode.ncs_code_lookup(c)
+    = f.select(code, ncs_code, { :include_blank => "-- Select #{label_text} --" }, html_attrs)
     - if other
       %p.other_field
         = f.label other, "#{label_text} (Other)"

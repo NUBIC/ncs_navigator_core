@@ -959,7 +959,7 @@ describe OperationalDataExtractor::Base do
       end
     end
 
-    describe "#collect_race_responses" do
+    describe "#collect_pick_any_responses" do
       before do
         @response_set2, instrument = prepare_instrument(@person, @participant, @survey)
         take_survey(@survey, @response_set2) do |r|
@@ -972,9 +972,10 @@ describe OperationalDataExtractor::Base do
       end
 
       it "collects all the race-related responses" do
-        @birth_extractor2.collect_race_responses("#{OperationalDataExtractor::Birth::BIRTH_VISIT_BABY_RACE_NEW_3_PREFIX}.BABY_RACE_NEW").count.should  == 3
-        @birth_extractor2.collect_race_responses("#{OperationalDataExtractor::Birth::BIRTH_VISIT_BABY_RACE_NEW_3_PREFIX}.BABY_RACE_NEW").first.should be_instance_of(Response)
-        @birth_extractor2.collect_race_responses("#{OperationalDataExtractor::Birth::BIRTH_VISIT_BABY_RACE_NEW_3_PREFIX}.BABY_RACE_NEW").first.question.data_export_identifier.should =~ /RACE/
+        resps = @birth_extractor2.collect_pick_any_responses("#{OperationalDataExtractor::Birth::BIRTH_VISIT_BABY_RACE_NEW_3_PREFIX}.BABY_RACE_NEW")
+        resps.count.should  == 3
+        resps.first.should be_instance_of(Response)
+        resps.first.question.data_export_identifier.should =~ /RACE/
       end
     end
 

@@ -5,7 +5,9 @@
     There is only one Instrument associated with the Pregnancy Screener Event
 - elsif @event.postnatal? && !@event.participant.has_children?
   .important
-    Child participation is required in order to continue.
-  = render "parental_permission_for_child_participation", :event => @event, :contact_link => @contact_link
+    To ensure proper data associations a Child record is required in order to continue.
+  - participant = @contact_link.event.participant
+  = link_to "New Child", new_child_people_path(:participant_id => participant.id, :contact_link_id => @contact_link.id),
+    :class => "add_link icon_link", :confirm => "Are you certain you would like to create a new child record?"
 - else
   = render "activity_list", :initial_instrument_for_contact => initial_instrument_for_contact

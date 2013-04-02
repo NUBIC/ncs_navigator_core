@@ -1,13 +1,9 @@
 -# the current activity
 %div{ :class => "instrument", :title => survey.title}
-  - if activity.consent_activity? && !(/_NonIntRespQues_/ =~ survey.title)
-    = link_to activity.activity_name,
-        start_consent_person_path(person, :participant_id => activity.participant.id,
-                                          :survey_access_code => survey.access_code,
-                                          :contact_link_id => contact_link.id),
-        :class => "star_link icon_link"
+  - if activity.consent_activity?
+    = render "consent_activity", :activity => activity, :survey => survey, :contact_link => contact_link, :person => person
   - else
-    = link_to activity.activity_name,
+    = link_to activity_link_name(activity),
         start_instrument_person_path(person, :participant_id => activity.participant.id,
                                              :references_survey_access_code => activity.references.to_s,
                                              :survey_access_code => survey.access_code,

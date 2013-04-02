@@ -41,6 +41,7 @@ class SampledPersonsIneligibility < ActiveRecord::Base
       create!({
         :person => person,
         :provider => person.provider,
+        :psu_code => person.psu_code,
         :age_eligible_code => code[participant.age_eligible?(person)],
         :county_of_residence_code => code[participant.psu_county_eligible?(person)],
         :first_prenatal_visit_code => NcsCode::UNKNOWN,
@@ -50,6 +51,7 @@ class SampledPersonsIneligibility < ActiveRecord::Base
       create!({
         :person => person,
         :provider => person.provider,
+        :psu_code => person.psu_code,
         :age_eligible_code => code[participant.age_eligible?(person)],
         :county_of_residence_code => code[participant.psu_county_eligible?(person)],
         :first_prenatal_visit_code => code[participant.first_visit?(person)],

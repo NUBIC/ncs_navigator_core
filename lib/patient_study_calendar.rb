@@ -62,13 +62,15 @@ class PatientStudyCalendar
 
   # Informed Consent Segments
   INFORMED_CONSENT = "Informed Consent"
-  PARENTAL_PERMISSION_FOR_CHILD_PARTICIPATION = "Parental Permission for Child Participation"
+  CHILD_CONSENT_BIRTH = "Parental Permission for Child Participation Birth to 6 months"
+  CHILD_CONSENT_SIX_MONTHS = "Parental Permission for Child Participation 6 months to Age of Majority"
   WITHDRAWAL = "Withdrawal"
   RECONSENT = "Reconsent"
 
   # Informed Consent Epoch and Segments
   INFORMED_CONSENT_GENERAL_CONSENT = "#{INFORMED_CONSENT_EPOCH}: #{INFORMED_CONSENT}"
-  INFORMED_CONSENT_PARENTAL_PERMISSION_FOR_CHILD_PARTICIPATION = "#{INFORMED_CONSENT_EPOCH}: #{PARENTAL_PERMISSION_FOR_CHILD_PARTICIPATION}"
+  INFORMED_CONSENT_CHILD_CONSENT_BIRTH = "#{INFORMED_CONSENT_EPOCH}: #{CHILD_CONSENT_BIRTH}"
+  INFORMED_CONSENT_CHILD_CONSENT_SIX_MONTHS = "#{INFORMED_CONSENT_EPOCH}: #{CHILD_CONSENT_SIX_MONTHS}"
   INFORMED_CONSENT_WITHDRAWAL= "#{INFORMED_CONSENT_EPOCH}: #{WITHDRAWAL}"
   INFORMED_CONSENT_RECONSENT = "#{INFORMED_CONSENT_EPOCH}: #{RECONSENT}"
 
@@ -507,8 +509,12 @@ class PatientStudyCalendar
     schedule_segment(participant, INFORMED_CONSENT_WITHDRAWAL, date)
   end
 
-  def schedule_parental_permission_informed_consent(participant, date = Date.today.to_s)
-    schedule_segment(participant, INFORMED_CONSENT_PARENTAL_PERMISSION_FOR_CHILD_PARTICIPATION, date)
+  def schedule_child_consent_birth_to_six_months(participant, date = Date.today.to_s)
+    schedule_segment(participant, INFORMED_CONSENT_CHILD_CONSENT_BIRTH, date)
+  end
+
+  def schedule_child_consent_six_months_to_age_of_majority(participant, date = Date.today.to_s)
+    schedule_segment(participant, INFORMED_CONSENT_CHILD_CONSENT_SIX_MONTHS, date)
   end
 
   ##
@@ -648,7 +654,8 @@ class PatientStudyCalendar
   def should_cancel_consent_activity?(activity)
     skippable_segments = [
       INFORMED_CONSENT_GENERAL_CONSENT,
-      INFORMED_CONSENT_PARENTAL_PERMISSION_FOR_CHILD_PARTICIPATION,
+      INFORMED_CONSENT_CHILD_CONSENT_BIRTH,
+      INFORMED_CONSENT_CHILD_CONSENT_SIX_MONTHS,
       INFORMED_CONSENT_WITHDRAWAL,
       INFORMED_CONSENT_RECONSENT,
     ]

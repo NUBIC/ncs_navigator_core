@@ -213,6 +213,7 @@ class NcsCode < ActiveRecord::Base
     :deceased_inform_relation_code  => 'NIR_INFORM_RELATION_CL1',
     :state_of_death_code            => 'STATE_CL3',
     :who_refused_code               => 'NIR_INFORM_RELATION_CL2',
+    :nir_who_refused_code           => 'NIR_INFORM_RELATION_CL2', # not to be confused with non_interview_report_provider
     :refuser_strength_code          => 'REFUSAL_INTENSITY_CL1',
     :refusal_action_code            => 'REFUSAL_ACTION_CL1',
     :permanent_long_term_code       => 'CONFIRM_TYPE_CL10',

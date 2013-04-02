@@ -165,7 +165,7 @@ class InstrumentPlan
   # @param [Event]
   # @return Boolean
   def final_survey_part?(response_set, event)
-    return true if response_set.participant_consent
+    return true if response_set.participant_consent || response_set.non_interview_report
     expected = scheduled_activities_for_survey(response_set.survey.title, event).size
     actual   = response_set.instrument.response_sets.size
     expected <= actual
@@ -250,7 +250,7 @@ class InstrumentPlan
     result = []
     if a = scheduled_activity_for_survey(survey_title, event)
       result = scheduled_activities_for_event(event).select do |sa|
-        sa.instrument == a.survey_root || sa.references == a.survey_root
+        sa.survey_identifier == a.survey_root || sa.references == a.survey_root
       end.sort
     end
     result
@@ -265,7 +265,7 @@ class InstrumentPlan
   # @return [ScheduledActivity]
   def scheduled_activity_for_survey(survey_title, event)
     survey_title = survey_title.to_s.downcase
-    scheduled_activities_for_event(event).select { |sa| sa.instrument == survey_title }.first
+    scheduled_activities_for_event(event).select { |sa| sa.survey_identifier == survey_title }.first
   end
 
 end

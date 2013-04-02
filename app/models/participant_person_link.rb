@@ -49,12 +49,22 @@ class ParticipantPersonLink < ActiveRecord::Base
   def initialize(*args)
     super
     if self.is_active_code.blank?
-      self.is_active_code = 1
+      self.is_active_code = NcsCode::YES
     end
   end
 
   def active?
-    is_active_code == 1
+    self.is_active_code == NcsCode::YES
+  end
+
+  def self_relationship?
+    self.relationship_code == ParticipantPersonLink.person_self_code
+  end
+
+  ##
+  # PERSON_PARTCPNT_RELTNSHP_CL1
+  def self.person_self_code
+    1
   end
 end
 

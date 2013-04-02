@@ -1,0 +1,68 @@
+- form_path = @person.new_record? ? create_child_people_path : update_child_person_path(@person)
+.page_section
+  = form_for(@person, :url => form_path, :html => {:autocomplete => "off"}) do |f|
+    = render "shared/full_error_messages", :object => f.object
+
+    = hidden_field_tag :participant_id, @participant.id
+    = hidden_field_tag :contact_link_id, @contact_link.id
+
+    = render "shared/ncs_code_select", { :f => f, :code => :psu_code, :label_text => "PSU", :default_value => @psu_code }
+
+    .participant_relationship
+      = label_tag "name","Relationship to #{@participant.person.full_name}"
+      %br
+      = select_tag("relationship_code", options_for_select(NcsCode.ncs_code_lookup(:relationship_code), :selected => @relationship_code), { :prompt => "-- Relationship to Participant -- " })
+
+    %p
+      = f.label :first_name, "First Name"
+      %br
+      = f.text_field :first_name
+
+    %p
+      = f.label :middle_name, "Middle Name"
+      %br
+      = f.text_field :middle_name
+
+    %p
+      = f.label :last_name, "Last Name"
+      %br
+      = f.text_field :last_name
+
+    = render "shared/ncs_code_select", { :f => f, :code => :sex_code, :label_text => "Sex" }
+
+    %p
+      = f.label :person_dob_date, "Date Of Birth"
+      %br
+      = f.text_field :person_dob_date, :class => "datepicker"
+      = f.label :person_dob_modifier_refused, "Refused"
+      = f.radio_button :person_dob_modifier, :refused
+      = f.label :person_dob_modifier_unknown, "Unknown"
+      = f.radio_button :person_dob_modifier, :unknown
+
+    = render "shared/ncs_code_select", { :f => f, :code => :p_info_source_code, :label_text => "Info Source", :other => :p_info_source_other }
+
+    %p
+      = f.label :p_info_date, "Info Date"
+      %br
+      = f.text_field :p_info_date, :class => "datepicker"
+
+    %p
+      = f.label :p_info_update, "Info Update"
+      %br
+      = f.text_field :p_info_update, :class => "datepicker"
+
+    %p
+      = f.label :person_comment, "Comment"
+      %br
+      = f.text_area :person_comment
+
+    %p
+      = f.submit "Submit", :disable_with => 'Submitting...'
+
+:javascript
+  // For the 'other' field
+  // Check on pageload
+  $(document).ready(function() {
+    wire_up_select_other("#person_p_info_source_code",
+                         "#person_p_info_source_other");
+  });
