@@ -86,6 +86,10 @@ module NcsNavigator::Core::Mdes
           result
         end
 
+        before do
+          pending 'No development environment in CI' if Rails.env =~ /\Aci/
+        end
+
         it 'reloads instances after a code reload' do
           development_mode_check(
             :post_reload =>
