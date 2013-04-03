@@ -521,17 +521,15 @@ class Participant < ActiveRecord::Base
       # Pregnancy Probability
       follow! if can_follow? && high_intensity?
 
-      if known_to_be_pregnant?
-        date = event.event_end_date.blank? ? event.event_start_date : event.event_end_date
-        if low_intensity? &&
-         can_impregnate_low? &&
-         !due_date_is_greater_than_follow_up_interval(date)
-         impregnate_low!
+      date = event.event_end_date.blank? ? event.event_start_date : event.event_end_date
+      if known_to_be_pregnant?(date)
+        if(low_intensity? && can_impregnate_low? &&
+           !due_date_is_greater_than_follow_up_interval(date))
+          impregnate_low!
         end
 
-        if high_intensity? &&
-         can_impregnate?
-         impregnate!
+        if high_intensity? && can_impregnate?
+          impregnate!
         end
       end
 
