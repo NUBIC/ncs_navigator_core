@@ -1,11 +1,11 @@
 # == Schema Information
-# Schema version: 20130325201322
+# Schema version: 20130329150304
 #
 # Table name: sampled_persons_ineligibilities
 #
 #  age_eligible_code         :integer
 #  county_of_residence_code  :integer
-#  create_from_person!d_at                :datetime
+#  created_at                :datetime
 #  first_prenatal_visit_code :integer
 #  id                        :integer          not null, primary key
 #  ineligible_by_code        :integer
