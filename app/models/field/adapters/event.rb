@@ -1,34 +1,3 @@
-# == Schema Information
-# Schema version: 20130226172617
-#
-# Table name: events
-#
-#  created_at                         :datetime
-#  event_breakoff_code                :integer          not null
-#  event_comment                      :text
-#  event_disposition                  :integer
-#  event_disposition_category_code    :integer          not null
-#  event_end_date                     :date
-#  event_end_time                     :string(255)
-#  event_id                           :string(36)       not null
-#  event_incentive_cash               :decimal(12, 2)
-#  event_incentive_noncash            :string(255)
-#  event_incentive_type_code          :integer          not null
-#  event_repeat_key                   :integer
-#  event_start_date                   :date
-#  event_start_time                   :string(255)
-#  event_type_code                    :integer          not null
-#  event_type_other                   :string(255)
-#  id                                 :integer          not null, primary key
-#  lock_version                       :integer          default(0)
-#  participant_id                     :integer
-#  psc_ideal_date                     :date
-#  psu_code                           :integer          not null
-#  scheduled_study_segment_identifier :string(255)
-#  transaction_type                   :string(255)
-#  updated_at                         :datetime
-#
-
 module Field::Adapters
   module Event
     ATTRIBUTES = %w(

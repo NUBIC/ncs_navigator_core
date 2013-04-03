@@ -1,23 +1,4 @@
 # -*- coding: utf-8 -*-
-# == Schema Information
-#
-# Table name: merges
-#
-#  client_id       :string(255)
-#  conflict_report :text
-#  crashed_at      :datetime
-#  created_at      :datetime
-#  fieldwork_id    :integer
-#  id              :integer          not null, primary key
-#  log             :text
-#  merged_at       :datetime
-#  proposed_data   :text
-#  staff_id        :string(255)
-#  started_at      :datetime
-#  synced_at       :datetime
-#  updated_at      :datetime
-#  username        :string(255)      not null
-#
 
 require 'ncs_navigator/core'
 
