@@ -752,7 +752,7 @@ module NcsNavigator::Core::Warehouse
                    end
 
           values.each do |associated_value|
-            next unless associated_value.respond_to?(:public_id)
+            next unless associated_value.class.ancestors.include?(NcsNavigator::Core::Mdes::MdesRecord)
             related_core_records([associated_value], found) unless found.include?(associated_value)
           end
         end
