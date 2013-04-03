@@ -1,7 +1,9 @@
 require 'spec_helper'
 
 module NcsNavigator::Core::Mdes::VersionMigrations
-  describe TwoZeroToTwoOne do
+  # clean_with_truncation because CodeListLoader#load_from_pg_dump hangs
+  # when there's an open transaction that's touched ncs_codes.
+  describe TwoZeroToTwoOne, :clean_with_truncation do
     include SurveyCompletion
 
     let(:migration) {
