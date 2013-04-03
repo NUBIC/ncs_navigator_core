@@ -362,14 +362,7 @@ class Participant < ActiveRecord::Base
     !self.children.blank?
   end
 
-  ##
-  # Use the given event or the most recent closed event
-  # to determine the next participant state.
-  #
-  # @see Participant#update_state_to_next_event
-  # @see Event#closed
-  # @see Event#chronological
-  def advance(psc, event = events.closed.chronological.last)
+  def advance(psc, event = events.chronological.last)
     if self.pending_events.blank?
       update_state_to_next_event(event)
       Event.schedule_and_create_placeholder(psc, self)
