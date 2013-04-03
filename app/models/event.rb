@@ -286,6 +286,10 @@ class Event < ActiveRecord::Base
     order(:event_start_date)
   end
 
+  def closed
+    where("event_end_date IS NOT NULL")
+  end
+
   def self.by_type_order
     joins(%q{
       LEFT OUTER JOIN event_type_order
