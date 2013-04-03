@@ -472,4 +472,58 @@ module PostNatal
     return q.survey_section.survey
   end
 
+  def create_12MM_mother_detail_hcare_sick_m20
+    survey = Factory(:survey, :title =>
+                "INS_QUE_12MMother_INT_EHPBHI_P2_V11_TWELVE_MTH_MOTHER_DETAIL",
+                :access_code =>
+                "ins_que_12mmother_int_ehpbhi_p2_v11_twelve_mth_mother_detail")
+    survey_section = Factory(:survey_section, :survey_id => survey.id)
+    q = Factory(:question, :reference_identifier => "HCARE_SICK",
+                :data_export_identifier => "TWELVE_MTH_MOTHER_DETAIL.HCARE_SICK",
+                :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :reference_identifier => "1",
+                :text => "Hospital clinic", :response_class => "answer")
+    a = Factory(:answer, :question_id => q.id, :reference_identifier => "2",
+                :text => "Health department clinic", :response_class => "answer")
+    a = Factory(:answer, :question_id => q.id, :reference_identifier => "3",
+                :text => "Private doctor's office or HMO",
+                :response_class => "answer")
+    a = Factory(:answer, :question_id => q.id, :reference_identifier => "7",
+                :text => "Doesn t get preventive care",
+                :response_class => "answer")
+    a = Factory(:answer, :question_id => q.id, :text => "REFUSED",
+                :response_class => "answer", :reference_identifier => "neg_1")
+    a = Factory(:answer, :question_id => q.id, :text => "DON'T KNOW",
+                :response_class => "answer", :reference_identifier => "neg_2")
+
+    q = Factory(:question, :reference_identifier => "R_HCARE",
+                :data_export_identifier => "TWELVE_MTH_MOTHER_DETAIL.R_HCARE",
+                :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :reference_identifier => "1",
+                :text => "Clinic or health center", :response_class => "answer")
+    a = Factory(:answer, :question_id => q.id, :reference_identifier => "2",
+                :text => "Doctor's office or Health Maintenance Organization (HMO)",
+                :response_class => "answer")
+    a = Factory(:answer, :question_id => q.id, :reference_identifier => "3",
+                :text => "Hospital emergency room", :response_class => "answer")
+    a = Factory(:answer, :question_id => q.id, :reference_identifier => "4",
+                :text => "Hospital outpatient department",
+                :response_class => "answer")
+    a = Factory(:answer, :question_id => q.id, :reference_identifier => "5",
+                :text => "Some other place",
+                :response_class => "answer")
+    a = Factory(:answer, :question_id => q.id, :reference_identifier => "6",
+                :text => "DOESN'T GO TO ONE PLACE MOST OFTEN",
+                :response_class => "answer")
+    a = Factory(:answer, :question_id => q.id, :reference_identifier => "7",
+                :text => "DOESN'T GET WELL-CHILD CARE ANYWHERE",
+                :response_class => "answer")
+    a = Factory(:answer, :question_id => q.id, :text => "REFUSED",
+                :response_class => "answer", :reference_identifier => "neg_1")
+    a = Factory(:answer, :question_id => q.id, :text => "DON'T KNOW",
+                :response_class => "answer", :reference_identifier => "neg_2")
+
+    survey
+  end
+
 end

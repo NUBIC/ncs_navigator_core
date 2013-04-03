@@ -324,4 +324,28 @@ module BirthVisit
     QUESTIONS
   end
 
+  def create_birth_M2_0_hcare(surveyid)
+    load_survey_questions_string(<<-QUESTIONS)
+      q_HCARE "Where do you plan to take your new {{baby_babies}} for well-baby checkups?",
+      :pick => :one,
+      :data_export_identifier=>"#{surveyid}.HCARE"
+      a_1 "Clinic or health center"
+      a_2 "Doctor's office or Health Maintenance Organization (HMO)"
+      a_3 "Hospital outpatient department"
+      a_neg_5 "Some other place"
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
+
+      q_HOW_FED "How have you fed your baby?",
+      :pick=>:one,
+      :data_export_identifier=>"#{surveyid}.HOW_FED"
+      a_1 "Breast only"
+      a_2 "Bottle only"
+      a_3 "Both breast and bottle"
+      a_neg_5 "Other"
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
+    QUESTIONS
+  end
+
 end
