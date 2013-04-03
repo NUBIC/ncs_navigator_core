@@ -23,6 +23,7 @@
 #
 
 class SpecimenReceiptConfirmation < ActiveRecord::Base
+  include NcsNavigator::Core::Mdes::MdesRecord
   belongs_to :specimen_processing_shipping_center
   belongs_to :specimen
   
@@ -30,10 +31,10 @@ class SpecimenReceiptConfirmation < ActiveRecord::Base
 
   # ncs_coded_attribute :specimen_condition,                'SPECIMEN_STATUS_CL7'
 
-  belongs_to :psu, :conditions => "list_name = 'PSU_CL1'", :foreign_key => "psu_code", :class_name => 'NcsCode', :primary_key => :local_code
-  belongs_to :shipment_receipt_confirmed, :conditions => "list_name = 'CONFIRM_TYPE_CL21'", :foreign_key => "shipment_receipt_confirmed_code", :class_name => 'NcsCode', :primary_key => :local_code  
-  belongs_to :shipment_condition, :conditions => "list_name = 'SHIPMENT_CONDITION_CL1'", :foreign_key => "shipment_condition_code", :class_name => 'NcsCode', :primary_key => :local_code  
-  
+  ncs_coded_attribute :psu,                        'PSU_CL1'
+  ncs_coded_attribute :shipment_receipt_confirmed, 'CONFIRM_TYPE_CL21'
+  ncs_coded_attribute :shipment_condition,         'SHIPMENT_CONDITION_CL1'
+
   validates_presence_of :shipper_id
   # validates_presence_of :shipment_tracking_number
   validates_presence_of :shipment_receipt_datetime
