@@ -36,7 +36,7 @@ namespace :import do
   end
 
   def non_children_participants
-    Participant.includes(:participant_person_links => [:person]).
+    Participant.includes([{:participant_person_links => [:person]}, :events]).
       where('p_type_code != ?', 6)
   end
 
