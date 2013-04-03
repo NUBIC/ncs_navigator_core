@@ -1,0 +1,184 @@
+---
+- list_name: BABY_FEEDING_PLAN_CL2
+  local_code: -4
+  display_text: Missing in Error
+- list_name: BABY_FEEDING_PLAN_CL2
+  local_code: -3
+  display_text: Legitimate Skip
+- list_name: BABY_FEEDING_PLAN_CL2
+  local_code: -2
+  display_text: Don't Know
+- list_name: BABY_FEEDING_PLAN_CL2
+  local_code: -1
+  display_text: Refused
+- list_name: BABY_FEEDING_PLAN_CL2
+  local_code: 1
+  display_text: Breast milk
+- list_name: BABY_FEEDING_PLAN_CL2
+  local_code: 2
+  display_text: Formula
+- list_name: BABY_FEEDING_PLAN_CL2
+  local_code: 3
+  display_text: Both breast milk and formula
+- list_name: INFORMATION_SOURCE_CL9
+  local_code: -7
+  display_text: Not Applicable
+- list_name: INFORMATION_SOURCE_CL9
+  local_code: -5
+  display_text: Other
+- list_name: INFORMATION_SOURCE_CL9
+  local_code: -4
+  display_text: Missing in Error
+- list_name: INFORMATION_SOURCE_CL9
+  local_code: 1
+  display_text: Person/Self
+- list_name: INFORMATION_SOURCE_CL9
+  local_code: 2
+  display_text: Provider
+- list_name: INFORMATION_SOURCE_CL9
+  local_code: 3
+  display_text: Household Member
+- list_name: INFORMATION_SOURCE_CL9
+  local_code: 4
+  display_text: Other Person Associated
+- list_name: INFORMATION_SOURCE_CL9
+  local_code: 5
+  display_text: Web
+- list_name: INFORMATION_SOURCE_CL9
+  local_code: 6
+  display_text: Returned Mail
+- list_name: INFORMATION_SOURCE_CL9
+  local_code: 7
+  display_text: Tracing vendor
+- list_name: LANGUAGE_CL11
+  local_code: -5
+  display_text: Other
+- list_name: LANGUAGE_CL11
+  local_code: -4
+  display_text: Missing in Error
+- list_name: LANGUAGE_CL11
+  local_code: -3
+  display_text: Legitimate Skip
+- list_name: LANGUAGE_CL11
+  local_code: -2
+  display_text: Don't Know
+- list_name: LANGUAGE_CL11
+  local_code: -1
+  display_text: Refused
+- list_name: LANGUAGE_CL11
+  local_code: 1
+  display_text: Spanish
+- list_name: LANGUAGE_CL11
+  local_code: 2
+  display_text: Arabic
+- list_name: LANGUAGE_CL11
+  local_code: 3
+  display_text: Chinese
+- list_name: LANGUAGE_CL11
+  local_code: 4
+  display_text: French
+- list_name: LANGUAGE_CL11
+  local_code: 5
+  display_text: French Creole
+- list_name: LANGUAGE_CL11
+  local_code: 6
+  display_text: German
+- list_name: LANGUAGE_CL11
+  local_code: 7
+  display_text: Italian
+- list_name: LANGUAGE_CL11
+  local_code: 8
+  display_text: Korean
+- list_name: LANGUAGE_CL11
+  local_code: 9
+  display_text: Polish
+- list_name: LANGUAGE_CL11
+  local_code: 10
+  display_text: Russian
+- list_name: LANGUAGE_CL11
+  local_code: 11
+  display_text: Tagalog
+- list_name: LANGUAGE_CL11
+  local_code: 12
+  display_text: Vietnamese
+- list_name: LANGUAGE_CL11
+  local_code: 13
+  display_text: Urdu
+- list_name: LANGUAGE_CL11
+  local_code: 14
+  display_text: Punjabi
+- list_name: LANGUAGE_CL11
+  local_code: 15
+  display_text: Bengali
+- list_name: LANGUAGE_CL11
+  local_code: 16
+  display_text: Farsi
+- list_name: LANGUAGE_CL11
+  local_code: 19
+  display_text: Mandarin
+- list_name: LANGUAGE_CL11
+  local_code: 20
+  display_text: Portuguese
+- list_name: LANGUAGE_CL11
+  local_code: 21
+  display_text: Taiwanese
+- list_name: LANGUAGE_CL11
+  local_code: 22
+  display_text: Turkish
+- list_name: MEDICAL_RECORDS_CL1
+  local_code: -7
+  display_text: Not Applicable
+- list_name: MEDICAL_RECORDS_CL1
+  local_code: -4
+  display_text: Missing in Error
+- list_name: MEDICAL_RECORDS_CL1
+  local_code: -3
+  display_text: Legitimate Skip
+- list_name: MEDICAL_RECORDS_CL1
+  local_code: 1
+  display_text: Electronic
+- list_name: MEDICAL_RECORDS_CL1
+  local_code: 2
+  display_text: Paper
+- list_name: MEDICAL_RECORDS_CL1
+  local_code: 3
+  display_text: Combination - electronic and paper
+- list_name: PRACTICE_CHARACTERISTIC_CL4
+  local_code: -5
+  display_text: Other
+- list_name: PRACTICE_CHARACTERISTIC_CL4
+  local_code: -4
+  display_text: Missing in Error
+- list_name: PRACTICE_CHARACTERISTIC_CL4
+  local_code: -3
+  display_text: Legitimate Skip
+- list_name: PRACTICE_CHARACTERISTIC_CL4
+  local_code: -2
+  display_text: Don't Know
+- list_name: PRACTICE_CHARACTERISTIC_CL4
+  local_code: -1
+  display_text: Refused
+- list_name: PRACTICE_CHARACTERISTIC_CL4
+  local_code: 1
+  display_text: Private with no health system or university affiliation
+- list_name: PRACTICE_CHARACTERISTIC_CL4
+  local_code: 2
+  display_text: Private with health system or university affiliation
+- list_name: PRACTICE_CHARACTERISTIC_CL4
+  local_code: 3
+  display_text: Health system with no university affiliation
+- list_name: PRACTICE_CHARACTERISTIC_CL4
+  local_code: 4
+  display_text: Health system with university affiliation
+- list_name: PRACTICE_CHARACTERISTIC_CL4
+  local_code: 5
+  display_text: Academic medical center
+- list_name: PRACTICE_CHARACTERISTIC_CL4
+  local_code: 6
+  display_text: Federally qualified health center
+- list_name: PRACTICE_CHARACTERISTIC_CL4
+  local_code: 7
+  display_text: Public clinic with no university/academic affiliation
+- list_name: PRACTICE_CHARACTERISTIC_CL4
+  local_code: 8
+  display_text: Public clinic with university/academic affiliation
