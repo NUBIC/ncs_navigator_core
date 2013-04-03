@@ -134,6 +134,22 @@ module NcsNavigator::Core::Surveyor
       end
     end
 
+    describe '#value=' do
+      it 'sets non-nil response values to nil' do
+        a.update_attribute(:response_class, 'integer')
+
+        r.value = 42
+        r.save!
+        r.reload
+
+        r.value = nil
+        r.save!
+        r.reload
+
+        r.value.should be_nil
+      end
+    end
+
     describe 'with response class answer' do
       before do
         a.update_attribute(:response_class, 'answer')
