@@ -4,7 +4,7 @@ require 'yaml'
 
 module NcsNavigator::Core::Mdes
   class CodeListLoader
-    attr_reader :mdes_version, :automatic_filename, :manual_filename, :pg_dump_filename
+    attr_reader :mdes_version, :automatic_filename, :future_filename, :pg_dump_filename
 
     def initialize(options = {})
       @interactive = options[:interactive]
@@ -16,7 +16,7 @@ module NcsNavigator::Core::Mdes
       end
 
       @automatic_filename = Rails.root + 'db' + "ncs_codes-#{mdes_version.number}.yml"
-      @manual_filename = Rails.root + 'db' + "ncs_codes-#{mdes_version.number}-additions.yml"
+      @future_filename = Rails.root + 'db' + "ncs_codes-#{mdes_version.number}-future.yml"
       @pg_dump_filename = Rails.root + 'db' + "ncs_codes-#{mdes_version.number}.pgcustom"
     end
 
@@ -27,7 +27,13 @@ module NcsNavigator::Core::Mdes
     # n.b.: if you change the way this method works, you should run
     # `rake mdes:code_lists:all` and commit the result.
     def create_yaml
-      yml = mdes_version.specification.types.select(&:code_list).collect { |typ|
+      current_types = mdes_version.specification.types.select(&:code_list)
+      create_yaml_from_types(current_types, automatic_filename)
+      create_yaml_from_types(future_code_list_types(current_types), future_filename)
+    end
+
+    def create_yaml_from_types(variable_types, pathname)
+      yml = variable_types.collect { |typ|
         # Merge display text for duplicate codes. In MDES 2.0, these only occur in PSU_CL1.
         code_list_index = typ.code_list.inject({}) { |i, cl_entry|
           # TODO: some display text entries have lots of random bytes
@@ -45,10 +51,26 @@ module NcsNavigator::Core::Mdes
         }
       }.flatten.sort_by { |list_entry| [list_entry['list_name'], list_entry['local_code']] }
 
-      File.open(automatic_filename.to_s, 'w:utf-8') do |w|
+      pathname.open('w:utf-8') do |w|
         w.write(yml.to_yaml)
       end
     end
+    private :create_yaml_from_types
+
+    def future_code_list_types(current_types)
+      future_versions = SUPPORTED_VERSIONS.select { |ver| mdes_version < ver }.
+        sort.collect { |future_ver| Version.new(future_ver) }
+
+      present_lists = current_types.collect { |t| t.name.upcase }
+
+      future_versions.each_with_object([]) do |future_ver, future_code_lists|
+        new_types = future_ver.specification.types.select(&:code_list).
+          reject { |type| present_lists.include?(type.name.upcase) }
+        present_lists.concat(new_types.collect { |t| t.name.upcase })
+        future_code_lists.concat(new_types)
+      end
+    end
+    private :future_code_list_types
 
     # Creates a PG custom dump file that contains the code lists in the current
     # environment's database.
@@ -176,8 +198,8 @@ module NcsNavigator::Core::Mdes
 
     def select_for_insert_update_delete
       yaml_entries = YAML.load(automatic_filename.read)
-      if manual_filename.exist?
-        yaml_entries += YAML.load(manual_filename.read)
+      if future_filename.exist?
+        yaml_entries += YAML.load(future_filename.read)
       end
       existing_entries = ActiveRecord::Base.connection.
         select_all('SELECT list_name, local_code FROM ncs_codes')

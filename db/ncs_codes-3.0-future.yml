@@ -1,0 +1,3607 @@
+---
+- list_name: ACTIVITY_LEVEL_CL1
+  local_code: -4
+  display_text: Missing in Error
+- list_name: ACTIVITY_LEVEL_CL1
+  local_code: -3
+  display_text: Legitimate Skip
+- list_name: ACTIVITY_LEVEL_CL1
+  local_code: -2
+  display_text: Don't Know
+- list_name: ACTIVITY_LEVEL_CL1
+  local_code: -1
+  display_text: Refused
+- list_name: ACTIVITY_LEVEL_CL1
+  local_code: 1
+  display_text: Less active than other children of his/her age
+- list_name: ACTIVITY_LEVEL_CL1
+  local_code: 2
+  display_text: About as active
+- list_name: ACTIVITY_LEVEL_CL1
+  local_code: 3
+  display_text: Slightly more active
+- list_name: ACTIVITY_LEVEL_CL1
+  local_code: 4
+  display_text: A lot more active than other children of his/her age
+- list_name: ACTIVITY_LEVEL_CL2
+  local_code: -4
+  display_text: Missing in Error
+- list_name: ACTIVITY_LEVEL_CL2
+  local_code: -3
+  display_text: Legitimate Skip
+- list_name: ACTIVITY_LEVEL_CL2
+  local_code: -2
+  display_text: Don't Know
+- list_name: ACTIVITY_LEVEL_CL2
+  local_code: -1
+  display_text: Refused
+- list_name: ACTIVITY_LEVEL_CL2
+  local_code: 1
+  display_text: More physically active than other boys/girls
+- list_name: ACTIVITY_LEVEL_CL2
+  local_code: 2
+  display_text: Less physically active than other boys/girls
+- list_name: ACTIVITY_LEVEL_CL2
+  local_code: 3
+  display_text: About the same as other boys/girls
+- list_name: AGE_UNIT_CL1
+  local_code: -4
+  display_text: Missing in Error
+- list_name: AGE_UNIT_CL1
+  local_code: -3
+  display_text: Legitimate Skip
+- list_name: AGE_UNIT_CL1
+  local_code: -2
+  display_text: Don't Know
+- list_name: AGE_UNIT_CL1
+  local_code: -1
+  display_text: Refused
+- list_name: AGE_UNIT_CL1
+  local_code: 1
+  display_text: Months
+- list_name: AGE_UNIT_CL1
+  local_code: 2
+  display_text: Years
+- list_name: AGREEMENT_LEVEL_CL6
+  local_code: -4
+  display_text: Missing in Error
+- list_name: AGREEMENT_LEVEL_CL6
+  local_code: -3
+  display_text: Legitimate Skip
+- list_name: AGREEMENT_LEVEL_CL6
+  local_code: -2
+  display_text: Don't Know
+- list_name: AGREEMENT_LEVEL_CL6
+  local_code: -1
+  display_text: Refused
+- list_name: AGREEMENT_LEVEL_CL6
+  local_code: 1
+  display_text: Strongly disagree
+- list_name: AGREEMENT_LEVEL_CL6
+  local_code: 2
+  display_text: Disagree
+- list_name: AGREEMENT_LEVEL_CL6
+  local_code: 3
+  display_text: Agree
+- list_name: AGREEMENT_LEVEL_CL6
+  local_code: 4
+  display_text: Strongly agree
+- list_name: AIR_CLEANING_CL1
+  local_code: -7
+  display_text: No air cleaning device used in home
+- list_name: AIR_CLEANING_CL1
+  local_code: -5
+  display_text: Other
+- list_name: AIR_CLEANING_CL1
+  local_code: -4
+  display_text: Missing in Error
+- list_name: AIR_CLEANING_CL1
+  local_code: -3
+  display_text: Legitimate Skip
+- list_name: AIR_CLEANING_CL1
+  local_code: -2
+  display_text: Don't Know
+- list_name: AIR_CLEANING_CL1
+  local_code: -1
+  display_text: Refused
+- list_name: AIR_CLEANING_CL1
+  local_code: 1
+  display_text: Filter
+- list_name: AIR_CLEANING_CL1
+  local_code: 2
+  display_text: Electrostatic Precipitator
+- list_name: AIR_CLEANING_CL1
+  local_code: 3
+  display_text: Ozone Generator
+- list_name: BABY_FEEDING_PLAN_CL2
+  local_code: -4
+  display_text: Missing in Error
+- list_name: BABY_FEEDING_PLAN_CL2
+  local_code: -3
+  display_text: Legitimate Skip
+- list_name: BABY_FEEDING_PLAN_CL2
+  local_code: -2
+  display_text: Don't Know
+- list_name: BABY_FEEDING_PLAN_CL2
+  local_code: -1
+  display_text: Refused
+- list_name: BABY_FEEDING_PLAN_CL2
+  local_code: 1
+  display_text: Breast milk
+- list_name: BABY_FEEDING_PLAN_CL2
+  local_code: 2
+  display_text: Formula
+- list_name: BABY_FEEDING_PLAN_CL2
+  local_code: 3
+  display_text: Both breast milk and formula
+- list_name: BIRTH_VISIT_PLACE_CL4
+  local_code: -5
+  display_text: Some Other Place
+- list_name: BIRTH_VISIT_PLACE_CL4
+  local_code: -4
+  display_text: Missing in Error
+- list_name: BIRTH_VISIT_PLACE_CL4
+  local_code: -2
+  display_text: Don't Know
+- list_name: BIRTH_VISIT_PLACE_CL4
+  local_code: -1
+  display_text: Refused
+- list_name: BIRTH_VISIT_PLACE_CL4
+  local_code: 1
+  display_text: Hospital clinic
+- list_name: BIRTH_VISIT_PLACE_CL4
+  local_code: 2
+  display_text: Health department clinic
+- list_name: BIRTH_VISIT_PLACE_CL4
+  local_code: 3
+  display_text: Private doctor's office or HMO
+- list_name: BLOOD_COLLEC_ISSUE_CL2
+  local_code: -5
+  display_text: Other
+- list_name: BLOOD_COLLEC_ISSUE_CL2
+  local_code: -4
+  display_text: Missing in Error
+- list_name: BLOOD_COLLEC_ISSUE_CL2
+  local_code: -3
+  display_text: Legitimate Skip
+- list_name: BLOOD_COLLEC_ISSUE_CL2
+  local_code: -2
+  display_text: Don't Know
+- list_name: BLOOD_COLLEC_ISSUE_CL2
+  local_code: 1
+  display_text: Safety Exclusion
+- list_name: BLOOD_COLLEC_ISSUE_CL2
+  local_code: 2
+  display_text: Physical Limitation
+- list_name: BLOOD_COLLEC_ISSUE_CL2
+  local_code: 3
+  display_text: Caregiver Ill/Emergency
+- list_name: BLOOD_COLLEC_ISSUE_CL2
+  local_code: 4
+  display_text: Quantity Not Sufficient
+- list_name: BLOOD_COLLEC_ISSUE_CL2
+  local_code: 5
+  display_text: Child Ill/Emergency
+- list_name: BLOOD_COLLEC_ISSUE_CL2
+  local_code: 6
+  display_text: No time
+- list_name: BLOOD_COLLEC_ISSUE_CL2
+  local_code: 7
+  display_text: Parent/Caregiver Refused
+- list_name: BLOOD_DRAW_PROB_CL4
+  local_code: -5
+  display_text: Other
+- list_name: BLOOD_DRAW_PROB_CL4
+  local_code: -4
+  display_text: Missing in Error
+- list_name: BLOOD_DRAW_PROB_CL4
+  local_code: -3
+  display_text: Legitimate Skip
+- list_name: BLOOD_DRAW_PROB_CL4
+  local_code: -2
+  display_text: Don't Know
+- list_name: BLOOD_DRAW_PROB_CL4
+  local_code: -1
+  display_text: Refused
+- list_name: BLOOD_DRAW_PROB_CL4
+  local_code: 1
+  display_text: Fainting
+- list_name: BLOOD_DRAW_PROB_CL4
+  local_code: 2
+  display_text: Hematoma
+- list_name: BLOOD_DRAW_PROB_CL4
+  local_code: 3
+  display_text: Uncooperative/Fidgeting/Uncontrollable Crying
+- list_name: BLOOD_DRAW_PROB_CL4
+  local_code: 4
+  display_text: Bruising
+- list_name: BLOOD_DRAW_PROB_CL5
+  local_code: -5
+  display_text: Other
+- list_name: BLOOD_DRAW_PROB_CL5
+  local_code: -4
+  display_text: Missing in Error
+- list_name: BLOOD_DRAW_PROB_CL5
+  local_code: -3
+  display_text: Legitimate Skip
+- list_name: BLOOD_DRAW_PROB_CL5
+  local_code: -2
+  display_text: Don't Know
+- list_name: BLOOD_DRAW_PROB_CL5
+  local_code: -1
+  display_text: Refused
+- list_name: BLOOD_DRAW_PROB_CL5
+  local_code: 1
+  display_text: Equipment failure
+- list_name: BLOOD_DRAW_PROB_CL5
+  local_code: 2
+  display_text: Fainting
+- list_name: BLOOD_DRAW_PROB_CL5
+  local_code: 3
+  display_text: Light-headedness
+- list_name: BLOOD_DRAW_PROB_CL5
+  local_code: 4
+  display_text: Hematoma
+- list_name: BLOOD_DRAW_PROB_CL5
+  local_code: 5
+  display_text: Bruising
+- list_name: BLOOD_DRAW_PROB_CL5
+  local_code: 6
+  display_text: Vein collapsed during procedure
+- list_name: BLOOD_DRAW_PROB_CL5
+  local_code: 7
+  display_text: No suitable vein
+- list_name: BLOOD_DRAW_PROB_CL5
+  local_code: 8
+  display_text: Uncooperative/fidgeting/uncontrollable crying
+- list_name: BLOOD_DRAW_PROB_CL5
+  local_code: 9
+  display_text: Parent/caregiver refused
+- list_name: BREAST_PUMP_BRAND_CL1
+  local_code: -5
+  display_text: Other
+- list_name: BREAST_PUMP_BRAND_CL1
+  local_code: -4
+  display_text: Missing in Error
+- list_name: BREAST_PUMP_BRAND_CL1
+  local_code: -2
+  display_text: Don't Know
+- list_name: BREAST_PUMP_BRAND_CL1
+  local_code: 1
+  display_text: Medela
+- list_name: BREAST_PUMP_BRAND_CL1
+  local_code: 2
+  display_text: Avent
+- list_name: BREAST_PUMP_BRAND_CL1
+  local_code: 3
+  display_text: Playtex
+- list_name: BREAST_PUMP_BRAND_CL1
+  local_code: 4
+  display_text: Ameda
+- list_name: BREAST_PUMP_BRAND_CL1
+  local_code: 5
+  display_text: Evenflo
+- list_name: BREAST_PUMP_BRAND_CL1
+  local_code: 6
+  display_text: Lansinoh
+- list_name: CARE_PRODUCTS_CL1
+  local_code: -5
+  display_text: Other
+- list_name: CARE_PRODUCTS_CL1
+  local_code: -4
+  display_text: Missing in Error
+- list_name: CARE_PRODUCTS_CL1
+  local_code: -3
+  display_text: Legitimate Skip
+- list_name: CARE_PRODUCTS_CL1
+  local_code: -2
+  display_text: Don't Know
+- list_name: CARE_PRODUCTS_CL1
+  local_code: -1
+  display_text: Refused
+- list_name: CARE_PRODUCTS_CL1
+  local_code: 1
+  display_text: Child powder/talc/cornstarch
+- list_name: CARE_PRODUCTS_CL1
+  local_code: 2
+  display_text: Diaper cream/ointment
+- list_name: CARE_PRODUCTS_CL1
+  local_code: 3
+  display_text: Vaseline
+- list_name: CARE_PRODUCTS_CL1
+  local_code: 4
+  display_text: Child wipes
+- list_name: CARE_PRODUCTS_CL1
+  local_code: 5
+  display_text: Child shampoo/body wash
+- list_name: CARE_PRODUCTS_CL1
+  local_code: 6
+  display_text: Child lotion
+- list_name: CARE_PRODUCTS_CL1
+  local_code: 7
+  display_text: Baby Oil
+- list_name: CARE_PRODUCTS_CL1
+  local_code: 8
+  display_text: None
+- list_name: CARPET_CL1
+  local_code: -4
+  display_text: Missing in Error
+- list_name: CARPET_CL1
+  local_code: -2
+  display_text: Don't Know
+- list_name: CARPET_CL1
+  local_code: -1
+  display_text: Refused
+- list_name: CARPET_CL1
+  local_code: 1
+  display_text: More than half
+- list_name: CARPET_CL1
+  local_code: 2
+  display_text: About half
+- list_name: CARPET_CL1
+  local_code: 3
+  display_text: Less than half
+- list_name: CAUSE_INJURY_CL1
+  local_code: -5
+  display_text: Other
+- list_name: CAUSE_INJURY_CL1
+  local_code: -4
+  display_text: Missing in Error
+- list_name: CAUSE_INJURY_CL1
+  local_code: -3
+  display_text: Legitimate Skip
+- list_name: CAUSE_INJURY_CL1
+  local_code: -2
+  display_text: Don't Know
+- list_name: CAUSE_INJURY_CL1
+  local_code: -1
+  display_text: Refused
+- list_name: CAUSE_INJURY_CL1
+  local_code: 1
+  display_text: Falls
+- list_name: CAUSE_INJURY_CL1
+  local_code: 2
+  display_text: Struck by/against
+- list_name: CAUSE_INJURY_CL1
+  local_code: 3
+  display_text: Bites/stings
+- list_name: CAUSE_INJURY_CL1
+  local_code: 4
+  display_text: Cut/pierced with sharp object
+- list_name: CAUSE_INJURY_CL1
+  local_code: 5
+  display_text: Swallowing foreign body
+- list_name: CAUSE_INJURY_CL1
+  local_code: 6
+  display_text: Dislocation
+- list_name: CAUSE_INJURY_CL1
+  local_code: 7
+  display_text: Nursemaid's elbow
+- list_name: CAUSE_INJURY_CL1
+  local_code: 8
+  display_text: Strains and sprains
+- list_name: CAUSE_INJURY_CL1
+  local_code: 9
+  display_text: Poisoning
+- list_name: CAUSE_INJURY_CL1
+  local_code: 10
+  display_text: Fire/burns
+- list_name: CAUSE_INJURY_CL1
+  local_code: 11
+  display_text: Motor vehicle crash
+- list_name: CAUSE_INJURY_CL1
+  local_code: 12
+  display_text: Suffocation/inhalation
+- list_name: CAUSE_INJURY_CL1
+  local_code: 13
+  display_text: Pedal cycle
+- list_name: CAUSE_INJURY_CL1
+  local_code: 14
+  display_text: Other transport
+- list_name: CAUSE_INJURY_CL1
+  local_code: 15
+  display_text: Pedestrian
+- list_name: CENTRIFUGE_LOCATION_CL1
+  local_code: -5
+  display_text: Other
+- list_name: CENTRIFUGE_LOCATION_CL1
+  local_code: -4
+  display_text: Missing in Error
+- list_name: CENTRIFUGE_LOCATION_CL1
+  local_code: -2
+  display_text: Don't Know
+- list_name: CENTRIFUGE_LOCATION_CL1
+  local_code: -1
+  display_text: Refused
+- list_name: CENTRIFUGE_LOCATION_CL1
+  local_code: 1
+  display_text: Default Collection Location
+- list_name: CENTRIFUGE_LOCATION_CL1
+  local_code: 2
+  display_text: SPSC
+- list_name: CHAMBER_STATUS_CL2
+  local_code: -4
+  display_text: Missing in error
+- list_name: CHAMBER_STATUS_CL2
+  local_code: -3
+  display_text: Legitimate Skip
+- list_name: CHAMBER_STATUS_CL2
+  local_code: 1
+  display_text: Yes, in chamber
+- list_name: CHAMBER_STATUS_CL2
+  local_code: 2
+  display_text: No, not required
+- list_name: CHAMBER_STATUS_CL2
+  local_code: 3
+  display_text: No, not available
+- list_name: CHILDCARE_TYPE_CL1
+  local_code: -5
+  display_text: Some other place
+- list_name: CHILDCARE_TYPE_CL1
+  local_code: -4
+  display_text: Missing in Error
+- list_name: CHILDCARE_TYPE_CL1
+  local_code: -3
+  display_text: Legitimate Skip
+- list_name: CHILDCARE_TYPE_CL1
+  local_code: -2
+  display_text: Don't know
+- list_name: CHILDCARE_TYPE_CL1
+  local_code: -1
+  display_text: Refused
+- list_name: CHILDCARE_TYPE_CL1
+  local_code: 1
+  display_text: Day care center
+- list_name: CHILDCARE_TYPE_CL1
+  local_code: 2
+  display_text: Nursery school
+- list_name: CHILDCARE_TYPE_CL1
+  local_code: 3
+  display_text: Preschool
+- list_name: CHILDCARE_TYPE_CL1
+  local_code: 4
+  display_text: Pre-kindergarten
+- list_name: CHILDCARE_TYPE_CL1
+  local_code: 5
+  display_text: Kindergarten
+- list_name: CHILD_CONDITION_CL3
+  local_code: -4
+  display_text: Missing in Error
+- list_name: CHILD_CONDITION_CL3
+  local_code: -3
+  display_text: Legitimate Skip
+- list_name: CHILD_CONDITION_CL3
+  local_code: -2
+  display_text: Don't Know
+- list_name: CHILD_CONDITION_CL3
+  local_code: -1
+  display_text: Refused
+- list_name: CHILD_CONDITION_CL3
+  local_code: 1
+  display_text: Awake
+- list_name: CHILD_CONDITION_CL3
+  local_code: 2
+  display_text: Sleeping
+- list_name: CHILD_CONDITION_CL3
+  local_code: 3
+  display_text: Crying
+- list_name: CHILD_CONDITION_CL4
+  local_code: -4
+  display_text: Missing in Error
+- list_name: CHILD_CONDITION_CL4
+  local_code: -3
+  display_text: Legitimate Skip
+- list_name: CHILD_CONDITION_CL4
+  local_code: -2
+  display_text: Don't Know
+- list_name: CHILD_CONDITION_CL4
+  local_code: -1
+  display_text: Refused
+- list_name: CHILD_CONDITION_CL4
+  local_code: 1
+  display_text: Seated
+- list_name: CHILD_CONDITION_CL4
+  local_code: 2
+  display_text: Supine
+- list_name: CHILD_CONDITION_CL4
+  local_code: 3
+  display_text: Upright
+- list_name: CHILD_SLEEP_ROOM_CL2
+  local_code: -5
+  display_text: Other
+- list_name: CHILD_SLEEP_ROOM_CL2
+  local_code: -4
+  display_text: Missing in Error
+- list_name: CHILD_SLEEP_ROOM_CL2
+  local_code: -3
+  display_text: Legitimate Skip
+- list_name: CHILD_SLEEP_ROOM_CL2
+  local_code: -2
+  display_text: Don't Know
+- list_name: CHILD_SLEEP_ROOM_CL2
+  local_code: -1
+  display_text: Refused
+- list_name: CHILD_SLEEP_ROOM_CL2
+  local_code: 1
+  display_text: In his/her own room on his/her own
+- list_name: CHILD_SLEEP_ROOM_CL2
+  local_code: 2
+  display_text: In a room with other children
+- list_name: CHILD_SLEEP_ROOM_CL2
+  local_code: 3
+  display_text: In your bedroom
+- list_name: CHILD_SLEEP_ROOM_CL3
+  local_code: -4
+  display_text: Missing in Error
+- list_name: CHILD_SLEEP_ROOM_CL3
+  local_code: -2
+  display_text: Don't Know
+- list_name: CHILD_SLEEP_ROOM_CL3
+  local_code: -1
+  display_text: Refused
+- list_name: CHILD_SLEEP_ROOM_CL3
+  local_code: 1
+  display_text: In Parent/Caregiver's Room
+- list_name: CHILD_SLEEP_ROOM_CL3
+  local_code: 2
+  display_text: In a Different Room
+- list_name: CHILD_SLEEP_ROOM_CL3
+  local_code: 3
+  display_text: Both in Parent/Caregiver's Room and a Different Room
+- list_name: CLEANSE_METHOD_CL1
+  local_code: -4
+  display_text: Missing in Error
+- list_name: CLEANSE_METHOD_CL1
+  local_code: -3
+  display_text: Legitimate Skip
+- list_name: CLEANSE_METHOD_CL1
+  local_code: -2
+  display_text: Don't Know
+- list_name: CLEANSE_METHOD_CL1
+  local_code: -1
+  display_text: Refused
+- list_name: CLEANSE_METHOD_CL1
+  local_code: 1
+  display_text: Soap and water
+- list_name: CLEANSE_METHOD_CL1
+  local_code: 2
+  display_text: Water only
+- list_name: CLEANSE_METHOD_CL1
+  local_code: 3
+  display_text: Did not cleanse
+- list_name: COLLECTION_ISSUE_CL1
+  local_code: -7
+  display_text: None given
+- list_name: COLLECTION_ISSUE_CL1
+  local_code: -5
+  display_text: Other
+- list_name: COLLECTION_ISSUE_CL1
+  local_code: -4
+  display_text: Missing in Error
+- list_name: COLLECTION_ISSUE_CL1
+  local_code: -3
+  display_text: Legitimate Skip
+- list_name: COLLECTION_ISSUE_CL1
+  local_code: -2
+  display_text: Don't Know
+- list_name: COLLECTION_ISSUE_CL1
+  local_code: -1
+  display_text: Refused
+- list_name: COLLECTION_ISSUE_CL1
+  local_code: 1
+  display_text: Parent/caregiver refusal
+- list_name: COLLECTION_ISSUE_CL1
+  local_code: 2
+  display_text: Child refusal
+- list_name: COLLECTION_ISSUE_CL1
+  local_code: 3
+  display_text: Communication Issues
+- list_name: COLLECTION_ISSUE_CL1
+  local_code: 4
+  display_text: Parent/caregiver ill/emergency
+- list_name: COLLECTION_ISSUE_CL1
+  local_code: 5
+  display_text: Child ill/emergency
+- list_name: COLLECTION_ISSUE_CL1
+  local_code: 6
+  display_text: No time
+- list_name: COLLECTION_ISSUE_CL1
+  local_code: 7
+  display_text: Equipment failure
+- list_name: COLLECTION_ISSUE_CL1
+  local_code: 8
+  display_text: Safety exclusions
+- list_name: COLLECTION_ISSUE_CL1
+  local_code: 9
+  display_text: Physical limitations
+- list_name: COLLECTION_ISSUE_CL1
+  local_code: 10
+  display_text: Data collector error
+- list_name: COLLECTION_ISSUE_CL2
+  local_code: -5
+  display_text: Other
+- list_name: COLLECTION_ISSUE_CL2
+  local_code: -4
+  display_text: Missing in Error
+- list_name: COLLECTION_ISSUE_CL2
+  local_code: -3
+  display_text: Legitimate Skip
+- list_name: COLLECTION_ISSUE_CL2
+  local_code: -2
+  display_text: Don't Know
+- list_name: COLLECTION_ISSUE_CL2
+  local_code: -1
+  display_text: Refused
+- list_name: COLLECTION_ISSUE_CL2
+  local_code: 1
+  display_text: None
+- list_name: COLLECTION_ISSUE_CL2
+  local_code: 2
+  display_text: Position not straight for length
+- list_name: COLLECTION_ISSUE_CL2
+  local_code: 3
+  display_text: Medical appliance/cast not removed
+- list_name: COLLECTION_ISSUE_CL2
+  local_code: 4
+  display_text: Amputation-leg
+- list_name: COLLECTION_ISSUE_CL2
+  local_code: 5
+  display_text: Amputation-arm
+- list_name: COLLECTION_ISSUE_CL3
+  local_code: -5
+  display_text: Other
+- list_name: COLLECTION_ISSUE_CL3
+  local_code: -4
+  display_text: Missing in Error
+- list_name: COLLECTION_ISSUE_CL3
+  local_code: -3
+  display_text: Legitimate Skip
+- list_name: COLLECTION_ISSUE_CL3
+  local_code: -2
+  display_text: Don't Know
+- list_name: COLLECTION_ISSUE_CL3
+  local_code: -1
+  display_text: Refused
+- list_name: COLLECTION_ISSUE_CL3
+  local_code: 1
+  display_text: None
+- list_name: COLLECTION_ISSUE_CL3
+  local_code: 2
+  display_text: Measurement taken on left arm
+- list_name: COLLECTION_ISSUE_CL3
+  local_code: 3
+  display_text: Medical appliance/cast not removed
+- list_name: COLLECTION_ISSUE_CL3
+  local_code: 4
+  display_text: Amputation-arm
+- list_name: COLLECTION_ISSUE_CL4
+  local_code: -5
+  display_text: Other
+- list_name: COLLECTION_ISSUE_CL4
+  local_code: -4
+  display_text: Missing in Error
+- list_name: COLLECTION_ISSUE_CL4
+  local_code: -3
+  display_text: Legitimate Skip
+- list_name: COLLECTION_ISSUE_CL4
+  local_code: -2
+  display_text: Don't Know
+- list_name: COLLECTION_ISSUE_CL4
+  local_code: -1
+  display_text: Refused
+- list_name: COLLECTION_ISSUE_CL4
+  local_code: 1
+  display_text: None
+- list_name: COLLECTION_ISSUE_CL4
+  local_code: 2
+  display_text: Measurement taken over thick clothing
+- list_name: COLLECTION_ISSUE_CL4
+  local_code: 3
+  display_text: Measurement taken on left thigh
+- list_name: COLLECTION_ISSUE_CL4
+  local_code: 4
+  display_text: Medical appliance/cast not removed
+- list_name: COLLECTION_ISSUE_CL4
+  local_code: 5
+  display_text: Amputation-leg
+- list_name: COLLECTION_ISSUE_CL5
+  local_code: -5
+  display_text: Other
+- list_name: COLLECTION_ISSUE_CL5
+  local_code: -4
+  display_text: Missing in Error
+- list_name: COLLECTION_ISSUE_CL5
+  local_code: -3
+  display_text: Legitimate Skip
+- list_name: COLLECTION_ISSUE_CL5
+  local_code: -2
+  display_text: Don't Know
+- list_name: COLLECTION_ISSUE_CL5
+  local_code: -1
+  display_text: Refused
+- list_name: COLLECTION_ISSUE_CL5
+  local_code: 1
+  display_text: None
+- list_name: COLLECTION_ISSUE_CL5
+  local_code: 2
+  display_text: Measurement taken over thick clothing
+- list_name: COLLECTION_ISSUE_CL5
+  local_code: 3
+  display_text: Medical appliance/cast not removed
+- list_name: COLLECTION_ISSUE_CL6
+  local_code: -5
+  display_text: Other
+- list_name: COLLECTION_ISSUE_CL6
+  local_code: -4
+  display_text: Missing in Error
+- list_name: COLLECTION_ISSUE_CL6
+  local_code: -3
+  display_text: Legitimate Skip
+- list_name: COLLECTION_ISSUE_CL6
+  local_code: -2
+  display_text: Don't Know
+- list_name: COLLECTION_ISSUE_CL6
+  local_code: -1
+  display_text: Refused
+- list_name: COLLECTION_ISSUE_CL6
+  local_code: 1
+  display_text: None
+- list_name: COLLECTION_ISSUE_CL6
+  local_code: 2
+  display_text: Measurement taken over thick clothing
+- list_name: COLLECTION_ISSUE_CL6
+  local_code: 3
+  display_text: Measurement taken on left arm
+- list_name: COLLECTION_ISSUE_CL6
+  local_code: 4
+  display_text: Medical appliance/cast not removed
+- list_name: COLLECTION_ISSUE_CL6
+  local_code: 5
+  display_text: Amputation-arm
+- list_name: COLLECTION_LOCATION_CL1
+  local_code: -8
+  display_text: Could not obtain
+- list_name: COLLECTION_LOCATION_CL1
+  local_code: -4
+  display_text: Missing in Error
+- list_name: COLLECTION_LOCATION_CL1
+  local_code: -3
+  display_text: Legitimate Skip
+- list_name: COLLECTION_LOCATION_CL1
+  local_code: -1
+  display_text: Refused
+- list_name: COLLECTION_LOCATION_CL1
+  local_code: 1
+  display_text: Right
+- list_name: COLLECTION_LOCATION_CL1
+  local_code: 2
+  display_text: Left
+- list_name: COLLECTION_MODE_CL1
+  local_code: -4
+  display_text: Missing in Error
+- list_name: COLLECTION_MODE_CL1
+  local_code: -3
+  display_text: Legitimate Skip
+- list_name: COLLECTION_MODE_CL1
+  local_code: 1
+  display_text: Collection at the time of visit
+- list_name: COLLECTION_MODE_CL1
+  local_code: 2
+  display_text: Child's Parent/Caregiver at home
+- list_name: CONCERN_CL1
+  local_code: -4
+  display_text: Missing in Error
+- list_name: CONCERN_CL1
+  local_code: -3
+  display_text: Legitimate Skip
+- list_name: CONCERN_CL1
+  local_code: -2
+  display_text: Don't Know
+- list_name: CONCERN_CL1
+  local_code: -1
+  display_text: Refused
+- list_name: CONCERN_CL1
+  local_code: 1
+  display_text: A lot
+- list_name: CONCERN_CL1
+  local_code: 2
+  display_text: A little
+- list_name: CONCERN_CL1
+  local_code: 3
+  display_text: Not at all
+- list_name: CONDITION_MEDICAL_CL1
+  local_code: -5
+  display_text: Other heart condition
+- list_name: CONDITION_MEDICAL_CL1
+  local_code: -4
+  display_text: Missing in Error
+- list_name: CONDITION_MEDICAL_CL1
+  local_code: -3
+  display_text: Legitimate Skip
+- list_name: CONDITION_MEDICAL_CL1
+  local_code: -2
+  display_text: Don't Know
+- list_name: CONDITION_MEDICAL_CL1
+  local_code: -1
+  display_text: Refused
+- list_name: CONDITION_MEDICAL_CL1
+  local_code: 1
+  display_text: Down syndrome
+- list_name: CONDITION_MEDICAL_CL1
+  local_code: 2
+  display_text: Cerebral palsy
+- list_name: CONDITION_MEDICAL_CL1
+  local_code: 3
+  display_text: Muscular dystrophy
+- list_name: CONDITION_MEDICAL_CL1
+  local_code: 4
+  display_text: Cystic fibrosis
+- list_name: CONDITION_MEDICAL_CL1
+  local_code: 5
+  display_text: Sickle cell anemia
+- list_name: CONDITION_MEDICAL_CL1
+  local_code: 6
+  display_text: Arthritis
+- list_name: CONDITION_MEDICAL_CL1
+  local_code: 7
+  display_text: Congenital heart disease
+- list_name: CONFIRM_TYPE_CL31
+  local_code: -4
+  display_text: Missing in Error
+- list_name: CONFIRM_TYPE_CL31
+  local_code: -3
+  display_text: Legitimate Skip
+- list_name: CONFIRM_TYPE_CL31
+  local_code: -2
+  display_text: Don't Know
+- list_name: CONFIRM_TYPE_CL31
+  local_code: -1
+  display_text: Refused
+- list_name: CONFIRM_TYPE_CL31
+  local_code: 1
+  display_text: Yes, one person
+- list_name: CONFIRM_TYPE_CL31
+  local_code: 2
+  display_text: Yes, more than one person
+- list_name: CONFIRM_TYPE_CL31
+  local_code: 3
+  display_text: 'No'
+- list_name: CONFIRM_TYPE_CL32
+  local_code: -7
+  display_text: No Health Insurance
+- list_name: CONFIRM_TYPE_CL32
+  local_code: -4
+  display_text: Missing in Error
+- list_name: CONFIRM_TYPE_CL32
+  local_code: -3
+  display_text: Legitimate Skip
+- list_name: CONFIRM_TYPE_CL32
+  local_code: -2
+  display_text: Don't Know
+- list_name: CONFIRM_TYPE_CL32
+  local_code: -1
+  display_text: Refused
+- list_name: CONFIRM_TYPE_CL32
+  local_code: 1
+  display_text: 'Yes'
+- list_name: CONFIRM_TYPE_CL32
+  local_code: 2
+  display_text: 'No'
+- list_name: CONFIRM_TYPE_CL33
+  local_code: -4
+  display_text: Missing in Error
+- list_name: CONFIRM_TYPE_CL33
+  local_code: -3
+  display_text: Legitimate Skip
+- list_name: CONFIRM_TYPE_CL33
+  local_code: -2
+  display_text: Don't Know
+- list_name: CONFIRM_TYPE_CL33
+  local_code: -1
+  display_text: Refused
+- list_name: CONFIRM_TYPE_CL33
+  local_code: 1
+  display_text: 'Yes'
+- list_name: CONFIRM_TYPE_CL33
+  local_code: 2
+  display_text: 'No'
+- list_name: CONFIRM_TYPE_CL33
+  local_code: 3
+  display_text: No Expenses
+- list_name: CONFIRM_TYPE_CL34
+  local_code: -4
+  display_text: Missing in Error
+- list_name: CONFIRM_TYPE_CL34
+  local_code: -3
+  display_text: Legitimate Skip
+- list_name: CONFIRM_TYPE_CL34
+  local_code: -2
+  display_text: Don't Know
+- list_name: CONFIRM_TYPE_CL34
+  local_code: -1
+  display_text: Refused
+- list_name: CONFIRM_TYPE_CL34
+  local_code: 1
+  display_text: 'Yes'
+- list_name: CONFIRM_TYPE_CL34
+  local_code: 2
+  display_text: Yes, on a delayed schedule
+- list_name: CONFIRM_TYPE_CL34
+  local_code: 3
+  display_text: 'No'
+- list_name: CONFIRM_TYPE_CL35
+  local_code: -4
+  display_text: Missing in Error
+- list_name: CONFIRM_TYPE_CL35
+  local_code: -3
+  display_text: Legitimate Skip
+- list_name: CONFIRM_TYPE_CL35
+  local_code: -1
+  display_text: Refused
+- list_name: CONFIRM_TYPE_CL35
+  local_code: 1
+  display_text: Agreed
+- list_name: CONFIRM_TYPE_CL36
+  local_code: -4
+  display_text: Missing in error
+- list_name: CONFIRM_TYPE_CL36
+  local_code: -3
+  display_text: Legitimate Skip
+- list_name: CONFIRM_TYPE_CL36
+  local_code: -2
+  display_text: Don't Know
+- list_name: CONFIRM_TYPE_CL36
+  local_code: -1
+  display_text: Refused
+- list_name: CONFIRM_TYPE_CL36
+  local_code: 1
+  display_text: 'Yes'
+- list_name: CONFIRM_TYPE_CL36
+  local_code: 2
+  display_text: 'No'
+- list_name: CONFIRM_TYPE_CL36
+  local_code: 3
+  display_text: Parent/caregiver refused bag placement
+- list_name: CONFIRM_TYPE_CL37
+  local_code: -4
+  display_text: Missing in Error
+- list_name: CONFIRM_TYPE_CL37
+  local_code: 1
+  display_text: Continue
+- list_name: CONFIRM_TYPE_CL37
+  local_code: 2
+  display_text: Refused
+- list_name: CONFIRM_TYPE_CL38
+  local_code: -4
+  display_text: Missing in Error
+- list_name: CONFIRM_TYPE_CL38
+  local_code: -3
+  display_text: Legitimate Skip
+- list_name: CONFIRM_TYPE_CL38
+  local_code: -2
+  display_text: Don't Know
+- list_name: CONFIRM_TYPE_CL38
+  local_code: -1
+  display_text: Refused
+- list_name: CONFIRM_TYPE_CL38
+  local_code: 1
+  display_text: Yes, every day
+- list_name: CONFIRM_TYPE_CL38
+  local_code: 2
+  display_text: Yes, at least once a week
+- list_name: CONFIRM_TYPE_CL38
+  local_code: 3
+  display_text: Yes, less than once a week
+- list_name: CONFIRM_TYPE_CL38
+  local_code: 4
+  display_text: No, not at all
+- list_name: CONFIRM_TYPE_CL39
+  local_code: -7
+  display_text: Not applicable/Never fed to baby
+- list_name: CONFIRM_TYPE_CL39
+  local_code: -4
+  display_text: Missing in Error
+- list_name: CONFIRM_TYPE_CL39
+  local_code: -3
+  display_text: Legitimate Skip
+- list_name: CONFIRM_TYPE_CL39
+  local_code: -2
+  display_text: Don't Know
+- list_name: CONFIRM_TYPE_CL39
+  local_code: -1
+  display_text: Refused
+- list_name: CONFIRM_TYPE_CL39
+  local_code: 1
+  display_text: 'Yes'
+- list_name: CONFIRM_TYPE_CL39
+  local_code: 2
+  display_text: 'No'
+- list_name: COOLING_SYSTEM_TYPE_CL4
+  local_code: -7
+  display_text: No cooling or air conditioning regularly used
+- list_name: COOLING_SYSTEM_TYPE_CL4
+  local_code: -4
+  display_text: Missing in Error
+- list_name: COOLING_SYSTEM_TYPE_CL4
+  local_code: -3
+  display_text: Legitimate Skip
+- list_name: COOLING_SYSTEM_TYPE_CL4
+  local_code: -2
+  display_text: Don't Know
+- list_name: COOLING_SYSTEM_TYPE_CL4
+  local_code: -1
+  display_text: Refused
+- list_name: COOLING_SYSTEM_TYPE_CL4
+  local_code: 1
+  display_text: Window or wall air conditioners
+- list_name: COOLING_SYSTEM_TYPE_CL4
+  local_code: 2
+  display_text: Central air conditioning
+- list_name: COOLING_SYSTEM_TYPE_CL4
+  local_code: 3
+  display_text: Evaporative cooler (swamp cooler)
+- list_name: COOLING_SYSTEM_TYPE_CL4
+  local_code: 4
+  display_text: Some other cooling system
+- list_name: DISTRESS_LEVEL_CL1
+  local_code: -4
+  display_text: Missing in Error
+- list_name: DISTRESS_LEVEL_CL1
+  local_code: 0
+  display_text: Not at all
+- list_name: DISTRESS_LEVEL_CL1
+  local_code: 1
+  display_text: A little bit
+- list_name: DISTRESS_LEVEL_CL1
+  local_code: 2
+  display_text: Moderately
+- list_name: DISTRESS_LEVEL_CL1
+  local_code: 3
+  display_text: Quite a bit
+- list_name: DISTRESS_LEVEL_CL1
+  local_code: 4
+  display_text: Extremely
+- list_name: EDUCATION_STATUS_CL1
+  local_code: -4
+  display_text: Missing in Error
+- list_name: EDUCATION_STATUS_CL1
+  local_code: -3
+  display_text: Legitimate Skip
+- list_name: EDUCATION_STATUS_CL1
+  local_code: -2
+  display_text: Don't Know
+- list_name: EDUCATION_STATUS_CL1
+  local_code: -1
+  display_text: Refused
+- list_name: EDUCATION_STATUS_CL1
+  local_code: 1
+  display_text: Full time
+- list_name: EDUCATION_STATUS_CL1
+  local_code: 2
+  display_text: Part time
+- list_name: EQUIPMENT_TYPE_CL3
+  local_code: -4
+  display_text: Missing in Error
+- list_name: EQUIPMENT_TYPE_CL3
+  local_code: -2
+  display_text: Don't Know
+- list_name: EQUIPMENT_TYPE_CL3
+  local_code: -1
+  display_text: Refused
+- list_name: EQUIPMENT_TYPE_CL3
+  local_code: 1
+  display_text: Electric pump
+- list_name: EQUIPMENT_TYPE_CL3
+  local_code: 2
+  display_text: Hand pump
+- list_name: ER_DIAGNOSIS_CL1
+  local_code: -5
+  display_text: Other
+- list_name: ER_DIAGNOSIS_CL1
+  local_code: -4
+  display_text: Missing in Error
+- list_name: ER_DIAGNOSIS_CL1
+  local_code: -3
+  display_text: Legitimate Skip
+- list_name: ER_DIAGNOSIS_CL1
+  local_code: -2
+  display_text: Don't Know
+- list_name: ER_DIAGNOSIS_CL1
+  local_code: -1
+  display_text: Refused
+- list_name: ER_DIAGNOSIS_CL1
+  local_code: 1
+  display_text: Abdominal pain
+- list_name: ER_DIAGNOSIS_CL1
+  local_code: 2
+  display_text: Acute upper respiratory infection
+- list_name: ER_DIAGNOSIS_CL1
+  local_code: 3
+  display_text: Asthma
+- list_name: ER_DIAGNOSIS_CL1
+  local_code: 4
+  display_text: Contusion (bruising)
+- list_name: ER_DIAGNOSIS_CL1
+  local_code: 5
+  display_text: Fracture(s)
+- list_name: ER_DIAGNOSIS_CL1
+  local_code: 6
+  display_text: Open wound, head injury
+- list_name: ER_DIAGNOSIS_CL1
+  local_code: 7
+  display_text: Open wound, excluding head
+- list_name: ER_DIAGNOSIS_CL1
+  local_code: 8
+  display_text: Ear infection or ear ache
+- list_name: ER_DIAGNOSIS_CL1
+  local_code: 9
+  display_text: Fever
+- list_name: ER_DIAGNOSIS_CL1
+  local_code: 10
+  display_text: Sore throat
+- list_name: ER_DIAGNOSIS_CL1
+  local_code: 11
+  display_text: Skin rash
+- list_name: ER_DIAGNOSIS_CL1
+  local_code: 12
+  display_text: Pneumonia
+- list_name: ER_DIAGNOSIS_CL1
+  local_code: 13
+  display_text: Appendicitis
+- list_name: ER_DIAGNOSIS_CL1
+  local_code: 14
+  display_text: Dehydration
+- list_name: ER_DIAGNOSIS_CL1
+  local_code: 15
+  display_text: Seizure
+- list_name: ER_DIAGNOSIS_CL1
+  local_code: 16
+  display_text: Urinary tract infection
+- list_name: ER_DIAGNOSIS_CL1
+  local_code: 17
+  display_text: Vomiting and/or diarrhea
+- list_name: ER_DIAGNOSIS_CL1
+  local_code: 18
+  display_text: Skin infection
+- list_name: ER_DIAGNOSIS_CL1
+  local_code: 19
+  display_text: Head injury
+- list_name: GARAGE_WARMUP_CL1
+  local_code: -7
+  display_text: Vehicle not kept in garage
+- list_name: GARAGE_WARMUP_CL1
+  local_code: -4
+  display_text: Missing in Error
+- list_name: GARAGE_WARMUP_CL1
+  local_code: -3
+  display_text: Legitimate Skip
+- list_name: GARAGE_WARMUP_CL1
+  local_code: -2
+  display_text: Don't Know
+- list_name: GARAGE_WARMUP_CL1
+  local_code: -1
+  display_text: Refused
+- list_name: GARAGE_WARMUP_CL1
+  local_code: 1
+  display_text: Less than 1 minute
+- list_name: GARAGE_WARMUP_CL1
+  local_code: 2
+  display_text: 1-2 minutes
+- list_name: GARAGE_WARMUP_CL1
+  local_code: 3
+  display_text: 3-5 minutes
+- list_name: GARAGE_WARMUP_CL1
+  local_code: 4
+  display_text: More than 5 minutes
+- list_name: GARAGE_WARMUP_CL1
+  local_code: 5
+  display_text: Never
+- list_name: HEALTHCARE_PLACE_CL3
+  local_code: -5
+  display_text: Some other place
+- list_name: HEALTHCARE_PLACE_CL3
+  local_code: -4
+  display_text: Missing in Error
+- list_name: HEALTHCARE_PLACE_CL3
+  local_code: -3
+  display_text: Legitimate Skip
+- list_name: HEALTHCARE_PLACE_CL3
+  local_code: -2
+  display_text: Don't Know
+- list_name: HEALTHCARE_PLACE_CL3
+  local_code: -1
+  display_text: Refused
+- list_name: HEALTHCARE_PLACE_CL3
+  local_code: 1
+  display_text: Clinic or health center
+- list_name: HEALTHCARE_PLACE_CL3
+  local_code: 2
+  display_text: Doctor's office or Health Maintenance Organization (HMO)
+- list_name: HEALTHCARE_PLACE_CL3
+  local_code: 3
+  display_text: Hospital Emergency Room
+- list_name: HEALTHCARE_PLACE_CL3
+  local_code: 4
+  display_text: Hospital outpatient department
+- list_name: HEALTHCARE_PLACE_CL3
+  local_code: 5
+  display_text: Doesn't go to one place most often
+- list_name: HEALTHCARE_PLACE_CL3
+  local_code: 6
+  display_text: Has not been sick
+- list_name: HEALTHCARE_PLACE_CL4
+  local_code: -7
+  display_text: Not applicable/Has not been sick
+- list_name: HEALTHCARE_PLACE_CL4
+  local_code: -5
+  display_text: Some other place
+- list_name: HEALTHCARE_PLACE_CL4
+  local_code: -4
+  display_text: Missing in Error
+- list_name: HEALTHCARE_PLACE_CL4
+  local_code: -3
+  display_text: Legitimate Skip
+- list_name: HEALTHCARE_PLACE_CL4
+  local_code: -2
+  display_text: Don't Know
+- list_name: HEALTHCARE_PLACE_CL4
+  local_code: -1
+  display_text: Refused
+- list_name: HEALTHCARE_PLACE_CL4
+  local_code: 1
+  display_text: Clinic or health center
+- list_name: HEALTHCARE_PLACE_CL4
+  local_code: 2
+  display_text: Doctor's office or Health Maintenance Organization (HMO)
+- list_name: HEALTHCARE_PLACE_CL4
+  local_code: 3
+  display_text: Hospital Emergency Room
+- list_name: HEALTHCARE_PLACE_CL4
+  local_code: 4
+  display_text: Hospital outpatient department
+- list_name: HEALTHCARE_PLACE_CL4
+  local_code: 5
+  display_text: Doesn't go to one place most often
+- list_name: HEAT_TYPE_CL4
+  local_code: -7
+  display_text: No source of heat
+- list_name: HEAT_TYPE_CL4
+  local_code: -5
+  display_text: Some other source
+- list_name: HEAT_TYPE_CL4
+  local_code: -4
+  display_text: Missing in Error
+- list_name: HEAT_TYPE_CL4
+  local_code: -3
+  display_text: Legitimate Skip
+- list_name: HEAT_TYPE_CL4
+  local_code: -2
+  display_text: Don't Know
+- list_name: HEAT_TYPE_CL4
+  local_code: -1
+  display_text: Refused
+- list_name: HEAT_TYPE_CL4
+  local_code: 1
+  display_text: Gas-heated forced air (vents)
+- list_name: HEAT_TYPE_CL4
+  local_code: 2
+  display_text: Electric-heated forced air (vents) (includes heat pumps)
+- list_name: HEAT_TYPE_CL4
+  local_code: 3
+  display_text: Oil/kerosene-fired furnace
+- list_name: HEAT_TYPE_CL4
+  local_code: 4
+  display_text: Electric baseboard heat
+- list_name: HEAT_TYPE_CL4
+  local_code: 5
+  display_text: Radiators (steam or hot water)
+- list_name: HEAT_TYPE_CL4
+  local_code: 6
+  display_text: Gas stove/wall furnace
+- list_name: HEAT_TYPE_CL4
+  local_code: 7
+  display_text: Wood burning stove/fireplace
+- list_name: HEAT_TYPE_CL4
+  local_code: 8
+  display_text: Kerosene space heater
+- list_name: HEAT_TYPE_CL4
+  local_code: 9
+  display_text: Radiant/ceramic heater
+- list_name: HEAT_TYPE_CL4
+  local_code: 10
+  display_text: Electric space heater
+- list_name: HOME_OWNERSHIP_CL3
+  local_code: -5
+  display_text: Have another type of housing arrangement
+- list_name: HOME_OWNERSHIP_CL3
+  local_code: -4
+  display_text: Missing in Error
+- list_name: HOME_OWNERSHIP_CL3
+  local_code: -3
+  display_text: Legitimate Skip
+- list_name: HOME_OWNERSHIP_CL3
+  local_code: -2
+  display_text: Don't Know
+- list_name: HOME_OWNERSHIP_CL3
+  local_code: -1
+  display_text: Refused
+- list_name: HOME_OWNERSHIP_CL3
+  local_code: 1
+  display_text: Own your own home
+- list_name: HOME_OWNERSHIP_CL3
+  local_code: 2
+  display_text: Rent your house or apartment
+- list_name: HOME_OWNERSHIP_CL3
+  local_code: 3
+  display_text: Exchanges services for housing
+- list_name: HOME_OWNERSHIP_CL3
+  local_code: 4
+  display_text: Live with friends or relatives to pay part of the expenses
+- list_name: HOME_OWNERSHIP_CL3
+  local_code: 5
+  display_text: Live with friends or relatives and not pay for housing
+- list_name: HOME_OWNERSHIP_CL3
+  local_code: 6
+  display_text: Live in temporary housing or a shelter
+- list_name: HOME_OWNERSHIP_CL3
+  local_code: 7
+  display_text: Not pay for housing as part of a job (e.g., military, clergy)
+- list_name: HOSP_DIAGNOSIS_CL1
+  local_code: -5
+  display_text: Other
+- list_name: HOSP_DIAGNOSIS_CL1
+  local_code: -4
+  display_text: Missing in Error
+- list_name: HOSP_DIAGNOSIS_CL1
+  local_code: -3
+  display_text: Legitimate Skip
+- list_name: HOSP_DIAGNOSIS_CL1
+  local_code: -2
+  display_text: Don't Know
+- list_name: HOSP_DIAGNOSIS_CL1
+  local_code: -1
+  display_text: Refused
+- list_name: HOSP_DIAGNOSIS_CL1
+  local_code: 1
+  display_text: Acute bronchitis
+- list_name: HOSP_DIAGNOSIS_CL1
+  local_code: 2
+  display_text: Appendicitis
+- list_name: HOSP_DIAGNOSIS_CL1
+  local_code: 3
+  display_text: Asthma
+- list_name: HOSP_DIAGNOSIS_CL1
+  local_code: 4
+  display_text: Birth defect complications
+- list_name: HOSP_DIAGNOSIS_CL1
+  local_code: 5
+  display_text: Cancer treatment
+- list_name: HOSP_DIAGNOSIS_CL1
+  local_code: 6
+  display_text: Dehydration
+- list_name: HOSP_DIAGNOSIS_CL1
+  local_code: 7
+  display_text: Diabetes
+- list_name: HOSP_DIAGNOSIS_CL1
+  local_code: 8
+  display_text: Epilepsy or seizures
+- list_name: HOSP_DIAGNOSIS_CL1
+  local_code: 9
+  display_text: Fever of unknown origin
+- list_name: HOSP_DIAGNOSIS_CL1
+  local_code: 10
+  display_text: Fractures, upper limb
+- list_name: HOSP_DIAGNOSIS_CL1
+  local_code: 11
+  display_text: Fractures, lower limb
+- list_name: HOSP_DIAGNOSIS_CL1
+  local_code: 12
+  display_text: Gastrointestinal infection
+- list_name: HOSP_DIAGNOSIS_CL1
+  local_code: 13
+  display_text: Head injury
+- list_name: HOSP_DIAGNOSIS_CL1
+  local_code: 14
+  display_text: Influenza
+- list_name: HOSP_DIAGNOSIS_CL1
+  local_code: 15
+  display_text: Jaundice
+- list_name: HOSP_DIAGNOSIS_CL1
+  local_code: 16
+  display_text: Mood disorder
+- list_name: HOSP_DIAGNOSIS_CL1
+  local_code: 17
+  display_text: Other respiratory infection
+- list_name: HOSP_DIAGNOSIS_CL1
+  local_code: 18
+  display_text: Other viral infection
+- list_name: HOSP_DIAGNOSIS_CL1
+  local_code: 19
+  display_text: Pneumonia
+- list_name: HOSP_DIAGNOSIS_CL1
+  local_code: 20
+  display_text: Skin infection
+- list_name: HOSP_DIAGNOSIS_CL1
+  local_code: 21
+  display_text: Urinary tract infection
+- list_name: INCOME_RANGE_CL5
+  local_code: -4
+  display_text: Missing in Error
+- list_name: INCOME_RANGE_CL5
+  local_code: -3
+  display_text: Legitimate Skip
+- list_name: INCOME_RANGE_CL5
+  local_code: -2
+  display_text: Don't Know
+- list_name: INCOME_RANGE_CL5
+  local_code: -1
+  display_text: Refused
+- list_name: INCOME_RANGE_CL5
+  local_code: 1
+  display_text: $5,000 or less
+- list_name: INCOME_RANGE_CL5
+  local_code: 2
+  display_text: $5,001 to $10,000
+- list_name: INCOME_RANGE_CL5
+  local_code: 3
+  display_text: $10,001 to $15,000
+- list_name: INCOME_RANGE_CL5
+  local_code: 4
+  display_text: $15,001 to $20,000
+- list_name: INCOME_RANGE_CL5
+  local_code: 5
+  display_text: $20,001 to $25,000
+- list_name: INCOME_RANGE_CL5
+  local_code: 6
+  display_text: $25,001 to $30,000
+- list_name: INCOME_RANGE_CL5
+  local_code: 7
+  display_text: $30,001 to $35,000
+- list_name: INCOME_RANGE_CL5
+  local_code: 8
+  display_text: $35,001 to $40,000
+- list_name: INCOME_RANGE_CL5
+  local_code: 9
+  display_text: $40,001 to $50,000
+- list_name: INCOME_RANGE_CL5
+  local_code: 10
+  display_text: $50,001 to $75,000
+- list_name: INCOME_RANGE_CL5
+  local_code: 11
+  display_text: $75,001 to $100,000
+- list_name: INCOME_RANGE_CL5
+  local_code: 12
+  display_text: $100,001 to $200,000
+- list_name: INCOME_RANGE_CL5
+  local_code: 13
+  display_text: $200,001 or more
+- list_name: INCOME_RANGE_CL6
+  local_code: -4
+  display_text: Missing in Error
+- list_name: INCOME_RANGE_CL6
+  local_code: -2
+  display_text: Don't Know
+- list_name: INCOME_RANGE_CL6
+  local_code: -1
+  display_text: Refused
+- list_name: INCOME_RANGE_CL6
+  local_code: 1
+  display_text: $25,000 or less
+- list_name: INCOME_RANGE_CL6
+  local_code: 2
+  display_text: More than $25,000
+- list_name: INFORMATION_SOURCE_CL9
+  local_code: -7
+  display_text: Not Applicable
+- list_name: INFORMATION_SOURCE_CL9
+  local_code: -5
+  display_text: Other
+- list_name: INFORMATION_SOURCE_CL9
+  local_code: -4
+  display_text: Missing in Error
+- list_name: INFORMATION_SOURCE_CL9
+  local_code: 1
+  display_text: Person/Self
+- list_name: INFORMATION_SOURCE_CL9
+  local_code: 2
+  display_text: Provider
+- list_name: INFORMATION_SOURCE_CL9
+  local_code: 3
+  display_text: Household Member
+- list_name: INFORMATION_SOURCE_CL9
+  local_code: 4
+  display_text: Other Person Associated
+- list_name: INFORMATION_SOURCE_CL9
+  local_code: 5
+  display_text: Web
+- list_name: INFORMATION_SOURCE_CL9
+  local_code: 6
+  display_text: Returned Mail
+- list_name: INFORMATION_SOURCE_CL9
+  local_code: 7
+  display_text: Tracing vendor
+- list_name: KIT_COLLECTION_TIME_CL1
+  local_code: -4
+  display_text: Missing in Error
+- list_name: KIT_COLLECTION_TIME_CL1
+  local_code: -3
+  display_text: Legitimate Skip
+- list_name: KIT_COLLECTION_TIME_CL1
+  local_code: 1
+  display_text: 1 Month
+- list_name: KIT_COLLECTION_TIME_CL1
+  local_code: 2
+  display_text: 3 Month
+- list_name: KIT_DISTRIBUTE_METHOD_CL1
+  local_code: -4
+  display_text: Missing in Error
+- list_name: KIT_DISTRIBUTE_METHOD_CL1
+  local_code: -3
+  display_text: Legitimate Skip
+- list_name: KIT_DISTRIBUTE_METHOD_CL1
+  local_code: 1
+  display_text: Hand delivery
+- list_name: KIT_DISTRIBUTE_METHOD_CL1
+  local_code: 2
+  display_text: Mailing
+- list_name: KIT_DISTRIBUTE_METHOD_CL1
+  local_code: 3
+  display_text: Did not distribute kit
+- list_name: KIT_REFUSAL_REASON_CL2
+  local_code: -5
+  display_text: Other
+- list_name: KIT_REFUSAL_REASON_CL2
+  local_code: -4
+  display_text: Missing in Error
+- list_name: KIT_REFUSAL_REASON_CL2
+  local_code: -3
+  display_text: Legitimate Skip
+- list_name: KIT_REFUSAL_REASON_CL2
+  local_code: -2
+  display_text: Don't Know
+- list_name: KIT_REFUSAL_REASON_CL2
+  local_code: -1
+  display_text: Refused
+- list_name: KIT_REFUSAL_REASON_CL2
+  local_code: 1
+  display_text: No reason given
+- list_name: KIT_REFUSAL_REASON_CL2
+  local_code: 2
+  display_text: No Time
+- list_name: KIT_REFUSAL_REASON_CL2
+  local_code: 3
+  display_text: Too Complicated
+- list_name: LANGUAGE_CL11
+  local_code: -5
+  display_text: Other
+- list_name: LANGUAGE_CL11
+  local_code: -4
+  display_text: Missing in Error
+- list_name: LANGUAGE_CL11
+  local_code: -3
+  display_text: Legitimate Skip
+- list_name: LANGUAGE_CL11
+  local_code: -2
+  display_text: Don't Know
+- list_name: LANGUAGE_CL11
+  local_code: -1
+  display_text: Refused
+- list_name: LANGUAGE_CL11
+  local_code: 1
+  display_text: Spanish
+- list_name: LANGUAGE_CL11
+  local_code: 2
+  display_text: Arabic
+- list_name: LANGUAGE_CL11
+  local_code: 3
+  display_text: Chinese
+- list_name: LANGUAGE_CL11
+  local_code: 4
+  display_text: French
+- list_name: LANGUAGE_CL11
+  local_code: 5
+  display_text: French Creole
+- list_name: LANGUAGE_CL11
+  local_code: 6
+  display_text: German
+- list_name: LANGUAGE_CL11
+  local_code: 7
+  display_text: Italian
+- list_name: LANGUAGE_CL11
+  local_code: 8
+  display_text: Korean
+- list_name: LANGUAGE_CL11
+  local_code: 9
+  display_text: Polish
+- list_name: LANGUAGE_CL11
+  local_code: 10
+  display_text: Russian
+- list_name: LANGUAGE_CL11
+  local_code: 11
+  display_text: Tagalog
+- list_name: LANGUAGE_CL11
+  local_code: 12
+  display_text: Vietnamese
+- list_name: LANGUAGE_CL11
+  local_code: 13
+  display_text: Urdu
+- list_name: LANGUAGE_CL11
+  local_code: 14
+  display_text: Punjabi
+- list_name: LANGUAGE_CL11
+  local_code: 15
+  display_text: Bengali
+- list_name: LANGUAGE_CL11
+  local_code: 16
+  display_text: Farsi
+- list_name: LANGUAGE_CL11
+  local_code: 19
+  display_text: Mandarin
+- list_name: LANGUAGE_CL11
+  local_code: 20
+  display_text: Portuguese
+- list_name: LANGUAGE_CL11
+  local_code: 21
+  display_text: Taiwanese
+- list_name: LANGUAGE_CL11
+  local_code: 22
+  display_text: Turkish
+- list_name: LIVESTOCK_CL1
+  local_code: -5
+  display_text: Other
+- list_name: LIVESTOCK_CL1
+  local_code: -4
+  display_text: Missing in Error
+- list_name: LIVESTOCK_CL1
+  local_code: -3
+  display_text: Legitimate Skip
+- list_name: LIVESTOCK_CL1
+  local_code: -2
+  display_text: Don't Know
+- list_name: LIVESTOCK_CL1
+  local_code: -1
+  display_text: Refused
+- list_name: LIVESTOCK_CL1
+  local_code: 1
+  display_text: Chickens
+- list_name: LIVESTOCK_CL1
+  local_code: 2
+  display_text: Cows
+- list_name: LIVESTOCK_CL1
+  local_code: 3
+  display_text: Ducks
+- list_name: LIVESTOCK_CL1
+  local_code: 4
+  display_text: Geese
+- list_name: LIVESTOCK_CL1
+  local_code: 5
+  display_text: Goats
+- list_name: LIVESTOCK_CL1
+  local_code: 6
+  display_text: GuineaFowl
+- list_name: LIVESTOCK_CL1
+  local_code: 7
+  display_text: Hens
+- list_name: LIVESTOCK_CL1
+  local_code: 8
+  display_text: Horses
+- list_name: LIVESTOCK_CL1
+  local_code: 9
+  display_text: Mules
+- list_name: LIVESTOCK_CL1
+  local_code: 10
+  display_text: PeaFowl
+- list_name: LIVESTOCK_CL1
+  local_code: 11
+  display_text: Pigs
+- list_name: LIVESTOCK_CL1
+  local_code: 12
+  display_text: Pigeons
+- list_name: LIVESTOCK_CL1
+  local_code: 13
+  display_text: Rabbits
+- list_name: LIVESTOCK_CL1
+  local_code: 14
+  display_text: Roosters
+- list_name: LIVESTOCK_CL1
+  local_code: 15
+  display_text: Sheep
+- list_name: LIVESTOCK_CL1
+  local_code: 16
+  display_text: Turkeys
+- list_name: MEAL_CHOICE_CL1
+  local_code: -7
+  display_text: Never in charge of preparing his/her meals
+- list_name: MEAL_CHOICE_CL1
+  local_code: -4
+  display_text: Missing in Error
+- list_name: MEAL_CHOICE_CL1
+  local_code: -3
+  display_text: Legitimate Skip
+- list_name: MEAL_CHOICE_CL1
+  local_code: -2
+  display_text: Don't Know
+- list_name: MEAL_CHOICE_CL1
+  local_code: -1
+  display_text: Refused
+- list_name: MEAL_CHOICE_CL1
+  local_code: 1
+  display_text: He/she can choose from any food available
+- list_name: MEAL_CHOICE_CL1
+  local_code: 2
+  display_text: He/she is given a choice from a few alternatives
+- list_name: MEAL_CHOICE_CL1
+  local_code: 3
+  display_text: I decide what he/she will eat
+- list_name: MEDICAL_RECORDS_CL1
+  local_code: -7
+  display_text: Not Applicable
+- list_name: MEDICAL_RECORDS_CL1
+  local_code: -4
+  display_text: Missing in Error
+- list_name: MEDICAL_RECORDS_CL1
+  local_code: -3
+  display_text: Legitimate Skip
+- list_name: MEDICAL_RECORDS_CL1
+  local_code: 1
+  display_text: Electronic
+- list_name: MEDICAL_RECORDS_CL1
+  local_code: 2
+  display_text: Paper
+- list_name: MEDICAL_RECORDS_CL1
+  local_code: 3
+  display_text: Combination - electronic and paper
+- list_name: MILK_TYPE_CL1
+  local_code: -5
+  display_text: Some other kind of milk
+- list_name: MILK_TYPE_CL1
+  local_code: -4
+  display_text: Missing in Error
+- list_name: MILK_TYPE_CL1
+  local_code: -3
+  display_text: Legitimate Skip
+- list_name: MILK_TYPE_CL1
+  local_code: -2
+  display_text: Don't Know
+- list_name: MILK_TYPE_CL1
+  local_code: -1
+  display_text: Refused
+- list_name: MILK_TYPE_CL1
+  local_code: 1
+  display_text: Whole milk
+- list_name: MILK_TYPE_CL1
+  local_code: 2
+  display_text: 2% milk
+- list_name: MILK_TYPE_CL1
+  local_code: 3
+  display_text: Skim milk
+- list_name: MILK_TYPE_CL1
+  local_code: 4
+  display_text: Low fat or 1% milk
+- list_name: MILK_TYPE_CL1
+  local_code: 5
+  display_text: Soy milk
+- list_name: MILK_TYPE_CL1
+  local_code: 6
+  display_text: Equal amounts of regular cow's milk and soymilk
+- list_name: NIGHT_WAKE_FREQUENCY_CL2
+  local_code: -4
+  display_text: Missing in Error
+- list_name: NIGHT_WAKE_FREQUENCY_CL2
+  local_code: -2
+  display_text: Don't Know
+- list_name: NIGHT_WAKE_FREQUENCY_CL2
+  local_code: -1
+  display_text: Refused
+- list_name: NIGHT_WAKE_FREQUENCY_CL2
+  local_code: 1
+  display_text: Never
+- list_name: NIGHT_WAKE_FREQUENCY_CL2
+  local_code: 2
+  display_text: Occasionally
+- list_name: NIGHT_WAKE_FREQUENCY_CL2
+  local_code: 3
+  display_text: Most nights
+- list_name: NIGHT_WAKE_FREQUENCY_CL2
+  local_code: 4
+  display_text: Once per night
+- list_name: NIGHT_WAKE_FREQUENCY_CL2
+  local_code: 5
+  display_text: More than once per night
+- list_name: NOISINESS_CL1
+  local_code: -4
+  display_text: Missing in Error
+- list_name: NOISINESS_CL1
+  local_code: -3
+  display_text: Legitimate Skip
+- list_name: NOISINESS_CL1
+  local_code: -2
+  display_text: Don't Know
+- list_name: NOISINESS_CL1
+  local_code: -1
+  display_text: Refused
+- list_name: NOISINESS_CL1
+  local_code: 1
+  display_text: Extremely
+- list_name: NOISINESS_CL1
+  local_code: 2
+  display_text: Very
+- list_name: NOISINESS_CL1
+  local_code: 3
+  display_text: Moderately
+- list_name: NOISINESS_CL1
+  local_code: 4
+  display_text: Slightly
+- list_name: NOISINESS_CL1
+  local_code: 5
+  display_text: Not at all
+- list_name: NOT_DISTRIBUTE_REASON_CL2
+  local_code: -5
+  display_text: Other
+- list_name: NOT_DISTRIBUTE_REASON_CL2
+  local_code: -4
+  display_text: Missing in Error
+- list_name: NOT_DISTRIBUTE_REASON_CL2
+  local_code: -3
+  display_text: Legitimate Skip
+- list_name: NOT_DISTRIBUTE_REASON_CL2
+  local_code: 1
+  display_text: Mother Refused
+- list_name: NOT_DISTRIBUTE_REASON_CL2
+  local_code: 2
+  display_text: No time to distribute kit
+- list_name: NOT_DISTRIBUTE_REASON_CL2
+  local_code: 3
+  display_text: Kit unavailable
+- list_name: NO_LOG_REASON_CL3
+  local_code: -5
+  display_text: Other
+- list_name: NO_LOG_REASON_CL3
+  local_code: -4
+  display_text: Missing in Error
+- list_name: NO_LOG_REASON_CL3
+  local_code: -3
+  display_text: Legitimate Skip
+- list_name: NO_LOG_REASON_CL3
+  local_code: -2
+  display_text: Don't Know
+- list_name: NO_LOG_REASON_CL3
+  local_code: -1
+  display_text: Refused
+- list_name: NO_LOG_REASON_CL3
+  local_code: 1
+  display_text: Child hasn't had a medical visit since last interview
+- list_name: NO_LOG_REASON_CL3
+  local_code: 2
+  display_text: Misplaced the log
+- list_name: NO_LOG_REASON_CL3
+  local_code: 3
+  display_text: Forgotten to bring log to child's medical visits
+- list_name: NO_LOG_REASON_CL3
+  local_code: 4
+  display_text: Log was too much trouble to complete
+- list_name: NO_LOG_REASON_CL3
+  local_code: 5
+  display_text: Log was too difficult to understand
+- list_name: NO_SPECIMEN_REASON_CL1
+  local_code: -5
+  display_text: Other
+- list_name: NO_SPECIMEN_REASON_CL1
+  local_code: -4
+  display_text: Missing in error
+- list_name: NO_SPECIMEN_REASON_CL1
+  local_code: -3
+  display_text: Legitimate Skip
+- list_name: NO_SPECIMEN_REASON_CL1
+  local_code: -2
+  display_text: Don't Know
+- list_name: NO_SPECIMEN_REASON_CL1
+  local_code: -1
+  display_text: Refused
+- list_name: NO_SPECIMEN_REASON_CL1
+  local_code: 1
+  display_text: Child unhappy
+- list_name: NO_SPECIMEN_REASON_CL1
+  local_code: 2
+  display_text: Child sleepy
+- list_name: NO_SPECIMEN_REASON_CL1
+  local_code: 3
+  display_text: Physical limitation
+- list_name: NO_SPECIMEN_REASON_CL1
+  local_code: 4
+  display_text: Parent/caregiver ill/emergency
+- list_name: NO_SPECIMEN_REASON_CL1
+  local_code: 5
+  display_text: Child ill/emergency
+- list_name: NO_SPECIMEN_REASON_CL1
+  local_code: 6
+  display_text: Collection supplies malfunctioned
+- list_name: NO_SPECIMEN_REASON_CL1
+  local_code: 7
+  display_text: No time
+- list_name: PAST_PERIOD_CL2
+  local_code: -4
+  display_text: Missing in Error
+- list_name: PAST_PERIOD_CL2
+  local_code: -3
+  display_text: Legitimate Skip
+- list_name: PAST_PERIOD_CL2
+  local_code: -2
+  display_text: Don't Know
+- list_name: PAST_PERIOD_CL2
+  local_code: -1
+  display_text: Refused
+- list_name: PAST_PERIOD_CL2
+  local_code: 1
+  display_text: Within the last month
+- list_name: PAST_PERIOD_CL2
+  local_code: 2
+  display_text: 1-3 Months ago
+- list_name: PAST_PERIOD_CL2
+  local_code: 3
+  display_text: 4-6 Months ago
+- list_name: PAST_PERIOD_CL2
+  local_code: 4
+  display_text: Not within the past 6 months
+- list_name: PESTICIDE_HOW_CL1
+  local_code: -5
+  display_text: Other
+- list_name: PESTICIDE_HOW_CL1
+  local_code: -4
+  display_text: Missing in Error
+- list_name: PESTICIDE_HOW_CL1
+  local_code: -3
+  display_text: Legitimate Skip
+- list_name: PESTICIDE_HOW_CL1
+  local_code: -2
+  display_text: Don't Know
+- list_name: PESTICIDE_HOW_CL1
+  local_code: -1
+  display_text: Refused
+- list_name: PESTICIDE_HOW_CL1
+  local_code: 1
+  display_text: Spray
+- list_name: PESTICIDE_HOW_CL1
+  local_code: 2
+  display_text: Bomb
+- list_name: PESTICIDE_HOW_CL1
+  local_code: 3
+  display_text: Powder
+- list_name: PESTICIDE_HOW_CL1
+  local_code: 4
+  display_text: Strip
+- list_name: PESTICIDE_HOW_CL1
+  local_code: 5
+  display_text: Moth balls
+- list_name: PESTICIDE_HOW_CL1
+  local_code: 6
+  display_text: Foam
+- list_name: PESTICIDE_WHERE_CL1
+  local_code: -4
+  display_text: Missing in Error
+- list_name: PESTICIDE_WHERE_CL1
+  local_code: -3
+  display_text: Legitimate Skip
+- list_name: PESTICIDE_WHERE_CL1
+  local_code: -2
+  display_text: Don't Know
+- list_name: PESTICIDE_WHERE_CL1
+  local_code: -1
+  display_text: Refused
+- list_name: PESTICIDE_WHERE_CL1
+  local_code: 1
+  display_text: Inside your home
+- list_name: PESTICIDE_WHERE_CL1
+  local_code: 2
+  display_text: Outside your home
+- list_name: PESTICIDE_WHERE_CL1
+  local_code: 3
+  display_text: Both inside and outside your home
+- list_name: PESTICIDE_WHO_CL1
+  local_code: -5
+  display_text: Other
+- list_name: PESTICIDE_WHO_CL1
+  local_code: -4
+  display_text: Missing in Error
+- list_name: PESTICIDE_WHO_CL1
+  local_code: -3
+  display_text: Legitimate Skip
+- list_name: PESTICIDE_WHO_CL1
+  local_code: -2
+  display_text: Don't Know
+- list_name: PESTICIDE_WHO_CL1
+  local_code: -1
+  display_text: Refused
+- list_name: PESTICIDE_WHO_CL1
+  local_code: 1
+  display_text: You
+- list_name: PESTICIDE_WHO_CL1
+  local_code: 2
+  display_text: A friend or family member
+- list_name: PESTICIDE_WHO_CL1
+  local_code: 3
+  display_text: Building maintenance
+- list_name: PESTICIDE_WHO_CL1
+  local_code: 4
+  display_text: A professional exterminator
+- list_name: PEST_TYPE_CL1
+  local_code: -5
+  display_text: Other
+- list_name: PEST_TYPE_CL1
+  local_code: -4
+  display_text: Missing in Error
+- list_name: PEST_TYPE_CL1
+  local_code: -3
+  display_text: Legitimate Skip
+- list_name: PEST_TYPE_CL1
+  local_code: -2
+  display_text: Don't Know
+- list_name: PEST_TYPE_CL1
+  local_code: -1
+  display_text: Refused
+- list_name: PEST_TYPE_CL1
+  local_code: 1
+  display_text: Pests of plants and trees such as, gypsy moths, japanese beetles,
+    aphids, etc.
+- list_name: PEST_TYPE_CL1
+  local_code: 2
+  display_text: Flying insects such as, flies, mosquitoes, bees, wasps, hornets, moths
+- list_name: PEST_TYPE_CL1
+  local_code: 3
+  display_text: Crawling insects such as, ants, roaches, silverfish, spiders
+- list_name: PEST_TYPE_CL1
+  local_code: 4
+  display_text: Rodents such as, mice, rats, squirrels
+- list_name: PEST_TYPE_CL1
+  local_code: 5
+  display_text: Fleas and ticks
+- list_name: PEST_TYPE_CL1
+  local_code: 6
+  display_text: Termites and carpenter ants
+- list_name: PRACTICE_CHARACTERISTIC_CL4
+  local_code: -5
+  display_text: Other
+- list_name: PRACTICE_CHARACTERISTIC_CL4
+  local_code: -4
+  display_text: Missing in Error
+- list_name: PRACTICE_CHARACTERISTIC_CL4
+  local_code: -3
+  display_text: Legitimate Skip
+- list_name: PRACTICE_CHARACTERISTIC_CL4
+  local_code: -2
+  display_text: Don't Know
+- list_name: PRACTICE_CHARACTERISTIC_CL4
+  local_code: -1
+  display_text: Refused
+- list_name: PRACTICE_CHARACTERISTIC_CL4
+  local_code: 1
+  display_text: Private with no health system or university affiliation
+- list_name: PRACTICE_CHARACTERISTIC_CL4
+  local_code: 2
+  display_text: Private with health system or university affiliation
+- list_name: PRACTICE_CHARACTERISTIC_CL4
+  local_code: 3
+  display_text: Health system with no university affiliation
+- list_name: PRACTICE_CHARACTERISTIC_CL4
+  local_code: 4
+  display_text: Health system with university affiliation
+- list_name: PRACTICE_CHARACTERISTIC_CL4
+  local_code: 5
+  display_text: Academic medical center
+- list_name: PRACTICE_CHARACTERISTIC_CL4
+  local_code: 6
+  display_text: Federally qualified health center
+- list_name: PRACTICE_CHARACTERISTIC_CL4
+  local_code: 7
+  display_text: Public clinic with no university/academic affiliation
+- list_name: PRACTICE_CHARACTERISTIC_CL4
+  local_code: 8
+  display_text: Public clinic with university/academic affiliation
+- list_name: PRODUCT_TYPE_CL2
+  local_code: -4
+  display_text: Missing in Error
+- list_name: PRODUCT_TYPE_CL2
+  local_code: -2
+  display_text: Don't Know
+- list_name: PRODUCT_TYPE_CL2
+  local_code: -1
+  display_text: Prefer not to answer
+- list_name: PRODUCT_TYPE_CL2
+  local_code: 1
+  display_text: Caffeinated foods or beverages
+- list_name: PRODUCT_TYPE_CL2
+  local_code: 2
+  display_text: Tobacco products
+- list_name: PRODUCT_TYPE_CL2
+  local_code: 3
+  display_text: Antibacterial soaps lotions or hand sanitizers
+- list_name: PRODUCT_TYPE_CL2
+  local_code: 4
+  display_text: Cleaning products
+- list_name: PRODUCT_TYPE_CL2
+  local_code: 5
+  display_text: Prescription drugs
+- list_name: PRODUCT_TYPE_CL2
+  local_code: 6
+  display_text: Over-the-counter medications
+- list_name: PRODUCT_TYPE_CL2
+  local_code: 7
+  display_text: None
+- list_name: QUANTITY_CL3
+  local_code: -5
+  display_text: Other
+- list_name: QUANTITY_CL3
+  local_code: -4
+  display_text: Missing in Error
+- list_name: QUANTITY_CL3
+  local_code: -3
+  display_text: Legitimate Skip
+- list_name: QUANTITY_CL3
+  local_code: 1
+  display_text: None
+- list_name: RECORD_TYPE_CL1
+  local_code: -5
+  display_text: Some other type of personal record
+- list_name: RECORD_TYPE_CL1
+  local_code: -4
+  display_text: Missing in Error
+- list_name: RECORD_TYPE_CL1
+  local_code: -3
+  display_text: Legitimate Skip
+- list_name: RECORD_TYPE_CL1
+  local_code: -2
+  display_text: Don't Know
+- list_name: RECORD_TYPE_CL1
+  local_code: -1
+  display_text: Refused
+- list_name: RECORD_TYPE_CL1
+  local_code: 1
+  display_text: The Infant and Child Health Care Log
+- list_name: RECORD_TYPE_CL1
+  local_code: 2
+  display_text: A shot or immunization record (other than the Infant and Child Health
+    Care Log)
+- list_name: RECORD_TYPE_CL1
+  local_code: 3
+  display_text: Your memory
+- list_name: REFERRAL_LEVEL_CL1
+  local_code: -7
+  display_text: Not Applicable
+- list_name: REFERRAL_LEVEL_CL1
+  local_code: -4
+  display_text: Missing in Error
+- list_name: REFERRAL_LEVEL_CL1
+  local_code: -3
+  display_text: Legitimate Skip
+- list_name: REFERRAL_LEVEL_CL1
+  local_code: 1
+  display_text: Is within normal range - no action is needed
+- list_name: REFERRAL_LEVEL_CL1
+  local_code: 2
+  display_text: Normal but at the high end of normal - Discuss these findings with
+    a health care provider at next visit
+- list_name: REFERRAL_LEVEL_CL1
+  local_code: 3
+  display_text: High - See a health care provider within 2 weeks
+- list_name: REFERRAL_LEVEL_CL1
+  local_code: 4
+  display_text: Very High - See a health care provider immediately
+- list_name: REFUSAL_REASON_CL4
+  local_code: -5
+  display_text: Other
+- list_name: REFUSAL_REASON_CL4
+  local_code: -4
+  display_text: Missing in Error
+- list_name: REFUSAL_REASON_CL4
+  local_code: -3
+  display_text: Legitimate Skip
+- list_name: REFUSAL_REASON_CL4
+  local_code: -2
+  display_text: Don't Know
+- list_name: REFUSAL_REASON_CL4
+  local_code: -1
+  display_text: Refused
+- list_name: REFUSAL_REASON_CL4
+  local_code: 1
+  display_text: Child is sleeping/tired
+- list_name: REFUSAL_REASON_CL5
+  local_code: -5
+  display_text: Other
+- list_name: REFUSAL_REASON_CL5
+  local_code: -4
+  display_text: Missing in Error
+- list_name: REFUSAL_REASON_CL5
+  local_code: -2
+  display_text: Don't Know
+- list_name: REFUSAL_REASON_CL5
+  local_code: -1
+  display_text: Refused
+- list_name: REFUSAL_REASON_CL5
+  local_code: 1
+  display_text: Child has fever/Other Illness
+- list_name: REFUSAL_REASON_CL6
+  local_code: -7
+  display_text: None given
+- list_name: REFUSAL_REASON_CL6
+  local_code: -5
+  display_text: Other
+- list_name: REFUSAL_REASON_CL6
+  local_code: -4
+  display_text: Missing in Error
+- list_name: REFUSAL_REASON_CL6
+  local_code: -3
+  display_text: Legitimate Skip
+- list_name: REFUSAL_REASON_CL6
+  local_code: -2
+  display_text: Don't Know
+- list_name: REFUSAL_REASON_CL6
+  local_code: -1
+  display_text: Refused
+- list_name: REFUSAL_REASON_CL6
+  local_code: 1
+  display_text: Concern about discomfort
+- list_name: REFUSAL_REASON_CL6
+  local_code: 2
+  display_text: Child sick
+- list_name: REFUSAL_REASON_CL6
+  local_code: 3
+  display_text: Child tired/unhappy
+- list_name: REFUSAL_REASON_CL7
+  local_code: -5
+  display_text: Other
+- list_name: REFUSAL_REASON_CL7
+  local_code: -4
+  display_text: Missing in Error
+- list_name: REFUSAL_REASON_CL7
+  local_code: -3
+  display_text: Legitimate Skip
+- list_name: REFUSAL_REASON_CL7
+  local_code: -2
+  display_text: Don't Know
+- list_name: REFUSAL_REASON_CL7
+  local_code: -1
+  display_text: Refused
+- list_name: REFUSAL_REASON_CL7
+  local_code: 1
+  display_text: Concern about allergic reaction/skin irritation
+- list_name: REFUSAL_REASON_CL7
+  local_code: 2
+  display_text: Child has a diaper rash
+- list_name: REGULARITY_LEVEL_CL21
+  local_code: -4
+  display_text: Missing in Error
+- list_name: REGULARITY_LEVEL_CL21
+  local_code: 1
+  display_text: Almost always
+- list_name: REGULARITY_LEVEL_CL21
+  local_code: 2
+  display_text: Frequently
+- list_name: REGULARITY_LEVEL_CL21
+  local_code: 3
+  display_text: Occasionally
+- list_name: REGULARITY_LEVEL_CL21
+  local_code: 4
+  display_text: Seldom
+- list_name: REGULARITY_LEVEL_CL21
+  local_code: 5
+  display_text: Almost never
+- list_name: REGULARITY_LEVEL_CL22
+  local_code: -4
+  display_text: Missing in Error
+- list_name: REGULARITY_LEVEL_CL22
+  local_code: -3
+  display_text: Legitimate Skip
+- list_name: REGULARITY_LEVEL_CL22
+  local_code: -2
+  display_text: Don't Know
+- list_name: REGULARITY_LEVEL_CL22
+  local_code: -1
+  display_text: Refused
+- list_name: REGULARITY_LEVEL_CL22
+  local_code: 1
+  display_text: Never
+- list_name: REGULARITY_LEVEL_CL22
+  local_code: 2
+  display_text: Sometimes
+- list_name: REGULARITY_LEVEL_CL22
+  local_code: 3
+  display_text: Usually
+- list_name: REGULARITY_LEVEL_CL22
+  local_code: 4
+  display_text: Always
+- list_name: REGULARITY_LEVEL_CL23
+  local_code: -4
+  display_text: Missing in Error
+- list_name: REGULARITY_LEVEL_CL23
+  local_code: -3
+  display_text: Legitimate Skip
+- list_name: REGULARITY_LEVEL_CL23
+  local_code: -2
+  display_text: Don't Know
+- list_name: REGULARITY_LEVEL_CL23
+  local_code: -1
+  display_text: Refused
+- list_name: REGULARITY_LEVEL_CL23
+  local_code: 1
+  display_text: Never
+- list_name: REGULARITY_LEVEL_CL23
+  local_code: 2
+  display_text: Almost never
+- list_name: REGULARITY_LEVEL_CL23
+  local_code: 3
+  display_text: Sometimes
+- list_name: REGULARITY_LEVEL_CL23
+  local_code: 4
+  display_text: Fairly often
+- list_name: REGULARITY_LEVEL_CL23
+  local_code: 5
+  display_text: Very often
+- list_name: REGULARITY_LEVEL_CL24
+  local_code: -4
+  display_text: Missing in Error
+- list_name: REGULARITY_LEVEL_CL24
+  local_code: -3
+  display_text: Legitimate Skip
+- list_name: REGULARITY_LEVEL_CL24
+  local_code: -2
+  display_text: Don't Know
+- list_name: REGULARITY_LEVEL_CL24
+  local_code: -1
+  display_text: Refused
+- list_name: REGULARITY_LEVEL_CL24
+  local_code: 0
+  display_text: Never/Less than one day per week
+- list_name: REGULARITY_LEVEL_CL24
+  local_code: 1
+  display_text: 1 day per week
+- list_name: REGULARITY_LEVEL_CL24
+  local_code: 2
+  display_text: 2 days per week
+- list_name: REGULARITY_LEVEL_CL24
+  local_code: 3
+  display_text: 3 days per week
+- list_name: REGULARITY_LEVEL_CL24
+  local_code: 4
+  display_text: 4 days per week
+- list_name: REGULARITY_LEVEL_CL24
+  local_code: 5
+  display_text: 5 days per week
+- list_name: REGULARITY_LEVEL_CL24
+  local_code: 6
+  display_text: 6 days per week
+- list_name: REGULARITY_LEVEL_CL24
+  local_code: 7
+  display_text: 7 days per week
+- list_name: REGULARITY_LEVEL_CL25
+  local_code: -4
+  display_text: Missing in Error
+- list_name: REGULARITY_LEVEL_CL25
+  local_code: -3
+  display_text: Legitimate Skip
+- list_name: REGULARITY_LEVEL_CL25
+  local_code: -2
+  display_text: Don't Know
+- list_name: REGULARITY_LEVEL_CL25
+  local_code: -1
+  display_text: Refused
+- list_name: REGULARITY_LEVEL_CL25
+  local_code: 1
+  display_text: Every day
+- list_name: REGULARITY_LEVEL_CL25
+  local_code: 2
+  display_text: 5-6 days a week
+- list_name: REGULARITY_LEVEL_CL25
+  local_code: 3
+  display_text: 2-4 days a week
+- list_name: REGULARITY_LEVEL_CL25
+  local_code: 4
+  display_text: Once a week or less
+- list_name: REGULARITY_LEVEL_CL25
+  local_code: 5
+  display_text: Never
+- list_name: REGULARITY_LEVEL_CL26
+  local_code: -7
+  display_text: Do not have a TV
+- list_name: REGULARITY_LEVEL_CL26
+  local_code: -4
+  display_text: Missing in Error
+- list_name: REGULARITY_LEVEL_CL26
+  local_code: -3
+  display_text: Legitimate Skip
+- list_name: REGULARITY_LEVEL_CL26
+  local_code: -2
+  display_text: Don't Know
+- list_name: REGULARITY_LEVEL_CL26
+  local_code: -1
+  display_text: Refused
+- list_name: REGULARITY_LEVEL_CL26
+  local_code: 1
+  display_text: All of the time
+- list_name: REGULARITY_LEVEL_CL26
+  local_code: 2
+  display_text: Most of the time
+- list_name: REGULARITY_LEVEL_CL26
+  local_code: 3
+  display_text: Sometimes
+- list_name: REGULARITY_LEVEL_CL26
+  local_code: 4
+  display_text: Rarely
+- list_name: REGULARITY_LEVEL_CL26
+  local_code: 5
+  display_text: Never
+- list_name: REGULARITY_LEVEL_CL27
+  local_code: -7
+  display_text: Child did not drink 100% fruit juice during the past 7 days
+- list_name: REGULARITY_LEVEL_CL27
+  local_code: -4
+  display_text: Missing in Error
+- list_name: REGULARITY_LEVEL_CL27
+  local_code: -3
+  display_text: Legitimate Skip
+- list_name: REGULARITY_LEVEL_CL27
+  local_code: -2
+  display_text: Don't Know
+- list_name: REGULARITY_LEVEL_CL27
+  local_code: -1
+  display_text: Refused
+- list_name: REGULARITY_LEVEL_CL27
+  local_code: 1
+  display_text: 1 Time per day
+- list_name: REGULARITY_LEVEL_CL27
+  local_code: 2
+  display_text: 2 Times per day
+- list_name: REGULARITY_LEVEL_CL27
+  local_code: 3
+  display_text: 3 Times per day
+- list_name: REGULARITY_LEVEL_CL27
+  local_code: 4
+  display_text: 4 or more times per day
+- list_name: REGULARITY_LEVEL_CL27
+  local_code: 5
+  display_text: 1 to 3 times during the past 7 days
+- list_name: REGULARITY_LEVEL_CL27
+  local_code: 6
+  display_text: 4 to 6 times during the past 7 days
+- list_name: REGULARITY_LEVEL_CL28
+  local_code: -7
+  display_text: Child did not drink soda during the past 7 days
+- list_name: REGULARITY_LEVEL_CL28
+  local_code: -4
+  display_text: Missing in Error
+- list_name: REGULARITY_LEVEL_CL28
+  local_code: -3
+  display_text: Legitimate Skip
+- list_name: REGULARITY_LEVEL_CL28
+  local_code: -2
+  display_text: Don't Know
+- list_name: REGULARITY_LEVEL_CL28
+  local_code: -1
+  display_text: Refused
+- list_name: REGULARITY_LEVEL_CL28
+  local_code: 1
+  display_text: 1 Time per day
+- list_name: REGULARITY_LEVEL_CL28
+  local_code: 2
+  display_text: 2 Times per day
+- list_name: REGULARITY_LEVEL_CL28
+  local_code: 3
+  display_text: 3 Times per day
+- list_name: REGULARITY_LEVEL_CL28
+  local_code: 4
+  display_text: 4 or more times per day
+- list_name: REGULARITY_LEVEL_CL28
+  local_code: 5
+  display_text: 1 to 3 times during the past 7 days
+- list_name: REGULARITY_LEVEL_CL28
+  local_code: 6
+  display_text: 4 to 6 times during the past 7 days
+- list_name: REGULARITY_LEVEL_CL29
+  local_code: -7
+  display_text: Child did not eat fruit during the past 7 days
+- list_name: REGULARITY_LEVEL_CL29
+  local_code: -4
+  display_text: Missing in Error
+- list_name: REGULARITY_LEVEL_CL29
+  local_code: -3
+  display_text: Legitimate Skip
+- list_name: REGULARITY_LEVEL_CL29
+  local_code: -2
+  display_text: Don't Know
+- list_name: REGULARITY_LEVEL_CL29
+  local_code: -1
+  display_text: Refused
+- list_name: REGULARITY_LEVEL_CL29
+  local_code: 1
+  display_text: 1 Time per day
+- list_name: REGULARITY_LEVEL_CL29
+  local_code: 2
+  display_text: 2 Times per day
+- list_name: REGULARITY_LEVEL_CL29
+  local_code: 3
+  display_text: 3 Times per day
+- list_name: REGULARITY_LEVEL_CL29
+  local_code: 4
+  display_text: 4 or more times per day
+- list_name: REGULARITY_LEVEL_CL29
+  local_code: 5
+  display_text: 1 to 3 times during the past 7 days
+- list_name: REGULARITY_LEVEL_CL29
+  local_code: 6
+  display_text: 4 to 6 times during the past 7 days
+- list_name: REGULARITY_LEVEL_CL30
+  local_code: -7
+  display_text: Child did not eat other vegetables during the past 7 days
+- list_name: REGULARITY_LEVEL_CL30
+  local_code: -4
+  display_text: Missing in Error
+- list_name: REGULARITY_LEVEL_CL30
+  local_code: -3
+  display_text: Legitimate Skip
+- list_name: REGULARITY_LEVEL_CL30
+  local_code: -2
+  display_text: Don't Know
+- list_name: REGULARITY_LEVEL_CL30
+  local_code: -1
+  display_text: Refused
+- list_name: REGULARITY_LEVEL_CL30
+  local_code: 1
+  display_text: 1 Time per day
+- list_name: REGULARITY_LEVEL_CL30
+  local_code: 2
+  display_text: 2 Times per day
+- list_name: REGULARITY_LEVEL_CL30
+  local_code: 3
+  display_text: 3 Times per day
+- list_name: REGULARITY_LEVEL_CL30
+  local_code: 4
+  display_text: 4 or more times per day
+- list_name: REGULARITY_LEVEL_CL30
+  local_code: 5
+  display_text: 1 to 3 times during the past 7 days
+- list_name: REGULARITY_LEVEL_CL30
+  local_code: 6
+  display_text: 4 to 6 times during the past 7 days
+- list_name: REGULARITY_LEVEL_CL31
+  local_code: -7
+  display_text: Child did not eat fast food during the past 7 days
+- list_name: REGULARITY_LEVEL_CL31
+  local_code: -4
+  display_text: Missing in Error
+- list_name: REGULARITY_LEVEL_CL31
+  local_code: -3
+  display_text: Legitimate Skip
+- list_name: REGULARITY_LEVEL_CL31
+  local_code: -2
+  display_text: Don't Know
+- list_name: REGULARITY_LEVEL_CL31
+  local_code: -1
+  display_text: Refused
+- list_name: REGULARITY_LEVEL_CL31
+  local_code: 1
+  display_text: 1 Time per day
+- list_name: REGULARITY_LEVEL_CL31
+  local_code: 2
+  display_text: 2 Times per day
+- list_name: REGULARITY_LEVEL_CL31
+  local_code: 3
+  display_text: 3 Times per day
+- list_name: REGULARITY_LEVEL_CL31
+  local_code: 4
+  display_text: 4 or more times per day
+- list_name: REGULARITY_LEVEL_CL31
+  local_code: 5
+  display_text: 1 to 3 times during the past 7 days
+- list_name: REGULARITY_LEVEL_CL31
+  local_code: 6
+  display_text: 4 to 6 times during the past 7 days
+- list_name: REGULARITY_LEVEL_CL32
+  local_code: -7
+  display_text: Child did not eat candy or other sweets during the past 7 days
+- list_name: REGULARITY_LEVEL_CL32
+  local_code: -4
+  display_text: Missing in Error
+- list_name: REGULARITY_LEVEL_CL32
+  local_code: -3
+  display_text: Legitimate Skip
+- list_name: REGULARITY_LEVEL_CL32
+  local_code: -2
+  display_text: Don't Know
+- list_name: REGULARITY_LEVEL_CL32
+  local_code: -1
+  display_text: Refused
+- list_name: REGULARITY_LEVEL_CL32
+  local_code: 1
+  display_text: 1 Time per day
+- list_name: REGULARITY_LEVEL_CL32
+  local_code: 2
+  display_text: 2 Times per day
+- list_name: REGULARITY_LEVEL_CL32
+  local_code: 3
+  display_text: 3 Times per day
+- list_name: REGULARITY_LEVEL_CL32
+  local_code: 4
+  display_text: 4 or more times per day
+- list_name: REGULARITY_LEVEL_CL32
+  local_code: 5
+  display_text: 1 to 3 times during the past 7 days
+- list_name: REGULARITY_LEVEL_CL32
+  local_code: 6
+  display_text: 4 to 6 times during the past 7 days
+- list_name: REGULARITY_LEVEL_CL33
+  local_code: -7
+  display_text: Child did not eat chips during the past 7 days
+- list_name: REGULARITY_LEVEL_CL33
+  local_code: -4
+  display_text: Missing in Error
+- list_name: REGULARITY_LEVEL_CL33
+  local_code: -3
+  display_text: Legitimate Skip
+- list_name: REGULARITY_LEVEL_CL33
+  local_code: -2
+  display_text: Don't Know
+- list_name: REGULARITY_LEVEL_CL33
+  local_code: -1
+  display_text: Refused
+- list_name: REGULARITY_LEVEL_CL33
+  local_code: 1
+  display_text: 1 Time per day
+- list_name: REGULARITY_LEVEL_CL33
+  local_code: 2
+  display_text: 2 Times per day
+- list_name: REGULARITY_LEVEL_CL33
+  local_code: 3
+  display_text: 3 Times per day
+- list_name: REGULARITY_LEVEL_CL33
+  local_code: 4
+  display_text: 4 or more times per day
+- list_name: REGULARITY_LEVEL_CL33
+  local_code: 5
+  display_text: 1 to 3 times during the past 7 days
+- list_name: REGULARITY_LEVEL_CL33
+  local_code: 6
+  display_text: 4 to 6 times during the past 7 days
+- list_name: REGULARITY_LEVEL_CL34
+  local_code: -7
+  display_text: Child did not drink milk during the past 7 days
+- list_name: REGULARITY_LEVEL_CL34
+  local_code: -4
+  display_text: Missing in Error
+- list_name: REGULARITY_LEVEL_CL34
+  local_code: -3
+  display_text: Legitimate Skip
+- list_name: REGULARITY_LEVEL_CL34
+  local_code: -2
+  display_text: Don't Know
+- list_name: REGULARITY_LEVEL_CL34
+  local_code: -1
+  display_text: Refused
+- list_name: REGULARITY_LEVEL_CL34
+  local_code: 1
+  display_text: Once a day
+- list_name: REGULARITY_LEVEL_CL34
+  local_code: 2
+  display_text: Twice a day
+- list_name: REGULARITY_LEVEL_CL34
+  local_code: 3
+  display_text: Three times a day
+- list_name: REGULARITY_LEVEL_CL34
+  local_code: 4
+  display_text: Four or more times a day
+- list_name: REGULARITY_LEVEL_CL34
+  local_code: 5
+  display_text: One to three times during the past 7 days
+- list_name: REGULARITY_LEVEL_CL34
+  local_code: 6
+  display_text: Four to six times during the past 7 days
+- list_name: RELATIVE_TIME_CL2
+  local_code: -7
+  display_text: Not applicable
+- list_name: RELATIVE_TIME_CL2
+  local_code: -4
+  display_text: Missing in Error
+- list_name: RELATIVE_TIME_CL2
+  local_code: -3
+  display_text: Legitimate Skip
+- list_name: RELATIVE_TIME_CL2
+  local_code: -2
+  display_text: Don't Know
+- list_name: RELATIVE_TIME_CL2
+  local_code: -1
+  display_text: Refused
+- list_name: RELATIVE_TIME_CL2
+  local_code: 1
+  display_text: After time reported
+- list_name: RELATIVE_TIME_CL2
+  local_code: 2
+  display_text: Before time reported
+- list_name: RELATIVE_TIME_CL2
+  local_code: 3
+  display_text: At home reported
+- list_name: RESIDENCE_TYPE_CL5
+  local_code: -4
+  display_text: Missing in Error
+- list_name: RESIDENCE_TYPE_CL5
+  local_code: -3
+  display_text: Legitimate Skip
+- list_name: RESIDENCE_TYPE_CL5
+  local_code: -2
+  display_text: Don't Know
+- list_name: RESIDENCE_TYPE_CL5
+  local_code: -1
+  display_text: Refused
+- list_name: RESIDENCE_TYPE_CL5
+  local_code: 1
+  display_text: Single family home
+- list_name: RESIDENCE_TYPE_CL5
+  local_code: 2
+  display_text: Apartment Building or other multifamily building
+- list_name: RESIDENCE_TYPE_CL5
+  local_code: 3
+  display_text: Townhouse
+- list_name: RESIDENCE_TYPE_CL5
+  local_code: 4
+  display_text: Duplex, Triplex, Quadplex
+- list_name: RESIDENCE_TYPE_CL5
+  local_code: 5
+  display_text: Trailer
+- list_name: RESIDENCE_TYPE_CL5
+  local_code: 6
+  display_text: Group home, dormitory
+- list_name: RESIDENCE_TYPE_CL5
+  local_code: 7
+  display_text: Hotel/Motel
+- list_name: RESP_RELTNSHP_CL4
+  local_code: -5
+  display_text: Other
+- list_name: RESP_RELTNSHP_CL4
+  local_code: -4
+  display_text: Missing in Error
+- list_name: RESP_RELTNSHP_CL4
+  local_code: -2
+  display_text: Don't Know
+- list_name: RESP_RELTNSHP_CL4
+  local_code: -1
+  display_text: Refused
+- list_name: RESP_RELTNSHP_CL4
+  local_code: 1
+  display_text: Mother
+- list_name: RESP_RELTNSHP_CL4
+  local_code: 2
+  display_text: Father
+- list_name: ROOM_TYPE_CL7
+  local_code: -5
+  display_text: Other
+- list_name: ROOM_TYPE_CL7
+  local_code: -4
+  display_text: Missing in Error
+- list_name: ROOM_TYPE_CL7
+  local_code: -3
+  display_text: Legitimate Skip
+- list_name: ROOM_TYPE_CL7
+  local_code: -2
+  display_text: Don't Know
+- list_name: ROOM_TYPE_CL7
+  local_code: -1
+  display_text: Refused
+- list_name: ROOM_TYPE_CL7
+  local_code: 1
+  display_text: Kitchen
+- list_name: ROOM_TYPE_CL7
+  local_code: 2
+  display_text: Living Room
+- list_name: ROOM_TYPE_CL7
+  local_code: 3
+  display_text: Hall/Landing
+- list_name: ROOM_TYPE_CL7
+  local_code: 4
+  display_text: Child's Bedroom
+- list_name: ROOM_TYPE_CL7
+  local_code: 5
+  display_text: Other Bedroom
+- list_name: ROOM_TYPE_CL7
+  local_code: 6
+  display_text: Bathroom/Toilet
+- list_name: ROOM_TYPE_CL7
+  local_code: 7
+  display_text: Basement
+- list_name: SAMPLE_TYPE_CL5
+  local_code: -4
+  display_text: Missing in Error
+- list_name: SAMPLE_TYPE_CL5
+  local_code: -3
+  display_text: Legitimate Skip
+- list_name: SAMPLE_TYPE_CL5
+  local_code: -2
+  display_text: Don't Know
+- list_name: SAMPLE_TYPE_CL5
+  local_code: -1
+  display_text: Refused
+- list_name: SAMPLE_TYPE_CL5
+  local_code: 1
+  display_text: Biospecimen
+- list_name: SAMPLE_TYPE_CL5
+  local_code: 2
+  display_text: Environmental
+- list_name: SERVICE_DELAY_CL1
+  local_code: -5
+  display_text: Other
+- list_name: SERVICE_DELAY_CL1
+  local_code: -4
+  display_text: Missing in Error
+- list_name: SERVICE_DELAY_CL1
+  local_code: -3
+  display_text: Legitimate Skip
+- list_name: SERVICE_DELAY_CL1
+  local_code: -2
+  display_text: Don't Know
+- list_name: SERVICE_DELAY_CL1
+  local_code: -1
+  display_text: Refused
+- list_name: SERVICE_DELAY_CL1
+  local_code: 1
+  display_text: Medical Care
+- list_name: SERVICE_DELAY_CL1
+  local_code: 2
+  display_text: Dental Care
+- list_name: SERVICE_DELAY_CL1
+  local_code: 3
+  display_text: Mental Health Services
+- list_name: SIGN_CL2
+  local_code: -7
+  display_text: Not applicable
+- list_name: SIGN_CL2
+  local_code: -4
+  display_text: Missing in Error
+- list_name: SIGN_CL2
+  local_code: 1
+  display_text: (+)
+- list_name: SIGN_CL2
+  local_code: 2
+  display_text: (-)
+- list_name: SIZE_CL1
+  local_code: -8
+  display_text: Could not obtain
+- list_name: SIZE_CL1
+  local_code: -4
+  display_text: Missing in Error
+- list_name: SIZE_CL1
+  local_code: -3
+  display_text: Legitimate Skip
+- list_name: SIZE_CL1
+  local_code: -1
+  display_text: Refused
+- list_name: SIZE_CL1
+  local_code: 1
+  display_text: Infant
+- list_name: SIZE_CL1
+  local_code: 2
+  display_text: Child
+- list_name: SIZE_CL1
+  local_code: 3
+  display_text: Small adult
+- list_name: SIZE_CL1
+  local_code: 4
+  display_text: Adult
+- list_name: SIZE_CL1
+  local_code: 5
+  display_text: Large Adult
+- list_name: SIZE_CL1
+  local_code: 6
+  display_text: Thigh
+- list_name: SMOKING_ALLOWED_CL2
+  local_code: -4
+  display_text: Missing in Error
+- list_name: SMOKING_ALLOWED_CL2
+  local_code: -2
+  display_text: Don't Know
+- list_name: SMOKING_ALLOWED_CL2
+  local_code: -1
+  display_text: Refused
+- list_name: SMOKING_ALLOWED_CL2
+  local_code: 1
+  display_text: No one is allowed to smoke anywhere inside the child's home
+- list_name: SMOKING_ALLOWED_CL2
+  local_code: 2
+  display_text: Smoking is allowed at some times or in some rooms in the child's home
+- list_name: SMOKING_ALLOWED_CL2
+  local_code: 3
+  display_text: Smoking is allowed anywhere inside the child's home
+- list_name: SPECIMEN_CLLCTN_LOCATION_CL2
+  local_code: -5
+  display_text: Other Location
+- list_name: SPECIMEN_CLLCTN_LOCATION_CL2
+  local_code: -4
+  display_text: Missing in Error
+- list_name: SPECIMEN_CLLCTN_LOCATION_CL2
+  local_code: -3
+  display_text: Legitimate Skip
+- list_name: SPECIMEN_CLLCTN_LOCATION_CL2
+  local_code: 1
+  display_text: Home
+- list_name: SPECIMEN_CLLCTN_LOCATION_CL2
+  local_code: 2
+  display_text: Clinic
+- list_name: SPECIMEN_COLLECTOR_CL2
+  local_code: -5
+  display_text: Other
+- list_name: SPECIMEN_COLLECTOR_CL2
+  local_code: -4
+  display_text: Missing in Error
+- list_name: SPECIMEN_COLLECTOR_CL2
+  local_code: -3
+  display_text: Legitimate Skip
+- list_name: SPECIMEN_COLLECTOR_CL2
+  local_code: -2
+  display_text: Don't Know
+- list_name: SPECIMEN_COLLECTOR_CL2
+  local_code: -1
+  display_text: Refused
+- list_name: SPECIMEN_COLLECTOR_CL2
+  local_code: 1
+  display_text: Data collector
+- list_name: SPECIMEN_COLLECTOR_CL2
+  local_code: 2
+  display_text: Mother
+- list_name: SPECIMEN_COLLECTOR_CL2
+  local_code: 3
+  display_text: Father
+- list_name: SPECIMEN_COLLECTOR_CL3
+  local_code: -5
+  display_text: Other
+- list_name: SPECIMEN_COLLECTOR_CL3
+  local_code: -4
+  display_text: Missing in Error
+- list_name: SPECIMEN_COLLECTOR_CL3
+  local_code: -3
+  display_text: Legitimate Skip
+- list_name: SPECIMEN_COLLECTOR_CL3
+  local_code: -2
+  display_text: Don't Know
+- list_name: SPECIMEN_COLLECTOR_CL3
+  local_code: -1
+  display_text: Refused
+- list_name: SPECIMEN_COLLECTOR_CL3
+  local_code: 1
+  display_text: Mother
+- list_name: SPECIMEN_COLLECTOR_CL3
+  local_code: 2
+  display_text: Father
+- list_name: SPECIMEN_COLLECTOR_CL4
+  local_code: -5
+  display_text: Other
+- list_name: SPECIMEN_COLLECTOR_CL4
+  local_code: -4
+  display_text: Missing in Error
+- list_name: SPECIMEN_COLLECTOR_CL4
+  local_code: -3
+  display_text: Legitimate Skip
+- list_name: SPECIMEN_COLLECTOR_CL4
+  local_code: -2
+  display_text: Don't Know
+- list_name: SPECIMEN_COLLECTOR_CL4
+  local_code: -1
+  display_text: Refused
+- list_name: SPECIMEN_COLLECTOR_CL4
+  local_code: 1
+  display_text: Data collector
+- list_name: SPECIMEN_COLLECTOR_CL4
+  local_code: 2
+  display_text: Parent/caregiver
+- list_name: SPECIMEN_COLLECTOR_CL5
+  local_code: -5
+  display_text: Other
+- list_name: SPECIMEN_COLLECTOR_CL5
+  local_code: -4
+  display_text: Missing in Error
+- list_name: SPECIMEN_COLLECTOR_CL5
+  local_code: -3
+  display_text: Legitimate Skip
+- list_name: SPECIMEN_COLLECTOR_CL5
+  local_code: -2
+  display_text: Don't Know
+- list_name: SPECIMEN_COLLECTOR_CL5
+  local_code: -1
+  display_text: Refused
+- list_name: SPECIMEN_COLLECTOR_CL5
+  local_code: 1
+  display_text: Data collector
+- list_name: SPECIMEN_COLLECTOR_CL5
+  local_code: 2
+  display_text: Parent/caregiver
+- list_name: SPECIMEN_COLLECTOR_CL5
+  local_code: 3
+  display_text: Parent/caregiver refused bag placement
+- list_name: SPECIMEN_STATUS_CL10
+  local_code: -7
+  display_text: Not applicable
+- list_name: SPECIMEN_STATUS_CL10
+  local_code: -4
+  display_text: Missing in Error
+- list_name: SPECIMEN_STATUS_CL10
+  local_code: 1
+  display_text: Received OK
+- list_name: SPECIMEN_STATUS_CL10
+  local_code: 2
+  display_text: Received Ambient, Expected Refrigerated or Frozen
+- list_name: SPECIMEN_STATUS_CL10
+  local_code: 3
+  display_text: Received Frozen, Expected Ambient or Refrigerated
+- list_name: SPECIMEN_STATUS_CL10
+  local_code: 4
+  display_text: Collection container received leaking, can be stored and shipped
+- list_name: SPECIMEN_STATUS_CL10
+  local_code: 5
+  display_text: Missing Specimen ID Label
+- list_name: SPECIMEN_STATUS_CL10
+  local_code: 6
+  display_text: Pre-launch - P100 tubes ONLY
+- list_name: SPECIMEN_STATUS_CL10
+  local_code: 7
+  display_text: Collection container received Broken will not be stored or shipped
+- list_name: SPECIMEN_STATUS_CL10
+  local_code: 8
+  display_text: Specimen Lost
+- list_name: SPECIMEN_STATUS_CL10
+  local_code: 9
+  display_text: Received Refrigerated, Expected Ambient or Frozen
+- list_name: SPECIMEN_STATUS_CL9
+  local_code: -7
+  display_text: Not applicable
+- list_name: SPECIMEN_STATUS_CL9
+  local_code: -4
+  display_text: Missing in Error
+- list_name: SPECIMEN_STATUS_CL9
+  local_code: 1
+  display_text: Picked Up OK
+- list_name: SPECIMEN_STATUS_CL9
+  local_code: 2
+  display_text: Picked Up Broken
+- list_name: SPECIMEN_STATUS_CL9
+  local_code: 3
+  display_text: Picked Up Leaking
+- list_name: SPECIMEN_STATUS_CL9
+  local_code: 4
+  display_text: Picked Up at Incorrect Temperature
+- list_name: SPECIMEN_STATUS_CL9
+  local_code: 5
+  display_text: Missing Specimen ID Label
+- list_name: SPECIMEN_STATUS_CL9
+  local_code: 6
+  display_text: Specimen Lost
+- list_name: SPECIMEN_STATUS_CL9
+  local_code: 7
+  display_text: Specimen Not Collected
+- list_name: SQUARE_FEET_CL1
+  local_code: -4
+  display_text: Missing in Error
+- list_name: SQUARE_FEET_CL1
+  local_code: -3
+  display_text: Legitimate Skip
+- list_name: SQUARE_FEET_CL1
+  local_code: -2
+  display_text: Don't Know
+- list_name: SQUARE_FEET_CL1
+  local_code: -1
+  display_text: Refused
+- list_name: SQUARE_FEET_CL1
+  local_code: 1
+  display_text: Less than 500
+- list_name: SQUARE_FEET_CL1
+  local_code: 2
+  display_text: 500 - 999
+- list_name: SQUARE_FEET_CL1
+  local_code: 3
+  display_text: 1000 - 1999
+- list_name: SQUARE_FEET_CL1
+  local_code: 4
+  display_text: 2000 - 2999
+- list_name: SQUARE_FEET_CL1
+  local_code: 5
+  display_text: 3000 square feet or more
+- list_name: SYMPTOM_CL1
+  local_code: -5
+  display_text: Other
+- list_name: SYMPTOM_CL1
+  local_code: -4
+  display_text: Missing in Error
+- list_name: SYMPTOM_CL1
+  local_code: -3
+  display_text: Legitimate Skip
+- list_name: SYMPTOM_CL1
+  local_code: -2
+  display_text: Don't Know
+- list_name: SYMPTOM_CL1
+  local_code: -1
+  display_text: Refused
+- list_name: SYMPTOM_CL1
+  local_code: 1
+  display_text: Abdominal pain
+- list_name: SYMPTOM_CL1
+  local_code: 2
+  display_text: Body aches
+- list_name: SYMPTOM_CL1
+  local_code: 3
+  display_text: Chills
+- list_name: SYMPTOM_CL1
+  local_code: 4
+  display_text: Diarrhea
+- list_name: SYMPTOM_CL1
+  local_code: 5
+  display_text: Fever
+- list_name: SYMPTOM_CL1
+  local_code: 6
+  display_text: Fussiness
+- list_name: SYMPTOM_CL1
+  local_code: 7
+  display_text: Headache
+- list_name: SYMPTOM_CL1
+  local_code: 8
+  display_text: Hoarseness/sore throat/cough
+- list_name: SYMPTOM_CL1
+  local_code: 9
+  display_text: Loss of appetite
+- list_name: SYMPTOM_CL1
+  local_code: 10
+  display_text: Nasal congestion/runny nose
+- list_name: SYMPTOM_CL1
+  local_code: 11
+  display_text: Muscle/joint pain
+- list_name: SYMPTOM_CL1
+  local_code: 12
+  display_text: Nausea/vomiting
+- list_name: SYMPTOM_CL1
+  local_code: 13
+  display_text: Rash/hives
+- list_name: SYMPTOM_CL1
+  local_code: 14
+  display_text: Redness/warmth/swelling where the shot was given
+- list_name: SYMPTOM_CL1
+  local_code: 15
+  display_text: Seizure
+- list_name: SYMPTOM_CL1
+  local_code: 16
+  display_text: Soreness/tenderness where the shot was given
+- list_name: SYMPTOM_CL1
+  local_code: 17
+  display_text: Sore/red/itchy eyes
+- list_name: SYMPTOM_CL1
+  local_code: 18
+  display_text: Swollen glands
+- list_name: SYMPTOM_CL1
+  local_code: 19
+  display_text: Temporary low platelet count
+- list_name: SYMPTOM_CL1
+  local_code: 20
+  display_text: Tiredness/fatigue
+- list_name: SYMPTOM_CL1
+  local_code: 21
+  display_text: Weakness
+- list_name: SYMPTOM_CL1
+  local_code: 22
+  display_text: Wheezing/trouble breathing
+- list_name: TEMPERATURE_CL3
+  local_code: -7
+  display_text: Not Applicable
+- list_name: TEMPERATURE_CL3
+  local_code: -5
+  display_text: Other
+- list_name: TEMPERATURE_CL3
+  local_code: -4
+  display_text: Missing in Error
+- list_name: TEMPERATURE_CL3
+  local_code: -3
+  display_text: Legitimate Skip
+- list_name: TEMPERATURE_CL3
+  local_code: 1
+  display_text: Temperature
+- list_name: TEMPERATURE_CL3
+  local_code: 2
+  display_text: Not able to measure/Thermometer broken
+- list_name: TEMPERATURE_CL3
+  local_code: 3
+  display_text: Not able to measure/Thermometer not available
+- list_name: TEMPERATURE_CL4
+  local_code: -4
+  display_text: Missing in Error
+- list_name: TEMPERATURE_CL4
+  local_code: -3
+  display_text: Legitimate Skip
+- list_name: TEMPERATURE_CL4
+  local_code: 1
+  display_text: Positive
+- list_name: TEMPERATURE_CL4
+  local_code: 2
+  display_text: Negative
+- list_name: TEMPERATURE_CL5
+  local_code: -5
+  display_text: Other
+- list_name: TEMPERATURE_CL5
+  local_code: -4
+  display_text: Missing in Error
+- list_name: TEMPERATURE_CL5
+  local_code: -3
+  display_text: Legitimate Skip
+- list_name: TEMPERATURE_CL5
+  local_code: 1
+  display_text: Temperature
+- list_name: TEMPERATURE_CL5
+  local_code: 2
+  display_text: Not able to measure/Thermometer broken
+- list_name: TEMPERATURE_CL5
+  local_code: 3
+  display_text: Not able to measure/Thermometer not available
+- list_name: TEMP_PROB_CL1
+  local_code: -5
+  display_text: Not able to measure, Other
+- list_name: TEMP_PROB_CL1
+  local_code: -4
+  display_text: Missing in Error
+- list_name: TEMP_PROB_CL1
+  local_code: -3
+  display_text: Legitimate Skip
+- list_name: TEMP_PROB_CL1
+  local_code: 1
+  display_text: No issues
+- list_name: TEMP_PROB_CL1
+  local_code: 2
+  display_text: Not able to measure, thermometer not available
+- list_name: TEMP_PROB_CL1
+  local_code: 3
+  display_text: Not able to measure, thermometer broken
+- list_name: TEMP_PROB_CL2
+  local_code: -7
+  display_text: Not applicable
+- list_name: TEMP_PROB_CL2
+  local_code: -5
+  display_text: Not able to measure, Other
+- list_name: TEMP_PROB_CL2
+  local_code: -4
+  display_text: Missing in Error
+- list_name: TEMP_PROB_CL2
+  local_code: 1
+  display_text: No issues
+- list_name: TEMP_PROB_CL2
+  local_code: 2
+  display_text: Not able to measure, thermometer broken
+- list_name: TEMP_PROB_CL2
+  local_code: 3
+  display_text: Not able to measure, thermometer not available
+- list_name: TIME_OF_DAY_CL3
+  local_code: -4
+  display_text: Missing in Error
+- list_name: TIME_OF_DAY_CL3
+  local_code: 1
+  display_text: AM
+- list_name: TIME_OF_DAY_CL3
+  local_code: 2
+  display_text: PM
+- list_name: TIME_PERIOD_CL3
+  local_code: -4
+  display_text: Missing in Error
+- list_name: TIME_PERIOD_CL3
+  local_code: -3
+  display_text: Legitimate Skip
+- list_name: TIME_PERIOD_CL3
+  local_code: -2
+  display_text: Don't Know
+- list_name: TIME_PERIOD_CL3
+  local_code: -1
+  display_text: Refused
+- list_name: TIME_PERIOD_CL3
+  local_code: 1
+  display_text: 0-14 days
+- list_name: TIME_PERIOD_CL3
+  local_code: 2
+  display_text: 15-30 days
+- list_name: TIME_PERIOD_CL3
+  local_code: 3
+  display_text: More than 30 days
+- list_name: TIME_PERIOD_CL4
+  local_code: -4
+  display_text: Missing in Error
+- list_name: TIME_PERIOD_CL4
+  local_code: -2
+  display_text: Don't Know
+- list_name: TIME_PERIOD_CL4
+  local_code: -1
+  display_text: Refused
+- list_name: TIME_PERIOD_CL4
+  local_code: 1
+  display_text: Less than 2 hours
+- list_name: TIME_PERIOD_CL4
+  local_code: 2
+  display_text: 2-4 hours
+- list_name: TIME_PERIOD_CL4
+  local_code: 3
+  display_text: Over 4 hours
+- list_name: TIME_PERIOD_CL5
+  local_code: -4
+  display_text: Missing in Error
+- list_name: TIME_PERIOD_CL5
+  local_code: -2
+  display_text: Don't Know
+- list_name: TIME_PERIOD_CL5
+  local_code: -1
+  display_text: Refused
+- list_name: TIME_PERIOD_CL5
+  local_code: 1
+  display_text: 0-10 minutes
+- list_name: TIME_PERIOD_CL5
+  local_code: 2
+  display_text: 11-20 minutes
+- list_name: TIME_PERIOD_CL5
+  local_code: 3
+  display_text: Over 20 Minutes
+- list_name: TIME_PERIOD_CL6
+  local_code: -7
+  display_text: Not Applicable/Did not place in freezer
+- list_name: TIME_PERIOD_CL6
+  local_code: -4
+  display_text: Missing in Error
+- list_name: TIME_PERIOD_CL6
+  local_code: -2
+  display_text: Don't Know
+- list_name: TIME_PERIOD_CL6
+  local_code: -1
+  display_text: Refused
+- list_name: TIME_PERIOD_CL6
+  local_code: 1
+  display_text: 0-10 minutes
+- list_name: TIME_PERIOD_CL6
+  local_code: 2
+  display_text: 11-20 minutes
+- list_name: TIME_PERIOD_CL6
+  local_code: 3
+  display_text: Over 20 Minutes
+- list_name: TIME_PERIOD_CL7
+  local_code: -4
+  display_text: Missing in Error
+- list_name: TIME_PERIOD_CL7
+  local_code: -3
+  display_text: Legitimate Skip
+- list_name: TIME_PERIOD_CL7
+  local_code: -2
+  display_text: Don't Know
+- list_name: TIME_PERIOD_CL7
+  local_code: -1
+  display_text: Refused
+- list_name: TIME_PERIOD_CL7
+  local_code: 1
+  display_text: Not at all
+- list_name: TIME_PERIOD_CL7
+  local_code: 2
+  display_text: 1-2 hours
+- list_name: TIME_PERIOD_CL7
+  local_code: 3
+  display_text: 3-6 hours
+- list_name: TIME_PERIOD_CL7
+  local_code: 4
+  display_text: 7-13 hours
+- list_name: TIME_PERIOD_CL7
+  local_code: 5
+  display_text: 14-20 hours
+- list_name: TIME_PERIOD_CL7
+  local_code: 6
+  display_text: 21 hours or more
+- list_name: TRUE_LEVEL_CL3
+  local_code: -4
+  display_text: Missing in Error
+- list_name: TRUE_LEVEL_CL3
+  local_code: 0
+  display_text: Not true/Rarely
+- list_name: TRUE_LEVEL_CL3
+  local_code: 1
+  display_text: Somewhat true/Sometimes
+- list_name: TRUE_LEVEL_CL3
+  local_code: 2
+  display_text: Very true/Often
+- list_name: TRUE_LEVEL_CL4
+  local_code: -7
+  display_text: Not applicable
+- list_name: TRUE_LEVEL_CL4
+  local_code: -4
+  display_text: Missing in Error
+- list_name: TRUE_LEVEL_CL4
+  local_code: 0
+  display_text: Not true/Rarely
+- list_name: TRUE_LEVEL_CL4
+  local_code: 1
+  display_text: Somewhat true/Sometimes
+- list_name: TRUE_LEVEL_CL4
+  local_code: 2
+  display_text: Very true/Often
+- list_name: TUBE_TYPE_CL3
+  local_code: -4
+  display_text: Missing in Error
+- list_name: TUBE_TYPE_CL3
+  local_code: -3
+  display_text: Legitimate Skip
+- list_name: TUBE_TYPE_CL3
+  local_code: 1
+  display_text: 3mL Lavender top (LV20)
+- list_name: TUBE_TYPE_CL3
+  local_code: 2
+  display_text: 3mL Red top (RD20)
+- list_name: TUBE_TYPE_CL3
+  local_code: 3
+  display_text: 3mL Red top (RD21)
+- list_name: TUBE_TYPE_CL3
+  local_code: 4
+  display_text: 3mL Lavender top (LV21)
+- list_name: URINE_COLLECTION_ISSUE_CL1
+  local_code: -5
+  display_text: Other
+- list_name: URINE_COLLECTION_ISSUE_CL1
+  local_code: -4
+  display_text: Missing in error
+- list_name: URINE_COLLECTION_ISSUE_CL1
+  local_code: -3
+  display_text: Legitimate Skip
+- list_name: URINE_COLLECTION_ISSUE_CL1
+  local_code: -2
+  display_text: Don't Know
+- list_name: URINE_COLLECTION_ISSUE_CL1
+  local_code: -1
+  display_text: Refused
+- list_name: URINE_COLLECTION_ISSUE_CL1
+  local_code: 1
+  display_text: First bag leaked
+- list_name: URINE_COLLECTION_ISSUE_CL1
+  local_code: 2
+  display_text: First bag torn/pulled off
+- list_name: URINE_COLLECTION_ISSUE_CL1
+  local_code: 3
+  display_text: First bag spilled
+- list_name: URINE_COLLECTION_ISSUE_CL1
+  local_code: 4
+  display_text: Bowel movement
+- list_name: URINE_COLLECTION_ISSUE_CL2
+  local_code: -5
+  display_text: Other
+- list_name: URINE_COLLECTION_ISSUE_CL2
+  local_code: -4
+  display_text: Missing in Error
+- list_name: URINE_COLLECTION_ISSUE_CL2
+  local_code: -3
+  display_text: Legitimate Skip
+- list_name: URINE_COLLECTION_ISSUE_CL2
+  local_code: -2
+  display_text: Don't Know
+- list_name: URINE_COLLECTION_ISSUE_CL2
+  local_code: -1
+  display_text: Refused
+- list_name: URINE_COLLECTION_ISSUE_CL2
+  local_code: 1
+  display_text: Bag Leaked
+- list_name: URINE_COLLECTION_ISSUE_CL2
+  local_code: 2
+  display_text: Bag Torn/Pulled Off
+- list_name: URINE_COLLECTION_ISSUE_CL2
+  local_code: 3
+  display_text: Bag Spilled
+- list_name: URINE_COLLECTION_ISSUE_CL2
+  local_code: 4
+  display_text: Container/Cup Spilled
+- list_name: URINE_COLLECTION_ISSUE_CL2
+  local_code: 5
+  display_text: Cup Leaked
+- list_name: URINE_COLLECTION_ISSUE_CL2
+  local_code: 6
+  display_text: Specimen Contaminated
+- list_name: URINE_COLLECTION_ISSUE_CL2
+  local_code: 7
+  display_text: Physical Limitation
+- list_name: URINE_COLLECTION_ISSUE_CL2
+  local_code: 8
+  display_text: Caregiver Ill/Emergency
+- list_name: URINE_COLLECTION_ISSUE_CL2
+  local_code: 9
+  display_text: Collection supplies malfunctioned
+- list_name: URINE_COLLECTION_ISSUE_CL2
+  local_code: 10
+  display_text: No urine to transfer
+- list_name: URINE_COLLECTION_ISSUE_CL2
+  local_code: 11
+  display_text: Child Ill/Emergency
+- list_name: URINE_COLLECTION_ISSUE_CL2
+  local_code: 12
+  display_text: No Time
+- list_name: URINE_COLLECT_METHOD_CL1
+  local_code: -5
+  display_text: Other
+- list_name: URINE_COLLECT_METHOD_CL1
+  local_code: -4
+  display_text: Missing in Error
+- list_name: URINE_COLLECT_METHOD_CL1
+  local_code: -3
+  display_text: Legitimate Skip
+- list_name: URINE_COLLECT_METHOD_CL1
+  local_code: -2
+  display_text: Don't Know
+- list_name: URINE_COLLECT_METHOD_CL1
+  local_code: -1
+  display_text: Refused
+- list_name: URINE_COLLECT_METHOD_CL1
+  local_code: 1
+  display_text: NCS Provided Urine Bag
+- list_name: VACCINATION_TYPE_CL1
+  local_code: -5
+  display_text: Other
+- list_name: VACCINATION_TYPE_CL1
+  local_code: -4
+  display_text: Missing in Error
+- list_name: VACCINATION_TYPE_CL1
+  local_code: -3
+  display_text: Legitimate Skip
+- list_name: VACCINATION_TYPE_CL1
+  local_code: -2
+  display_text: Don't Know
+- list_name: VACCINATION_TYPE_CL1
+  local_code: -1
+  display_text: Refused
+- list_name: VACCINATION_TYPE_CL1
+  local_code: 1
+  display_text: DTaP
+- list_name: VACCINATION_TYPE_CL1
+  local_code: 2
+  display_text: HepA
+- list_name: VACCINATION_TYPE_CL1
+  local_code: 3
+  display_text: HepB
+- list_name: VACCINATION_TYPE_CL1
+  local_code: 4
+  display_text: Hib
+- list_name: VACCINATION_TYPE_CL1
+  local_code: 5
+  display_text: Influenza
+- list_name: VACCINATION_TYPE_CL1
+  local_code: 6
+  display_text: IPV
+- list_name: VACCINATION_TYPE_CL1
+  local_code: 7
+  display_text: MMR
+- list_name: VACCINATION_TYPE_CL1
+  local_code: 8
+  display_text: PCV
+- list_name: VACCINATION_TYPE_CL1
+  local_code: 9
+  display_text: RV
+- list_name: VACCINATION_TYPE_CL1
+  local_code: 10
+  display_text: Varicella
+- list_name: WEIGHT_TYPE_CL1
+  local_code: -4
+  display_text: Missing in Error
+- list_name: WEIGHT_TYPE_CL1
+  local_code: -3
+  display_text: Legitimate Skip
+- list_name: WEIGHT_TYPE_CL1
+  local_code: -2
+  display_text: Don't Know
+- list_name: WEIGHT_TYPE_CL1
+  local_code: -1
+  display_text: Refused
+- list_name: WEIGHT_TYPE_CL1
+  local_code: 1
+  display_text: Overweight
+- list_name: WEIGHT_TYPE_CL1
+  local_code: 2
+  display_text: Underweight
+- list_name: WEIGHT_TYPE_CL1
+  local_code: 3
+  display_text: About the right weight
+- list_name: WORRY_LEVEL_CL1
+  local_code: -4
+  display_text: Missing in Error
+- list_name: WORRY_LEVEL_CL1
+  local_code: 1
+  display_text: Not at all worried
+- list_name: WORRY_LEVEL_CL1
+  local_code: 2
+  display_text: A little worried
+- list_name: WORRY_LEVEL_CL1
+  local_code: 3
+  display_text: Worried
+- list_name: WORRY_LEVEL_CL1
+  local_code: 4
+  display_text: Very worried
