@@ -55,7 +55,11 @@ class EventsController < ApplicationController
         if @event.provider_recruitment_event?
           # do not set participant
         elsif participant = @event.participant
-          unless participant.ineligible?
+          if participant.ineligible?
+            if @event.screener_event? && person = @event.participant.try(:person)
+              EligibilityAdjudicator.adjudicate_eligibility(person)
+            end
+          else
             resp = participant.advance(psc)
             notice += " Scheduled next event [#{participant.next_study_segment}]" if resp
           end

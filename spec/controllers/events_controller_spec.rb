@@ -46,7 +46,6 @@ describe EventsController do
     describe "PUT update" do
 
       describe "with open contacts" do
-
         describe "and a non-continuable event" do
 
           it "should not allow the user to set the event_end_date or time" do
@@ -73,11 +72,9 @@ describe EventsController do
 
             flash[:warning].should == "Event cannot be closed. Please close all contacts associated with this event before setting the event end date."
           end
-
         end
 
         describe "and a continuable event" do
-
           it "should allow the user to set the event_end_date or time" do
             @event.update_attribute(:event_type_code, 10) # Informed Consent - continuable
             contact = Factory(:contact, :contact_end_time => nil)
@@ -91,9 +88,9 @@ describe EventsController do
             updated_event.event_end_date.should == Date.parse('2001-01-01')
             updated_event.event_repeat_key.should == 99
           end
-
         end
       end
+
       describe "with valid params" do
         describe "with html request" do
           it "updates the requested event" do
@@ -110,9 +107,7 @@ describe EventsController do
             put :update, :id => @event.id, :event => valid_attributes
             response.should redirect_to(participant_path(@participant))
           end
-
         end
-
       end
 
       describe "with invalid params" do
@@ -129,8 +124,26 @@ describe EventsController do
             response.should render_template("edit")
           end
         end
-
       end
+
+      describe "for an ineligible participant" do
+
+        before do
+          @event.update_attribute(:event_type_code, 34) # PBS Participant Eligibility Screening - screener event
+          @participant.person = Factory(:person)
+          @participant.save!
+          Participant.any_instance.stub(:ineligible? => true)
+        end
+
+        it "deletes the participant through the EligibilityAdjudicator" do
+          @event.participant.should_not be_nil
+          put :update, :id => @event.id, :event =>
+            {'event_end_date' => '2001-01-01', 'event_end_time' => '12:00', 'event_repeat_key' => '99'}
+          updated_event = Event.find(@event.id)
+          updated_event.participant.should be_nil
+        end
+      end
+
     end
 
   end
