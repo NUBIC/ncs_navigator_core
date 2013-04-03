@@ -59,8 +59,10 @@ module NcsNavigator::Core::Mdes
 
           script_name.open('w') do |f|
             f.puts [
+              # insert codes into development database if they aren't already there
+              "NcsNavigator::Core::Mdes::CodeListLoader.new(:mdes_version => '#{NcsNavigatorCore.mdes_version.number}').load_from_pg_dump unless NcsCode.count > 0",
               'cache = NcsNavigator::Core::Mdes::CodeListCache.new',
-              "cache.code_list(#{a_list_name.inspect}).size > 1 or fail 'Code list not pre-cached'",
+              "cache.code_list(#{a_list_name.inspect}) or fail 'Code list not pre-cached'",
               pre_reload_expressions,
               # this is what reload! in the console does; ditto per-request reloading when cache_classes = false
               "ActionDispatch::Reloader.cleanup!",
