@@ -2,7 +2,7 @@ require 'spec_helper'
 
 module NcsNavigator::Core::Surveyor
   describe ResponseValue do
-    describe '::VALUE_FIELDS' do
+    describe '.value_fields' do
       %w(
         datetime_value
         float_value
@@ -11,7 +11,7 @@ module NcsNavigator::Core::Surveyor
         text_value
       ).each do |f|
         it "includes #{f}" do
-          ResponseValue::VALUE_FIELDS.should include(f)
+          ResponseValue.value_fields.should include(f)
         end
       end
     end
@@ -100,14 +100,14 @@ module NcsNavigator::Core::Surveyor
           end
 
           it 'resets all other value fields' do
-            ResponseValue::VALUE_FIELDS.each do |f|
+            ResponseValue.value_fields.each do |f|
               r.send("#{f}=", "100")
             end
 
             r.value = input
             r.save!
 
-            vs = (ResponseValue::VALUE_FIELDS - [mapped_field]).map { |f| sr.send(f) }
+            vs = (ResponseValue.value_fields - [mapped_field]).map { |f| sr.send(f) }
 
             vs.all?(&:nil?).should be_true
           end

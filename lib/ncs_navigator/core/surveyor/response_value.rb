@@ -21,7 +21,9 @@ module NcsNavigator::Core::Surveyor
   module ResponseValue
     ##
     # Response columns altered by this method.
-    VALUE_FIELDS = ::Response.columns.map(&:name).select { |n| n.end_with?('_value') }
+    def self.value_fields
+      @value_fields ||= ::Response.columns.map(&:name).select { |n| n.end_with?('_value') }
+    end
 
     def self.included(model)
       model.before_save :write_value_to_record
@@ -135,7 +137,7 @@ module NcsNavigator::Core::Surveyor
     end
 
     def reset_values
-      VALUE_FIELDS.each { |f| send("#{f}=", nil) }
+      ResponseValue.value_fields.each { |f| send("#{f}=", nil) }
     end
 
     module_function
