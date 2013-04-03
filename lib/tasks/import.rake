@@ -290,16 +290,15 @@ namespace :import do
 
   desc 'Cancel collection activities if not expanded phase two'
   task :cancel_collection_activities => [:psc_setup, :environment, :set_whodunnit, :find_participants_for_psc]  do
-    expected_participants_for_psc.each do |part|
-      msg = "Looking for activities to cancel for participant #{part.p_id}..."
-      $stderr.print(msg)
+    if NcsNavigatorCore.expanded_phase_two?
+      msg = "No need to cancel activities. Cases is configured for expanded phase two."
+      $stderr.print("\n#{msg}")
       Rails.logger.info(msg)
-
-      if NcsNavigatorCore.expanded_phase_two?
-        msg = "No need to cancel activities. Cases is configured for expanded phase two."
-        $stderr.print("\n#{msg}")
+    else
+      expected_participants_for_psc.each do |part|
+        msg = "Looking for activities to cancel for participant #{part.p_id}..."
+        $stderr.print(msg)
         Rails.logger.info(msg)
-      else
         psc.scheduled_activities(part).each do |a|
           if Instrument.collection?(a.labels)
             msg = "Activity #{a.activity_name} is a collection activity. Canceling activity for participant #{part.p_id}."
