@@ -51,4 +51,5 @@ module OperationalDataExtractor
     [/_NonInterviewReport/, OperationalDataExtractor::NonInterviewReport],
   ]
 
+  class InvalidSurveyException < StandardError; end
 end

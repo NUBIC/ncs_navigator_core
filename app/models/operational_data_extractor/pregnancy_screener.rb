@@ -98,10 +98,6 @@ module OperationalDataExtractor
       "#{PREG_SCREEN_HI_RACE_2_PREFIX}.RACE_OTH"     => "race_other"
     }
 
-    def initialize(response_set)
-      super(response_set)
-    end
-
     def maps
       [
         PERSON_MAP,

@@ -70,10 +70,6 @@ module OperationalDataExtractor
       "#{INTERVIEW_PREFIX}.CONTACT_PHONE_2"     => "phone_nbr",
     }
 
-    def initialize(response_set)
-      super(response_set)
-    end
-
     def maps
       [
         PERSON_MAP,

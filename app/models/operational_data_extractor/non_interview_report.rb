@@ -18,11 +18,6 @@ module OperationalDataExtractor
       "REFUSAL_NON_INTERVIEW_REPORT.REFUSAL_REASON_OTHER" => "refusal_reason_other",
     }
 
-
-    def initialize(response_set)
-      super(response_set)
-    end
-
     def maps
       [
         NON_INTERVIEW_REPORT_MAP,
@@ -65,6 +60,4 @@ module OperationalDataExtractor
       nir.save!
     end
   end
-
-  class InvalidSurveyException < StandardError; end
 end

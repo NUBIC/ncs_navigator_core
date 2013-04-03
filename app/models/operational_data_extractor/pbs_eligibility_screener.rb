@@ -112,10 +112,6 @@ module OperationalDataExtractor
       ]
     end
 
-    def initialize(response_set)
-      super(response_set)
-    end
-
     def extract_data
 
       process_person(PERSON_MAP)

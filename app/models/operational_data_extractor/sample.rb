@@ -34,10 +34,6 @@ module OperationalDataExtractor
       "VACUUM_BAG_SAQ.P_VBD_BOTTLE_ID" => "sample_id",
     }
 
-    def initialize(response_set)
-      super(response_set)
-    end
-
     def maps
       [SAMPLE_MAP]
     end
@@ -65,6 +61,4 @@ module OperationalDataExtractor
       end
     end
   end
-
-  class InvalidSurveyException < StandardError; end
 end

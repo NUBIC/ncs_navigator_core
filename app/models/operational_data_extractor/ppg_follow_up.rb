@@ -53,10 +53,6 @@ module OperationalDataExtractor
       "#{INTERVIEW_PREFIX}.TRIMESTER"       => "TRIMESTER",
     }
 
-    def initialize(response_set)
-      super(response_set)
-    end
-
     def maps
       [
         TELEPHONE_MAP,

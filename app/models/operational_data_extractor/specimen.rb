@@ -48,10 +48,6 @@ module OperationalDataExtractor
       "CHILD_URINE.SPECIMEN_ID" => "specimen_id",
     }
 
-    def initialize(response_set)
-      super(response_set)
-    end
-
     def maps
       [SPECIMEN_MAP]
     end
@@ -79,5 +75,4 @@ module OperationalDataExtractor
       end
     end
   end
-  class InvalidSurveyException < StandardError; end
 end

@@ -40,14 +40,9 @@ module OperationalDataExtractor
       "#{PREGNANCY_VISIT_LI_2_INTERVIEW_PREFIX}.BIRTH_PLACE"      => "institute_name"
     }
 
-    def initialize(response_set)
-      super(response_set)
-    end
-
     def maps
       [ BIRTH_ADDRESS_MAP, PPG_STATUS_MAP, INSTITUTION_MAP ]
     end
-
 
     def extract_data
 

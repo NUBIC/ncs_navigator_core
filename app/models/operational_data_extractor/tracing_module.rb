@@ -139,10 +139,6 @@ module OperationalDataExtractor
       "prepopulated_mode_of_contact" => "prepopulated_mode_of_contact"
     }
 
-    def initialize(response_set)
-      super(response_set)
-    end
-
     def maps
       [
         ADDRESS_MAP,

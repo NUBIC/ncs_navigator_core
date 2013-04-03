@@ -117,11 +117,6 @@ module OperationalDataExtractor
       "#{BIRTH_VISIT_BABY_RACE_3_3_PREFIX}.BABY_RACE_3"         => "race_code"
     }
 
-    def initialize(response_set)
-      super(response_set)
-    end
-
-
     def maps
       [
         CHILD_PERSON_MAP,

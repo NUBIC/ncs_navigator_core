@@ -28,7 +28,6 @@ module OperationalDataExtractor
     # OCARE_REL    - relationship of primary care giver to child
     #
 
-
     PERSON_MAP = {
       "#{INTERVIEW_PREFIX}.R_FNAME"         => "first_name",
       "#{INTERVIEW_PREFIX}.R_MNAME"         => "middle_name",
@@ -73,10 +72,6 @@ module OperationalDataExtractor
     MODE_OF_CONTACT_MAP = {
       "prepopulated_mode_of_contact" => "prepopulated_mode_of_contact"
     }
-
-    def initialize(response_set)
-      super(response_set)
-    end
 
     def maps
       [

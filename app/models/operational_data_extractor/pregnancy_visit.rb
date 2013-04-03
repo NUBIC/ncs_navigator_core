@@ -315,10 +315,6 @@ module OperationalDataExtractor
       "#{PREG_VISIT_1_RACE_3_3_INTERVIEW_PREFIX}.RACE_3"            => "race_code"
     }
 
-    def initialize(response_set)
-      super(response_set)
-    end
-
     def maps
       [
         PERSON_MAP,

@@ -30,10 +30,6 @@ module OperationalDataExtractor
       "sample_consent_given_code_3"  => "sample_consent_given_code",
     }
 
-    def initialize(response_set)
-      super(response_set)
-    end
-
     def maps
       [
         PARTICIPANT_CONSENT_MAP,
@@ -103,6 +99,4 @@ module OperationalDataExtractor
       end
     end
   end
-
-  class InvalidSurveyException < StandardError; end
 end

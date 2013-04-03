@@ -213,10 +213,6 @@ module OperationalDataExtractor
       "#{THREE_MONTH_MOTHER_RACE_PREFIX}.RACE_OTH"  => "race_other",
     }
 
-    def initialize(response_set)
-      super(response_set)
-    end
-
     def maps
       [
         CHILD_PERSON_NAME_MAP,

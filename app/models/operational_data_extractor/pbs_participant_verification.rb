@@ -3,10 +3,6 @@
 module OperationalDataExtractor
   class PbsParticipantVerification < Base
 
-    def initialize(response_set)
-      super(response_set)
-    end
-
     def extract_data
       child_dob_reference_identifier = 'CHILD_DOB'
       if child
