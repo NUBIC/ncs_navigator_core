@@ -35,12 +35,16 @@ namespace :import do
     @import_user = 'operational_importer_psc_sync'
   end
 
-  task :find_participants_for_psc => :environment do |t|
+  def non_children_participants
+    Participant.includes([{:participant_person_links => [:person]}, :events]).
+      where('p_type_code != ?', 6)
+  end
+
+  task :find_followed_participants_for_psc => :environment do |t|
     class << t; attr_accessor :participants; end
 
-    # Expected participants for PSC are those 1) actively followed and 2) not children.
-    t.participants = Participant.includes(:participant_person_links => [:person], :events => [:event_type]).
-      where('being_followed = ? AND p_type_code != ?', true, 6)
+    # Expected participants for PSC are those 1) not children and 2) actively followed.
+    t.participants = non_children_participants.where('being_followed = ?', true)
   end
 
   task :set_whodunnit do
@@ -59,8 +63,8 @@ namespace :import do
     PatientStudyCalendar.new(user_for_psc, NcsNavigatorCore.psc_logger)
   end
 
-  def expected_participants_for_psc
-    task('import:find_participants_for_psc').participants
+  def expected_followed_participants_for_psc
+    task('import:find_followed_participants_for_psc').participants
   end
 
   desc 'Import all data'
@@ -121,10 +125,10 @@ namespace :import do
   end
 
   desc 'Check for imported participants which are not in PSC'
-  task 'operational_psc:check' => [:psc_setup, :warehouse_setup, :environment, :find_participants_for_psc] do
+  task 'operational_psc:check' => [:psc_setup, :warehouse_setup, :environment, :find_followed_participants_for_psc] do
     require 'ncs_navigator/core'
 
-    missing_ps = expected_participants_for_psc.reject { |p|
+    missing_ps = expected_followed_participants_for_psc.reject { |p|
       psc.is_registered?(p).tap do |result|
         $stderr.write(result ? '.' : '!')
         $stderr.flush
@@ -133,7 +137,7 @@ namespace :import do
     $stderr.puts
 
     if missing_ps.empty?
-      $stderr.puts "All #{expected_participants_for_psc.size} expected participant#{'s' unless expected_participants_for_psc.size == 1} present."
+      $stderr.puts "All #{expected_followed_participants_for_psc.size} expected participant#{'s' unless expected_followed_participants_for_psc.size == 1} present."
     else
       $stderr.puts "The following participant#{'s' unless missing_ps.size == 1} expected but not present:"
       missing_ps.each do |p|
@@ -159,10 +163,10 @@ namespace :import do
   end
 
   desc 'Schedule upcoming events for followed participants if needed'
-  task :schedule_participant_events => [:psc_setup, :environment, :set_whodunnit, :find_participants_for_psc]  do
-    ps_to_advance = expected_participants_for_psc.select { |p| p.pending_events.empty? }
+  task :schedule_participant_events => [:psc_setup, :environment, :set_whodunnit, :find_followed_participants_for_psc]  do
+    ps_to_advance = expected_followed_participants_for_psc.select { |p| p.pending_events.empty? }
 
-    $stderr.puts "#{ps_to_advance.size} of #{expected_participants_for_psc.size} followed participants need pending events."
+    $stderr.puts "#{ps_to_advance.size} of #{expected_followed_participants_for_psc.size} followed participants need pending events."
 
     ps_to_advance.each_with_index do |p, i|
       $stderr.print("\rAdvancing #{i + 1}/#{ps_to_advance.size} to next state...")
@@ -269,8 +273,8 @@ namespace :import do
   end
 
   desc 'Cancel scheduled events that have no matching mdes versioned instrument in PSC for followed participants'
-  task :cancel_activities_with_non_matching_mdes_instruments => [:psc_setup, :environment, :set_whodunnit, :find_participants_for_psc]  do
-    expected_participants_for_psc.each do |part|
+  task :cancel_activities_with_non_matching_mdes_instruments => [:psc_setup, :environment, :set_whodunnit]  do
+    non_children_participants.each do |part|
       msg = "Looking for activities to cancel for participant #{part.p_id}..."
       $stderr.print(msg)
       Rails.logger.info(msg)
@@ -289,8 +293,8 @@ namespace :import do
   end
 
   desc 'Cancel collection activities if not expanded phase two'
-  task :cancel_collection_activities => [:psc_setup, :environment, :set_whodunnit, :find_participants_for_psc]  do
-    expected_participants_for_psc.each do |part|
+  task :cancel_collection_activities => [:psc_setup, :environment, :set_whodunnit]  do
+    non_children_participants.each do |part|
       msg = "Looking for activities to cancel for participant #{part.p_id}..."
       $stderr.print(msg)
       Rails.logger.info(msg)
@@ -314,8 +318,8 @@ namespace :import do
   end
 
   desc 'Cancel consent activities for participants who have already consented'
-  task :cancel_consent_activities => [:psc_setup, :environment, :set_whodunnit, :find_participants_for_psc]  do
-    expected_participants_for_psc.each do |part|
+  task :cancel_consent_activities => [:psc_setup, :environment, :set_whodunnit]  do
+    non_children_participants.each do |part|
       msg = "Looking for activities to cancel for participant #{part.p_id}..."
       $stderr.print(msg)
       Rails.logger.info(msg)
