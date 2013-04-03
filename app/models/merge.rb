@@ -159,6 +159,11 @@ class Merge < ActiveRecord::Base
           self.conflict_report = superposition.conflicts
           save(:validate => false)
 
+          # TODO: cf. #3734
+          # check if the participant is eligible and/or
+          # send person to EligibilityAdjudicator
+          # Is this the correct place to do this?
+
           if self.class.sync_with_psc?
             # Sync current state...
             superposition.prepare_for_sync(self)

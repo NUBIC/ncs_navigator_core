@@ -63,7 +63,6 @@ class Event < ActiveRecord::Base
   before_validation :strip_time_whitespace
   before_create :set_start_time
   before_save :set_psc_ideal_date
-  after_save :adjudicate_eligibility
 
   POSTNATAL_EVENTS = [
     18, # Birth
@@ -341,17 +340,6 @@ class Event < ActiveRecord::Base
     self.psc_ideal_date = self.event_start_date if self.psc_ideal_date.blank?
   end
   private :set_psc_ideal_date
-
-  ##
-  # After saving a screener event we should check if the participant
-  # is eligibile or not.
-  # @see EligibilityAdjudicator.adjudicate_eligibility
-  def adjudicate_eligibility
-    if self.screener_event? && person = self.participant.try(:person)
-      EligibilityAdjudicator.adjudicate_eligibility(person)
-    end
-  end
-  private :adjudicate_eligibility
 
   def event_start_time=(t)
     self['event_start_time'] = format_event_time(t)

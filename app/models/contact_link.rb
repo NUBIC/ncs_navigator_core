@@ -66,6 +66,7 @@ class ContactLink < ActiveRecord::Base
   end
 
   def event_disposition
+    return "" if event.blank?
     event.event_disposition_text
   end
 
