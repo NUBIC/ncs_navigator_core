@@ -299,6 +299,12 @@ class ParticipantConsent < ActiveRecord::Base
   # have an associated ResponseSet and ParticipantConsentSample records of each
   # sample_consent_type.
   #
+  # This method creates an association to the ResponseSet via the
+  # ResponseSet belongs_to association.
+  # DO NOT USE THIS METHOD UNLESS YOU KNOW WHAT THAT MEANS
+  #
+  # @see ResponseSet.instrument
+  #
   # @param [Person] the person taking the survey
   # @param [Participant] the participant who the survey is about
   # @param [Survey] Survey with title matching PSC activity instrument label

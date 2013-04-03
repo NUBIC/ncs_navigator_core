@@ -26,8 +26,10 @@ class ResponseSet < ActiveRecord::Base
   include Surveyor::Models::ResponseSetMethods
 
   belongs_to :person, :foreign_key => :user_id, :class_name => 'Person', :primary_key => :id
-  belongs_to :instrument, :inverse_of => :response_sets
   belongs_to :participant, :inverse_of => :response_sets
+
+  # DO NOT CREATE ANY OF THESE ASSOCIATIONS UNLESS YOU KNOW WHAT THEY MEAN
+  belongs_to :instrument, :inverse_of => :response_sets
   belongs_to :participant_consent, :inverse_of => :response_set
   belongs_to :non_interview_report, :inverse_of => :response_set
 

@@ -73,6 +73,11 @@ class Instrument < ActiveRecord::Base
   # Responses if the current_survey should have responses set prior
   # to Instrument administration.
   #
+  # This method creates an association to the ResponseSet via the
+  # ResponseSet belongs_to association.
+  # DO NOT USE THIS METHOD UNLESS YOU KNOW WHAT THAT MEANS
+  #
+  # @see ResponseSet.instrument
   # @see Person.start_instrument
   # @see ResponseSet#prepopulate
   #
