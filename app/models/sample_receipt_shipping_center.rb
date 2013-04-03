@@ -15,6 +15,7 @@
 
 class SampleReceiptShippingCenter < ActiveRecord::Base
   include NcsNavigator::Core::Mdes::MdesRecord
+  acts_as_mdes_record :public_id_field => :sample_receipt_shipping_center_id
   belongs_to :address
   accepts_nested_attributes_for :address, :allow_destroy => true
 

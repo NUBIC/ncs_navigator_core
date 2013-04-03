@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130329150304) do
+ActiveRecord::Schema.define(:version => 20130403145616) do
 
   create_table "addresses", :force => true do |t|
     t.integer  "psu_code",                                                :null => false
@@ -1186,6 +1186,7 @@ ActiveRecord::Schema.define(:version => 20130329150304) do
     t.string   "transaction_type",                       :limit => 36
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "specimen_id",                            :limit => 36,                               :null => false
   end
 
   create_table "specimen_processing_shipping_centers", :force => true do |t|
