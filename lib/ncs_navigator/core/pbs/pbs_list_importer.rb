@@ -21,7 +21,9 @@ class PbsListImporter
       if pbs_list.valid?
         pbs_list.save!
       else
-        File.open(pbs_list_import_error_log, 'a') {|f| f.write("[#{Time.now.to_s(:db)}] pbs_list record invalid for - #{row} - #{pbs_list.errors.map(&:to_s)}\n") }
+        # TODO: this is pretty questionable. If there are errors, why not just
+        # report them out to the UI?
+        File.open(pbs_list_import_error_log, 'a') {|f| f.write("[#{Time.now.to_s(:db)}] pbs_list record invalid for - #{row} - #{pbs_list.errors.map { |e| e.to_s }}\n") }
       end
 
     end

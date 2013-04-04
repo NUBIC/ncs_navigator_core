@@ -15,6 +15,7 @@
 
 class SpecimenProcessingShippingCenter < ActiveRecord::Base
   include NcsNavigator::Core::Mdes::MdesRecord
+  acts_as_mdes_record :public_id_field => :specimen_processing_shipping_center_id
   belongs_to :address
   accepts_nested_attributes_for :address, :allow_destroy => true
 

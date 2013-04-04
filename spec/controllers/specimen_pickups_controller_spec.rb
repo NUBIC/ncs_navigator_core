@@ -4,9 +4,7 @@ require 'spec_helper'
 describe SpecimenPickupsController do
   
   def valid_attributes
-    { :specimen_pickup_datetime =>"2012-03-05 15:36:19", :specimen_pickup_comment_code => "3", :specimen_transport_temperature => "-1", 
-      :specimens_attributes => {"0"=>{"instrument_id"=>"associated instrument", "specimen_id"=>"8988"}}}
-    
+    {:specimen_pickup_datetime =>"2012-03-05 15:36:19", :specimen_pickup_comment_code => "3", :specimen_transport_temperature => "-1"}
   end
   
   context "with an authenticated user" do

@@ -185,6 +185,17 @@ module NcsNavigator::Core::Mdes
       system(quoted_cmd_string(cmd)) or fail "load_from_pg_dump failed. See output."
     end
 
+    ##
+    # Returns the stored YAML code values for this loader.
+    # @return [Array<Hash>]
+    def yaml_entries
+      yaml_entries = YAML.load(automatic_filename.read)
+      if future_filename.exist?
+        yaml_entries += YAML.load(future_filename.read)
+      end
+      yaml_entries
+    end
+
     def quoted_cmd_string(cmd)
       "'#{cmd.join("' '")}'"
     end
@@ -197,10 +208,6 @@ module NcsNavigator::Core::Mdes
     private :do_update
 
     def select_for_insert_update_delete
-      yaml_entries = YAML.load(automatic_filename.read)
-      if future_filename.exist?
-        yaml_entries += YAML.load(future_filename.read)
-      end
       existing_entries = ActiveRecord::Base.connection.
         select_all('SELECT list_name, local_code FROM ncs_codes')
 

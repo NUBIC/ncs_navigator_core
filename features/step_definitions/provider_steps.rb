@@ -1,5 +1,6 @@
 Given /^there exists a provider$/ do
-  Factory(:provider)
+  Factory(:provider,
+    :address => Factory(:address, :address_one => '321 Contact Rd.', :unit => 'A'))
 end
 
 Given /^the providers were last modified on "([^"]*)"$/ do |datetime|

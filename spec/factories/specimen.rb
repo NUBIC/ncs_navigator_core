@@ -9,6 +9,7 @@ FactoryGirl.define do
 
   factory :specimen_pickup do |sp|
     sp.psu_code                              20000030
+    sp.specimen_id                           {"abc123"}
     sp.association :specimen_processing_shipping_center, :factory => :specimen_processing_shipping_center
     sp.association :event, :factory => :event
     sp.staff_id                              {"staff123"}

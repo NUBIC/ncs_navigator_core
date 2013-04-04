@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # == Schema Information
-# Schema version: 20120629204215
+# Schema version: 20130403145616
 #
 # Table name: specimen_pickups
 #
@@ -8,6 +8,7 @@
 #  event_id                               :integer
 #  id                                     :integer          not null, primary key
 #  psu_code                               :integer          not null
+#  specimen_id                            :string(36)       not null
 #  specimen_pickup_comment_code           :integer          not null
 #  specimen_pickup_comment_other          :string(255)
 #  specimen_pickup_datetime               :datetime         not null
@@ -25,8 +26,7 @@ describe SpecimenPickup do
     specimen_pickup = Factory(:specimen_pickup)
     specimen_pickup.should_not be_nil
   end
-  
-  it { should belong_to(:psu) }
+
   it { should belong_to(:event) }
   it { should belong_to(:specimen_processing_shipping_center) } 
 end

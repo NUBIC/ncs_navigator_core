@@ -32,8 +32,8 @@ module NcsNavigator::Core::Mdes::VersionMigrations
       end
 
       let(:target_version_code_lists) {
-        NcsNavigator::Mdes(migrator.to).types.
-          select { |vt| vt.code_list }.collect { |vt| vt.name.upcase }.sort
+        NcsNavigator::Core::Mdes::CodeListLoader.new(:mdes_version => migrator.to).yaml_entries.
+          collect { |code| code['list_name'] }.uniq.sort
       }
 
       def select_one_column(query)

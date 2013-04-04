@@ -20,10 +20,9 @@ describe SampleReceiptShippingCenter do
     sample_receipt_shipping_center = Factory(:sample_receipt_shipping_center)
     sample_receipt_shipping_center.should_not be_nil
   end
-  
+
   it { should belong_to(:address) }
-  it { should belong_to(:psu) } 
-  
+
   context "as mdes record" do
     it "has the srsc_id" do
       srsc = Factory(:sample_receipt_shipping_center)
@@ -36,6 +35,6 @@ describe SampleReceiptShippingCenter do
       obj = SampleReceiptShippingCenter.find(srsc.id)
       obj.psu.local_code.should == 20000030
     end
-  end  
+  end
 end
 
