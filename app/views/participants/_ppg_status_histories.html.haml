@@ -5,5 +5,7 @@
     = render "shared/inline_ncs_code_select", { :f => f, :code => :ppg_status_code, :label_text => "PPG Status", :inline => true }
     = render "shared/inline_ncs_code_select", { :f => f, :code => :ppg_info_source_code, :label_text => "Source", :inline => true }
     = render "shared/inline_ncs_code_select", { :f => f, :code => :ppg_info_mode_code, :label_text => "Mode", :inline => true }
+    = f.label :ppg_status_date_date, "Date"
+    = f.text_field :ppg_status_date_date, :class => 'datepicker'
   %td.remove_col
     = link_to_remove_fields 'Remove', f, :ppg_status_histories

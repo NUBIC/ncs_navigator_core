@@ -149,3 +149,14 @@ span.known_instrument {
     }
   }
 }
+
+.nested_records_ppg_status_histories {
+  .ppg_status_history {
+    label {
+      font-size: 0.8em;
+    }
+    select {
+      width: 15em;
+    }
+  }
+}
