@@ -102,6 +102,24 @@ Given /^the surveys$/ do |table|
   end
 end
 
+Given /^the responses$/ do |table|
+  rs = @instrument.response_sets.first
+
+  table.hashes.each do |h|
+    q = Question.where(:reference_identifier => h['qref']).first
+    raise "Unknown qref #{h['qref']}" unless q
+
+    a = q.answers.where(:reference_identifier => h['aref']).first
+    raise "Unknown aref #{h['aref']}" unless a
+
+    rs.responses.create!(
+      :question => q,
+      :answer => a,
+      :string_value => h['string_value']
+    )
+  end
+end
+
 # FIXME: This is a pretty terrible hack, but Cases' current UI provides no way
 # of differentating between response sets.
 Given /^there are no response sets for "([^"]*)"$/ do |survey_title|
