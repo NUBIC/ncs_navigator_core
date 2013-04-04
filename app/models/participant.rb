@@ -787,9 +787,10 @@ class Participant < ActiveRecord::Base
   ##
   # Sets the enroll status to Yes (i.e. local_code = 1)
   # and the enroll_date to the given date
+  # @see Participant#update_enrollment_status
   # @param enroll_date [Date]
   def enroll(enroll_date)
-    update_enrollment_status(true)
+    update_enrollment_status(true, enroll_date)
   end
 
   ##
@@ -798,6 +799,43 @@ class Participant < ActiveRecord::Base
   def enroll!(enroll_date)
     self.enroll(enroll_date)
     self.save!
+  end
+
+  ##
+  # Consenting to the study does the following things
+  # 1. update the enrollment status for the participant
+  # @see Participant#enroll!
+  def consent_to_study!(consent = most_recent_consent)
+    enroll!(consent.consent_date) unless self.enrolled?
+  end
+
+  ##
+  # Withdrawing from the study does the following things
+  # 1. updates the enrollment status for the participant
+  # 2. cancels or deletes the pending events
+  # 3. creates a ppg status history record of type withdrawn
+  # @see Participant#unenroll
+  # @see Participant#create_withdrawn_ppg_status
+  def withdraw_from_study!(consent = most_recent_consent)
+    self.unenroll(false)
+    create_withdrawn_ppg_status(consent.try(:consent_date))
+    self.children.each do |child|
+      child.participant.try(:withdraw_from_study!, consent)
+    end
+    self.save!
+  end
+
+  ##
+  # If the most recent status history is not withdrawn create
+  # a PpgStatusHistory record for the participant
+  def create_withdrawn_ppg_status(date)
+    ppg_status_date = date.nil? ? Date.today : date
+    unless self.ppg_status_histories.first.try(:ppg_status_code) == PpgStatusHistory::WITHDRAWN
+      PpgStatusHistory.create(:participant => self,
+                              :psu => self.psu,
+                              :ppg_status_date => ppg_status_date,
+                              :ppg_status_code => PpgStatusHistory::WITHDRAWN)
+    end
   end
 
   ##

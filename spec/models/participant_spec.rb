@@ -1437,6 +1437,42 @@ describe Participant do
       end
     end
 
+    describe "#consent_to_study!" do
+      before do
+        participant.consent_to_study!
+      end
+      it "updates the enrollment status" do
+        Participant.find(participant.id).should be_enrolled
+      end
+    end
+
+    describe "#withdraw_from_study!" do
+      before do
+        participant.create_child_person_and_participant!(:first_name => "X", :last_name => "Y")
+        participant.participant_person_links.reload
+        participant.withdraw_from_study!
+      end
+      it "updates the enrollment status" do
+        Participant.find(participant.id).should_not be_enrolled
+      end
+
+      it "creates a ppg_status for of type withdrawn" do
+        ppgs = Participant.find(participant.id).ppg_status_histories
+        ppgs.last.ppg_status_code.should == PpgStatusHistory::WITHDRAWN
+      end
+
+      it "withdraws the children associated with participant" do
+        pt = Participant.find(participant.id)
+        pt.children.should_not be_blank
+        pt.children.each do |c|
+          cpt = c.participant
+          cpt.should_not be_enrolled
+          cpt.ppg_status_histories.last.ppg_status_code.should == PpgStatusHistory::WITHDRAWN
+        end
+      end
+
+    end
+
     describe "#remove_from_active_followup" do
       it "sets the being_followed flag to false" do
         participant.remove_from_active_followup!(psc, "removal reason")
