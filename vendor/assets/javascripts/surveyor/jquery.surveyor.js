@@ -48,6 +48,7 @@ jQuery(document).ready(function(){
   });
 
   jQuery("form#survey_form input, form#survey_form select, form#survey_form textarea").change(function(){
+
     var elements = [$('[type="submit"]').parent(), $('[name="' + this.name +'"]').closest('li')];
 
     question_data = $(this).parents('fieldset[id^="q_"],tr[id^="q_"]').
