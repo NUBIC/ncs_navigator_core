@@ -178,7 +178,9 @@ class Contact < ActiveRecord::Base
     	              left outer join contact_links cl1 on cl1.contact_id = c1.id
                     left outer join events e1 on e1.id = cl1.event_id
                     where e1.participant_id = events.participant_id"
-    Contact.select("events.participant_id, contacts.contact_date, contact_disposition, contact_start_time, contact_end_time").
+    Contact.select("events.participant_id, contacts.contact_date, contact_disposition,
+                    contact_language_code, contact_start_time, contact_end_time,
+                    contact_comment, contact_type_code").
             joins("left outer join contact_links on contact_links.contact_id = contacts.id
                    left outer join events on events.id = contact_links.event_id").
             where("contact_date = (#{inner_select}) and events.participant_id in (?)", participant_ids).all
