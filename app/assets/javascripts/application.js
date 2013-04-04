@@ -11,5 +11,6 @@
 //= require pbs_lists
 //= require consent
 //= require event
+//= require radio_reset_button
 //= require nested_attributes
 //= require_tree .
