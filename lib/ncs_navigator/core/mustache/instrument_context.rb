@@ -190,11 +190,26 @@ module NcsNavigator::Core::Mustache
     end
 
     ##
-    # true if response to MULTIPLE is no or not yet responded
+    # true if response to MULTIPLE is no or not yet responded OR if no response to MULTIPLE exists and no information on the children for current participant
+    # false if response to MULTIPLE is yes OR if no response to MULTIPLE exists and participant has more than one child
     def single_birth?
       q = "#{multiple_release_birth_visit_prefix}.#{multiple_identifier}"
       multiple = response_for(q).to_s.downcase
-      multiple.blank? || (multiple.eql?("no") || multiple.eql?("singleton"))
+      if multiple.blank?
+        if !participant.blank?
+          number_of_children = participant.children
+          if (!number_of_children.blank? && number_of_children.size > 1)
+            return false
+          else
+            return true
+          end
+        else
+          # defaulting to single_birth = true, if no information on the number of children, and event has no reference to multiple gestation question.
+          return true
+        end
+      else
+        multiple.eql?("no") || multiple.eql?("singleton")
+      end
     end
 
     def baby_sex_response
