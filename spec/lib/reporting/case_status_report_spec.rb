@@ -115,4 +115,134 @@ describe Reporting::CaseStatusReport do
 
   end
 
+  describe "#associate_scheduled_study_segment_ids_with_netids" do
+    before(:each) do
+      psc_config ||= NcsNavigator.configuration.instance_variable_get("@application_sections")["PSC"]
+      @uri  = psc_config["uri"]
+      @user = mock(:username => "user", :cas_proxy_ticket => "PT-cas-ticket")
+    end
+
+    let(:subject) { PatientStudyCalendar.new(@user) }
+
+    let(:reporter) { Reporting::CaseStatusReport.new(subject, { :start_date => '2012-02-01', :end_date => '2012-02-07' }) }
+
+
+    it "associates scheduled_study_segment_ids with netids from the rows section of a scheduled activity report from PSC" do
+      reporter.associate_scheduled_study_segment_ids_with_netids(sample_rows).should == {"0a968622-0251-4167-89c4-8ea8a6cbe62d"=>"sgp658",
+                                                                                         "34bda70c-a060-48d3-9bbd-726f8994a90f"=>"sgp658",
+                                                                                         "b0b0544b-6757-4dbb-9bc7-f85dbaf1f498"=>"sgp658"}
+    end
+
+  end
+
+  def sample_rows
+    [{"grid_id"=>"7b076342-1091-46ce-9445-26af0741d83e", "activity_name"=>"Pregnancy Screener Interview",
+      "activity_type"=>"Instrument", "activity_status"=>"Scheduled", "scheduled_date"=>"2013-04-01",
+      "last_change_reason"=>"Initialized from template", "ideal_date"=>"2013-04-01",
+      "labels"=> ["event:pregnancy_screener",
+                  "instrument:2.0:ins_que_pregscreen_int_hili_p2_v2.0",
+                  "instrument:2.1:ins_que_pregscreen_int_hili_m2.1_v2.1",
+                  "instrument:2.2:ins_que_pregscreen_int_hili_m2.1_v2.1",
+                  "instrument:3.0:ins_que_pregscreen_int_hili_m2.1_v2.1",
+                  "instrument:3.1:ins_que_pregscreen_int_hili_m2.1_v2.1",
+                  "instrument:3.2:ins_que_pregscreen_int_hili_m2.1_v2.1",
+                  "order:01_01"],
+
+      "scheduled_study_segment"=>{"grid_id"=>"0a968622-0251-4167-89c4-8ea8a6cbe62d",
+                                  "start_date"=>"2013-04-01",
+                                  "start_day"=>1},
+      "subject"=>{"name"=>"z3fa-d9dh-dbsw",
+                  "person_id"=>"z3fa-d9dh-dbsw",
+                  "grid_id"=>"802bfe59-cd22-4cfb-ac13-31a449b34187"},
+      "responsible_user"=>"sgp658",
+      "study"=>"NCS Hi-Lo",
+      "site"=>"STEVES SITE"},
+
+      {"grid_id"=>"56c71a5b-a00a-452b-8dd9-cdd3324dabfc", "activity_name"=>"Pregnancy Probability Group Follow-Up Interview",
+       "activity_type"=>"Instrument", "activity_status"=>"Scheduled", "scheduled_date"=>"2013-04-02",
+       "last_change_reason"=>"Initialized from template", "ideal_date"=>"2013-04-02",
+       "labels"=>["event:pregnancy_probability",
+                  "instrument:2.0:ins_que_ppgfollup_int_ehpbhili_p2_v1.2",
+                  "instrument:2.1:ins_que_ppgfollup_int_ehpbhili_m2.1_v1.3",
+                  "instrument:2.2:ins_que_ppgfollup_int_ehpbhili_m2.1_v1.3",
+                  "instrument:3.0:ins_que_ppgfollup_int_ehpbhili_m2.1_v1.3",
+                  "instrument:3.1:ins_que_ppgfollup_int_ehpbhili_m2.1_v1.3",
+                  "instrument:3.2:ins_que_ppgfollup_int_ehpbhili_m2.1_v1.3",
+                  "order:01_01",
+                  "participant_type:mother"],
+        "scheduled_study_segment"=>{"grid_id"=>"34bda70c-a060-48d3-9bbd-726f8994a90f",
+                                    "start_date"=>"2013-04-02",
+                                    "start_day"=>1},
+        "subject"=>{"name"=>"tzzz-649b-5zhe",
+                    "person_id"=>"tzzz-649b-5zhe",
+                    "grid_id"=>"6032b3bd-e0e5-41e8-a569-ba63a1201a7f"},
+        "responsible_user"=>"sgp658",
+        "study"=>"NCS Hi-Lo",
+        "site"=>"STEVES SITE"},
+
+        {"grid_id"=>"912b653a-e4a4-434b-97f0-91d02dc25830", "activity_name"=>"Pregnancy Probability Group Follow-Up SAQ",
+         "activity_type"=>"Instrument", "activity_status"=>"Scheduled", "scheduled_date"=>"2013-04-02",
+         "last_change_reason"=>"Initialized from template", "ideal_date"=>"2013-04-02",
+         "labels"=>["event:pregnancy_probability",
+                    "instrument:2.0:ins_que_ppgfollup_saq_ehpbhili_p2_v1.1",
+                    "instrument:2.1:ins_que_ppgfollup_saq_ehpbhili_p2_v1.1",
+                    "instrument:2.2:ins_que_ppgfollup_saq_ehpbhili_p2_v1.1",
+                    "instrument:3.0:ins_que_ppgfollup_saq_ehpbhili_p2_v1.1",
+                    "instrument:3.1:ins_que_ppgfollup_saq_ehpbhili_p2_v1.1",
+                    "instrument:3.2:ins_que_ppgfollup_saq_ehpbhili_p2_v1.1",
+                    "order:02_01",
+                    "participant_type:mother"],
+          "scheduled_study_segment"=>{"grid_id"=>"34bda70c-a060-48d3-9bbd-726f8994a90f",
+                                      "start_date"=>"2013-04-02",
+                                      "start_day"=>1},
+          "subject"=>{"name"=>"tzzz-649b-5zhe",
+                      "person_id"=>"tzzz-649b-5zhe",
+                      "grid_id"=>"6032b3bd-e0e5-41e8-a569-ba63a1201a7f"},
+          "responsible_user"=>"sgp658",
+          "study"=>"NCS Hi-Lo",
+          "site"=>"STEVES SITE"},
+
+          {"grid_id"=>"083ed9fa-efae-453f-914b-967caffda84a", "activity_name"=>"Pregnancy Probability Group Follow-Up Interview",
+           "activity_type"=>"Instrument", "activity_status"=>"Scheduled", "scheduled_date"=>"2013-04-04",
+           "last_change_reason"=>"Initialized from template", "ideal_date"=>"2013-04-04",
+           "labels"=>["event:pregnancy_probability",
+                      "instrument:2.0:ins_que_ppgfollup_int_ehpbhili_p2_v1.2",
+                      "instrument:2.1:ins_que_ppgfollup_int_ehpbhili_m2.1_v1.3",
+                      "instrument:2.2:ins_que_ppgfollup_int_ehpbhili_m2.1_v1.3",
+                      "instrument:3.0:ins_que_ppgfollup_int_ehpbhili_m2.1_v1.3",
+                      "instrument:3.1:ins_que_ppgfollup_int_ehpbhili_m2.1_v1.3",
+                      "instrument:3.2:ins_que_ppgfollup_int_ehpbhili_m2.1_v1.3",
+                      "order:01_01", "participant_type:mother"],
+            "scheduled_study_segment"=>{"grid_id"=>"b0b0544b-6757-4dbb-9bc7-f85dbaf1f498",
+                                        "start_date"=>"2013-04-04",
+                                        "start_day"=>1},
+            "subject"=>{"name"=>"yhyf-37w6-e59w",
+                        "person_id"=>"yhyf-37w6-e59w",
+                        "grid_id"=>"0a042406-c4e2-4ee3-81fd-68b4d8bba994"},
+            "responsible_user"=>"sgp658",
+            "study"=>"NCS Hi-Lo",
+            "site"=>"STEVES SITE"},
+
+            {"grid_id"=>"567cb7bf-112e-4d08-aa92-692f70d8d847", "activity_name"=>"Pregnancy Probability Group Follow-Up SAQ",
+             "activity_type"=>"Instrument", "activity_status"=>"Scheduled", "scheduled_date"=>"2013-04-04",
+             "last_change_reason"=>"Initialized from template", "ideal_date"=>"2013-04-04",
+             "labels"=>["event:pregnancy_probability",
+                        "instrument:2.0:ins_que_ppgfollup_saq_ehpbhili_p2_v1.1",
+                        "instrument:2.1:ins_que_ppgfollup_saq_ehpbhili_p2_v1.1",
+                        "instrument:2.2:ins_que_ppgfollup_saq_ehpbhili_p2_v1.1",
+                        "instrument:3.0:ins_que_ppgfollup_saq_ehpbhili_p2_v1.1",
+                        "instrument:3.1:ins_que_ppgfollup_saq_ehpbhili_p2_v1.1",
+                        "instrument:3.2:ins_que_ppgfollup_saq_ehpbhili_p2_v1.1",
+                        "order:02_01",
+                        "participant_type:mother"],
+              "scheduled_study_segment"=>{"grid_id"=>"b0b0544b-6757-4dbb-9bc7-f85dbaf1f498",
+                                          "start_date"=>"2013-04-04",
+                                          "start_day"=>1},
+              "subject"=>{"name"=>"yhyf-37w6-e59w",
+                          "person_id"=>"yhyf-37w6-e59w",
+                          "grid_id"=>"0a042406-c4e2-4ee3-81fd-68b4d8bba994"},
+              "responsible_user"=>"sgp658",
+              "study"=>"NCS Hi-Lo",
+              "site"=>"STEVES SITE"}]
+  end
 end
