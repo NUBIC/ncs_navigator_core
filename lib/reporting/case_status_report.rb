@@ -4,6 +4,7 @@ module Reporting
   class CaseStatusReport
 
     REPORT_HEADERS = [
+      "Staff NetID",
       "Participant ID",
       "First Name",
       "Last Name",
@@ -78,6 +79,7 @@ module Reporting
         )
         select part.id as q_id, part.p_id, part.high_intensity as q_high_intensity, pers.first_name as q_first_name, pers.last_name as q_last_name,
          max(e.event_start_date) as q_event_date, event_code.display_text as q_event_name, e.event_start_time as q_event_time,
+         e.scheduled_study_segment_identifier as q_event_identifier,
          t.phone_nbr as q_phone,
          a.address_one as q_address_one, a.address_two as q_address_two, a.city as q_city,
          du.ssu_id as q_ssu_id, du.tsu_id as q_tsu_id,
@@ -102,7 +104,7 @@ module Reporting
          and t.phone_rank_code = 1
          and t.phone_type_code = phonesql.phone_type
          group by part.id, part.p_id, part.high_intensity, pers.first_name, pers.last_name,
-         e.event_start_date, e.event_start_time, event_code.display_text,
+         e.event_start_date, e.event_start_time, event_code.display_text, e.scheduled_study_segment_identifier,
          t.phone_nbr, a.address_one, a.address_two, a.city,  state_code.display_text, a.zip,
          du.ssu_id, du.tsu_id
          order by p_id
@@ -110,6 +112,29 @@ module Reporting
 
       Participant.find_by_sql(sql)
     end
+
+    ##
+    # Fetch the netids associated with scheduled study segment identifiers
+    #
+    def fetch_netids_from_psc_report_rows
+      if rpt = psc.scheduled_activities_report(options)
+        if rows = rpt["rows"]
+          net_ids = associate_scheduled_study_segment_ids_with_netids(rows)
+        end
+      end
+      net_ids
+    end
+
+    def associate_scheduled_study_segment_ids_with_netids(rows)
+      net_ids = {}
+      rows.each do |row|
+        if row["scheduled_study_segment"]
+          net_ids[row["scheduled_study_segment"]["grid_id"]]  = row["responsible_user"]
+        end
+      end
+      net_ids
+    end
+
 
     ##
     # Delegate to Contact#last_contact and collect those into a Hash keyed by participant id
@@ -146,6 +171,7 @@ module Reporting
       statuses = case_statuses
       p_ids = statuses.collect { |c| c.q_id }
 
+      net_ids = fetch_netids_from_psc_report_rows
       last_contacts = last_contacts(p_ids)
       current_ppg_statuses = ppg_statuses(p_ids)
 
@@ -155,6 +181,7 @@ module Reporting
           last_contact = last_contacts[c.q_id.to_i]
           ppg_status = current_ppg_statuses[c.q_id.to_i]
           csv << [
+            net_ids.has_key?(c.q_event_identifier) ? net_ids[c.q_event_identifier] : "n/a",
             c.p_id,
             c.q_first_name,
             c.q_last_name,
