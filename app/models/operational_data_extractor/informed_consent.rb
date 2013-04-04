@@ -79,7 +79,7 @@ module OperationalDataExtractor
       if consent.consented?
         participant.consent_to_study!(consent)
       else
-        participant.withdraw_from_study(consent)
+        participant.withdraw_from_study!(consent)
       end
     end
   end
