@@ -1,27 +1,34 @@
 # -*- coding: utf-8 -*-
 
-
 module Reporting
   class CaseStatusReport
 
     REPORT_HEADERS = [
+      "Staff NetID",
       "Participant ID",
       "First Name",
       "Last Name",
       "Next Event Date",
+      "Event Time",
       "Event Name",
       "Last Contact Date",
       "Last Contact Start Time",
       "Last Contact End Time",
+      "Contact Comments",
       "PPG Status",
+      "PPG Status Description",
       "Language",
       "Last Contact Disposition",
+      "Last Contact Type",
       "Phone Number",
       "Address One",
       "Address Two",
       "City",
       "State",
-      "Zip"
+      "Zip",
+      "TSU Identifier",
+      "SSU Identifier",
+      "HI/LO Arm"
     ]
 
     attr_accessor :psc
@@ -70,10 +77,12 @@ module Reporting
         ,phonesql as
         (select min(phone_type_code) as phone_type, person_id from telephones group by person_id
         )
-        select part.id as q_id, part.p_id, pers.first_name as q_first_name, pers.last_name as q_last_name,
-         max(e.event_start_date) as q_event_date, event_code.display_text as q_event_name,
+        select part.id as q_id, part.p_id, part.high_intensity as q_high_intensity, pers.first_name as q_first_name, pers.last_name as q_last_name,
+         max(e.event_start_date) as q_event_date, event_code.display_text as q_event_name, e.event_start_time as q_event_time,
+         e.scheduled_study_segment_identifier as q_event_identifier,
          t.phone_nbr as q_phone,
          a.address_one as q_address_one, a.address_two as q_address_two, a.city as q_city,
+         du.ssu_id as q_ssu_id, du.tsu_id as q_tsu_id,
          state_code.display_text as q_state, a.zip as q_zip
          from participants part
          left outer join participant_person_links ppl on ppl.participant_id = part.id
@@ -81,6 +90,7 @@ module Reporting
          left outer join events e on e.participant_id = part.id
          left outer join telephones t on t.person_id = pers.id
          left outer join addresses a on a.person_id = pers.id
+         left outer join dwelling_units du on du.id = a.dwelling_unit_id
          left outer join ncs_codes state_code on state_code.local_code = a.state_code
          left outer join ncs_codes event_code on event_code.local_code = e.event_type_code
          left outer join addrsql on pers.id = addrsql.person_id
@@ -93,14 +103,38 @@ module Reporting
          and a.address_type_code = addrsql.address_type
          and t.phone_rank_code = 1
          and t.phone_type_code = phonesql.phone_type
-         group by part.id, part.p_id, pers.first_name, pers.last_name,
-         e.event_start_date, event_code.display_text, t.phone_nbr,
-         a.address_one, a.address_two, a.city, state_code.display_text, a.zip
+         group by part.id, part.p_id, part.high_intensity, pers.first_name, pers.last_name,
+         e.event_start_date, e.event_start_time, event_code.display_text, e.scheduled_study_segment_identifier,
+         t.phone_nbr, a.address_one, a.address_two, a.city,  state_code.display_text, a.zip,
+         du.ssu_id, du.tsu_id
          order by p_id
       SQL
 
       Participant.find_by_sql(sql)
     end
+
+    ##
+    # Fetch the netids associated with scheduled study segment identifiers
+    #
+    def fetch_netids_from_psc_report_rows
+      if rpt = psc.scheduled_activities_report(options)
+        if rows = rpt["rows"]
+          net_ids = associate_scheduled_study_segment_ids_with_netids(rows)
+        end
+      end
+      net_ids
+    end
+
+    def associate_scheduled_study_segment_ids_with_netids(rows)
+      net_ids = {}
+      rows.each do |row|
+        if row["scheduled_study_segment"]
+          net_ids[row["scheduled_study_segment"]["grid_id"]]  = row["responsible_user"]
+        end
+      end
+      net_ids
+    end
+
 
     ##
     # Delegate to Contact#last_contact and collect those into a Hash keyed by participant id
@@ -137,6 +171,7 @@ module Reporting
       statuses = case_statuses
       p_ids = statuses.collect { |c| c.q_id }
 
+      net_ids = fetch_netids_from_psc_report_rows
       last_contacts = last_contacts(p_ids)
       current_ppg_statuses = ppg_statuses(p_ids)
 
@@ -146,23 +181,31 @@ module Reporting
           last_contact = last_contacts[c.q_id.to_i]
           ppg_status = current_ppg_statuses[c.q_id.to_i]
           csv << [
+            net_ids.has_key?(c.q_event_identifier) ? net_ids[c.q_event_identifier] : "n/a",
             c.p_id,
             c.q_first_name,
             c.q_last_name,
             c.q_event_date,
+            c.q_event_time,
             c.q_event_name,
             last_contact.nil? ? "n/a" : last_contact.contact_date.to_s,
             last_contact.nil? ? "n/a" : last_contact.contact_start_time,
             last_contact.nil? ? "n/a" : last_contact.contact_end_time,
+            last_contact.nil? ? "n/a" : last_contact.contact_comment,
             ppg_status.nil?   ? "n/a" : ppg_status.ppg_status_code,
+            ppg_status.nil?   ? "n/a" : NcsCode.for_attribute_name_and_local_code(:ppg_status_code, ppg_status.ppg_status_code),
             last_contact.nil? ? "n/a" : last_contact.contact_language.to_s,
             last_contact.nil? ? "n/a" : last_contact.contact_disposition,
+            last_contact.nil? ? "n/a" : NcsCode.for_attribute_name_and_local_code(:contact_type_code, last_contact.contact_type_code),
             c.q_phone,
             c.q_address_one,
             c.q_address_two,
             c.q_city,
             c.q_state,
-            c.q_zip
+            c.q_zip,
+            c.q_tsu_id,
+            c.q_ssu_id,
+            c.q_high_intensity ? "HI" : "LO"
           ]
         end
       end
