@@ -17,8 +17,33 @@ class ProvidersController < ApplicationController
     end
   end
 
+  def lookup_text_for_ncs_attrib(attrib, code)
+    unless code
+      ""
+    else
+      NcsCode.for_attribute_name_and_local_code(attrib, code).display_text
+    end
+  end
+  helper_method :lookup_text_for_ncs_attrib
+
+  def patients_paginate(people, page_type)
+    page_num = params[page_type] || 1
+    page = WillPaginate::Collection.create(page_num, 10) do |pager|
+      pager.replace(people[pager.offset, pager.per_page])
+      pager.total_entries = people.length
+    end
+    page
+  end
+  private :patients_paginate
+
   def show
     @provider = Provider.find(params[:id])
+    non_batch = Person.not_in_ineligibility_batch_by_provider(@provider.id)
+    @patients = patients_paginate(non_batch, :patients_page)
+
+    @ineligible_patients = Person.in_ineligibility_batch_grouped(@provider.id)
+    @ineligible_patients = patients_paginate(@ineligible_patients,
+                                             :inpatients_page)
   end
 
   def new
@@ -323,4 +348,7 @@ class ProvidersController < ApplicationController
   end
   private :mark_pbs_list_refused
 
+  def batch_ineligible
+    @provider = Provider.find(params[:id])
+  end
 end
