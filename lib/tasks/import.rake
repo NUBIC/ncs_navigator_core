@@ -279,21 +279,28 @@ namespace :import do
       $stderr.print(msg)
       Rails.logger.info(msg)
 
-      psc.scheduled_activities(part).each do |a|
-        if a.has_non_matching_mdes_version_instrument?
-          msg = "Activity #{a.activity_name} has non matching mdes versioned instrument. Canceling activity for participant #{part.p_id}."
-          $stderr.print("\n#{msg}")
-          Rails.logger.info(msg)
-          reason = "Does not include an instrument for MDES version #{NcsNavigatorCore.mdes.version}."
-          psc.update_activity_state(a.activity_id, part, Psc::ScheduledActivity::CANCELED, Date.parse(a.ideal_date), reason)
+      if part.person.nil?
+        per_nil_msg = "No person exists for #{part.p_id}"
+        $stderr.print(per_nil_msg)
+        Rails.logger.info(per_nil_msg)
+        next
+      else
+        psc.scheduled_activities(part).each do |a|
+          if a.has_non_matching_mdes_version_instrument?
+            msg = "Activity #{a.activity_name} has non matching mdes versioned instrument. Canceling activity for participant #{part.p_id}."
+            $stderr.print("\n#{msg}")
+            Rails.logger.info(msg)
+            reason = "Does not include an instrument for MDES version #{NcsNavigatorCore.mdes.version}."
+            psc.update_activity_state(a.activity_id, part, Psc::ScheduledActivity::CANCELED, Date.parse(a.ideal_date), reason)
+          end
+          $stderr.puts
         end
-        $stderr.puts
       end
     end
   end
 
   desc 'Cancel collection activities if not expanded phase two'
-  task :cancel_collection_activities => [:psc_setup, :environment, :set_whodunnit, :find_participants_for_psc]  do
+  task :cancel_collection_activities => [:psc_setup, :environment, :set_whodunnit]  do
     if NcsNavigatorCore.expanded_phase_two?
       msg = "No need to cancel activities. Cases is configured for expanded phase two."
       $stderr.print("\n#{msg}")
@@ -301,16 +308,23 @@ namespace :import do
       Rails.logger.info(msg)
     else
       non_children_participants.each do |part|
-        msg = "Looking for activities to cancel for participant #{part.p_id}..."
-        $stderr.print(msg)
-        Rails.logger.info(msg)
-        psc.scheduled_activities(part).each do |a|
-          if Instrument.collection?(a.labels)
-            msg = "Activity #{a.activity_name} is a collection activity. Canceling activity for participant #{part.p_id}."
-            $stderr.print("\n#{msg}")
-            Rails.logger.info(msg)
-            reason ="Study Center is not configured to collection samples or specimens."
-            psc.update_activity_state(a.activity_id, part, Psc::ScheduledActivity::CANCELED, Date.parse(a.ideal_date), reason)
+        if part.person.nil?
+          per_nil_msg = "No person exists for #{part.p_id}"
+          $stderr.print(per_nil_msg)
+          Rails.logger.info(per_nil_msg)
+          next
+        else
+          msg = "Looking for activities to cancel for participant #{part.p_id}..."
+          $stderr.print(msg)
+          Rails.logger.info(msg)
+          psc.scheduled_activities(part).each do |a|
+            if Instrument.collection?(a.labels)
+              msg = "Activity #{a.activity_name} is a collection activity. Canceling activity for participant #{part.p_id}."
+              $stderr.print("\n#{msg}")
+              Rails.logger.info(msg)
+              reason ="Study Center is not configured to collection samples or specimens."
+              psc.update_activity_state(a.activity_id, part, Psc::ScheduledActivity::CANCELED, Date.parse(a.ideal_date), reason)
+            end
           end
         end
       end
@@ -324,7 +338,12 @@ namespace :import do
       $stderr.print(msg)
       Rails.logger.info(msg)
 
-      if participant.consented?
+      if part.person.nil?
+        per_nil_msg = "No person exists for #{part.p_id}"
+        $stderr.print(per_nil_msg)
+        Rails.logger.info(per_nil_msg)
+        next
+      elsif part.consented?
         psc.scheduled_activities(part).each do |a|
           if psc.should_cancel_consent_activity?(a)
             msg = "Activity #{a.activity_name} is a consent activity. Canceling activity for participant #{part.p_id}."
