@@ -196,15 +196,10 @@ module NcsNavigator::Core::Mustache
       q = "#{multiple_release_birth_visit_prefix}.#{multiple_identifier}"
       multiple = response_for(q).to_s.downcase
       if multiple.blank?
-        if !participant.blank?
-          number_of_children = participant.children
-          if (!number_of_children.blank? && number_of_children.size > 1)
-            return false
-          else
-            return true
-          end
+        # defaulting to single_birth = true, if no information on the number of children, and event has no reference to multiple gestation question.
+        if participant
+          return participant.children.count <= 1
         else
-          # defaulting to single_birth = true, if no information on the number of children, and event has no reference to multiple gestation question.
           return true
         end
       else
