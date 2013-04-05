@@ -362,11 +362,40 @@ class Participant < ActiveRecord::Base
     !self.children.blank?
   end
 
-  def advance(psc, event = events.chronological.last)
-    if self.pending_events.blank?
+  ##
+  # Advance the Participant in the state machine
+  # and then schedule the next event
+  #
+  # @see Participant#update_state_to_next_event
+  # @see Event.schedule_and_create_placeholder
+  #
+  # @param psc [PatientStudyCalendar]
+  # @param event [Event] (optional)
+  def advance(psc, event = nil)
+    if event.nil?
+      event = determine_advance_event
+    end
+
+    if event && self.pending_events.blank?
       update_state_to_next_event(event)
       Event.schedule_and_create_placeholder(psc, self)
     end
+  end
+
+  ##
+  # If the event to Participant#advance is nil
+  # determine the next event to use to determine
+  # advancement. Generally this is the most recent
+  # event. But this method filters out the Informed
+  # Consent events since those do not affect
+  # advancement.
+  #
+  # @see Event.chronological
+  # @return [Event]
+  def determine_advance_event
+    events.chronological.select do |e|
+      e.event_type_code != Event.informed_consent_code
+    end.last
   end
 
   ##
