@@ -32,10 +32,7 @@ module ContactLinksHelper
   # different actions in the people_controller
   def determine_consent_activity_path(person, activity, survey, contact_link)
     case survey.title
-    when "IRB_CON_Withdrawal"
-      edit_participant_participant_consent_path(
-        participant, participant.most_recent_consent, { :contact_link_id => contact_link.id })
-    when "IRB_CON_Informed_Consent", "IRB_CON_Reconsent"
+    when "IRB_CON_Informed_Consent", "IRB_CON_Reconsent", "IRB_CON_Withdrawal"
       start_consent_person_path(person, :participant_id => activity.participant.id,
                                         :survey_access_code => survey.access_code,
                                         :contact_link_id => contact_link.id)

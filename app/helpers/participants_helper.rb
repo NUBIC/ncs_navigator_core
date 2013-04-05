@@ -39,8 +39,7 @@ module ParticipantsHelper
     if activity.reconsent?
       consents = consents.select { |c| c.reconsent? }
     elsif activity.withdrawal?
-      # use the most recent consent during withdrawal activities
-      consents = [participant.most_recent_consent]
+      consents = consents.select { |c| c.withdrawal? }
     elsif activity.child_consent_birth_to_6_months?
       consents = consents.select { |c| c.child_consent_birth_to_six_months? }
     elsif activity.child_consent_6_months_to_age_of_majority?
