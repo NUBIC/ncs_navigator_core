@@ -646,7 +646,7 @@
             <label id="db755530-f332-44be-9a33-ca30c2c75975" name="instrument:3.0:ins_que_6minfantfeed_saq_ehpbhi_m2.2_v2.2"/>
             <label id="a8bcf6bf-a6b5-4431-85b7-470ee323d44e" name="instrument:3.1:ins_que_6minfantfeed_saqspec_ehpbhipbs_m3.1_v3.0"/>
             <label id="970a08c6-fc24-4fb6-b41b-56aadbdc5c39" name="instrument:3.2:ins_que_6minfantfeed_saqspec_ehpbhipbs_m3.1_v3.0"/>
-            <label id="80fabdf4-bb41-4d69-991c-a07f88b42424" name="order:02_01"/>
+            <label id="d8f804dd-f4db-42c7-9bcc-1850278a7e43" name="order:03_01"/>
             <label id="70417b9a-4248-4db5-8d2e-7445b957ff7e" name="participant_type:child"/>
             <activity-reference code="6MIFSAQ" source="NCS"/>
           </planned-activity>
@@ -781,7 +781,7 @@
             <label id="58518d32-27c2-4a8b-a1bf-007111a0a42a" name="instrument:3.0:ins_que_6mmother_int_ehpbhi_p2_v1.1_part_two"/>
             <label id="73c4b23c-14d6-4df4-8c07-08966131bf02" name="instrument:3.1:ins_que_6month_int_ehpbhipbs_m3.1_v2.0_part_two"/>
             <label id="6aabd4b4-eeab-4b29-be42-858d3d363d21" name="instrument:3.2:ins_que_6month_int_ehpbhipbs_m3.1_v2.0_part_two"/>
-            <label id="e446146c-dec6-4400-95ca-de3460bcfba2" name="order:01_03"/>
+            <label id="9b447f3d-8d11-4a95-b168-161287ae78d4" name="order:02_03"/>
             <label id="0e95a23a-174d-4606-8f1f-df18bcb7397b" name="participant_type:mother"/>
             <label id="0e2a9395-86f2-4639-acb8-fddfd588cf2d" name="references:2.0:ins_que_6mmother_int_ehpbhi_p2_v1.1_part_one"/>
             <label id="2378a03b-1335-4fa0-8957-e5b68fdfa46e" name="references:2.1:ins_que_6mmother_int_ehpbhi_p2_v1.1_part_one"/>
@@ -799,7 +799,7 @@
             <label id="ea82bb0c-7bf5-4766-9e36-bf884e4d7aa6" name="instrument:3.0:ins_que_6mmother_int_ehpbhi_p2_v1.1_six_mth_mother_detail"/>
             <label id="3a04899c-b680-4ef7-9fee-c8771e2c29ee" name="instrument:3.1:ins_que_6month_int_ehpbhipbs_m3.1_v2.0_six_mth_mother_detail"/>
             <label id="e4cb4884-6f13-4683-8862-07ccf7ed3536" name="instrument:3.2:ins_que_6month_int_ehpbhipbs_m3.1_v2.0_six_mth_mother_detail"/>
-            <label id="7fde088c-e747-45fd-92e9-983eb344479c" name="order:01_02"/>
+            <label id="8a99b01e-b135-4ac6-82b7-6873519f8434" name="order:02_02"/>
             <label id="09d8e82a-c807-4982-810f-b8323ae3553c" name="participant_type:child"/>
             <label id="921f4166-f585-40aa-8fb2-e9a2fb9d6a8e" name="references:2.0:ins_que_6mmother_int_ehpbhi_p2_v1.1_part_one"/>
             <label id="c6f20c10-40c9-47b5-b626-43d3899b228d" name="references:2.1:ins_que_6mmother_int_ehpbhi_p2_v1.1_part_one"/>
@@ -1087,7 +1087,7 @@
             <label id="4208a0c5-3370-4d75-b8ba-5dc3e4dd021d" name="instrument:3.0:ins_que_6mmother_int_ehpbhi_p2_v1.1_part_one"/>
             <label id="f74813f3-1f96-4a49-b794-67ee3f1e1546" name="instrument:3.1:ins_que_6month_int_ehpbhipbs_m3.1_v2.0_part_one"/>
             <label id="2998c86f-643c-40c6-8ace-e803cdf41fad" name="instrument:3.2:ins_que_6month_int_ehpbhipbs_m3.1_v2.0_part_one"/>
-            <label id="a9f8d6b4-b969-45f9-8c0a-0e47468e48b0" name="order:01_01"/>
+            <label id="1ece239b-6f07-4e86-813a-bc124ee3cd14" name="order:02_01"/>
             <label id="d4c058c8-4fbf-4139-83bf-7259f9c17f43" name="participant_type:mother"/>
             <activity-reference code="6MMI1" source="NCS"/>
           </planned-activity>
@@ -1544,7 +1544,7 @@
             <label id="c3738cf6-d1d8-4fb7-8499-06c7663cf91e" name="form:3.0:irb_con_informed_consent"/>
             <label id="d11f1d16-dff0-4bae-90a9-d7de4c023640" name="form:3.1:irb_con_informed_consent"/>
             <label id="1ad45de8-9016-4608-9b50-42d015386003" name="form:3.2:irb_con_informed_consent"/>
-            <label id="1d14fbeb-592e-4fc2-9ee6-59d8b27ba8b0" name="order:01_02"/>
+            <label id="a6682bed-e014-4c29-8946-da715a4a866d" name="order:01_01"/>
             <label id="efff60c4-d51e-45d1-bc50-9c7d0d69b0c6" name="participant_type:child"/>
             <activity-reference code="CC6AM" source="NCS"/>
           </planned-activity>
@@ -1895,43 +1895,6 @@
             <label id="b19186b1-7263-4acd-a473-8b58e41030ab" name="form:3.0:irb_con_informed_consent"/>
             <label id="b1b74704-38aa-4a1f-98f8-38a8c2d38792" name="form:3.1:irb_con_informed_consent"/>
             <label id="4cee5ea7-88ce-42e8-b3da-4910dd439ac3" name="form:3.2:irb_con_informed_consent"/>
-            <label id="0b099da7-0281-4ad5-abd2-eb46bf51bc58" name="order:01_02"/>
-            <label id="1382e6c6-c545-48d7-8a96-aec86d6013a2" name="participant_type:child"/>
-            <activity-reference code="CC6AM" source="NCS"/>
-          </planned-activity>
-        </period>
-      </study-segment>
-      <study-segment id="f326c501-98c7-448a-949a-ed556228fe72" name="Parental Permission for Child Participation 6 months to Age of Majority">
-        <period id="567cbdb9-4b31-4496-9c1c-7e96ecad2dcc" name="Parental Permission for Child Participation" repetitions="1" start-day="1" duration-quantity="1" duration-unit="day">
-          <planned-activity id="b3284c89-c4ec-424a-a4a4-7f97022a2c38" day="1">
-            <label id="89d14327-c208-47de-bd7e-e4333c2e4c48" name="event:informed_consent"/>
-            <label id="91ffdfea-b678-4758-8add-8106f4268aff" name="instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one"/>
-            <label id="b0f7f3f4-e186-46c8-bc3f-5de82c105427" name="instrument:3.1:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one"/>
-            <label id="c835db4e-0d7d-4392-bd35-031271701f3e" name="instrument:3.2:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one"/>
-            <label id="129b2ca3-0f35-4406-b1f6-cf49d2c97a35" name="order:00_01"/>
-            <label id="47624ddc-0aae-4069-95d2-7c88de41d987" name="participant_type:mother"/>
-            <activity-reference code="PVI" source="NCS"/>
-          </planned-activity>
-          <planned-activity id="273b95b0-d32c-4bc9-861a-21c6563ed25a" day="1">
-            <label id="5c138482-3e1d-4e97-af5c-fdb9f3fd3648" name="event:informed_consent"/>
-            <label id="4ecedff4-30c4-4230-be45-4b24225d74b5" name="instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_two"/>
-            <label id="9b15056b-4f3d-401e-88e1-802371853809" name="instrument:3.1:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_two"/>
-            <label id="b6f09c97-9119-41fd-b301-6ead5cfc8b96" name="instrument:3.2:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_two"/>
-            <label id="e8fb9d74-cc3d-4a34-94bd-94c2b0d00b13" name="order:00_02"/>
-            <label id="4f063431-ae80-4145-9339-158476747141" name="participant_type:child"/>
-            <label id="41cfa48c-958a-49f4-b0cb-6d213c384271" name="references:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one"/>
-            <label id="49b54589-143e-4511-9152-13673f5c3983" name="references:3.1:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one"/>
-            <label id="433d2650-f378-4fe7-b8cd-e21d45874f1d" name="references:3.2:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one"/>
-            <activity-reference code="PVI2" source="NCS"/>
-          </planned-activity>
-          <planned-activity id="e5cdcf16-1504-47ed-b185-573e2ea1e424" day="1">
-            <label id="b5e83436-411e-46ba-89b5-55c6e1e155df" name="event:informed_consent"/>
-            <label id="f6f2e976-ef4b-4919-ad65-54b064a06962" name="instrument:2.0:irb_con_informed_consent"/>
-            <label id="e8ebb596-4b24-403a-84ab-8ef9e3e97c34" name="instrument:2.1:irb_con_informed_consent"/>
-            <label id="6a4a3039-6893-4d57-a31e-b3da885a0e78" name="instrument:2.2:irb_con_informed_consent"/>
-            <label id="7df4010a-8e1b-4e24-b313-db975a689a02" name="instrument:3.0:irb_con_informed_consent"/>
-            <label id="1f6508d6-0d55-43e3-875e-d1bdb81e62b3" name="instrument:3.1:irb_con_informed_consent"/>
-            <label id="90a4f4c1-777d-4759-8ca6-db5930188c19" name="instrument:3.2:irb_con_informed_consent"/>
             <label id="0b099da7-0281-4ad5-abd2-eb46bf51bc58" name="order:01_02"/>
             <label id="1382e6c6-c545-48d7-8a96-aec86d6013a2" name="participant_type:child"/>
             <activity-reference code="CC6AM" source="NCS"/>

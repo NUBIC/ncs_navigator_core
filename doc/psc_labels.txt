@@ -353,26 +353,26 @@ collection:biological event:3_month instrument:3.1:ins_bio_breastmilkcoll_saqspe
 6 Month - 24
 ------------
 
-# Parental Permission for Child Participation - 6 months to age of majority
-event:6_month form:2.0:irb_con_informed_consent form:2.1:irb_con_informed_consent form:2.2:irb_con_informed_consent form:3.0:irb_con_informed_consent form:3.1:irb_con_informed_consent form:3.2:irb_con_informed_consent order:01_02 participant_type:child
-
-# 6-Month Mother Interview Part 1
-event:6_month instrument:2.0:ins_que_6mmother_int_ehpbhi_p2_v1.1_part_one instrument:2.1:ins_que_6mmother_int_ehpbhi_p2_v1.1_part_one instrument:2.2:ins_que_6mmother_int_ehpbhi_p2_v1.1_part_one instrument:3.0:ins_que_6mmother_int_ehpbhi_p2_v1.1_part_one instrument:3.1:ins_que_6month_int_ehpbhipbs_m3.1_v2.0_part_one instrument:3.2:ins_que_6month_int_ehpbhipbs_m3.1_v2.0_part_one order:01_01 participant_type:mother
-
-# 6-Month Mother Interview Mother Detail
-event:6_month instrument:2.0:ins_que_6mmother_int_ehpbhi_p2_v1.1_six_mth_mother_detail instrument:2.1:ins_que_6mmother_int_ehpbhi_p2_v1.1_six_mth_mother_detail instrument:2.2:ins_que_6mmother_int_ehpbhi_p2_v1.1_six_mth_mother_detail instrument:3.0:ins_que_6mmother_int_ehpbhi_p2_v1.1_six_mth_mother_detail instrument:3.1:ins_que_6month_int_ehpbhipbs_m3.1_v2.0_six_mth_mother_detail instrument:3.2:ins_que_6month_int_ehpbhipbs_m3.1_v2.0_six_mth_mother_detail order:01_02 participant_type:child references:2.0:ins_que_6mmother_int_ehpbhi_p2_v1.1_part_one references:2.1:ins_que_6mmother_int_ehpbhi_p2_v1.1_part_one references:2.2:ins_que_6mmother_int_ehpbhi_p2_v1.1_part_one references:3.0:ins_que_6mmother_int_ehpbhi_p2_v1.1_part_one references:3.1:ins_que_6month_int_ehpbhipbs_m3.1_v2.0_part_one references:3.2:ins_que_6month_int_ehpbhipbs_m3.1_v2.0_part_one
-
-# 6-Month Mother Interview Part 2
-event:6_month instrument:2.0:ins_que_6mmother_int_ehpbhi_p2_v1.1_part_two instrument:2.1:ins_que_6mmother_int_ehpbhi_p2_v1.1_part_two instrument:2.2:ins_que_6mmother_int_ehpbhi_p2_v1.1_part_two instrument:3.0:ins_que_6mmother_int_ehpbhi_p2_v1.1_part_two instrument:3.1:ins_que_6month_int_ehpbhipbs_m3.1_v2.0_part_two instrument:3.2:ins_que_6month_int_ehpbhipbs_m3.1_v2.0_part_two order:01_03 participant_type:mother references:2.0:ins_que_6mmother_int_ehpbhi_p2_v1.1_part_one references:2.1:ins_que_6mmother_int_ehpbhi_p2_v1.1_part_one references:2.2:ins_que_6mmother_int_ehpbhi_p2_v1.1_part_one references:3.0:ins_que_6mmother_int_ehpbhi_p2_v1.1_part_one references:3.1:ins_que_6month_int_ehpbhipbs_m3.1_v2.0_part_one references:3.2:ins_que_6month_int_ehpbhipbs_m3.1_v2.0_part_one
-
-# 6-Month Infant Feeding SAQ
-event:6_month instrument:2.0:ins_que_6minfantfeed_saq_ehpbhi_p2_v2.0 instrument:2.1:ins_que_6minfantfeed_saq_ehpbhi_m2.1_v2.1 instrument:2.2:ins_que_6minfantfeed_saq_ehpbhi_m2.2_v2.2 instrument:3.0:ins_que_6minfantfeed_saq_ehpbhi_m2.2_v2.2 instrument:3.1:ins_que_6minfantfeed_saqspec_ehpbhipbs_m3.1_v3.0 instrument:3.2:ins_que_6minfantfeed_saqspec_ehpbhipbs_m3.1_v3.0 order:02_01 participant_type:child
-
 # Participant Verification Questionnaire Part 1
 event:6_month instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one instrument:3.1:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one instrument:3.2:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one order:00_01 participant_type:mother
 
 # Participant Verification Questionnaire Part 2
 event:6_month instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_two instrument:3.1:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_two instrument:3.2:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_two order:00_02 participant_type:child references:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one references:3.1:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one references:3.2:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one
+
+# Parental Permission for Child Participation - 6 months to age of majority
+event:6_month form:2.0:irb_con_informed_consent form:2.1:irb_con_informed_consent form:2.2:irb_con_informed_consent form:3.0:irb_con_informed_consent form:3.1:irb_con_informed_consent form:3.2:irb_con_informed_consent order:01_01 participant_type:child
+
+# 6-Month Mother Interview Part 1
+event:6_month instrument:2.0:ins_que_6mmother_int_ehpbhi_p2_v1.1_part_one instrument:2.1:ins_que_6mmother_int_ehpbhi_p2_v1.1_part_one instrument:2.2:ins_que_6mmother_int_ehpbhi_p2_v1.1_part_one instrument:3.0:ins_que_6mmother_int_ehpbhi_p2_v1.1_part_one instrument:3.1:ins_que_6month_int_ehpbhipbs_m3.1_v2.0_part_one instrument:3.2:ins_que_6month_int_ehpbhipbs_m3.1_v2.0_part_one order:02_01 participant_type:mother
+
+# 6-Month Mother Interview Mother Detail
+event:6_month instrument:2.0:ins_que_6mmother_int_ehpbhi_p2_v1.1_six_mth_mother_detail instrument:2.1:ins_que_6mmother_int_ehpbhi_p2_v1.1_six_mth_mother_detail instrument:2.2:ins_que_6mmother_int_ehpbhi_p2_v1.1_six_mth_mother_detail instrument:3.0:ins_que_6mmother_int_ehpbhi_p2_v1.1_six_mth_mother_detail instrument:3.1:ins_que_6month_int_ehpbhipbs_m3.1_v2.0_six_mth_mother_detail instrument:3.2:ins_que_6month_int_ehpbhipbs_m3.1_v2.0_six_mth_mother_detail order:02_02 participant_type:child references:2.0:ins_que_6mmother_int_ehpbhi_p2_v1.1_part_one references:2.1:ins_que_6mmother_int_ehpbhi_p2_v1.1_part_one references:2.2:ins_que_6mmother_int_ehpbhi_p2_v1.1_part_one references:3.0:ins_que_6mmother_int_ehpbhi_p2_v1.1_part_one references:3.1:ins_que_6month_int_ehpbhipbs_m3.1_v2.0_part_one references:3.2:ins_que_6month_int_ehpbhipbs_m3.1_v2.0_part_one
+
+# 6-Month Mother Interview Part 2
+event:6_month instrument:2.0:ins_que_6mmother_int_ehpbhi_p2_v1.1_part_two instrument:2.1:ins_que_6mmother_int_ehpbhi_p2_v1.1_part_two instrument:2.2:ins_que_6mmother_int_ehpbhi_p2_v1.1_part_two instrument:3.0:ins_que_6mmother_int_ehpbhi_p2_v1.1_part_two instrument:3.1:ins_que_6month_int_ehpbhipbs_m3.1_v2.0_part_two instrument:3.2:ins_que_6month_int_ehpbhipbs_m3.1_v2.0_part_two order:02_03 participant_type:mother references:2.0:ins_que_6mmother_int_ehpbhi_p2_v1.1_part_one references:2.1:ins_que_6mmother_int_ehpbhi_p2_v1.1_part_one references:2.2:ins_que_6mmother_int_ehpbhi_p2_v1.1_part_one references:3.0:ins_que_6mmother_int_ehpbhi_p2_v1.1_part_one references:3.1:ins_que_6month_int_ehpbhipbs_m3.1_v2.0_part_one references:3.2:ins_que_6month_int_ehpbhipbs_m3.1_v2.0_part_one
+
+# 6-Month Infant Feeding SAQ
+event:6_month instrument:2.0:ins_que_6minfantfeed_saq_ehpbhi_p2_v2.0 instrument:2.1:ins_que_6minfantfeed_saq_ehpbhi_m2.1_v2.1 instrument:2.2:ins_que_6minfantfeed_saq_ehpbhi_m2.2_v2.2 instrument:3.0:ins_que_6minfantfeed_saq_ehpbhi_m2.2_v2.2 instrument:3.1:ins_que_6minfantfeed_saqspec_ehpbhipbs_m3.1_v3.0 instrument:3.2:ins_que_6minfantfeed_saqspec_ehpbhipbs_m3.1_v3.0 order:03_01 participant_type:child
 
 # Tracing Instrument
 event:6_month instrument:3.0:ins_que_tracing_int_ehpbhilipbs_m3.0_v1.0 instrument:3.1:ins_que_tracing_int_ehpbhilipbs_m3.0_v1.0 instrument:3.2:ins_que_tracing_int_ehpbhilipbs_m3.0_v1.0 order:90_01 participant_type:mother

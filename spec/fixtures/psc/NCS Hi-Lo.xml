@@ -1,7 +1,59 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<study xmlns="http://bioinformatics.northwestern.edu/ns/psc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" assigned-identifier="NCS Hi-Lo" last-modified-date="2013-03-26T13:46:26.271Z" xsi:schemaLocation="http://bioinformatics.northwestern.edu/ns/psc http://bioinformatics.northwestern.edu/ns/psc/psc.xsd">
+<study xmlns="http://bioinformatics.northwestern.edu/ns/psc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" assigned-identifier="NCS Hi-Lo" last-modified-date="2013-04-05T10:00:08.606Z" xsi:schemaLocation="http://bioinformatics.northwestern.edu/ns/psc http://bioinformatics.northwestern.edu/ns/psc/psc.xsd">
   <planned-calendar id="80f00ffd-5454-4193-aca5-23f289a22e9a"/>
+  <amendment name="Rev 49" date="2013-04-05" mandatory="true" released-date="2013-04-05T10:00:08.606Z" updated-date="2013-04-05T09:41:43.47Z" previous-amendment-key="2013-03-26~Rev 48">
+    <planned-activity-delta id="3613ff82-579f-42b8-8764-8c2315c2af41" node-id="575d7614-8473-4936-a9e7-356cb88dfa29">
+      <property-change id="d0cd89bb-6a0b-40a5-9ad6-9f71cc74801d" property-name="day" old-value="183" new-value="183"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="d2693b39-f1de-4268-8293-b4e49dcce4f7" node-id="98388c40-a1ae-4e26-8939-9d1f23f25a6f">
+      <property-change id="935020c4-f0a0-40d6-a713-eea6cdadf0f3" property-name="day" old-value="183" new-value="183"/>
+      <remove id="8decb50a-ae96-43a5-aba8-6ebdd86bd6ac" child-id="1d14fbeb-592e-4fc2-9ee6-59d8b27ba8b0"/>
+      <add id="01330b1b-14a0-454a-ba38-e354130c020e">
+        <label id="a6682bed-e014-4c29-8946-da715a4a866d" name="order:01_01"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="c2be270b-6c4c-4dd9-9188-ad6cfdf6baed" node-id="01be00a9-bcf1-4d40-918e-d41d65ccaac6">
+      <property-change id="6e066437-0472-46d0-953b-f665c527e7e7" property-name="day" old-value="183" new-value="183"/>
+      <remove id="ac6baca6-a8fa-4206-85ad-2739415592aa" child-id="80fabdf4-bb41-4d69-991c-a07f88b42424"/>
+      <add id="daed19d9-5bfc-443f-965d-47bdfa0f57e2">
+        <label id="d8f804dd-f4db-42c7-9bcc-1850278a7e43" name="order:03_01"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="17625e30-becb-4aef-95cb-5eb68fea8715" node-id="837251ed-7843-40ab-a9e6-7e2f891b470d">
+      <property-change id="967c93df-4215-4d5b-a3ef-33222d1cb057" property-name="day" old-value="183" new-value="183"/>
+      <remove id="548425b0-c817-4e10-9faa-62266f8c696d" child-id="7fde088c-e747-45fd-92e9-983eb344479c"/>
+      <add id="76fcdf26-e2bc-42e4-aa71-0a4204c3fb70">
+        <label id="8a99b01e-b135-4ac6-82b7-6873519f8434" name="order:02_02"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="d3fb70b8-a57f-4f5a-82b4-2f6d21996318" node-id="2617458d-e457-4909-a2ed-b0f54fdef877">
+      <property-change id="b1de93ff-bd77-4f1b-a7ba-1eaf5a0d6e18" property-name="day" old-value="183" new-value="183"/>
+      <remove id="8220e5a8-96bf-4b0c-b0e5-9bbe713babeb" child-id="a9f8d6b4-b969-45f9-8c0a-0e47468e48b0"/>
+      <add id="b0d5975b-74e2-4be4-9d36-b569ad041342">
+        <label id="1ece239b-6f07-4e86-813a-bc124ee3cd14" name="order:02_01"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="81bceece-17b5-477f-85c0-f716715d544d" node-id="5872a8c5-441f-4a2d-ad24-fbe12edc9331">
+      <property-change id="a06e1ed2-f03e-4c90-8ba3-7c9b5ae3a334" property-name="day" old-value="183" new-value="183"/>
+      <remove id="bdef953f-906f-44e6-9c0e-6345dbf437ce" child-id="e446146c-dec6-4400-95ca-de3460bcfba2"/>
+      <add id="347e569f-20c5-4b16-bc7a-107b707a0e02">
+        <label id="9b447f3d-8d11-4a95-b168-161287ae78d4" name="order:02_03"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="00f11243-156f-459a-af78-a7cc47567f60" node-id="8d5b1f92-a09f-45ee-881b-a450a9e7507d">
+      <property-change id="0f491eb0-bd8e-4d6c-bf3f-04cd26a140f1" property-name="day" old-value="183" new-value="183"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="76034aa8-955e-4806-9930-0820d3548119" node-id="216913d7-bd3d-4d85-bce0-a2d4491a1669">
+      <property-change id="bd70a639-86e5-4a44-9ef7-dd0e566d2814" property-name="day" old-value="183" new-value="183"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="0bbf887f-3429-48c2-80fa-cb307bf5ebcd" node-id="12c9ed5e-e261-42e4-93ef-a9baa13e0458">
+      <property-change id="4af84bb1-c94f-4ab5-9b36-a7a111981779" property-name="day" old-value="183" new-value="183"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="97eea1ad-7beb-4293-b082-4a9dca56eda6" node-id="a02cda13-de2b-486b-94c3-4df4386e5045">
+      <property-change id="fb1f26af-8147-44f7-b9f8-1da582813d0a" property-name="day" old-value="183" new-value="183"/>
+    </planned-activity-delta>
+  </amendment>
   <amendment name="Rev 48" date="2013-03-26" mandatory="true" released-date="2013-03-26T13:46:26.271Z" updated-date="2013-03-26T13:26:57.956Z" previous-amendment-key="2013-03-25~Rev 47">
     <planned-activity-delta id="ea27cf50-0b5b-423a-9dc8-108f7230e368" node-id="d1525606-d2eb-4292-acf8-e72819bcd73f">
       <property-change id="967d0f38-5474-4a1a-b819-48ee321d7270" property-name="day" old-value="1" new-value="1"/>
