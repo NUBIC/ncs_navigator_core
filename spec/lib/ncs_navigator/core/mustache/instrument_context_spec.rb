@@ -294,54 +294,29 @@ module NcsNavigator::Core::Mustache
           instrument_context.single_birth?.should be_true
         end
 
-        it "returns true if post-natal event with no response for MULTIPLE and participant has one child" do
-          survey = Factory(:survey, :title => "INS_QUE_6Month_INT_EHPBHIPBS_M3.1_V2.0_PART_TWO",
-                              :access_code => "ins_que_6month_int_ehpbhipbs_m3.1_v2.0_part_two")
-          survey_section = Factory(:survey_section, :survey_id => survey.id)
+        it "returns true for event with no response for MULTIPLE and participant has one child" do
           rs.participant = Factory(:participant)
           person_child = Factory(:person, :person_dob => "09/15/2012")
           rs.participant.participant_person_links << Factory(:participant_person_link, :person => person_child, :relationship_code => 8) # 8 Child
-          take_survey(survey, rs) do |r|
-            male = mock(NcsCode, :local_code => 1)
-          end
           instrument_context.single_birth?.should be_true
         end
 
-        it "returns false if post-natal event with no response for MULTIPLE and participant has more than one child" do
-          survey = Factory(:survey, :title => "INS_QUE_6Month_INT_EHPBHIPBS_M3.1_V2.0_PART_TWO",
-                              :access_code => "ins_que_6month_int_ehpbhipbs_m3.1_v2.0_part_two")
-          survey_section = Factory(:survey_section, :survey_id => survey.id)
+        it "returns false for event with no response for MULTIPLE and participant has more than one child" do
           rs.participant = Factory(:participant)
           person_child_1 = Factory(:person, :person_dob => "09/15/2012")
           rs.participant.participant_person_links << Factory(:participant_person_link, :person => person_child_1, :relationship_code => 8) # 8 Child
           person_child_2 = Factory(:person, :person_dob => "09/15/2012")
           rs.participant.participant_person_links << Factory(:participant_person_link, :person => person_child_2, :relationship_code => 8) # 8 Child
 
-          take_survey(survey, rs) do |r|
-            male = mock(NcsCode, :local_code => 1)
-          end
           instrument_context.single_birth?.should be_false
         end
 
-        it "returns true if post-natal event with no response for MULTIPLE and no information on participant" do
-          survey = Factory(:survey, :title => "INS_QUE_6Month_INT_EHPBHIPBS_M3.1_V2.0_PART_TWO",
-                              :access_code => "ins_que_6month_int_ehpbhipbs_m3.1_v2.0_part_two")
-          survey_section = Factory(:survey_section, :survey_id => survey.id)
-
-          take_survey(survey, rs) do |r|
-            male = mock(NcsCode, :local_code => 1)
-          end
+        it "returns true for event with no response for MULTIPLE and no information on participant" do
           instrument_context.single_birth?.should be_true
         end
 
-        it "returns true if post-natal event with no response for MULTIPLE and no information on participant's children" do
-          survey = Factory(:survey, :title => "INS_QUE_6Month_INT_EHPBHIPBS_M3.1_V2.0_PART_TWO",
-                              :access_code => "ins_que_6month_int_ehpbhipbs_m3.1_v2.0_part_two")
-          survey_section = Factory(:survey_section, :survey_id => survey.id)
+        it "returns true for event with no response for MULTIPLE and no information on participant's children" do
           rs.participant = Factory(:participant)
-          take_survey(survey, rs) do |r|
-            male = mock(NcsCode, :local_code => 1)
-          end
           instrument_context.single_birth?.should be_true
         end
 
