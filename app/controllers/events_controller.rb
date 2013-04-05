@@ -59,6 +59,8 @@ class EventsController < ApplicationController
             if @event.screener_event? && person = @event.participant.try(:person)
               EligibilityAdjudicator.adjudicate_eligibility(person)
             end
+          elsif @event.informed_consent? && participant.withdrawn?
+            participant.unenroll!(psc, "Participant has withdrawn from the study.")
           else
             resp = participant.advance(psc)
             notice += " Scheduled next event [#{participant.next_study_segment}]" if resp

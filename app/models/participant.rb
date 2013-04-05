@@ -843,10 +843,10 @@ class Participant < ActiveRecord::Base
   # 1. updates the enrollment status for the participant
   # 2. cancels or deletes the pending events
   # 3. creates a ppg status history record of type withdrawn
-  # @see Participant#unenroll
+  # @see Participant#update_enrollment_status
   # @see Participant#create_withdrawn_ppg_status
   def withdraw_from_study!(consent = most_recent_consent)
-    self.unenroll(false)
+    self.update_enrollment_status(false)
     create_withdrawn_ppg_status(consent.try(:consent_date))
     self.children.each do |child|
       child.participant.try(:withdraw_from_study!, consent)

@@ -189,6 +189,7 @@ describe OperationalDataExtractor::InformedConsent do
         c.consent_withdraw_reason.should == wdraw2
         c.consent_withdraw_date.should == Date.parse(date)
         c.who_wthdrw_consent.should == who
+        c.person_wthdrw_consent.should == response_set.person
       end
 
       it "updates the enrollment status" do

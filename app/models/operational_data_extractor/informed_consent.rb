@@ -67,6 +67,10 @@ module OperationalDataExtractor
       end
       update_enrollment_status(consent)
 
+      if consent.withdrawal? && consent.person_wthdrw_consent.nil?
+        consent.person_wthdrw_consent = response_set.person
+      end
+
       consent.save!
     end
 
