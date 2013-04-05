@@ -248,6 +248,32 @@ describe ScheduledActivity do
 
   end
 
+  describe "#survey_root" do
+
+    let(:scheduled_activity) { ScheduledActivity.new(:labels => labels) }
+
+    before do
+      NcsNavigatorCore.mdes.stub(:version).and_return "9.9"
+    end
+
+    describe "for a form activity" do
+      let(:form) { "the_form_survey_title" }
+      let(:labels) { "form:9.9:#{form}" }
+      it "returns the form: label value" do
+        scheduled_activity.survey_root.should == form
+      end
+    end
+
+    describe "for an instrument activity" do
+      let(:instrument) { "the_instrument_survey_title" }
+      let(:labels) { "instrument:9.9:#{instrument}" }
+      it "returns the instrument: label value" do
+        scheduled_activity.survey_root.should == instrument
+      end
+    end
+
+  end
+
   context "sorting" do
 
     let(:sc1) { ScheduledActivity.new(:labels => "event:a order:01_01") }

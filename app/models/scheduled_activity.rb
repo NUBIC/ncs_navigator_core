@@ -188,7 +188,7 @@ class ScheduledActivity
   # Returns the survey title that this scheduled activity is a part of.
   # @return String
   def survey_root
-    @references.blank? ? @instrument : @references
+    @references.blank? ? survey_identifier : @references
   end
 
   ##
