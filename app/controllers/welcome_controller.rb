@@ -59,7 +59,7 @@ class WelcomeController < ApplicationController
       create_pregnancy_screener_event_record(participant)
       redirect_to new_person_contact_path(person)
     else
-      destroy_participant_and_redirect(participant, resp)
+      destroy_participant_and_redirect(participant, person, resp)
     end
   end
 
@@ -77,7 +77,7 @@ class WelcomeController < ApplicationController
         create_pbs_eligibility_screener_event_record(participant)
         redirect_to new_person_contact_path(person)
       else
-        destroy_participant_and_redirect(participant, resp, false)
+        destroy_participant_and_redirect(participant, person, resp, false)
       end
     end
   end
@@ -111,7 +111,7 @@ class WelcomeController < ApplicationController
 
 
 
-    def destroy_participant_and_redirect(participant, resp, destroy_person = true)
+    def destroy_participant_and_redirect(participant, person, resp, destroy_person = true)
       ppl = participant.participant_person_links.where(:relationship_code => 1).first
       ppl.destroy if ppl
       participant.destroy
