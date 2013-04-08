@@ -19,14 +19,14 @@ class ContactLinksController < ApplicationController
 
   # GET /contact_links/1/edit
   def edit
-    @contact_link = ContactLink.find(params[:id])
-    @event        = @contact_link.event
-    @instrument   = @contact_link.instrument
-    @response_sets= @instrument.response_sets if @instrument
+    @contact_link  = ContactLink.find(params[:id])
+    @event         = @contact_link.event
+    @instrument    = @contact_link.instrument
+    @response_sets = @instrument.response_sets if @instrument
 
     @person  = @contact_link.person
     @contact = @contact_link.contact
-    @surveys  = @response_sets.collect { |resp_set| resp_set.survey } if @response_sets
+    @surveys = @response_sets.collect { |resp_set| resp_set.survey } if @response_sets
 
     # Some events (e.g. provider recruitment do not have a participant)
     if @event.participant
