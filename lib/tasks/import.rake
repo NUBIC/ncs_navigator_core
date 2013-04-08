@@ -237,6 +237,22 @@ namespace :import do
     end
   end
 
+  desc 'Register Participants to the PSC'
+  task :register_to_psc, [:participant_csv] => [:psc_setup, :warehouse_setup, :environment, :set_whodunnit] do |t, args|
+    fail 'Please specify the path to the participant csv' unless args[:participant_csv]
+
+    require 'ncs_navigator/core'
+    options = {}
+    options[:psc] = psc
+    options[:wh_config] = import_wh_config
+
+    processor = NcsNavigator::Core::PscRegistrationProcessor.new(
+      File.open(args[:participant_csv]),
+      options
+    )
+    processor.register_to_psc
+  end
+
   desc 'Looks for participants with "extra" events'
   task :find_extra_events => :environment do
     Participant.includes(:events).each do |p|
