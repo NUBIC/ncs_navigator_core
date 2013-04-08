@@ -1,11 +1,17 @@
 # -*- coding: utf-8 -*-
 
-
 require 'spec_helper'
 
 module NcsNavigator::Core::Warehouse
   describe UnusedOperationalPassthrough, :warehouse do
-    let(:wh_config)   { NcsNavigator::Warehouse::Configuration.new }
+    let(:wh_config) {
+      NcsNavigator::Warehouse::Configuration.new.tap do |config|
+        config.log_file = File.join(Rails.root, 'log/wh.log')
+        config.set_up_logs
+        config.output_level = :quiet
+      end
+    }
+
     let(:passthrough) { UnusedOperationalPassthrough.new(wh_config) }
 
     describe '#create_emitter', :slow do

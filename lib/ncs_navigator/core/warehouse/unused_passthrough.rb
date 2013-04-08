@@ -5,6 +5,13 @@ require 'ncs_navigator/core'
 
 module NcsNavigator::Core::Warehouse
   module UnusedPassthrough
+    OPS_TABLES = %w(
+      staff staff_language staff_cert_training staff_weekly_expense
+      staff_exp_mngmnt_tasks staff_exp_data_cllctn_tasks outreach
+      outreach_lang2 outreach_race outreach_target outreach_eval
+      outreach_staff
+    )
+
     def initialize(wh_config)
       @wh_config = wh_config
     end
