@@ -22,7 +22,7 @@ module ResponseSetPrepopulation
 
           answer = case reference_identifier
                   when "prepopulated_is_p_type_fifteen"
-                    is_participant_p_type_15?(question, response_set.person.participant)
+                    is_participant_p_type_15?(question, participant)
                   else
                     nil
                   end

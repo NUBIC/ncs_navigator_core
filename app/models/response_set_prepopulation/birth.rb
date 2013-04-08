@@ -52,7 +52,7 @@ module ResponseSetPrepopulation
                     event_type = NcsCode.for_list_name_and_local_code("EVENT_TYPE_CL1", "15")
                     answer_for(question, participant.try(:completed_event?, event_type))
                   when "prepopulated_is_p_type_fifteen"
-                    is_participant_p_type_15?(question, response_set.person.participant)
+                    is_participant_p_type_15?(question, participant)
                   else
                     nil
                   end
