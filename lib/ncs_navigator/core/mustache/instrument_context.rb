@@ -376,6 +376,10 @@ module NcsNavigator::Core::Mustache
       child_first_name("the child")
     end
 
+    def child_first_name_the_child_upcase
+      child_first_name_the_child.upcase
+    end
+
     def child_first_name_the_child_the_children
       single_birth? ? child_first_name_the_child : "the children"
     end
