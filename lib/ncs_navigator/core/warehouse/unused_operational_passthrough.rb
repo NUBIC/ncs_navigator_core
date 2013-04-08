@@ -7,13 +7,6 @@ module NcsNavigator::Core::Warehouse
   class UnusedOperationalPassthrough
     include UnusedPassthrough
 
-    STAFF_PORTAL_TABLES = %w(
-      staff staff_language staff_cert_training staff_weekly_expense
-      staff_exp_mngmnt_tasks staff_exp_data_cllctn_tasks outreach
-      outreach_lang2 outreach_race outreach_target outreach_eval
-      outreach_staff
-    )
-
     SAMPLING_UNIT_TABLES = %w(study_center psu ssu tsu)
 
     def filename
@@ -23,7 +16,7 @@ module NcsNavigator::Core::Warehouse
     def unused_tables
       operational_tables -
         SAMPLING_UNIT_TABLES -
-        STAFF_PORTAL_TABLES -
+        OPS_TABLES -
         operational_enumerator.record_producers.collect { |rp| rp.model(@wh_config) }.collect(&:mdes_table_name)
     end
 
