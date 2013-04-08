@@ -162,6 +162,14 @@ namespace :import do
     pass.import
   end
 
+  desc 'Pass staff and outreach data through to an XML file'
+  task :archive_staff => [:warehouse_setup, :environment] do
+    require 'ncs_navigator/core'
+
+    pass = NcsNavigator::Core::Warehouse::ArchivalStaffAndOutreachPassthrough.new(import_wh_config)
+    pass.import
+  end
+
   desc 'Schedule upcoming events for followed participants if needed'
   task :schedule_participant_events => [:psc_setup, :environment, :set_whodunnit, :find_followed_participants_for_psc]  do
     ps_to_advance = expected_followed_participants_for_psc.select { |p| p.pending_events.empty? }
