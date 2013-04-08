@@ -58,8 +58,9 @@
             %h4
               Reports
             - if recruitment_strategy.pbs?
-              %p
-                No reports for PBS strategy. Work In Progress.
+              %ul
+                %li
+                  = link_to "Case Status Report", {:controller => "reports", :action => "case_status"}, :class => "report_link icon_link"
             - else
               %ul
                 %li
