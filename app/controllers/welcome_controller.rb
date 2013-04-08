@@ -4,8 +4,8 @@
 class WelcomeController < ApplicationController
 
   def index
-    if scheduled_activities = get_scheduled_activities_report(:current_user => current_user.username)
-      @events = join_scheduled_events_by_date(parse_scheduled_activities(scheduled_activities))
+    if @scheduled_activities = get_scheduled_activities_report(:current_user => current_user.username)
+      @events = join_scheduled_events_by_date(parse_scheduled_activities(@scheduled_activities))
     end
   end
 
@@ -122,8 +122,8 @@ class WelcomeController < ApplicationController
     end
 
     def get_scheduled_activities_report(options = {})
-      @start_date = 1.day.ago.to_date.to_s
-      @end_date   = params[:end_date] || 6.weeks.from_now.to_date.to_s
+      @start_date = Date.new(2013,4,8)#Date.today.beginning_of_week
+      @end_date   = params[:end_date] || Date.new(2013,4,13)#Date.today.end_of_week
       criteria = { :start_date => @start_date, :end_date => @end_date, :current_user => nil }
       criteria.merge!(options) if options
 

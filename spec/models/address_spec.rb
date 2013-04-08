@@ -53,17 +53,18 @@ describe Address do
   end
 
   it "should describe itself" do
-    addr.to_s.should == "#{addr.state}"
+    state_name = "#{addr.state}".downcase.capitalize
+    addr.to_s.should == state_name
 
     addr.address_one = "1 Main"
     addr.city = "Detroit"
-    addr.to_s.should == "1 Main Detroit, #{addr.state}"
+    addr.to_s.should == "1 Main Detroit, #{state_name}"
 
     addr.zip = "48220"
-    addr.to_s.should == "1 Main Detroit, #{addr.state} 48220"
+    addr.to_s.should == "1 Main Detroit, #{state_name} 48220"
 
     addr.zip4 = "1111"
-    addr.to_s.should == "1 Main Detroit, #{addr.state} 48220-1111"
+    addr.to_s.should == "1 Main Detroit, #{state_name} 48220-1111"
   end
 
   it { should belong_to(:person) }

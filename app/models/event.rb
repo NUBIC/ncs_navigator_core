@@ -61,7 +61,6 @@ class Event < ActiveRecord::Base
   validate :disposition_code_is_in_disposition_category
 
   before_validation :strip_time_whitespace
-  before_create :set_start_time
   before_save :set_psc_ideal_date
 
   POSTNATAL_EVENTS = [
@@ -322,14 +321,6 @@ class Event < ActiveRecord::Base
     self.event_end_time.strip! if self.event_end_time
   end
   private :strip_time_whitespace
-
-  # Set event start time to now if blank and start date exists
-  def set_start_time
-    if self.event_start_time.blank? && !self.event_start_date.blank?
-      self.event_start_time = Time.now
-    end
-  end
-  private :set_start_time
 
   # Set event psc_ideal_date to the event start date if it is blank
   def set_psc_ideal_date

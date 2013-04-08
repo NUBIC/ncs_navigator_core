@@ -98,7 +98,7 @@ class Address < ActiveRecord::Base
     addr << address_two
     addr << unit
     city_state << city
-    city_state << state.to_s if state && state.local_code != -4
+    city_state << state.to_s.downcase.capitalize if state && state.local_code != -4
     addr << city_state.reject { |n| n.blank? || n.to_i < 0 }.join(', ')
 
     if zip4.blank? || zip4.to_i < 0

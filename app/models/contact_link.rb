@@ -96,7 +96,7 @@ class ContactLink < ActiveRecord::Base
   end
 
   def build_staff_list
-    users = Aker.authority.find_users
+    users = Aker.configuration.authorities.find { |auth| NcsNavigator::Authorization::Core::Authority === auth }.find_users
     Hash[users.map{|key| [key.identifiers[:staff_id], key.full_name]}]
   end
 

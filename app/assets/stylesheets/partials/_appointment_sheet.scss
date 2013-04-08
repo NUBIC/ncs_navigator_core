@@ -1,0 +1,70 @@
+#appointment-sheet {
+  margin-left: 15em;
+}
+
+#event-date-and-time {
+  font-size: 110%;
+  font-weight: 600;
+  margin-top: 1em;
+}
+
+#address {
+  margin-top: 1em;
+}
+
+#phone {
+  margin-top: 1em;
+}
+
+#instrument-list {
+  margin-top: 22em;
+  margin-left: 5em;
+  font-size: 130%;
+}
+
+#language {
+  margin-top: 1em;
+}
+
+#consents {
+  margin-left: 1em;
+}
+
+#children {
+  margin-top: 1em;
+}
+
+#sex {
+  margin-top: 0.5em;
+}
+
+#next-event {
+  margin-top: 1em;
+  margin-top: 1em;
+  margin-left: 3em;
+  font-size: 130%;
+}
+
+.column-container {
+  font-size: 120%;
+
+}
+
+.large-and-bolded {
+  font-size: 110%;
+  font-weight: bold;
+}
+
+.column-one {
+  @include column(8);
+  @include colborder();
+  margin-top: 1em;
+  margin-left: 5em;
+}
+
+.column-two {
+  @include column(7);
+  @include colborder();
+  margin-top: 1em;
+
+}
