@@ -1354,10 +1354,10 @@ describe Participant do
         participant.should be_moved_to_high_intensity_arm
       end
 
-      it "closes all pending events" do
+      it "destroys all pending events" do
         [@lo_i_quex, @informed_consent].each { |e| participant.pending_events.should include(e) }
         participant.switch_arm
-        participant.pending_events.should == []
+        participant.pending_events.should be_empty
       end
 
       it "puts the participant into following_low_intensity when switching from high to low" do
@@ -1976,7 +1976,7 @@ describe Participant do
               describe 'and whose due date is more than 60 days from today' do
                 before do
                   # Set participant's due date to today + 61 days.
-                  p.ppg_details.create!(:orig_due_date => Date.today + 61.days)
+                  p.ppg_details.create!(:orig_due_date => (Date.today + 61.days).to_s)
                 end
 
                 it 'schedules Pregnancy Visit 2' do

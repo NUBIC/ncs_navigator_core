@@ -1027,7 +1027,7 @@ class Participant < ActiveRecord::Base
     self.save!
 
     set_switch_arm_state(val)
-    close_pending_events
+    destroy_pending_events
   end
 
   def father
@@ -1505,13 +1505,11 @@ class Participant < ActiveRecord::Base
     end
 
     ##
-    # Sets the end date of all pending events
-    # to the start date for the event (or today)
-    def close_pending_events
-      pending_events.each do |e|
-        end_date = e.event_start_date.blank? ? Date.today : e.event_start_date
-        e.update_attribute(:event_end_date, end_date)
-      end
+    # Destroys all pending events
+    # @see Participant#pending_events
+    # @see ActiveRecord::Base#destroy
+    def destroy_pending_events
+      pending_events.each { |e| e.destroy }
     end
 
     def set_switch_arm_state(hi_intensity)
