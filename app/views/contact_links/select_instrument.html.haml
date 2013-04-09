@@ -9,7 +9,8 @@
 
   = render 'instruments_for_upcoming_events', :initial_instrument_for_contact => true
 
-- unless @event.consent_event?
+- # Non-Interview Reports for SCs after 3.1 use the internal_surveys/IRB_CON_NonInterviewReport.rb survey
+- if mdes_version_is_before?(3.1) && !@event.consent_event?
   .page_section
     %h3
       Non-Interview Report
