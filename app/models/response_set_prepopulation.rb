@@ -22,6 +22,7 @@ module ResponseSetPrepopulation
     ParticipantVerification,
     PbsParticipantVerification,
     PbsEligibilityScreener,
+    Postnatal,
     PregnancyScreener,
     PregnancyVisit,
     TracingModule,
