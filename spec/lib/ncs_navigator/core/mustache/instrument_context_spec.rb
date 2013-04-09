@@ -155,6 +155,25 @@ module NcsNavigator::Core::Mustache
           instrument_context.p_phone_number.should == expected
         end
       end
+
+      describe ".p_email_address" do
+        it "returns [EMAIL ADDRESS] if there is no person" do
+          instrument_context.p_email_address.should == "[EMAIL ADDRESS]"
+        end
+
+        it "returns [EMAIL ADDRESS] if person doesn't have email" do
+          person = mock_model(Person, :primary_email => nil)
+          rs.person = person
+          instrument_context.p_email_address.should == "[EMAIL ADDRESS]"
+        end
+
+        it "returns primary_email for the person" do
+          email = Factory(:email, :email => "email@email.com")
+          person = mock_model(Person, :primary_email => email)
+          rs.person = person
+          instrument_context.p_email_address.should == email.to_s
+        end
+      end
     end
 
     shared_context 'a saved response set' do
