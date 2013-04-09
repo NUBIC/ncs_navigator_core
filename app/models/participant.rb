@@ -1505,11 +1505,11 @@ class Participant < ActiveRecord::Base
     end
 
     ##
-    # Destroys all pending events
+    # Destroys all pending events without contact history.
     # @see Participant#pending_events
     # @see ActiveRecord::Base#destroy
     def destroy_pending_events
-      pending_events.each { |e| e.destroy }
+      pending_events.each { |e| e.destroy if e.contact_links.blank? }
     end
 
     def set_switch_arm_state(hi_intensity)
