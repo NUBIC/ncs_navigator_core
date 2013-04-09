@@ -441,7 +441,7 @@ describe ParticipantConsent do
 
       it "builds responses based on the participant_consent data" do
         rs = ParticipantConsent.find(pc.id).response_set
-        rs.should_not be_nil
+        rs.responses.should_not be_blank
       end
 
     end
