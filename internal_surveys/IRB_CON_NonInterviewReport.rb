@@ -5,7 +5,7 @@ survey "IRB_CON_NonInterviewReport", :instrument_type => "-5", :description => "
     # Should this be anything other than REFUSAL ?
     q_nir_type_person_code "Description of Non-Interview of Person",
       :pick => :one,
-      :data_export_identifier => "NON_INTERVIEW_REPORT.NIR_TYPE_PERSON_CODE"
+      :data_export_identifier => "nir_type_person_code"
       a_1 "COGNITIVE DISABILITY"
       a_2 "DECEASED"
       a_3 "REFUSAL"
@@ -15,18 +15,18 @@ survey "IRB_CON_NonInterviewReport", :instrument_type => "-5", :description => "
       a_neg_5 "OTHER"
 
     q_nir_type_person_other "Description of Non-Interview of Person (other)",
-      :data_export_identifier => "NON_INTERVIEW_REPORT.NIR_TYPE_PERSON_OTHER"
+      :data_export_identifier => "nir_type_person_other"
       a_nir_type_person_other :string
       dependency :rule => "A"
       condition_A :q_nir_type_person_code, "==", :a_neg_5
 
     q_nir "Report Text",
-      :data_export_identifier => "NON_INTERVIEW_REPORT.NIR"
+      :data_export_identifier => "nir"
       a_nir :text
 
     q_who_refused_code "Relationship of informant to participant",
       :pick => :one,
-      :data_export_identifier => "NON_INTERVIEW_REPORT.WHO_REFUSED_CODE"
+      :data_export_identifier => "who_refused_code"
       a_1 "PARTICIPANT/SELF"
       a_2 "PARENT OR LEGAL GUARDIAN"
       a_3 "SPOUSE"
@@ -37,14 +37,14 @@ survey "IRB_CON_NonInterviewReport", :instrument_type => "-5", :description => "
       a_neg_5 "OTHER"
 
     q_who_refused_other "Relationship of informant to participant (Other)",
-      :data_export_identifier => "NON_INTERVIEW_REPORT.WHO_REFUSED_OTHER"
+      :data_export_identifier => "who_refused_other"
       a_who_refused_other :string
       dependency :rule => "A"
       condition_A :q_who_refused_code, "==", :a_neg_5
 
     q_refuser_strength_code "Strength/Intensity of Refusal",
       :pick => :one,
-      :data_export_identifier => "NON_INTERVIEW_REPORT.REFUSER_STRENGTH_CODE"
+      :data_export_identifier => "refuser_strength_code"
       a_1 "MILD, NON-HOSTILE"
       a_2 "FIRM, NON-HOSTILE"
       a_3 "HOSTILE"
@@ -53,7 +53,7 @@ survey "IRB_CON_NonInterviewReport", :instrument_type => "-5", :description => "
 
     q_refusal_action_code "Recommended next steps for case",
       :pick => :one,
-      :data_export_identifier => "NON_INTERVIEW_REPORT.REFUSAL_ACTION_CODE"
+      :data_export_identifier => "refusal_action_code"
       a_1 "RECOMMENDED NO MORE CONTACTS; SUPERVISOR REVIEW NEEDED"
       a_2 "FURTHER ATTEMPTS RECOMMENDED"
       a_neg_7 "NOT APPLICABLE"
@@ -61,7 +61,7 @@ survey "IRB_CON_NonInterviewReport", :instrument_type => "-5", :description => "
     repeater "Refusal Non-Interview Report" do
       q_refusal_nir_reason "Refusal Reason",
         :pick => :one,
-        :data_export_identifier => "REFUSAL_NON_INTERVIEW_REPORT.REFUSAL_REASON_CODE"
+        :data_export_identifier => "refusal_reason_code"
         a_1 "TOO BUSY/NO TIME"
         a_2 "CONFIDENTIALITY/PRIVACY ISSUES"
         a_3 "NOT INTERESTED"
@@ -77,7 +77,7 @@ survey "IRB_CON_NonInterviewReport", :instrument_type => "-5", :description => "
 
       q_refusal_nir_reason_other "Refusal Reason (Other)",
         :help_text => "Only enter if Refusal Reason above is 'OTHER'",
-        :data_export_identifier => "REFUSAL_NON_INTERVIEW_REPORT.REFUSAL_REASON_OTHER"
+        :data_export_identifier => "refusal_reason_other"
         a_refusal_nir_reason_other :string
     end
   end

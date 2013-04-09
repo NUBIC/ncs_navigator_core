@@ -4,18 +4,18 @@ module OperationalDataExtractor
   class NonInterviewReport < Base
 
     NON_INTERVIEW_REPORT_MAP = {
-      "NON_INTERVIEW_REPORT.NIR_TYPE_PERSON_CODE"       => "nir_type_person_code",
-      "NON_INTERVIEW_REPORT.NIR_TYPE_PERSON_OTHER"      => "nir_type_person_other",
-      "NON_INTERVIEW_REPORT.NIR"                        => "nir",
-      "NON_INTERVIEW_REPORT.WHO_REFUSED_CODE"           => "who_refused_code",
-      "NON_INTERVIEW_REPORT.WHO_REFUSED_OTHER"          => "who_refused_other",
-      "NON_INTERVIEW_REPORT.REFUSER_STRENGTH_CODE"      => "refuser_strength_code",
-      "NON_INTERVIEW_REPORT.REFUSAL_ACTION_CODE"        => "refusal_action_code",
+      "nir_type_person_code"       => "nir_type_person_code",
+      "nir_type_person_other"      => "nir_type_person_other",
+      "nir"                        => "nir",
+      "who_refused_code"           => "who_refused_code",
+      "who_refused_other"          => "who_refused_other",
+      "refuser_strength_code"      => "refuser_strength_code",
+      "refusal_action_code"        => "refusal_action_code",
     }
 
     REFUSAL_NON_INTERVIEW_REPORT_MAP = {
-      "REFUSAL_NON_INTERVIEW_REPORT.REFUSAL_REASON_CODE"  => "refusal_reason_code",
-      "REFUSAL_NON_INTERVIEW_REPORT.REFUSAL_REASON_OTHER" => "refusal_reason_other",
+      "refusal_reason_code"  => "refusal_reason_code",
+      "refusal_reason_other" => "refusal_reason_other",
     }
 
     def maps
@@ -38,8 +38,8 @@ module OperationalDataExtractor
         end
       end
 
-      refusal_reason_responses = collect_pick_any_responses("REFUSAL_NON_INTERVIEW_REPORT.REFUSAL_REASON_CODE")
-      refusal_reason_other_responses = collect_pick_any_responses("REFUSAL_NON_INTERVIEW_REPORT.REFUSAL_REASON_OTHER")
+      refusal_reason_responses = collect_pick_any_responses("refusal_reason_code")
+      refusal_reason_other_responses = collect_pick_any_responses("refusal_reason_other")
 
       refusal_reason_responses.each do |r|
         value = response_value(r)
