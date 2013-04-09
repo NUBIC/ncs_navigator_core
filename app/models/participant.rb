@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 # == Schema Information
+# Schema version: 20130408184301
 #
 # Table name: participants
 #
-#  being_followed            :boolean          default(FALSE)
+#  being_followed            :boolean          default(TRUE)
 #  being_processed           :boolean          default(FALSE)
 #  created_at                :datetime
 #  enroll_date               :date
