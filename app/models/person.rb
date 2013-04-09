@@ -475,6 +475,10 @@ class Person < ActiveRecord::Base
     1
   end
 
+  def adjudicate_eligibility
+    EligibilityAdjudicator.adjudicate_eligibility(self)
+  end
+
   private
 
     def dob

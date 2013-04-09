@@ -81,6 +81,7 @@ module Field
     include Field::Merge
     include Field::PscSync
     include Field::Scheduling
+    include Field::ProtocolEligibility
 
     attr_accessor :contacts
     attr_accessor :events
@@ -90,6 +91,7 @@ module Field
     attr_accessor :question_response_sets
     attr_accessor :response_sets
     attr_accessor :responses
+    attr_accessor :eligible_participants
 
     ##
     # The staff ID of the user building the superposition.
@@ -110,7 +112,8 @@ module Field
       self.question_response_sets = {}
       self.response_sets = {}
       self.responses = {}
-
+      self.eligible_participants = []
+      
       self.logger = Rails.logger
     end
 
