@@ -55,24 +55,29 @@ describe PpgDetail do
 
       date = Date.parse("2525-01-09")
 
-      dt = 9.months.since(date).strftime("%Y%m%d")
+      dt = 9.months.since(date).strftime("%Y-%m-%d")
       ppg.update_due_date(dt)
       ppg.due_date.should == dt
       ppg.orig_due_date.should == dt
 
-      dt2 = 8.months.since(date).strftime("%Y%m%d")
+      dt2 = 8.months.since(date).strftime("%Y-%m-%d")
       ppg.update_due_date(dt2)
       ppg.orig_due_date.should == dt
       ppg.due_date_2.should == dt2
       ppg.due_date.should == dt2
 
-      dt3 = 7.months.since(date).strftime("%Y%m%d")
+      dt3 = 7.months.since(date).strftime("%Y-%m-%d")
       ppg.update_due_date(dt3)
       ppg.orig_due_date.should == dt
       ppg.due_date_2.should == dt2
       ppg.due_date_3.should == dt3
       ppg.due_date.should == dt3
 
+    end
+
+    it "doesn't return invalid dates" do
+      ppg = Factory(:ppg_detail, :orig_due_date => '2012-02-09', :due_date_2 => '9666-96-96', :due_date_3 => '9666-96-96')
+      ppg.due_date.should == '2012-02-09'
     end
   end
 

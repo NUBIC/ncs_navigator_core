@@ -58,7 +58,7 @@ class PpgDetail < ActiveRecord::Base
   # Return the most recently updated due date that is a valid date
   # @return [String]
   def due_date
-    [due_date_3, due_date_2, orig_due_date].compact.select { |d| d != '9777-97-97' }.first
+    [due_date_3, due_date_2, orig_due_date].compact.detect { |d| Date.valid_date?(*d.split('-').map(&:to_i)) }
   end
 
   ##
