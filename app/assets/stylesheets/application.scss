@@ -1,11 +1,10 @@
 // Include some nice mixins
 @import "compass/css3";
 
-@import "jquery-ui.custom";
+@import "jquery.ui.all";
 @import "jquery-ui-timepicker-addon";
 @import "surveyor/reset";
 @import "surveyor/dateinput";
-@import "surveyor/jquery-ui.custom";
 @import "surveyor/jquery-ui-timepicker-addon";
 @import "surveyor";
 @import "custom";
