@@ -237,36 +237,36 @@ class ParticipantConsent < ActiveRecord::Base
       :user_id => self.participant.person.id, :participant_id => self.participant_id)
 
     respond(rs) do |r|
-      r.using_data_export_identifiers do |r|
-        set_answer(r, 'consent_type', withdrawn? ? '3' : '1')
-        set_answer(r, 'consent_form_type_code')
-        set_answer(r, 'consent_given_code')
-        set_answer_value(r, 'consent_date')
-        set_answer_value(r, 'consent_version')
-        set_answer_value(r, 'consent_expiration')
-        set_answer(r, 'who_consented_code')
-        set_answer(r, 'consent_reconsent_code')
-        set_answer(r, 'consent_reconsent_reason_code')
-        set_answer_value(r, 'consent_reconsent_reason_other')
-        set_answer(r, 'consent_withdraw_code')
-        set_answer(r, 'consent_withdraw_reason_code')
-        set_answer_value(r, 'consent_withdraw_date')
-        set_answer(r, 'who_wthdrw_consent_code')
-        set_answer(r, 'collect_specimen_consent', (participant_consent_samples.count > 0) ? '1' : '2')
+      r.using_data_export_identifiers do |ra|
+        set_answer(ra, 'consent_type', withdrawn? ? '3' : '1')
+        set_answer(ra, 'consent_form_type_code')
+        set_answer(ra, 'consent_given_code')
+        set_answer_value(ra, 'consent_date')
+        set_answer_value(ra, 'consent_version')
+        set_answer_value(ra, 'consent_expiration')
+        set_answer(ra, 'who_consented_code')
+        set_answer(ra, 'consent_reconsent_code')
+        set_answer(ra, 'consent_reconsent_reason_code')
+        set_answer_value(ra, 'consent_reconsent_reason_other')
+        set_answer(ra, 'consent_withdraw_code')
+        set_answer(ra, 'consent_withdraw_reason_code')
+        set_answer_value(ra, 'consent_withdraw_date')
+        set_answer(ra, 'who_wthdrw_consent_code')
+        set_answer(ra, 'collect_specimen_consent', (participant_consent_samples.count > 0) ? '1' : '2')
 
         self.participant_consent_samples.each do |s|
           if s.sample_consent_given_code
             a = "sample_consent_given_code_#{s.sample_consent_type_code}"
             v = s.sample_consent_given_code.to_s
-            r.answer a, v
+            ra.answer a, v
           end
         end
 
-        set_answer(r, 'consent_language_code')
-        set_answer(r, 'consent_translate_code')
-        set_answer(r, 'reconsideration_script_use_code')
+        set_answer(ra, 'consent_language_code')
+        set_answer(ra, 'consent_translate_code')
+        set_answer(ra, 'reconsideration_script_use_code')
 
-        set_answer_value(r, 'consent_comments')
+        set_answer_value(ra, 'consent_comments')
       end
     end
 

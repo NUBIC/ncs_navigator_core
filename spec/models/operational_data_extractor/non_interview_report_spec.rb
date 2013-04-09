@@ -29,11 +29,11 @@ describe OperationalDataExtractor::NonInterviewReport do
         response_set = non_interview_report.response_set
 
         take_survey(survey, response_set) do |r|
-          r.a "NON_INTERVIEW_REPORT.NIR_TYPE_PERSON_CODE", typ
-          r.a "NON_INTERVIEW_REPORT.NIR", "nir", :value => "nir text"
-          r.a "NON_INTERVIEW_REPORT.WHO_REFUSED_CODE", who
-          r.a "NON_INTERVIEW_REPORT.REFUSER_STRENGTH_CODE", str
-          r.a "NON_INTERVIEW_REPORT.REFUSAL_ACTION_CODE", act
+          r.a "nir_type_person_code", typ
+          r.a "nir", "nir", :value => "nir text"
+          r.a "who_refused_code", who
+          r.a "refuser_strength_code", str
+          r.a "refusal_action_code", act
         end
 
         response_set.responses.reload

@@ -20,6 +20,11 @@ class NonInterviewReportsController < ApplicationController
   # GET /non_interview_reports/1/edit
   def edit
     @non_interview_report = NonInterviewReport.find(params[:id])
+    if response_set = @non_interview_report.response_set
+      redirect_to edit_my_survey_path(
+        :survey_code => response_set.survey.access_code,
+        :response_set_code => response_set.access_code)
+    end
   end
 
   # POST /non_interview_reports

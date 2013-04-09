@@ -33,6 +33,10 @@ module ApplicationHelper
     NcsNavigatorCore.mdes.version.to_f >= version
   end
 
+  def mdes_version_is_before?(version = 3.0)
+    NcsNavigatorCore.mdes.version.to_f < version
+  end
+
   # text helpers
 
   def blank_safe(str, default = "___")
