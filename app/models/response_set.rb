@@ -45,6 +45,15 @@ class ResponseSet < ActiveRecord::Base
   # Prepopulates this response set.
   #
   # This method does not save generated responses.  Use {#save} for that.
+  #
+  # If a ResponseSet is to be associated with a Participant, Instrument, or
+  # other operational data, those associations MUST be set before calling this
+  # method.  If those associations are NOT present before prepopulation occurs,
+  # the relevant operational data will not be reflected in the ResponseSet's
+  # responses.
+  #
+  # It is RECOMMENDED that you eager-load those associations for more
+  # predictable space and time characteristics.
   def prepopulate
     populators_for(self).each(&:run)
   end
