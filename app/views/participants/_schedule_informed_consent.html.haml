@@ -1,8 +1,6 @@
 - if permit?(Role::FIELD_STAFF, Role::PHONE_STAFF)
   .schedule_informed_consent
-    - if @participant.reconsented?
-      -# TODO: determine what to do here? is there anything?
-    - elsif @participant.consented?
+    - if @participant.reconsented? || @participant.consented?
       %b
         Schedule Reconsent
       .instructional_note
