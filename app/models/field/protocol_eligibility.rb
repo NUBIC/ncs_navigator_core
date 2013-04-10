@@ -6,9 +6,12 @@ module Field
 
       current_participants.each(&:reload)
 
-      ineligible_participants, self.eligible_participants = current_participants.partition{ |p| p.ineligible? }
+      ps = Participant.where(:id => current_participants.map(&:id)).includes(:participant_person_links => :person)
+      ineligible, eligible = ps.partition(&:ineligible?)
       
-      ineligible_participants.map(&:person).compact.each(&:adjudicate_eligibility)
+      ineligible.map(&:person).each(&:adjudicate_eligibility)
+
+      self.ineligible_participants = ineligible
     end
   end
 end
