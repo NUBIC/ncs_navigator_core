@@ -5,7 +5,7 @@ module Field
   # Expects its host object to respond to:
   #
   # * {#login_to_psc} with a {PatientStudyCalendar} instance
-  # * {#current_participants} with a list of {Participant} objects
+  # * {#eligible_participants} with a list of {Participant} objects
   module Scheduling
     include PscSync
 
