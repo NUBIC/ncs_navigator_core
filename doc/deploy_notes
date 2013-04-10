@@ -81,6 +81,21 @@
   $ STUDY_CENTER=deploy_site USER=deploy_user cap staging deploy:unblock
   $ exit
 
+=====
+1.5.0
+=====
+
+8. Update the NCS code lists
+
+  $ ssh deploy_site
+
+  $ cd /var/www/apps/ncs_navigator_core/current/
+
+  $ bundle exec rake mdes:code_lists:load_from_yaml
+
+  $ touch tmp/restart.txt
+
+
 [Documentation]
 
 ** Update the wiki page with the newly deployed versions and date **
