@@ -27,7 +27,7 @@ module ParticipantsHelper
   # @param [ScheduledActivity]
   # @param [Survey]
   # @return [Array<ParticipantConsent>]
-  def consents_for_activity(activity, survey)
+  def consents_for_activity(activity, survey, contact_link)
     return [] unless activity.consent_activity?
     participant = activity.participant
     # find those consent records that are associated with a response_set
@@ -37,15 +37,15 @@ module ParticipantsHelper
     consents = survey_consents.select { |pc| pc.response_set.survey.title == survey.title }
     # and filter by activity_type
     if activity.reconsent?
-      consents = consents.select { |c| c.reconsent? }
+      consents = consents.select { |c| c.reconsent? && c.consent_event == contact_link.event }
     elsif activity.withdrawal?
-      consents = consents.select { |c| c.withdrawal? }
+      consents = consents.select { |c| c.withdrawal? && c.consent_event == contact_link.event }
     elsif activity.child_consent_birth_to_6_months?
-      consents = consents.select { |c| c.child_consent_birth_to_six_months? }
+      consents = consents.select { |c| c.child_consent_birth_to_six_months? && c.consent_event == contact_link.event }
     elsif activity.child_consent_6_months_to_age_of_majority?
-      consents = consents.select { |c| c.child_consent_six_month_to_age_of_majority? }
+      consents = consents.select { |c| c.child_consent_six_month_to_age_of_majority? && c.consent_event == contact_link.event }
     else
-      consents = consents.select { |c| !c.reconsent? && !c.withdrawal? }
+      consents = consents.select { |c| !c.reconsent? && !c.withdrawal? && c.consent_event == contact_link.event }
     end
     consents
   end

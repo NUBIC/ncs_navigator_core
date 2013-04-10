@@ -813,12 +813,15 @@ class Event < ActiveRecord::Base
   # @param[Date]
   # @param[Response]
   def self.create_event_placeholder_and_cancel_activities(psc, participant, date, resp)
+    should_cancel_consent = true
     if resp && resp.success?
       study_segment_identifier = PatientStudyCalendar.extract_scheduled_study_segment_identifier(resp.body)
       psc.unique_label_ideal_date_pairs_for_scheduled_segment(participant, study_segment_identifier).each do |lbl, dt|
         code = NcsCode.find_event_by_lbl(lbl)
         if code
           Event.create_placeholder_record(participant, dt, code.local_code, study_segment_identifier)
+          # do not cancel consent activities if this is a standalone consent event
+          should_cancel_consent = false if code.local_code == Event.informed_consent_code
         else
           Rails.logger.warn("Cannot find event for MDES version '#{NcsNavigatorCore.mdes.version}' for psc activity label '#{lbl}'")
         end
@@ -831,7 +834,8 @@ class Event < ActiveRecord::Base
         psc.cancel_non_matching_mdes_version_instruments(participant, study_segment_identifier, date,
           "Does not include an instrument for MDES version #{NcsNavigatorCore.mdes.version}.")
       end
-      if participant.consented?
+      # do not cancel consent activities if informed consent - 10
+      if participant.consented? && should_cancel_consent
         psc.cancel_consent_activities(participant, study_segment_identifier, date,
           "Participant has already consented.")
       end
