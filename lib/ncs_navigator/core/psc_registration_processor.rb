@@ -16,8 +16,8 @@ class NcsNavigator::Core::PscRegistrationProcessor
       process_participant(row[:p_id])
     end
 
-    wh_config.shell.say_line("Preparing records for PSC sync...")
-    NcsNavigator::Core::Warehouse::OperationalImporterPscSync.new(@psc, @wh_config, keygen).import
+    @wh_config.shell.say_line("Preparing records for PSC sync...")
+    NcsNavigator::Core::Warehouse::OperationalImporterPscSync.new(@psc, @wh_config, keygen).import('psc_registration')
   end
 
   def keygen
@@ -31,7 +31,7 @@ class NcsNavigator::Core::PscRegistrationProcessor
       @sync_loader.cache_participant(participant)
       participant.events.each do |e|
         @sync_loader.cache_event(e, e.participant)
-        event.contact_links.each do |cl|
+        e.contact_links.each do |cl|
           @sync_loader.cache_contact_link(cl, cl.contact, cl.event, cl.participant)
         end
       end

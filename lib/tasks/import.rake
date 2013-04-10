@@ -242,13 +242,10 @@ namespace :import do
     fail 'Please specify the path to the participant csv' unless args[:participant_csv]
 
     require 'ncs_navigator/core'
-    options = {}
-    options[:psc] = psc
-    options[:wh_config] = import_wh_config
-
     processor = NcsNavigator::Core::PscRegistrationProcessor.new(
       File.open(args[:participant_csv]),
-      options
+      psc,
+      import_wh_config
     )
     processor.register_to_psc
   end
