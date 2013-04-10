@@ -31,20 +31,10 @@ module ResponseSetPrepopulation
   # Instantiates and returns all appropriate populators for the given
   # ResponseSet.
   #
-  # The given ResponseSet MUST satisfy all of the below criteria:
+  # #populators_for places no expectations on a ResponseSet's associations.
+  # However, _prepopulators_ may.
   #
-  # 1. It must reference a persisted {Survey}.
-  # 2. It must reference a persisted {Participant}.
-  # 3. It must reference an {Instrument}.
-  #
-  # An ArgumentError will be raised if the given ResponseSet does not satisfy
-  # all of the above criteria.
-  #
-  # The returned populators will all respond to #run.  Each populator will
-  # build zero or more Responses associated with the ResponseSet.
-  #
-  # When using this method, you SHOULD ensure that the ResponseSet's Survey,
-  # Participant, and Instrument associations are eager-loaded.
+  # @see ResponseSet#prepopulate
   def populators_for(response_set)
     POPULATORS.select { |p| p.applies_to?(response_set) }.map { |p| p.new(response_set) }
   end
