@@ -79,6 +79,12 @@ describe PpgDetail do
       ppg = Factory(:ppg_detail, :orig_due_date => '2012-02-09', :due_date_2 => '9666-96-96', :due_date_3 => '9666-96-96')
       ppg.due_date.should == '2012-02-09'
     end
+
+    it "ignores empty strings" do
+      ppg = Factory(:ppg_detail, :orig_due_date => '2012-02-09', :due_date_2 => '', :due_date_3 => '9666-96-96')
+      ppg.due_date.should == '2012-02-09'
+    end
+
   end
 
   it { should belong_to(:participant) }
