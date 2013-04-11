@@ -56,11 +56,29 @@ module Reporting
       if rpt = psc.scheduled_activities_report(options)
         if rows = rpt["rows"]
           rows.each do |row|
-            scheduled_study_segment_ids << row["scheduled_study_segment"]["grid_id"] if row["scheduled_study_segment"]
+            if row["scheduled_study_segment"] && matches_date_range(options, row)
+              scheduled_study_segment_ids << row["scheduled_study_segment"]["grid_id"]
+            end
           end
         end
       end
       scheduled_study_segment_ids.uniq
+    end
+
+    ##
+    # Check if the ["scheduled_study_segment"]["start_date"]
+    # is between the options[:start_date] and [:end_date]
+    # @param options [Hash<Symbol,String>]
+    # @param row [Hash<Hash(String,String)>]
+    # @return [Boolean]
+    def matches_date_range(options, row)
+      begin
+        date = row["scheduled_study_segment"]["start_date"]
+        date >= options[:start_date] && date <= options[:end_date]
+      rescue
+        # if date cannot be parsed return false
+        false
+      end
     end
 
     ##
