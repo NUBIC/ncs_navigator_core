@@ -143,42 +143,62 @@ class ParticipantsController < ApplicationController
   ##
   # Schedule an Informed Consent segment in PSC
   def schedule_informed_consent_event
-    resp = Event.schedule_general_informed_consent(psc, @participant, params[:date])
-    msg = resp.success? ? 'Informed Consent event scheduled for Participant.' : 'Could not schedule informed consent'
-    redirect_to(participant_path(@participant), :notice => msg)
+    schedule_consent_event('Informed Consent', :schedule_general_informed_consent, params[:date])
   end
 
   ##
   # Schedule a Reconsent segment in PSC
   def schedule_reconsent_event
-    resp = Event.schedule_reconsent(psc, @participant, params[:date])
-    msg = resp.success? ? 'Reconsent event scheduled for Participant.' : 'Could not schedule informed consent'
-    redirect_to(participant_path(@participant), :notice => msg)
+    schedule_consent_event('Re-Consent', :schedule_reconsent, params[:date])
   end
 
   ##
   # Schedule a Withdrawal segment in PSC
   def schedule_withdrawal_event
-    resp = Event.schedule_withdrawal(psc, @participant, params[:date])
-    msg = resp.success? ? 'Withdrawal event scheduled for Participant.' : 'Could not schedule informed consent'
-    redirect_to(participant_path(@participant), :notice => msg)
+    schedule_consent_event('Withdrawal', :schedule_withdrawal, params[:date])
   end
 
   ##
   # Schedule a Child Consent Birth to 6 month segment in PSC
   def schedule_child_consent_birth_to_six_months_event
-    resp = Event.schedule_child_consent_birth_to_six_months(psc, @participant, params[:date])
-    msg = resp.success? ? 'Child Consent event scheduled for Participant.' : 'Could not schedule informed consent'
-    redirect_to(participant_path(@participant), :notice => msg)
+    schedule_consent_event('Child Consent', :schedule_child_consent_birth_to_six_months, params[:date])
   end
 
   ##
   # Schedule a Child Consent 6 month to Age of Majority segment in PSC
   def schedule_child_consent_six_month_to_age_of_majority_event
-    resp = Event.schedule_child_consent_six_month_to_age_of_majority(psc, @participant, params[:date])
-    msg = resp.success? ? 'Child Consent event scheduled for Participant.' : 'Could not schedule informed consent'
-    redirect_to(participant_path(@participant), :notice => msg)
+    schedule_consent_event('Child Consent', :schedule_child_consent_six_month_to_age_of_majority, params[:date])
   end
+
+  def schedule_consent_event(typ, method, date)
+    if date_available_for_informed_consent_event?(date)
+      resp = Event.send(method, psc, @participant, date)
+      msg = resp.success? ? "#{typ} event scheduled for Participant." : 'Could not schedule informed consent'
+      redirect_to(participant_path(@participant), :notice => msg)
+    else
+      msg = "Informed Consent Event already scheduled for that date. Please choose another date."
+      redirect_to(participant_path(@participant), :flash => { :warning => msg } )
+    end
+  end
+  private :schedule_consent_event
+
+  ##
+  # Check if an informed consent event exists on the given date.
+  # Return false if an event is already scheduled on that date.
+  # @param date [String]
+  # @return [Boolean]
+  def date_available_for_informed_consent_event?(date)
+    begin
+      dt = Date.parse(date)
+      ics = @participant.events.where(:event_type_code => Event.informed_consent_code)
+      ics_dates = ics.map(&:psc_ideal_date)
+      !ics_dates.include?(dt)
+    rescue ArgumentError
+      # if date cannot be parsed do not allow user to schedule the informed consent event
+      false
+    end
+  end
+  private :date_available_for_informed_consent_event?
 
   # GET /participants/new
   # GET /participants/new.json
