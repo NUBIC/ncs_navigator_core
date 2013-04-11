@@ -26,6 +26,7 @@ module ParticipantsHelper
   # the activity type (InformedConsent, Reconsent, or Withdrawal)
   # @param [ScheduledActivity]
   # @param [Survey]
+  # @param [ContactLink]
   # @return [Array<ParticipantConsent>]
   def consents_for_activity(activity, survey, contact_link)
     return [] unless activity.consent_activity?
@@ -48,6 +49,21 @@ module ParticipantsHelper
       consents = consents.select { |c| !c.reconsent? && !c.withdrawal? && c.consent_event == contact_link.event }
     end
     consents
+  end
+
+  ##
+  # Find those non_interview_report records that are associated with a response_set
+  # and then match the non-interview_report to the current survey and series of contacts
+  # @param [Person]
+  # @param [Survey]
+  # @param [ContactLink]
+  # @return [Array<NonInterviewReport>]
+  def non_interview_reports_for_activity(person, survey, contact_link)
+    person.non_interview_reports.select do |nir|
+      !nir.response_set.nil? &&
+      nir.response_set.survey.title == survey.title &&
+      contact_link.event.contacts.include?(nir.contact)
+    end
   end
 
   ##

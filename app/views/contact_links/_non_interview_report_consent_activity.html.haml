@@ -1,12 +1,10 @@
 - person = contact_link.person
--# find those non_interview_report records that are associated with a response_set
-- survey_nirs = person.non_interview_reports.select{ |nir| !nir.response_set.nil? }
--# then match the non-interview_report to the current survey
-- nirs = survey_nirs.select { |nir| nir.response_set.survey.title == survey.title }
+- nirs = non_interview_reports_for_activity(person, survey, contact_link)
 - if nirs.blank?
-  -# if there are no existing nirs this activity has not been done
-  -# cf. the contact_links/_activity.html.haml to see how current activity acts differently
-  = render "future_activity", :activity => activity, :survey => survey
+  - cls = (@current_activity && (@current_activity == activity)) ? "star_link icon_link" : "asterisk_link icon_link"
+  = link_to activity_link_name(activity),
+    determine_consent_activity_path(person, activity, survey, contact_link),
+    :class => cls
 - else
   - nirs.each do |nir|
     - path = edit_person_non_interview_report_path(person, nir, { :contact_link_id => contact_link.id })
