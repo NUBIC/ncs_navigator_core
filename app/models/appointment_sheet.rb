@@ -27,21 +27,17 @@ class AppointmentSheet < ActiveRecord::Base
   end
 
   def cell_phone
-    Telephone.where(:person_id => @person.id,
-                    :phone_type_code => 3,
-                    :phone_rank_code => 1).first
-                                          .phone_nbr
-                                          .insert(-5, '-')
-                                          .insert(-9, '-')
+    phone = Telephone.where(:person_id => @person.id,
+                            :phone_type_code => 3,
+                            :phone_rank_code => 1).first
+    phone.phone_nbr.insert(-5, '-').insert(-9, '-') if phone
   end
 
   def home_phone
-    Telephone.where(:person_id => @person.id,
-                    :phone_type_code => 1,
-                    :phone_rank_code => 1).first
-                                          .phone_nbr
-                                          .insert(-5, '-')
-                                          .insert(-9, '-')
+    phone = Telephone.where(:person_id => @person.id,
+                            :phone_type_code => 1,
+                            :phone_rank_code => 1).first
+    phone.phone_nbr.insert(-5, '-').insert(-9, '-') if phone
   end
 
   def participant_full_name
@@ -53,7 +49,8 @@ class AppointmentSheet < ActiveRecord::Base
   end
 
   def participant_language
-    NcsCode.for_list_name_and_local_code('LANGUAGE_CL2', @person.language_code).display_text
+    language = NcsCode.for_list_name_and_local_code('LANGUAGE_CL2', @person.language_code)
+    language.display_text unless @person.language_code == -4
   end
 
   def mothers_consents
@@ -136,7 +133,7 @@ class AppointmentSheet < ActiveRecord::Base
 
   def next_event
     the_next_event = @person.participant.pending_events.all.second
-    NcsCode.for_list_name_and_local_code('EVENT_TYPE_CL1', the_next_event.event_type_code).display_text
+    NcsCode.for_list_name_and_local_code('EVENT_TYPE_CL1', the_next_event.event_type_code).display_text if the_next_event
   end
 
   def children
