@@ -164,7 +164,7 @@ class Merge < ActiveRecord::Base
             superposition.prepare_for_sync(self)
             superposition.sync_with_psc
 
-            # ...then determine eligibility
+            # then determine eligibility...
             superposition.determine_eligibility
 
             # ...and schedule new events.
