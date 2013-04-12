@@ -5,7 +5,7 @@ module Field
 
       current_participants.each(&:reload)
       
-      adj = EligibilityAdjudicator.adjudicate_eligibility_and_disqualify_ineligible(current_participants)
+      adj = Participant.adjudicate_eligibility_and_disqualify_ineligible(*current_participants)
       
       self.eligible_participants = adj[:eligible]
     end
