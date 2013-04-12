@@ -11,7 +11,7 @@
 require 'spec_helper'
 
 describe AppointmentSheet do
-  before do
+  before :all do
     person = Factory(:person,
                      :person_id => "k47r-7z99-aw5e",
                      :first_name => "Samantha",
