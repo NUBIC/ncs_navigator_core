@@ -141,10 +141,16 @@ module NcsNavigator::Core
       end
 
       describe 'for related data' do
-        let!(:threem_contact) { Factory(:contact) }
         let!(:threem_event) { Factory(:event, :participant => mother, :event_type_code => 23) }
-        let!(:threem_contact_link) {
-          Factory(:contact_link, :person => mother.person, :event => threem_event, :instrument => threem_interview)
+
+        let!(:threem_contact_1) { Factory(:contact) }
+        let!(:threem_contact_link_1) {
+          Factory(:contact_link, :contact => threem_contact_1, :person => mother.person, :event => threem_event, :instrument => threem_interview)
+        }
+
+        let!(:threem_contact_2) { Factory(:contact) }
+        let!(:threem_contact_link_2) {
+          Factory(:contact_link, :contact => threem_contact_2, :person => mother.person, :event => threem_event, :instrument => threem_interview)
         }
 
         let!(:threem_interview) { Factory(:instrument) }
@@ -192,6 +198,13 @@ module NcsNavigator::Core
           )
         }
 
+        let!(:child1_consent_event) { Factory(:event, :event_type_code => 10, :participant => child1) }
+        let!(:mother_consent_event) { Factory(:event, :event_type_code => 10, :participant => mother) }
+
+        let!(:child1_consent_cl) { Factory(:contact_link, :event => child1_consent_event, :contact => consent_contact) }
+        let!(:mother_consent_cl) { Factory(:contact_link, :event => mother_consent_event, :contact => consent_contact) }
+        let!(:child1_consent_during_threem) { Factory(:contact_link, :event => child1_consent_event, :contact => threem_contact_1) }
+
         let!(:consent_contact) {
           Factory(:contact)
         }
@@ -236,15 +249,15 @@ module NcsNavigator::Core
           'person.addresses.first',
           'person.emails.first',
           'person.telephones.first',
-          'person.contact_links.first',
-          'person.contact_links.first.event',
-          'person.contact_links.first.contact',
-          'person.contact_links.first.instrument',
-          "person.contact_links.first.instrument.#{response_sets_for_survey '3M Mother'}.first",
-          "person.contact_links.first.instrument.#{response_sets_for_survey '3M Child'}.first",
-          "person.contact_links.first.instrument.#{response_sets_for_survey '3M Mother'}.first.responses.first",
-          "person.contact_links.first.instrument.#{response_sets_for_survey '3M Mother'}.first.responses.last",
-          "person.contact_links.first.instrument.#{response_sets_for_survey '3M Mother'}.first.person",
+          'person.contact_links.order(:contact_id).first',
+          'person.contact_links.order(:contact_id).first.event',
+          'person.contact_links.order(:contact_id).first.contact',
+          'person.contact_links.order(:contact_id).first.instrument',
+          "person.contact_links.order(:contact_id).first.instrument.#{response_sets_for_survey '3M Mother'}.first",
+          "person.contact_links.order(:contact_id).first.instrument.#{response_sets_for_survey '3M Child'}.first",
+          "person.contact_links.order(:contact_id).first.instrument.#{response_sets_for_survey '3M Mother'}.first.responses.first",
+          "person.contact_links.order(:contact_id).first.instrument.#{response_sets_for_survey '3M Mother'}.first.responses.last",
+          "person.contact_links.order(:contact_id).first.instrument.#{response_sets_for_survey '3M Mother'}.first.person",
           'person.races.first',
           'person.household_person_links.first',
           'person.household_person_links.first.household_unit',
@@ -260,12 +273,12 @@ module NcsNavigator::Core
           'participant_consents.first.participant_consent_samples.first',
           'participant_consent_samples.first',
           'events.last',
-          'events.where(:event_type_code => 23).first.contact_links.last',
-          'events.where(:event_type_code => 23).first.contact_links.last.contact',
-          'events.where(:event_type_code => 23).first.contact_links.last.instrument',
-          "events.where(:event_type_code => 23).first.contact_links.last.instrument.#{response_sets_for_survey '3M Mother'}.first",
-          "events.where(:event_type_code => 23).first.contact_links.last.instrument.#{response_sets_for_survey '3M Mother'}.first.responses.first",
-          "events.where(:event_type_code => 23).first.contact_links.last.instrument.#{response_sets_for_survey '3M Mother'}.first.responses.last",
+          'events.where(:event_type_code => 23).first.contact_links.order(:contact_id).last',
+          'events.where(:event_type_code => 23).first.contact_links.order(:contact_id).last.contact',
+          'events.where(:event_type_code => 23).first.contact_links.order(:contact_id).last.instrument',
+          "events.where(:event_type_code => 23).first.contact_links.order(:contact_id).last.instrument.#{response_sets_for_survey '3M Mother'}.first",
+          "events.where(:event_type_code => 23).first.contact_links.order(:contact_id).last.instrument.#{response_sets_for_survey '3M Mother'}.first.responses.first",
+          "events.where(:event_type_code => 23).first.contact_links.order(:contact_id).last.instrument.#{response_sets_for_survey '3M Mother'}.first.responses.last",
           'response_sets.first',
           'response_sets.first.responses.first'
         ].each do |exp|

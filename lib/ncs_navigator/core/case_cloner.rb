@@ -203,6 +203,8 @@ module NcsNavigator::Core
         reject { |assoc| assoc.options[:through] }.
         # don't change versions in clone
         reject { |assoc| assoc.name == :versions }.
+        # Break loop, maybe.
+        reject { |assoc| assoc.active_record == Contact && assoc.name == :contact_links }.
         each do |assoc|
         log_at log_depth, "- recursing for has_many #{assoc.name.inspect}"
 
@@ -220,19 +222,24 @@ module NcsNavigator::Core
     def clone_single_value_association(macro, record, clone, log_depth)
       associations = record.class.reflect_on_all_associations(macro).
         # exclude Surveyor's weird, invented "User" association
-        reject { |assoc| assoc.active_record == ResponseSet && assoc.name == :user }
+        reject { |assoc| assoc.active_record == ResponseSet && assoc.name == :user }.
+        # Instrument#contact_link is a malformed association -- there are actually many CLs for an instrument potentially
+        reject { |assoc| assoc.active_record == Instrument && assoc.name == :contact_link }
       associations.each do |assoc|
         log_at log_depth, "- recursing for #{assoc.macro} #{assoc.name.inspect}"
 
         source_value = record.send(assoc.name)
-        clone.send("#{assoc.name}=", clone_record(source_value, log_depth + 1))
+        unless source_value.nil?
+          log_at log_depth, "- source is #{record_key(source_value)}"
+          clone.send("#{assoc.name}=", clone_record(source_value, log_depth + 1))
+        end
 
         log_at log_depth, "- done with #{assoc.name.inspect}"
       end
     end
 
     def log_at(log_depth, message)
-      Rails.logger.debug ['    ' * log_depth, message].join
+      Rails.logger.debug ['|   ' * log_depth, message].join
     end
 
     def psc_sync_keygen
