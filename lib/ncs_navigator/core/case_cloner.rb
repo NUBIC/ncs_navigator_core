@@ -96,6 +96,41 @@ module NcsNavigator::Core
       end
     end
 
+    def sync_to_psc(user, cloned_participants)
+      sync_loader = Psc::SyncLoader.new(psc_sync_keygen)
+
+      # Load the information for syncing
+      cloned_participants.reject { |p| p.p_type_code == 6 }.each do |p|
+        sync_loader.cache_participant(p)
+
+        p.events.each do |event|
+          sync_loader.cache_event(event, p)
+        end
+
+        p.events.collect(&:contact_links).flatten.uniq.each do |cl|
+          sync_loader.cache_contact_link(cl, cl.contact, cl.event, p)
+        end
+      end
+
+      # execute the sync
+      NcsNavigator::Core::Warehouse::OperationalImporterPscSync(
+        PatientStudyCalendar.new(user),
+        ImportConfiguration.new(Rails.logger),
+        psc_sync_keygen
+      ).import(PaperTrail.whodunnit) # use audit information from outside
+    end
+
+    ##
+    # Clone the records in Cases for the participant, then sync the new records
+    # to PSC. Returns same mapping as {#clone_cases_side}.
+    def clone(user)
+      cases_side = clone_cases_side
+
+      sync_to_psc(user, clone_cases_side.values)
+
+      cases_side
+    end
+
     private
 
     def cloned_record_cache
@@ -198,6 +233,28 @@ module NcsNavigator::Core
 
     def log_at(log_depth, message)
       Rails.logger.debug ['    ' * log_depth, message].join
+    end
+
+    def psc_sync_keygen
+      @psc_sync_keygen ||= lambda { |*c|
+        ([['clone', @root_p_id, SecureRandom.hex].join('_')] + c).join(':')
+      }
+    end
+
+    ##
+    # Just enough configuration for OperationalImporterPscSync.
+    #
+    # Copied from Field::PscSync. TODO: eliminate the wh_config dependency in OperationalImporterPscSync.
+    #
+    # @private
+    class ImportConfiguration
+      attr_reader :log
+      attr_reader :shell
+
+      def initialize(logger)
+        @log = logger
+        @shell = NcsNavigator::Warehouse::UpdatingShell::Quiet.new
+      end
     end
   end
 end
