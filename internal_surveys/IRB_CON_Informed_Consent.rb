@@ -39,7 +39,7 @@ survey "IRB_CON_Informed_Consent", :instrument_type => "-5", :description => "In
     group "Informed Consent" do
       dependency :rule => "A or B"
       condition_A :q_consent_type, "==", :a_1
-      condition_A :q_consent_type, "==", :a_2
+      condition_B :q_consent_type, "==", :a_2
 
       q_consent_expiration "Consent Expiration Date",
         :data_export_identifier => "consent_expiration"
