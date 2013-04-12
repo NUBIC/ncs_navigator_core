@@ -56,8 +56,8 @@ class EventsController < ApplicationController
           # do not set participant
         elsif participant = @event.participant
           if participant.ineligible?
-            if @event.screener_event? && person = @event.participant.try(:person)
-              person.adjudicate_eligibility
+            if @event.screener_event?
+              Participant.adjudicate_eligibility_and_disqualify_ineligible(participant)
             end
           else
             resp = participant.advance(psc)

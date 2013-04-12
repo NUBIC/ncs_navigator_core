@@ -5,13 +5,10 @@ module Field
       psc = login_to_psc
 
       current_participants.each(&:reload)
-
-      ps = Participant.where(:id => current_participants.map(&:id)).includes(:participant_person_links => :person)
-      ineligible, eligible = ps.partition(&:ineligible?)
       
-      ineligible.map(&:person).each(&:adjudicate_eligibility)
-
-      self.ineligible_participants = ineligible
+      adj = EligibilityAdjudicator.adjudicate_eligibility_and_disqualify_ineligible(current_participants)
+      
+      self.eligible_participants = adj[:eligible]
     end
   end
 end
