@@ -1,6 +1,5 @@
 module Field
   module ProtocolEligibility
-
     def determine_eligibility
       psc = login_to_psc
 
