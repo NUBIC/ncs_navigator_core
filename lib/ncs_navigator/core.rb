@@ -4,6 +4,7 @@ module NcsNavigator
   module Core
     autoload :VERSION,                  'ncs_navigator/core/version'
 
+    autoload :CaseCloner,                 'ncs_navigator/core/case_cloner'
     autoload :Configuration,              'ncs_navigator/core/configuration'
     autoload :Field,                      'ncs_navigator/core/field'
     autoload :FollowedParticipantChecker, 'ncs_navigator/core/followed_participant_checker'
