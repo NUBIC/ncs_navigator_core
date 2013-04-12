@@ -58,6 +58,7 @@ class EventsController < ApplicationController
           if participant.ineligible?
             if @event.screener_event?
               Participant.adjudicate_eligibility_and_disqualify_ineligible(participant)
+              @event.reload
             end
           else
             resp = participant.advance(psc)
