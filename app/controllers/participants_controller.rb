@@ -171,7 +171,7 @@ class ParticipantsController < ApplicationController
   end
 
   def schedule_consent_event(typ, method, date)
-    if date_available_for_informed_consent_event?(date)
+    if @participant.date_available_for_informed_consent_event?(date)
       resp = Event.send(method, psc, @participant, date)
       msg = resp.success? ? "#{typ} event scheduled for Participant." : 'Could not schedule informed consent'
       redirect_to(participant_path(@participant), :notice => msg)
@@ -181,24 +181,6 @@ class ParticipantsController < ApplicationController
     end
   end
   private :schedule_consent_event
-
-  ##
-  # Check if an informed consent event exists on the given date.
-  # Return false if an event is already scheduled on that date.
-  # @param date [String]
-  # @return [Boolean]
-  def date_available_for_informed_consent_event?(date)
-    begin
-      dt = Date.parse(date)
-      ics = @participant.events.where(:event_type_code => Event.informed_consent_code)
-      ics_dates = ics.map(&:psc_ideal_date)
-      !ics_dates.include?(dt)
-    rescue ArgumentError
-      # if date cannot be parsed do not allow user to schedule the informed consent event
-      false
-    end
-  end
-  private :date_available_for_informed_consent_event?
 
   # GET /participants/new
   # GET /participants/new.json
