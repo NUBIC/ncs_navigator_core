@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # == Schema Information
-# Schema version: 20130226172617
+# Schema version: 20130415192041
 #
 # Table name: events
 #
@@ -21,6 +21,7 @@
 #  event_type_code                    :integer          not null
 #  event_type_other                   :string(255)
 #  id                                 :integer          not null, primary key
+#  imported_invalid                   :boolean          default(FALSE), not null
 #  lock_version                       :integer          default(0)
 #  participant_id                     :integer
 #  psc_ideal_date                     :date
@@ -58,7 +59,7 @@ class Event < ActiveRecord::Base
   validates_format_of :event_start_time, :with => mdes_time_pattern, :allow_blank => true
   validates_format_of :event_end_time,   :with => mdes_time_pattern, :allow_blank => true
 
-  validate :disposition_code_is_in_disposition_category
+  validate :disposition_code_is_in_disposition_category, :unless => :imported_invalid
 
   before_validation :strip_time_whitespace
   before_create :set_start_time
