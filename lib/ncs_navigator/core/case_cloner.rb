@@ -21,6 +21,8 @@ module NcsNavigator::Core
       Instrument
       ResponseSet
       Response
+      DwellingUnit
+      DwellingHouseholdLink
       HouseholdUnit
       HouseholdPersonLink
       PersonProviderLink
@@ -31,6 +33,18 @@ module NcsNavigator::Core
       PpgDetail
       PpgStatusHistory
       SampledPersonsIneligibility
+      Sample
+      SpecimenReceiptConfirmation
+      Specimen
+      ShipSpecimen
+      SpecimenPickup
+      NonInterviewReport
+      DwellingUnitTypeNonInterviewReport
+      NoAccessNonInterviewReport
+      RefusalNonInterviewReport
+      VacantNonInterviewReport
+      LegacyInstrumentDataRecord
+      LegacyInstrumentDataValue
     )
 
     UNIVERSAL_NON_COPIED_ATTRIBUTES = %w(id updated_at created_at lock_version access_code)
