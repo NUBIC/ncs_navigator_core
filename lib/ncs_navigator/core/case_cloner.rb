@@ -91,16 +91,17 @@ module NcsNavigator::Core
     # @return [Hash<Participant, Participant>] a mapping from each source
     #   participant to its corresponding clone.
     def clone_cases_side
-      Participant.transaction do
-        source_participants.each_with_object({}) { |p, result| result[p] = clone_record(p) }
-      end
+      source_participants.each_with_object({}) { |p, result| result[p] = clone_record(p) }
     end
 
     def sync_to_psc(user, cloned_participants)
-      sync_loader = Psc::SyncLoader.new(psc_sync_keygen)
+      sync_loader = ::Psc::SyncLoader.new(psc_sync_keygen)
+      Rails.logger.debug "Setting up for PSC sync using prefix #{psc_sync_keygen['']}"
 
       # Load the information for syncing
       cloned_participants.reject { |p| p.p_type_code == 6 }.each do |p|
+        Rails.logger.debug("Recording cloned participant #{p.p_id} for PSC sync")
+
         sync_loader.cache_participant(p)
 
         p.events.each do |event|
@@ -113,7 +114,8 @@ module NcsNavigator::Core
       end
 
       # execute the sync
-      NcsNavigator::Core::Warehouse::OperationalImporterPscSync(
+      Rails.logger.debug("Executing PSC sync for #{sync_loader.cached_participant_ids.inspect}")
+      NcsNavigator::Core::Warehouse::OperationalImporterPscSync.new(
         PatientStudyCalendar.new(user),
         ImportConfiguration.new(Rails.logger),
         psc_sync_keygen
@@ -124,11 +126,13 @@ module NcsNavigator::Core
     # Clone the records in Cases for the participant, then sync the new records
     # to PSC. Returns same mapping as {#clone_cases_side}.
     def clone(user)
-      cases_side = clone_cases_side
+      Participant.transaction do
+        cases_side = clone_cases_side
 
-      sync_to_psc(user, clone_cases_side.values)
+        sync_to_psc(user, clone_cases_side.values)
 
-      cases_side
+        cases_side
+      end
     end
 
     private
@@ -243,9 +247,14 @@ module NcsNavigator::Core
     end
 
     def psc_sync_keygen
-      @psc_sync_keygen ||= lambda { |*c|
-        ([['clone', @root_p_id, SecureRandom.hex].join('_')] + c).join(':')
-      }
+      @psc_sync_keygen ||= begin
+        # needs to be outside the lambda, otherwise the random value changes
+        # on every invocation.
+        prefix = ['clone', @root_p_id, SecureRandom.hex].join('_')
+        lambda { |*c|
+          ([prefix] + c).join(':')
+        }
+      end
     end
 
     ##
