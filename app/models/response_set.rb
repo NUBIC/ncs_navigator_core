@@ -24,6 +24,7 @@ class ResponseSet < ActiveRecord::Base
   include NcsNavigator::Core::Surveyor::HasPublicId
   include ResponseSetPrepopulation
   include Surveyor::Models::ResponseSetMethods
+  include NcsNavigator::Core::ImportAware
 
   belongs_to :person, :foreign_key => :user_id, :class_name => 'Person', :primary_key => :id
   belongs_to :participant, :inverse_of => :response_sets
@@ -33,7 +34,7 @@ class ResponseSet < ActiveRecord::Base
   belongs_to :participant_consent, :inverse_of => :response_set
   belongs_to :non_interview_report, :inverse_of => :response_set
 
-  after_save :extract_operational_data
+  after_save :extract_operational_data, :unless => lambda { self.in_importer_mode? }
 
   attr_accessible :participant_id
 
