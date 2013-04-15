@@ -41,7 +41,7 @@ end
 # jQuery 1.9.0
 gem 'jquery-rails', '2.2.0'
 # jQuery UI 1.10.0
-gem 'jquery-ui-rails'
+gem 'jquery-ui-rails', '4.0.2'
 
 gem 'ncs_mdes', '>= 0.11.0'
 # If you change surveyor, change the instruments project also

@@ -509,7 +509,7 @@ DEPENDENCIES
   hana
   jasmine
   jquery-rails (= 2.2.0)
-  jquery-ui-rails
+  jquery-ui-rails (= 4.0.2)
   jsv.rb
   launchy
   lograge
