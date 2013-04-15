@@ -72,7 +72,7 @@ module NcsNavigator::Core::Mustache
     def p_email_address
       email_address = "[EMAIL ADDRESS]"
       if person = @response_set.try(:person)
-        email_address = person.primary_email if person.primary_email
+        email_address = person.primary_email.to_s if person.primary_email
       end
       email_address
     end
