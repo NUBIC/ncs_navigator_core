@@ -61,4 +61,30 @@ module LoIntensityQuex
 
     survey
   end
+
+  def create_li_preg_not_preg_main_heat_survey
+    load_survey_questions_string(<<-QUESTIONS)
+      q_MAIN_HEAT "Which of these types of heat sources best describes the main heating fuel source for your home? Is it...",
+      :help_text => "SHOW RESPONSE OPTIONS ON CARD TO PARTICIPANT.", :pick=>:one,
+      :data_export_identifier=>"PREG_VISIT_LI_2.MAIN_HEAT"
+      a_1 "ELECTRIC"
+      a_2 "GAS - PROPANE OR LP"
+      a_3 "OIL"
+      a_4 "WOOD"
+      a_5 "KEROSENE OR DIESEL"
+      a_6 "COAL OR COKE"
+      a_7 "SOLAR ENERGY"
+      a_8 "HEAT PUMP"
+      a_9 "NO HEATING SOURCE"
+      a_neg_5 "OTHER"
+      a_neg_1 "REFUSED"
+      a_neg_2 "DON'T KNOW"
+
+      q_TEST "Test question?",
+      :pick => :any,
+      :data_export_identifier=>"TEST_TABLE.TEST"
+      a_9 "Other vitamins or supplements:"
+    QUESTIONS
+  end
+
 end
