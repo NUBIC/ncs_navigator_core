@@ -166,21 +166,30 @@ module NcsNavigator::Core
           log_at log_depth, msg
         end
       else
-        clone = record.class.new
-        # pre-cache the new record to avoid circular recursion
-        cloned_record_cache[key] = clone
+        do_clone = lambda {
+          clone = record.class.new
+          # pre-cache the new record to avoid circular recursion
+          cloned_record_cache[key] = clone
 
-        copy_scalar_values(record, clone, log_depth)
-        clone_single_value_association(:belongs_to, record, clone, log_depth)
+          copy_scalar_values(record, clone, log_depth)
+          clone_single_value_association(:belongs_to, record, clone, log_depth)
 
-        log_at log_depth, "- saving new #{clone.class}"
-        clone.save!
+          log_at log_depth, "- saving new #{clone.class}"
+          clone.save!
 
-        clone_has_many(record, clone, log_depth)
-        clone_single_value_association(:has_one, record, clone, log_depth)
+          clone_has_many(record, clone, log_depth)
+          clone_single_value_association(:has_one, record, clone, log_depth)
 
-        log_at log_depth, "+ created new clone #{record_key(clone)}"
-        clone
+          log_at log_depth, "+ created new clone #{record_key(clone)}"
+          clone
+        }
+        if record.class.respond_to?(:importer_mode)
+          record.class.importer_mode do
+            do_clone.call
+          end
+        else
+          do_clone.call
+        end
       end
     end
 
