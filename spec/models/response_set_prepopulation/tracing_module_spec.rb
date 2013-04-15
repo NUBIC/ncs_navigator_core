@@ -83,36 +83,44 @@ module ResponseSetPrepopulation
 
       describe "asking address information" do
 
-        it "should show if the contact is CATI and the event is post-natal" do
-          event = Factory(:event, :event_type_code => 18) # Birth is also post-natal
+        it "should show if the contact is CATI and the event is birth" do
+          event = Factory(:event, :event_type_code => Event.birth_code)
           run_populator(event, Instrument.cati)
-          assert_response_value(@response_set, "prepopulated_should_show_address_for_tracing", "TRUE")
+          assert_response_value(@response_set,
+                                "prepopulated_should_show_address_for_tracing",
+                                "TRUE")
         end
 
         it "should NOT show if the contact is not CATI" do
-          event = Factory(:event, :event_type_code => 18) # Birth is also post-natal
+          event = Factory(:event, :event_type_code => Event.birth_code)
           run_populator(event, Instrument.capi)
-          assert_response_value(@response_set, "prepopulated_should_show_address_for_tracing", "FALSE")
+          assert_response_value(@response_set,
+                                "prepopulated_should_show_address_for_tracing",
+                                "FALSE")
         end
 
-        it "should NOT show if the event is pre-natal" do
-          event = Factory(:event, :event_type_code => 34) # Eligibility Screener is pre-natal
+        it "should NOT show if the event is six_month_visit" do
+          event = Factory(:event, :event_type_code => Event.six_month_visit_code)
           run_populator(event, Instrument.cati)
-          assert_response_value(@response_set, "prepopulated_should_show_address_for_tracing", "FALSE")
+          assert_response_value(@response_set,
+                                "prepopulated_should_show_address_for_tracing",
+                                "FALSE")
         end
 
         describe "with a known address" do
           it "knows that the person has a primary address" do
             Factory(:address, :person => @person, :address_rank_code => 1)
             run_populator
-            assert_response_value(@response_set, "prepopulated_is_address_provided", "TRUE")
+            assert_response_value(@response_set,
+                                  "prepopulated_is_address_provided", "TRUE")
           end
         end
 
         describe "without an address" do
           it "knows that the person does not have an address" do
             run_populator
-            assert_response_value(@response_set, "prepopulated_is_address_provided", "FALSE")
+            assert_response_value(@response_set,
+                                  "prepopulated_is_address_provided", "FALSE")
           end
         end
 

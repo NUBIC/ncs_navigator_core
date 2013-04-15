@@ -92,7 +92,16 @@ module ResponseSetPrepopulation
     #       30 MONTH AND MODE = CAPI OR PAPI, GO TO PLAN_MOVE.
     #    False
     def should_show_address?(question)
-      answer_for(question, mode == Instrument.cati && event.try(:postnatal?))
+      ri = [
+        Event.birth_code,
+        Event.three_month_visit_code,
+        Event.nine_month_visit_code,
+        Event.eighteen_month_visit_code,
+        Event.twenty_four_month_visit_code,
+        Event.thirty_month_visit_code
+      ].include?(event.try(:event_type_code))
+
+      answer_for(question, mode == Instrument.cati && ri)
     end
 
     # PROGRAMMER INSTRUCTIONS:
