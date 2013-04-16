@@ -87,12 +87,12 @@ module NcsNavigator::Core
     end
 
     def find_source_participants
-      participant_ids = ActiveRecord::Base.connection.select_all(<<-SQL).collect(&:values).flatten.uniq
-        SELECT other.participant_id
+      participant_ids = Participant.find_by_sql([<<-SQL, @root_p_id]).collect(&:id)
+        SELECT DISTINCT other.participant_id AS id
         FROM participants root
           INNER JOIN participant_person_links root_persons ON root.id = root_persons.participant_id
           INNER JOIN participant_person_links other ON root_persons.person_id = other.person_id
-        WHERE root.p_id = '#{@root_p_id}'
+        WHERE root.p_id = ?
       SQL
 
       Participant.where(:id => participant_ids).includes(INCLUDES).all
