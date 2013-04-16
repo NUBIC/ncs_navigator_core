@@ -205,7 +205,7 @@ module OperationalDataExtractor
 
       update_instrument_mode
 
-      participant.save!
+      participant.save! if participant
       person.save!
     end
 
