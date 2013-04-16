@@ -20,6 +20,16 @@ module NcsNavigator::Core
             host_class.importer_mode_on.should == outer_mode
           end
 
+          it 'preserves the original mode after an exception' do
+            begin
+              host_class.importer_mode do
+                fail 'Refused'
+              end
+            rescue; end
+
+            host_class.importer_mode_on.should == outer_mode
+          end
+
           it 'sets the mode to true for the duration of the block' do
             host_class.importer_mode do
               host_class.should be_in_importer_mode

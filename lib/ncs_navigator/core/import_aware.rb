@@ -17,10 +17,12 @@ module NcsNavigator::Core
       def importer_mode
         fail "This method is intended for use with a block" unless block_given?
         original = importer_mode_on
-        self.importer_mode_on = true
-        result = yield
-        self.importer_mode_on = original
-        result
+        begin
+          self.importer_mode_on = true
+          yield
+        ensure
+          self.importer_mode_on = original
+        end
       end
 
       alias :in_importer_mode? :importer_mode_on
