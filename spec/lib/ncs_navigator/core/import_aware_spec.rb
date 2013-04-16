@@ -10,7 +10,7 @@ module NcsNavigator::Core
 
     describe '.importer_mode' do
       [nil, true, false].each do |outer_mode|
-        describe "when the starting mode is #{outer_mode}" do
+        describe "when the starting mode is #{outer_mode.inspect}" do
           before do
             host_class.importer_mode_on = outer_mode
           end
@@ -35,7 +35,7 @@ module NcsNavigator::Core
 
     describe '#in_importer_mode?' do
       [nil, true, false].each do |mode|
-        describe "when the mode is #{mode}" do
+        describe "when the mode is #{mode.inspect}" do
           before do
             host_class.importer_mode_on = mode
           end
