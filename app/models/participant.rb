@@ -959,8 +959,9 @@ class Participant < ActiveRecord::Base
   # @param date [String]
   # @return [Boolean]
   def date_available_for_informed_consent_event?(date)
+    return true if events.blank?
     begin
-      dt = dt.is_a?(String) ? Date.parse(date) : date
+      dt = date.is_a?(String) ? Date.parse(date) : date
       ics = events.where(:event_type_code => Event.informed_consent_code)
       ics_dates = ics.map(&:psc_ideal_date)
       !ics_dates.include?(dt)

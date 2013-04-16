@@ -2611,4 +2611,50 @@ describe Participant do
       end
     end
   end
+
+  describe "#date_available_for_informed_consent_event?" do
+    let(:participant) { Factory(:participant) }
+    let(:dt) { Date.new(2525,12,25) }
+
+    context "without any events" do
+      it "returns true" do
+        participant.date_available_for_informed_consent_event?(dt).should be_true
+      end
+    end
+
+    context "with an event" do
+      let!(:event) do
+        Factory(:event, :event_type_code => Event.informed_consent_code,
+                :psc_ideal_date => event_date, :participant => participant)
+      end
+
+      context "given an unparseable date" do
+        let(:event_date) { dt }
+        it "returns false" do
+          participant.date_available_for_informed_consent_event?("asdf").should be_false
+        end
+      end
+
+      context "on the given date" do
+        let(:event_date) { dt }
+        it "returns false" do
+          participant.date_available_for_informed_consent_event?(dt).should be_false
+        end
+
+        describe "as string" do
+          it "returns false" do
+            participant.date_available_for_informed_consent_event?(dt.to_s).should be_false
+          end
+        end
+      end
+
+      context "without an Informed Consent event on that date" do
+        let(:event_date) { Date.new(2020,1,1) }
+        it "returns true" do
+          participant.date_available_for_informed_consent_event?(dt).should be_true
+        end
+      end
+    end
+
+  end
 end
