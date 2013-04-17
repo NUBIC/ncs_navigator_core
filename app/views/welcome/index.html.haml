@@ -25,7 +25,8 @@
                   = convert_24_hour_time_to_am_pm_time(e.activity_time) if e.activity_time
                 %span.participant_link
                   - path = e.person.participant? ? participant_path(e.person.participant) : person_path(e.person)
-                  = link_to "", "appointment_sheet/#{e.person.id}/#{e.date}" , :class => "add_link icon_link"
+                  = link_to "", "appointment_sheet/#{e.person.id}/#{e.date}" , :class => "add_link icon_link",
+                                                                               :title => "Appointment sheet for \"#{e.person.full_name}\""
                   = link_to e.person.to_s, path
                 %span.ppg_status
                   = "PPG #{e.person.participant.ppg_status.local_code}" if e.person.participant && !e.person.participant.ppg_status.blank?
