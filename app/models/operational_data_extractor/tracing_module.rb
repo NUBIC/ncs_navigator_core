@@ -174,30 +174,32 @@ module OperationalDataExtractor
 
       email        = process_email(EMAIL_MAP)
 
-      if contact1 = process_contact(CONTACT_1_PERSON_MAP)
-        contact1relationship = process_contact_relationship(contact1, CONTACT_1_RELATIONSHIP_MAP)
-        contact1address = process_address(contact1, CONTACT_1_ADDRESS_MAP, Address.home_address_type)
-        contact1phone = process_telephone(contact1, CONTACT_1_PHONE_MAP)
-        contact1phone2 = process_telephone(contact1, CONTACT_1_PHONE_2_MAP, Telephone.cell_phone_type)
-      end
+      if participant
+        if contact1 = process_contact(CONTACT_1_PERSON_MAP)
+          contact1relationship = process_contact_relationship(contact1, CONTACT_1_RELATIONSHIP_MAP)
+          contact1address = process_address(contact1, CONTACT_1_ADDRESS_MAP, Address.home_address_type)
+          contact1phone = process_telephone(contact1, CONTACT_1_PHONE_MAP)
+          contact1phone2 = process_telephone(contact1, CONTACT_1_PHONE_2_MAP, Telephone.cell_phone_type)
+        end
 
-      if contact2 = process_contact(CONTACT_2_PERSON_MAP)
-        contact2relationship = process_contact_relationship(contact2, CONTACT_2_RELATIONSHIP_MAP)
-        contact2address = process_address(contact2, CONTACT_2_ADDRESS_MAP, Address.home_address_type)
-        contact2phone = process_telephone(contact2, CONTACT_2_PHONE_MAP)
-        contact2phone2 = process_telephone(contact2, CONTACT_2_PHONE_2_MAP)
-      end
+        if contact2 = process_contact(CONTACT_2_PERSON_MAP)
+          contact2relationship = process_contact_relationship(contact2, CONTACT_2_RELATIONSHIP_MAP)
+          contact2address = process_address(contact2, CONTACT_2_ADDRESS_MAP, Address.home_address_type)
+          contact2phone = process_telephone(contact2, CONTACT_2_PHONE_MAP)
+          contact2phone2 = process_telephone(contact2, CONTACT_2_PHONE_2_MAP)
+        end
 
-      if contact3 = process_contact(CONTACT_3_PERSON_MAP)
-        contact3relationship = process_contact_relationship(contact3, CONTACT_3_RELATIONSHIP_MAP)
-        contact3address = process_address(contact3, CONTACT_3_ADDRESS_MAP, Address.home_address_type)
-        contact3phone = process_telephone(contact3, CONTACT_3_PHONE_MAP)
-        contact3phone2 = process_telephone(contact3, CONTACT_3_PHONE_2_MAP)
-      end
+        if contact3 = process_contact(CONTACT_3_PERSON_MAP)
+          contact3relationship = process_contact_relationship(contact3, CONTACT_3_RELATIONSHIP_MAP)
+          contact3address = process_address(contact3, CONTACT_3_ADDRESS_MAP, Address.home_address_type)
+          contact3phone = process_telephone(contact3, CONTACT_3_PHONE_MAP)
+          contact3phone2 = process_telephone(contact3, CONTACT_3_PHONE_2_MAP)
+        end
 
-      finalize_contact(contact1, contact1relationship, contact1address, contact1phone, contact1phone2)
-      finalize_contact(contact2, contact2relationship, contact2address, contact2phone, contact2phone2)
-      finalize_contact(contact3, contact3relationship, contact3address, contact3phone, contact3phone2)
+        finalize_contact(contact1, contact1relationship, contact1address, contact1phone, contact1phone2)
+        finalize_contact(contact2, contact2relationship, contact2address, contact2phone, contact2phone2)
+        finalize_contact(contact3, contact3relationship, contact3address, contact3phone, contact3phone2)
+      end
 
       finalize_email(email)
       finalize_addresses(address, new_address)
