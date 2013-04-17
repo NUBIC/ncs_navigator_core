@@ -122,8 +122,10 @@ class WelcomeController < ApplicationController
     end
 
     def get_scheduled_activities_report(options = {})
-      @start_date = Date.new(2013,4,8)#Date.today.beginning_of_week
-      @end_date   = params[:end_date] || Date.new(2013,4,13)#Date.today.end_of_week
+      @start_date = Date.parse(params[:start_date]) unless params[:start_date].nil?
+      @end_date = Date.parse(params[:end_date]) unless params[:end_date].nil?
+      @start_date = 1.day.ago.to_date if @start_date.nil?
+      @end_date   = 6.weeks.from_now.to_date if @end_date.nil?
       criteria = { :start_date => @start_date, :end_date => @end_date, :current_user => nil }
       criteria.merge!(options) if options
 
