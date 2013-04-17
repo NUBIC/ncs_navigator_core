@@ -255,7 +255,7 @@ class ParticipantConsent < ActiveRecord::Base
         set_answer(ra, 'collect_specimen_consent', (participant_consent_samples.count > 0) ? '1' : '2')
 
         self.participant_consent_samples.each do |s|
-          if s.sample_consent_given_code
+          if s.sample_consent_given_code && s.sample_consent_given_code != NcsCode::MISSING_IN_ERROR
             a = "sample_consent_given_code_#{s.sample_consent_type_code}"
             v = s.sample_consent_given_code.to_s
             ra.answer a, v
