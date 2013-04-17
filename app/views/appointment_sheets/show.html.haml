@@ -1,86 +1,105 @@
-%h3#appointment-sheet APPOINTMENT SHEET
+%h3#appointment-sheet-header APPOINTMENT SHEET
 
-.column-container
-  .column-one
-    .large-and-bolded
-      = "#{@sheet.event_type}"
-    = "Data Collector: #{current_user.first_name} #{current_user.last_name}"
-    #event-date-and-time
-      = @event_date + " "
-      - if @event_time
-        = @event_time
+#appointment-sheet
+  #visit-info
+    #event-info
+      .name
+        = @sheet.event_type
+      Data Collector:
+      - if current_user
+        = "#{current_user.first_name} #{current_user.last_name}"
       - else
         %span.not-found
-          Event time unknown
-    #address
-      -if @sheet.address
-        = @sheet.address.address_one
-        - if @sheet.address.address_two
-          %br
-        = @sheet.address.address_two
-        %br
-        = "#{@sheet.address.city}, #{@sheet.address.state.to_s.downcase.capitalize} #{@sheet.address.zip_code}"
-      -else
-        .not-found
-          No address information
-    #phone
-      - if @sheet.cell_phone
-        = "Cell #{@sheet.cell_phone}"
-        - if @sheet.home_phone
-          %br
-          = "Home #{@sheet.home_phone}"
-      - else
-        .not-found
-          No phone numbers
-
-  .column-two
-    Participant:
-    %span.large-and-bolded
-      #{@sheet.participant_full_name}
-    = @sheet.participant_public_id
-    - if @sheet.participant_language
-      #language
-        = "Speaks: #{@sheet.participant_language}"
-    - else
-      %div
-        Speaks:
-        .not-found
-          No language information
-    Consents:
-    - if @sheet.mothers_consents.empty?
-      .not-found
-        No mother consents found
-    - else
-      - @sheet.mothers_consents.uniq.each do |consent|
-        #consents
-          = consent
-    - if @sheet.children.empty?
-      .not-found
-        No children found
-    - else
-      #children
-      - @sheet.children.each_index do |child_index|
-        Child:
-        %span.large-and-bolded
-          #{@sheet.child_names[child_index]}
-        #sex
-          #{@sheet.child_sexes[child_index]}
-        #ages
-          = "#{@sheet.child_ages[child_index]} old"
-        Consents:
-        - if @sheet.child_consents.empty?
-          No consents found for children
+          Name unknown
+      #event-date-and-time
+        = @event_date + " "
+        - if @event_time
+          = @event_time
         - else
-          - @sheet.child_consents[child_index].uniq.each do |consent|
-            #consents
-              = consent
+          %span.not-found
+            Event time unknown
+      #address
+        -if @sheet.address
+          = @sheet.address.address_one
+          - if @sheet.address.address_two
+            %br
+          = @sheet.address.address_two
+          %br
+          = "#{@sheet.address.city}, #{@sheet.address.state.to_s.downcase.capitalize} #{@sheet.address.zip_code}"
+        -else
+          .not-found
+            No address information
+      #phone
+        - if @sheet.cell_phone
+          = "Cell: #{@sheet.cell_phone}"
+          - if @sheet.home_phone
+            %br
+            = "Home: #{@sheet.home_phone}"
+        - else
+          .not-found
+            No phone numbers
+
+    #participant-info
+      Participant:
+      %span.name
+        = @sheet.participant_full_name
+      %div
+        = @sheet.participant_public_id
+      - if @sheet.participant_language
+        #language
+          = "Speaks: #{@sheet.participant_language}"
+      - else
+        %div
+          Speaks:
+          .not-found
+            No language information
+      Consents:
+      - if @sheet.mothers_consents.empty?
+        .not-found
+          No mother consents found
+      - else
+        - @sheet.mothers_consents.uniq.each do |consent|
+          #consents
+            = consent
+      - if @sheet.children.empty?
+        .not-found
+          No children found
+      - else
+        #children
+        - @sheet.children.each_index do |child_index|
+          Child:
+          %span.name
+            #{@sheet.child_names[child_index]}
+          #sex
+            - if @sheet.child_sexes[child_index]
+              = @sheet.child_sexes[child_index]
+            - else
+              .not-found
+                Unknown sex
+          #ages
+            - if @sheet.child_ages[child_index]
+              = "#{@sheet.child_ages[child_index]} old"
+            - else
+              .not-found
+                Unknown age
+          Consents:
+          - if @sheet.child_consents.empty?
+            No consents found for children
+          - else
+            - if @sheet.child_consents[child_index].nil?
+              .not-found
+                No consents found for this child
+            - else
+              - @sheet.child_consents[child_index].uniq.each do |consent|
+                #consents
+                  = consent
 
   - pending_event = @participant.pending_events.first
   - activities_for_event = []
   - activities_for_event = @participant_activity_plan.scheduled_activities_for_event(pending_event) if pending_event
   #instrument-list
     - if @participant_activity_plan && pending_event
-      %span.large-and-bolded
+      %span#to-be-conducted
         To be conducted:
       .activities
         - activities_for_event.each do |a|
@@ -89,12 +108,12 @@
               &nbsp;
             = a.activity_name
     - else
-      %span.large-and-bolded
+      %span.not-found
         Subject does not have a schedule matching pending events
   #next-event
     Next Event:
     - if @sheet.next_event
-      %span.large-and-bolded
+      %span.name
         #{@sheet.next_event}
     - else
       %span.not-found
