@@ -42,7 +42,6 @@ Feature: Viewing an appointment sheet
       | event_type       | Pregnancy Visit 2                    |
       | event_start_date | 2013-08-11                           |
 
-  @javascript
   Scenario: The appointment sheet contains the participant's contact information
     Given an authenticated user
     When I view the appointment sheet for "Dawn Davidson"
