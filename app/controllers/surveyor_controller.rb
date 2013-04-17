@@ -11,25 +11,18 @@ class SurveyorController < ApplicationController
   # to handle Operational Data Extraction and to determine
   # whether or not this is a part of a multi-part survey
   def surveyor_finish
+    # sets @event and @participant
     set_activity_plan_for_participant
 
-    contact_link = @response_set.contact_link
-    activity = @activity_plan.current_scheduled_activity(contact_link.event, @response_set)
+    activity = @activity_plan.current_scheduled_activity(@event, @response_set)
 
     if @activity_plan.final_survey_part?(@response_set, @event) || params[:breakoff] || activity.instruments.empty?
-      # mark all scheduled activities associated with survey as occurred
+      # mark all scheduled activities associated with survey for this @event as occurred
       @activity_plan.scheduled_activities_for_survey(@response_set.survey.title, @event).each do |a|
         psc.update_activity_state(a.activity_id, @participant, Psc::ScheduledActivity::OCCURRED)
       end
 
-      # determine redirect action - whether consent survey or instrument survey
-      if @response_set.instrument_associated?
-        edit_instrument_contact_link_path(contact_link.id)
-      elsif contact_link.event.closed?
-        participant_path(@response_set.participant)
-      else
-        decision_page_contact_link_path(contact_link)
-      end
+      determine_redirect(@response_set, @event)
     else
       # go to next part of the survey
       access_code = Survey.to_normalized_string(activity.instrument)
@@ -38,7 +31,26 @@ class SurveyorController < ApplicationController
                                    :participant_id => activity.participant.id,
                                    :references_survey_access_code => activity.references.to_s,
                                    :survey_access_code => survey.access_code,
-                                   :contact_link_id => contact_link.id)
+                                   :contact_link_id => most_recent_contact_link.id)
+    end
+  end
+
+  ##
+  # Determine where to go next if this is the final survey part
+  # or a breakoff or there are no more instruments associated with the activity
+  #
+  # If the is an instrument associated with the response set go to the
+  # edit instrument page
+  # If the current event is closed, assume that we are editing a previous
+  # response set and return to the participant page
+  # Otherwise just go to the decision page for the most recent contact link.
+  def determine_redirect(response_set, event)
+    if response_set.instrument_associated?
+      edit_instrument_contact_link_path(most_recent_contact_link)
+    elsif event.closed?
+      participant_path(response_set.participant)
+    else
+      decision_page_contact_link_path(most_recent_contact_link)
     end
   end
 
@@ -59,12 +71,35 @@ class SurveyorController < ApplicationController
         @participant = core_participant
       end
     end
-    @event = @response_set.event
+    @event = determine_current_event(@response_set.event)
     @activities_for_event = []
     if @participant
       @activity_plan        = psc.build_activity_plan(@participant)
       @activities_for_event = @activity_plan.scheduled_activities_for_event(@event)
     end
+  end
+
+  ##
+  # For the given event determine if this event is a standalone event
+  # or done with another event at the same time. If in consort with
+  # another event get the most recent event associated with that contact
+  # filtering out the informed consent events.
+  # @see Event#chronological to see how ordering is determined
+  def determine_current_event(event)
+    @event = event
+    contact_ids = event.contact_links.map(&:contact_id).uniq
+    events = Event.joins(:contact_links).where("contact_links.contact_id in (?)", contact_ids).chronological
+    if events.size > 1
+      events = events.select { |e| e.event_type_code != Event.informed_consent_code }
+    end
+    @event = events.last unless events.blank?
+  end
+
+  ##
+  # The most recent contact link for the event
+  # @return [ContactLink]
+  def most_recent_contact_link
+    @event.contact_links.last
   end
 
   def build_instrument_context
