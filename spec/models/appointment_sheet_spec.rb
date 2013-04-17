@@ -102,10 +102,15 @@ describe AppointmentSheet do
                       :participant => child_participant)
 
     @sheet = AppointmentSheet.new(person.id.to_s)
+    @missing_info_sheet = AppointmentSheet.new(Factory(:person).id.to_s)
   end
 
   it "has an event type" do
     @sheet.event_type.should == "6 Month"
+  end
+
+  it "prints 'unknown event' if event is nil" do
+    @missing_info_sheet.event_type.should == "Unknown Event"
   end
 
   it "has an address" do
@@ -116,8 +121,16 @@ describe AppointmentSheet do
     @sheet.cell_phone.should == "301-908-1212"
   end
 
+  it "'cell phone returns nil if phone is nil" do
+    @missing_info_sheet.cell_phone.should be_nil
+  end
+
   it "has home telephone" do
     @sheet.home_phone.should == "301-999-5555"
+  end
+
+  it "home phone returns nil if phone is nil" do
+    @missing_info_sheet.home_phone.should be_nil
   end
 
   it "has participant's name" do
@@ -125,7 +138,7 @@ describe AppointmentSheet do
   end
 
   it "has a participant's public id" do
-    @sheet.participant_public_id.should == "k47r-7z99-aw5e"
+    @sheet.participant_public_id.should  match(/^[a-z0-9]{3}-[a-z0-9]{2}-[a-z0-9]{4}/)
   end
 
   it "has the language the participant speaks" do
