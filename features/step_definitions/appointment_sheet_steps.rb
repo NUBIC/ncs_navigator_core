@@ -78,6 +78,11 @@ Given /^who has (.+)$/ do |consent_type|
   @participant.save!
 end
 
+Given /^whose due date is "([^"]*)"$/ do |due_date|
+  ppg_detail = PpgDetail.create!(:participant_id => @participant,
+                                 :orig_due_date => '2012-09-12')
+end
+
 Given /^whose child is$/ do |table|
   person_attrs, p_attrs = table.raw.partition { |k, v| k =~ /^person/ }
   person_attrs.map! { |k, v| [k.sub('person/', ''), v] }

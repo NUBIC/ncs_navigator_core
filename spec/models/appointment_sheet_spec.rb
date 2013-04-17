@@ -66,6 +66,10 @@ describe AppointmentSheet do
                                   :sample_consent_type_code => 2,
                                   :participant => participant)
 
+    ppg_detail = Factory(:ppg_detail,
+                          :orig_due_date => '2012-10-10',
+                          :participant => participant)
+
     consent = Factory(:participant_consent,
                       :consent_type_code => nil,
                       :participant_consent_samples => [biologicial_consent, environmental_consent],
@@ -155,6 +159,14 @@ describe AppointmentSheet do
 
   it "has the children's sexes" do
     @sheet.child_sexes.should == ["Male"]
+  end
+
+  it "has the children's due dates" do
+    @sheet.child_due_dates.should == ['2012-10-10']
+  end
+
+  it "has the children's birth dates" do
+    @sheet.child_birth_dates.should == ['2012-09-03']
   end
 
   it "has the children's ages" do

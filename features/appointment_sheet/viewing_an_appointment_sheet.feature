@@ -26,6 +26,7 @@ Feature: Viewing an appointment sheet
     And who has Consent to collect environmental samples
     And who has Consent to collect biospecimens
     And speaks english
+    And whose due date is "2012-09-12"
     And whose child is
       | person/first_name | Harley              |
       | person/last_name  | Davidson            |
@@ -41,6 +42,7 @@ Feature: Viewing an appointment sheet
       | event_type       | Pregnancy Visit 2                    |
       | event_start_date | 2013-08-11                           |
 
+  @javascript
   Scenario: The appointment sheet contains the participant's contact information
     Given an authenticated user
     When I view the appointment sheet for "Dawn Davidson"
@@ -53,6 +55,8 @@ Feature: Viewing an appointment sheet
     Then I should see that she has consent of "Biological"
     Then I should see that she has consent of "Environmental"
     Then I should see that she has a child named "Harley Davidson"
+    Then I should see "Birth date: 08/12/2012"
+    Then I should see "Due date: 09/12/2012"
     Then I should see that he is a "Male"
     Then I should see his age is "8 months old"
     Then I should see the child has consent of "Biological"

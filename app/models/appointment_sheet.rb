@@ -112,6 +112,35 @@ class AppointmentSheet
     @person.participant.children.collect(&:full_name)
   end
 
+  def child_due_dates
+    child_dobs.map do |bd|
+      due_date_in_range_of_birth_date(Date.parse(bd))
+    end
+  end
+
+  def due_date_in_range_of_birth_date(birth_date)
+    ppg_details = PpgDetail.where(:participant_id => @person.participant).all
+    return nil if ppg_details.nil?
+
+    min_date = birth_date - 5.months
+    max_date = birth_date + 2.months
+
+    date = ppg_details.find do |ppg|
+      (Date.parse(ppg.due_date) > min_date &&  Date.parse(ppg.due_date) < max_date) if ppg.due_date
+    end
+    Date.parse(date.due_date).strftime('%m/%d/%Y') if date
+  end
+  private :due_date_in_range_of_birth_date
+
+  def child_dobs
+    @person.participant.children.collect { |c| c.person_dob_date.strftime('%Y-%m-%d') }
+  end
+  private :child_dobs
+
+  def child_birth_dates
+    @person.participant.children.collect { |c| c.person_dob_date.strftime('%m/%d/%Y') }
+  end
+
   def child_sexes
     sexes = @person.participant.children.collect(&:sex).collect(&:display_text)
     sexes.map { |sex| sex == 'Missing in Error' ? nil : sex }
