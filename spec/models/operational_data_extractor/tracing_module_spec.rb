@@ -6,6 +6,59 @@ require 'spec_helper'
 describe OperationalDataExtractor::TracingModule do
   include SurveyCompletion
 
+  context "when the participant is nil" do
+
+    it "processes the person information" do
+      person = Factory(:person)
+      person.addresses.size.should == 0
+
+      survey = create_tracing_module_survey_with_address_operational_data
+      response_set, instrument = prepare_instrument(person, nil, survey)
+      response_set.save!
+
+      take_survey(survey, response_set) do |r|
+        r.a "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.ADDRESS_1", '123 Easy St.'
+        r.a "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.CITY", 'Chicago'
+        r.a "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.ZIP", '65432'
+        r.a "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.ZIP4", '1234'
+      end
+
+      response_set.responses.reload
+      response_set.responses.size.should == 4
+
+      OperationalDataExtractor::TracingModule.new(response_set).extract_data
+
+      person = Person.find(person.id)
+      person.addresses.size.should == 1
+      address = person.addresses.first
+      address.to_s.should == "123 Easy St. Chicago 65432-1234"
+    end
+
+    it "does not process participant contact information" do
+      person = Factory(:person)
+
+      survey = create_tracing_module_survey_with_contact_operational_data
+      response_set, instrument = prepare_instrument(person, nil, survey)
+      response_set.save!
+
+      take_survey(survey, response_set) do |r|
+        r.a "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.CONTACT_FNAME_1", 'Will'
+        r.a "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.CONTACT_LNAME_1", 'Notbesaved'
+      end
+
+      response_set.responses.reload
+      response_set.responses.size.should == 2
+
+      OperationalDataExtractor::TracingModule.new(response_set).extract_data
+
+      person  = Person.find(person.id)
+      person.participant.should be_nil
+
+      Person.where(:first_name => "Will", :last_name => "Notbesaved").all.should be_blank
+    end
+
+  end
+
   it "extracts address operational data from the survey responses" do
     state = NcsCode.for_list_name_and_local_code("STATE_CL1", 14)
 
@@ -171,7 +224,6 @@ describe OperationalDataExtractor::TracingModule do
       @response_set.save!
       @participant.participant_person_links.size.should == 1
     end
-
 
     it "creates a new person record and associates it with the particpant" do
 
