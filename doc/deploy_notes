@@ -59,7 +59,7 @@
 
   $ cd /var/www/apps/ncs_navigator_core/current/
 
-  $ bundle exec rake rake mdes:version:migrate[to_version]
+  $ bundle exec rake mdes:version:migrate[to_version]
 
 
 ** If template is updated with changes to existing activities, do the following: **
