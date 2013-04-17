@@ -53,9 +53,6 @@ describe Address do
   end
 
   it "should describe itself" do
-    state_name = "#{addr.state}".downcase.capitalize
-    addr.to_s.should == state_name
-
     addr.address_one = "1 Main"
     addr.city = "Detroit"
     addr.to_s.should == "1 Main Detroit, #{state_name}"
