@@ -34,19 +34,24 @@ module ParticipantsHelper
     # find those consent records that are associated with a response_set
     # this is done to handle consents prior to change to using a Survey for consent
     survey_consents = participant.participant_consents.select{ |pc| !pc.response_set.nil? }
-    # then match the consent to the current survey
-    consents = survey_consents.select { |pc| pc.response_set.survey.title == survey.title }
+    # then match the consent to the current survey and event
+    events_during_contact = Event.joins(:contact_links).where(
+      "contact_links.contact_id in (?)", contact_link.contact_id)
+    consents = survey_consents.select do |pc|
+      pc.response_set.survey.title == survey.title &&
+      events_during_contact.include?(pc.consent_event)
+    end
     # and filter by activity_type
     if activity.reconsent?
-      consents = consents.select { |c| c.reconsent? && c.consent_event == contact_link.event }
+      consents = consents.select { |c| c.reconsent? }
     elsif activity.withdrawal?
-      consents = consents.select { |c| c.withdrawal? && c.consent_event == contact_link.event }
+      consents = consents.select { |c| c.withdrawal? }
     elsif activity.child_consent_birth_to_6_months?
-      consents = consents.select { |c| c.child_consent_birth_to_six_months? && c.consent_event == contact_link.event }
+      consents = consents.select { |c| c.child_consent_birth_to_six_months? }
     elsif activity.child_consent_6_months_to_age_of_majority?
-      consents = consents.select { |c| c.child_consent_six_month_to_age_of_majority? && c.consent_event == contact_link.event }
+      consents = consents.select { |c| c.child_consent_six_month_to_age_of_majority? }
     else
-      consents = consents.select { |c| !c.reconsent? && !c.withdrawal? && c.consent_event == contact_link.event }
+      consents = consents.select { |c| !c.reconsent? && !c.withdrawal? }
     end
     consents
   end
