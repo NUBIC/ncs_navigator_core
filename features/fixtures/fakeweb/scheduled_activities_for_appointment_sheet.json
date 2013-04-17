@@ -1,0 +1,2007 @@
+{
+   "filters":{
+      "start_date":"2013-04-08",
+      "end_date":"2013-04-13",
+      "responsible_user":"sgp658",
+      "states":[
+         "Scheduled"
+      ]
+   },
+   "rows":[
+      {
+         "grid_id":"0556c83c-37ed-41c8-ba53-217b587b0ccb",
+         "activity_name":"Pregnant Woman Informed Consent",
+         "activity_time":"15:45",
+         "activity_type":"Consent",
+         "activity_status":"Scheduled",
+         "scheduled_date":"2013-04-11",
+         "last_change_reason":"I'd love to but... My uncle escaped again.",
+         "ideal_date":"2013-03-26",
+         "labels":[
+            "event:pregnancy_visit_1",
+            "form:2.0:irb_con_informed_consent",
+            "form:2.1:irb_con_informed_consent",
+            "form:2.2:irb_con_informed_consent",
+            "form:3.0:irb_con_informed_consent",
+            "form:3.1:irb_con_informed_consent",
+            "form:3.2:irb_con_informed_consent",
+            "order:00_99",
+            "participant_type:mother"
+         ],
+         "scheduled_study_segment":{
+            "grid_id":"c219c01d-8126-4fb6-a323-6c4cc382b6e4",
+            "start_date":"2013-03-26",
+            "start_day":1
+         },
+         "subject":{
+            "name":"Lisa Pressely",
+            "person_id":"he6b-xz2a-24fs",
+            "grid_id":"359adf56-416d-47e1-9e28-686abb334b20"
+         },
+         "responsible_user":"sgp658",
+         "study":"NCS Hi-Lo",
+         "site":"STEVES SITE"
+      },
+      {
+         "grid_id":"1152dde6-9a3d-4d5e-9b60-cefcc617910c",
+         "activity_name":"Pregnancy Visit 1 Interview",
+         "activity_time":"15:45",
+         "activity_type":"Instrument",
+         "activity_status":"Scheduled",
+         "scheduled_date":"2013-04-11",
+         "last_change_reason":"I'd love to but... My uncle escaped again.",
+         "ideal_date":"2013-03-26",
+         "labels":[
+            "event:pregnancy_visit_1",
+            "instrument:2.0:ins_que_pregvisit1_int_ehpbhi_p2_v2.0",
+            "instrument:2.1:ins_que_pregvisit1_int_ehpbhi_m2.1_v2.1",
+            "instrument:2.2:ins_que_pregvisit1_int_ehpbhi_m2.1_v2.1",
+            "instrument:3.0:ins_que_pregvisit1_int_ehpbhipbs_m3.0_v3.0",
+            "instrument:3.1:ins_que_pregvisit1_int_ehpbhipbs_m3.0_v3.0",
+            "instrument:3.2:ins_que_pregvisit1_int_ehpbhipbs_m3.0_v3.0",
+            "order:01_01",
+            "participant_type:mother"
+         ],
+         "scheduled_study_segment":{
+            "grid_id":"c219c01d-8126-4fb6-a323-6c4cc382b6e4",
+            "start_date":"2013-03-26",
+            "start_day":1
+         },
+         "subject":{
+            "name":"Lisa Pressely",
+            "person_id":"he6b-xz2a-24fs",
+            "grid_id":"359adf56-416d-47e1-9e28-686abb334b20"
+         },
+         "responsible_user":"sgp658",
+         "study":"NCS Hi-Lo",
+         "site":"STEVES SITE"
+      },
+      {
+         "grid_id":"0791a130-6a74-4999-b662-81633c2ea3ea",
+         "activity_name":"Pregnancy Visit 1 Information Sheet",
+         "activity_time":"15:45",
+         "activity_type":"Information Sheet",
+         "activity_status":"Scheduled",
+         "scheduled_date":"2013-04-11",
+         "last_change_reason":"I'd love to but... My uncle escaped again.",
+         "ideal_date":"2013-03-26",
+         "labels":[
+            "event:pregnancy_visit_1",
+            "order:95_02"
+         ],
+         "scheduled_study_segment":{
+            "grid_id":"c219c01d-8126-4fb6-a323-6c4cc382b6e4",
+            "start_date":"2013-03-26",
+            "start_day":1
+         },
+         "subject":{
+            "name":"Lisa Pressely",
+            "person_id":"he6b-xz2a-24fs",
+            "grid_id":"359adf56-416d-47e1-9e28-686abb334b20"
+         },
+         "responsible_user":"sgp658",
+         "study":"NCS Hi-Lo",
+         "site":"STEVES SITE"
+      },
+      {
+         "grid_id":"f08ee7cc-6d6f-46bb-84dd-aab72ae0c8e8",
+         "activity_name":"Pregnancy Visit 1 SAQ",
+         "activity_time":"15:45",
+         "activity_type":"Instrument",
+         "activity_status":"Scheduled",
+         "scheduled_date":"2013-04-11",
+         "last_change_reason":"I'd love to but... My uncle escaped again.",
+         "ideal_date":"2013-03-26",
+         "labels":[
+            "event:pregnancy_visit_1",
+            "instrument:2.0:ins_que_pregvisit1_saq_ehpbhi_p2_v2.0",
+            "instrument:2.1:ins_que_pregvisit1_saq_ehpbhi_m2.1_v3.0",
+            "instrument:2.2:ins_que_pregvisit1_saq_ehpbhi_m2.1_v3.0",
+            "instrument:3.0:ins_que_pregvisit1_saqspec_ehpbhipbs_m3.0_v4.0",
+            "instrument:3.1:ins_que_pregvisit1_saqspec_ehpbhipbs_m3.0_v4.0",
+            "instrument:3.2:ins_que_pregvisit1_saqspec_ehpbhipbs_m3.0_v4.0",
+            "order:02_01",
+            "participant_type:mother"
+         ],
+         "scheduled_study_segment":{
+            "grid_id":"c219c01d-8126-4fb6-a323-6c4cc382b6e4",
+            "start_date":"2013-03-26",
+            "start_day":1
+         },
+         "subject":{
+            "name":"Lisa Pressely",
+            "person_id":"he6b-xz2a-24fs",
+            "grid_id":"359adf56-416d-47e1-9e28-686abb334b20"
+         },
+         "responsible_user":"sgp658",
+         "study":"NCS Hi-Lo",
+         "site":"STEVES SITE"
+      },
+      {
+         "grid_id":"138fbf9b-b1d6-4819-9732-6a9a972081ed",
+         "activity_name":"Environmental Tap Water Pharmaceuticals Technician Collect Instrument",
+         "activity_time":"15:45",
+         "activity_type":"Environment",
+         "activity_status":"Scheduled",
+         "scheduled_date":"2013-04-11",
+         "last_change_reason":"I'd love to but... My uncle escaped again.",
+         "ideal_date":"2013-03-26",
+         "labels":[
+            "collection:environmental",
+            "event:pregnancy_visit_1",
+            "instrument:2.0:ins_env_tapwaterpharmtechcollect_dci_ehpbhi_p2_v1.0",
+            "instrument:2.1:ins_env_tapwaterpharmtechcollect_dci_ehpbhi_m2.1_v1.1a",
+            "instrument:2.2:ins_env_tapwaterpharmtechcollect_dci_ehpbhi_m2.2_v2.0",
+            "instrument:3.0:ins_env_tapwaterpharmtechcollect_dci_ehpbhi_m2.2_v2.0",
+            "instrument:3.1:ins_env_tapwaterpharmtechcollect_dci_ehpbhi_m2.2_v2.0",
+            "instrument:3.2:ins_env_tapwaterpharmtechcollect_dci_ehpbhi_m2.2_v2.0",
+            "order:21_01",
+            "participant_type:mother"
+         ],
+         "scheduled_study_segment":{
+            "grid_id":"c219c01d-8126-4fb6-a323-6c4cc382b6e4",
+            "start_date":"2013-03-26",
+            "start_day":1
+         },
+         "subject":{
+            "name":"Lisa Pressely",
+            "person_id":"he6b-xz2a-24fs",
+            "grid_id":"359adf56-416d-47e1-9e28-686abb334b20"
+         },
+         "responsible_user":"sgp658",
+         "study":"NCS Hi-Lo",
+         "site":"STEVES SITE"
+      },
+      {
+         "grid_id":"62f838e9-b791-44f6-947a-b12b5234bf02",
+         "activity_name":"Environmental Vacuum Bag Dust Technician Collect Instrument",
+         "activity_time":"15:45",
+         "activity_type":"Environment",
+         "activity_status":"Scheduled",
+         "scheduled_date":"2013-04-11",
+         "last_change_reason":"I'd love to but... My uncle escaped again.",
+         "ideal_date":"2013-03-26",
+         "labels":[
+            "collection:environmental",
+            "event:pregnancy_visit_1",
+            "instrument:2.0:ins_env_vacbagdusttechcollect_dci_ehpbhi_p2_v1.0",
+            "instrument:2.1:ins_env_vacbagdusttechcollect_dci_ehpbhi_m2.1_v1.1",
+            "instrument:2.2:ins_env_vacbagdusttechcollect_dci_ehpbhi_m2.2_v2.0",
+            "instrument:3.0:ins_env_vacbagdusttechcollect_dci_ehpbhi_m2.2_v2.0",
+            "instrument:3.1:ins_env_vacbagdusttechcollect_dci_ehpbhi_m2.2_v2.0",
+            "instrument:3.2:ins_env_vacbagdusttechcollect_dci_ehpbhi_m2.2_v2.0",
+            "order:22_01",
+            "participant_type:mother"
+         ],
+         "scheduled_study_segment":{
+            "grid_id":"c219c01d-8126-4fb6-a323-6c4cc382b6e4",
+            "start_date":"2013-03-26",
+            "start_day":1
+         },
+         "subject":{
+            "name":"Lisa Pressely",
+            "person_id":"he6b-xz2a-24fs",
+            "grid_id":"359adf56-416d-47e1-9e28-686abb334b20"
+         },
+         "responsible_user":"sgp658",
+         "study":"NCS Hi-Lo",
+         "site":"STEVES SITE"
+      },
+      {
+         "grid_id":"10f0d27e-b524-4179-a430-8acfac883c4e",
+         "activity_name":"Biospecimen Adult Urine Instrument",
+         "activity_time":"15:45",
+         "activity_type":"Biospecimen",
+         "activity_status":"Scheduled",
+         "scheduled_date":"2013-04-11",
+         "last_change_reason":"I'd love to but... My uncle escaped again.",
+         "ideal_date":"2013-03-26",
+         "labels":[
+            "collection:biological",
+            "event:pregnancy_visit_1",
+            "instrument:2.0:ins_bio_adulturine_dci_ehpbhi_p2_v1.0",
+            "instrument:2.1:ins_bio_adulturine_dci_ehpbhi_m2.1_v1.1",
+            "instrument:2.2:ins_bio_adulturine_dci_ehpbhi_m2.1_v1.1",
+            "instrument:3.0:ins_bio_adulturine_dci_ehpbhi_m2.1_v1.1",
+            "instrument:3.1:ins_bio_adulturine_dci_ehpbhi_m2.1_v1.1",
+            "instrument:3.2:ins_bio_adulturine_dci_ehpbhi_m2.1_v1.1",
+            "order:11_01",
+            "participant_type:mother"
+         ],
+         "scheduled_study_segment":{
+            "grid_id":"c219c01d-8126-4fb6-a323-6c4cc382b6e4",
+            "start_date":"2013-03-26",
+            "start_day":1
+         },
+         "subject":{
+            "name":"Lisa Pressely",
+            "person_id":"he6b-xz2a-24fs",
+            "grid_id":"359adf56-416d-47e1-9e28-686abb334b20"
+         },
+         "responsible_user":"sgp658",
+         "study":"NCS Hi-Lo",
+         "site":"STEVES SITE"
+      },
+      {
+         "grid_id":"917c0ca9-74b3-4e98-afef-68a6f698bbe6",
+         "activity_name":"Biospecimen Adult Blood Instrument",
+         "activity_time":"15:45",
+         "activity_type":"Biospecimen",
+         "activity_status":"Scheduled",
+         "scheduled_date":"2013-04-11",
+         "last_change_reason":"I'd love to but... My uncle escaped again.",
+         "ideal_date":"2013-03-26",
+         "labels":[
+            "collection:biological",
+            "event:pregnancy_visit_1",
+            "instrument:2.0:ins_bio_adultblood_dci_ehpbhi_p2_v1.0",
+            "instrument:2.1:ins_bio_adultblood_dci_ehpbhi_p2_v1.0",
+            "instrument:2.2:ins_bio_adultblood_dci_ehpbhi_m2.2_v2.0",
+            "instrument:3.0:ins_bio_adultblood_dci_ehpbhi_m2.2_v2.0",
+            "instrument:3.1:ins_bio_adultblood_dci_ehpbhi_m2.2_v2.0",
+            "instrument:3.2:ins_bio_adultblood_dci_ehpbhi_m2.2_v2.0",
+            "order:10_01",
+            "participant_type:mother"
+         ],
+         "scheduled_study_segment":{
+            "grid_id":"c219c01d-8126-4fb6-a323-6c4cc382b6e4",
+            "start_date":"2013-03-26",
+            "start_day":1
+         },
+         "subject":{
+            "name":"Lisa Pressely",
+            "person_id":"he6b-xz2a-24fs",
+            "grid_id":"359adf56-416d-47e1-9e28-686abb334b20"
+         },
+         "responsible_user":"sgp658",
+         "study":"NCS Hi-Lo",
+         "site":"STEVES SITE"
+      },
+      {
+         "grid_id":"c212566a-743f-4261-a283-9704cd1fa5aa",
+         "activity_name":"Pregnancy Health Care Log",
+         "activity_time":"15:45",
+         "activity_type":"Instrument",
+         "activity_status":"Scheduled",
+         "scheduled_date":"2013-04-11",
+         "last_change_reason":"I'd love to but... My uncle escaped again.",
+         "ideal_date":"2013-03-26",
+         "labels":[
+            "event:pregnancy_visit_1",
+            "order:95_03"
+         ],
+         "scheduled_study_segment":{
+            "grid_id":"c219c01d-8126-4fb6-a323-6c4cc382b6e4",
+            "start_date":"2013-03-26",
+            "start_day":1
+         },
+         "subject":{
+            "name":"Lisa Pressely",
+            "person_id":"he6b-xz2a-24fs",
+            "grid_id":"359adf56-416d-47e1-9e28-686abb334b20"
+         },
+         "responsible_user":"sgp658",
+         "study":"NCS Hi-Lo",
+         "site":"STEVES SITE"
+      },
+      {
+         "grid_id":"d767d22f-0c47-43d7-9474-0dd5b21a9df7",
+         "activity_name":"Environmental Tap Water Pesticides Technician Collect Instrument",
+         "activity_time":"15:45",
+         "activity_type":"Environment",
+         "activity_status":"Scheduled",
+         "scheduled_date":"2013-04-11",
+         "last_change_reason":"I'd love to but... My uncle escaped again.",
+         "ideal_date":"2013-03-26",
+         "labels":[
+            "collection:environmental",
+            "event:pregnancy_visit_1",
+            "instrument:2.0:ins_env_tapwaterpesttechcollect_dci_ehpbhi_p2_v1.0",
+            "instrument:2.1:ins_env_tapwaterpesttechcollect_dci_ehpbhi_m2.1_v1.1",
+            "instrument:2.2:ins_env_tapwaterpesttechcollect_dci_ehpbhi_m2.2_v2.0",
+            "instrument:3.0:ins_env_tapwaterpesttechcollect_dci_ehpbhi_m2.2_v2.0",
+            "instrument:3.1:ins_env_tapwaterpesttechcollect_dci_ehpbhi_m2.2_v2.0",
+            "instrument:3.2:ins_env_tapwaterpesttechcollect_dci_ehpbhi_m2.2_v2.0",
+            "order:20_01",
+            "participant_type:mother"
+         ],
+         "scheduled_study_segment":{
+            "grid_id":"c219c01d-8126-4fb6-a323-6c4cc382b6e4",
+            "start_date":"2013-03-26",
+            "start_day":1
+         },
+         "subject":{
+            "name":"Lisa Pressely",
+            "person_id":"he6b-xz2a-24fs",
+            "grid_id":"359adf56-416d-47e1-9e28-686abb334b20"
+         },
+         "responsible_user":"sgp658",
+         "study":"NCS Hi-Lo",
+         "site":"STEVES SITE"
+      },
+      {
+         "grid_id":"ecd8e446-802f-4eff-8a87-e7e8e2a8bea3",
+         "activity_name":"Tracing Module",
+         "activity_time":"15:45",
+         "activity_type":"Instrument",
+         "activity_status":"Scheduled",
+         "scheduled_date":"2013-04-11",
+         "last_change_reason":"I'd love to but... My uncle escaped again.",
+         "ideal_date":"2013-03-26",
+         "labels":[
+            "event:pregnancy_visit_1",
+            "instrument:3.0:ins_que_tracing_int_ehpbhilipbs_m3.0_v1.0",
+            "instrument:3.1:ins_que_tracing_int_ehpbhilipbs_m3.0_v1.0",
+            "instrument:3.2:ins_que_tracing_int_ehpbhilipbs_m3.0_v1.0",
+            "order:90_01"
+         ],
+         "scheduled_study_segment":{
+            "grid_id":"c219c01d-8126-4fb6-a323-6c4cc382b6e4",
+            "start_date":"2013-03-26",
+            "start_day":1
+         },
+         "subject":{
+            "name":"Lisa Pressely",
+            "person_id":"he6b-xz2a-24fs",
+            "grid_id":"359adf56-416d-47e1-9e28-686abb334b20"
+         },
+         "responsible_user":"sgp658",
+         "study":"NCS Hi-Lo",
+         "site":"STEVES SITE"
+      },
+      {
+         "grid_id":"bcbbeb8e-2d1c-4d5e-9ef2-bb15655e52fe",
+         "activity_name":"Participant Verification Instrument",
+         "activity_time":"15:45",
+         "activity_type":"Instrument",
+         "activity_status":"Scheduled",
+         "scheduled_date":"2013-04-11",
+         "last_change_reason":"I'd love to but... My uncle escaped again.",
+         "ideal_date":"2013-03-26",
+         "labels":[
+            "event:pregnancy_visit_1",
+            "instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one",
+            "instrument:3.1:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one",
+            "instrument:3.2:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one",
+            "order:00_01",
+            "participant_type:mother"
+         ],
+         "scheduled_study_segment":{
+            "grid_id":"c219c01d-8126-4fb6-a323-6c4cc382b6e4",
+            "start_date":"2013-03-26",
+            "start_day":1
+         },
+         "subject":{
+            "name":"Lisa Pressely",
+            "person_id":"he6b-xz2a-24fs",
+            "grid_id":"359adf56-416d-47e1-9e28-686abb334b20"
+         },
+         "responsible_user":"sgp658",
+         "study":"NCS Hi-Lo",
+         "site":"STEVES SITE"
+      },
+      {
+         "grid_id":"8ab012af-2929-4a6b-9b61-e43b7e9d113f",
+         "activity_name":"Environmental Sample Kit Distribution Instrument",
+         "activity_time":"15:45",
+         "activity_type":"Environment",
+         "activity_status":"Scheduled",
+         "scheduled_date":"2013-04-11",
+         "last_change_reason":"I'd love to but... My uncle escaped again.",
+         "ideal_date":"2013-03-26",
+         "labels":[
+            "collection:environmental",
+            "event:pregnancy_visit_1",
+            "instrument:2.2:ins_env_sampledistrib_dci_ehpbhi_m2.2_v1.0",
+            "instrument:3.0:ins_env_sampledistrib_dci_ehpbhi_m2.2_v1.0",
+            "instrument:3.1:ins_env_sampledistrib_dci_ehpbhi_m2.2_v1.0",
+            "instrument:3.2:ins_env_sampledistrib_dci_ehpbhi_m2.2_v1.0",
+            "order:23_01",
+            "participant_type:mother"
+         ],
+         "scheduled_study_segment":{
+            "grid_id":"c219c01d-8126-4fb6-a323-6c4cc382b6e4",
+            "start_date":"2013-03-26",
+            "start_day":1
+         },
+         "subject":{
+            "name":"Lisa Pressely",
+            "person_id":"he6b-xz2a-24fs",
+            "grid_id":"359adf56-416d-47e1-9e28-686abb334b20"
+         },
+         "responsible_user":"sgp658",
+         "study":"NCS Hi-Lo",
+         "site":"STEVES SITE"
+      },
+      {
+         "grid_id":"5b8d2c98-2a9d-417a-a2c8-dbd1ea4793de",
+         "activity_name":"Environmental Tap Water TWF Participant Collect SAQ Specification",
+         "activity_time":"15:45",
+         "activity_type":"Environment",
+         "activity_status":"Scheduled",
+         "scheduled_date":"2013-04-11",
+         "last_change_reason":"I'd love to but... My uncle escaped again.",
+         "ideal_date":"2013-03-26",
+         "labels":[
+            "collection:environmental",
+            "event:pregnancy_visit_1",
+            "instrument:2.2:ins_env_tapwaterpharmpartcollect_saqspec_ehpbhi_m2.2_v1.0",
+            "instrument:3.0:ins_env_tapwaterpharmpartcollect_saqspec_ehpbhi_m2.2_v1.0",
+            "instrument:3.1:ins_env_tapwaterpharmpartcollect_saqspec_ehpbhi_m2.2_v1.0",
+            "instrument:3.2:ins_env_tapwaterpharmpartcollect_saqspec_ehpbhi_m2.2_v1.0",
+            "order:21_02",
+            "participant_type:mother"
+         ],
+         "scheduled_study_segment":{
+            "grid_id":"c219c01d-8126-4fb6-a323-6c4cc382b6e4",
+            "start_date":"2013-03-26",
+            "start_day":1
+         },
+         "subject":{
+            "name":"Lisa Pressely",
+            "person_id":"he6b-xz2a-24fs",
+            "grid_id":"359adf56-416d-47e1-9e28-686abb334b20"
+         },
+         "responsible_user":"sgp658",
+         "study":"NCS Hi-Lo",
+         "site":"STEVES SITE"
+      },
+      {
+         "grid_id":"fbe45ba7-f63a-4140-ba54-91894acf46f1",
+         "activity_name":"Environmental Tap Water TWQ Participant Collect SAQ Specification",
+         "activity_time":"15:45",
+         "activity_type":"Environment",
+         "activity_status":"Scheduled",
+         "scheduled_date":"2013-04-11",
+         "last_change_reason":"I'd love to but... My uncle escaped again.",
+         "ideal_date":"2013-03-26",
+         "labels":[
+            "collection:environmental",
+            "event:pregnancy_visit_1",
+            "instrument:2.2:ins_env_tapwaterpestpartcollect_saqspec_ehpbhi_m2.2_v1.0",
+            "instrument:3.0:ins_env_tapwaterpestpartcollect_saqspec_ehpbhi_m2.2_v1.0",
+            "instrument:3.1:ins_env_tapwaterpestpartcollect_saqspec_ehpbhi_m2.2_v1.0",
+            "instrument:3.2:ins_env_tapwaterpestpartcollect_saqspec_ehpbhi_m2.2_v1.0",
+            "order:20_02",
+            "participant_type:mother"
+         ],
+         "scheduled_study_segment":{
+            "grid_id":"c219c01d-8126-4fb6-a323-6c4cc382b6e4",
+            "start_date":"2013-03-26",
+            "start_day":1
+         },
+         "subject":{
+            "name":"Lisa Pressely",
+            "person_id":"he6b-xz2a-24fs",
+            "grid_id":"359adf56-416d-47e1-9e28-686abb334b20"
+         },
+         "responsible_user":"sgp658",
+         "study":"NCS Hi-Lo",
+         "site":"STEVES SITE"
+      },
+      {
+         "grid_id":"74a86eba-6336-4ed5-91bb-2b4b463a44ed",
+         "activity_name":"Environmental Vacuum Bag Dust (VBD) Participant Collect SAQ Specification",
+         "activity_time":"15:45",
+         "activity_type":"Environment",
+         "activity_status":"Scheduled",
+         "scheduled_date":"2013-04-11",
+         "last_change_reason":"I'd love to but... My uncle escaped again.",
+         "ideal_date":"2013-03-26",
+         "labels":[
+            "collection:environmental",
+            "event:pregnancy_visit_1",
+            "instrument:2.2:ins_env_vacbagdustpartcollect_saqspec_ehpbhi_m2.2_v1.0",
+            "instrument:3.0:ins_env_vacbagdustpartcollect_saqspec_ehpbhi_m2.2_v1.0",
+            "instrument:3.1:ins_env_vacbagdustpartcollect_saqspec_ehpbhi_m2.2_v1.0",
+            "instrument:3.2:ins_env_vacbagdustpartcollect_saqspec_ehpbhi_m2.2_v1.0",
+            "order:22_02",
+            "participant_type:mother"
+         ],
+         "scheduled_study_segment":{
+            "grid_id":"c219c01d-8126-4fb6-a323-6c4cc382b6e4",
+            "start_date":"2013-03-26",
+            "start_day":1
+         },
+         "subject":{
+            "name":"Lisa Pressely",
+            "person_id":"he6b-xz2a-24fs",
+            "grid_id":"359adf56-416d-47e1-9e28-686abb334b20"
+         },
+         "responsible_user":"sgp658",
+         "study":"NCS Hi-Lo",
+         "site":"STEVES SITE"
+      },
+      {
+         "grid_id":"2a93da58-8a0d-48c8-b2d9-b03b0b75f5f5",
+         "activity_name":"Pregnant Woman Informed Consent",
+         "activity_time":"17:30",
+         "activity_type":"Consent",
+         "activity_status":"Scheduled",
+         "scheduled_date":"2013-04-10",
+         "last_change_reason":"I'd love to but... I'm donating a kidney later.",
+         "ideal_date":"2013-03-26",
+         "labels":[
+            "event:pregnancy_visit_1",
+            "form:2.0:irb_con_informed_consent",
+            "form:2.1:irb_con_informed_consent",
+            "form:2.2:irb_con_informed_consent",
+            "form:3.0:irb_con_informed_consent",
+            "form:3.1:irb_con_informed_consent",
+            "form:3.2:irb_con_informed_consent",
+            "order:00_99",
+            "participant_type:mother"
+         ],
+         "scheduled_study_segment":{
+            "grid_id":"c00e9f7e-7b4a-4f6b-88c8-22a2e65613df",
+            "start_date":"2013-03-26",
+            "start_day":1
+         },
+         "subject":{
+            "name":"Angela Anderson",
+            "person_id":"z6wx-2ya7-ytat",
+            "grid_id":"4d32b581-d6f8-49c8-bc96-52a97d74df20"
+         },
+         "responsible_user":"sgp658",
+         "study":"NCS Hi-Lo",
+         "site":"STEVES SITE"
+      },
+      {
+         "grid_id":"ae865a84-ae42-452a-9ca9-c9d38fd95845",
+         "activity_name":"Pregnancy Visit 1 Interview",
+         "activity_time":"17:30",
+         "activity_type":"Instrument",
+         "activity_status":"Scheduled",
+         "scheduled_date":"2013-04-10",
+         "last_change_reason":"I'd love to but... I'm donating a kidney later.",
+         "ideal_date":"2013-03-26",
+         "labels":[
+            "event:pregnancy_visit_1",
+            "instrument:2.0:ins_que_pregvisit1_int_ehpbhi_p2_v2.0",
+            "instrument:2.1:ins_que_pregvisit1_int_ehpbhi_m2.1_v2.1",
+            "instrument:2.2:ins_que_pregvisit1_int_ehpbhi_m2.1_v2.1",
+            "instrument:3.0:ins_que_pregvisit1_int_ehpbhipbs_m3.0_v3.0",
+            "instrument:3.1:ins_que_pregvisit1_int_ehpbhipbs_m3.0_v3.0",
+            "instrument:3.2:ins_que_pregvisit1_int_ehpbhipbs_m3.0_v3.0",
+            "order:01_01",
+            "participant_type:mother"
+         ],
+         "scheduled_study_segment":{
+            "grid_id":"c00e9f7e-7b4a-4f6b-88c8-22a2e65613df",
+            "start_date":"2013-03-26",
+            "start_day":1
+         },
+         "subject":{
+            "name":"Angela Anderson",
+            "person_id":"z6wx-2ya7-ytat",
+            "grid_id":"4d32b581-d6f8-49c8-bc96-52a97d74df20"
+         },
+         "responsible_user":"sgp658",
+         "study":"NCS Hi-Lo",
+         "site":"STEVES SITE"
+      },
+      {
+         "grid_id":"d3f25674-944f-4e8a-b419-9437aba8df86",
+         "activity_name":"Pregnancy Visit 1 Information Sheet",
+         "activity_time":"17:30",
+         "activity_type":"Information Sheet",
+         "activity_status":"Scheduled",
+         "scheduled_date":"2013-04-10",
+         "last_change_reason":"I'd love to but... I'm donating a kidney later.",
+         "ideal_date":"2013-03-26",
+         "labels":[
+            "event:pregnancy_visit_1",
+            "order:95_02"
+         ],
+         "scheduled_study_segment":{
+            "grid_id":"c00e9f7e-7b4a-4f6b-88c8-22a2e65613df",
+            "start_date":"2013-03-26",
+            "start_day":1
+         },
+         "subject":{
+            "name":"Angela Anderson",
+            "person_id":"z6wx-2ya7-ytat",
+            "grid_id":"4d32b581-d6f8-49c8-bc96-52a97d74df20"
+         },
+         "responsible_user":"sgp658",
+         "study":"NCS Hi-Lo",
+         "site":"STEVES SITE"
+      },
+      {
+         "grid_id":"aab4602f-5e0f-4120-a6f5-65f3d7c792f1",
+         "activity_name":"Pregnancy Visit 1 SAQ",
+         "activity_time":"17:30",
+         "activity_type":"Instrument",
+         "activity_status":"Scheduled",
+         "scheduled_date":"2013-04-10",
+         "last_change_reason":"I'd love to but... I'm donating a kidney later.",
+         "ideal_date":"2013-03-26",
+         "labels":[
+            "event:pregnancy_visit_1",
+            "instrument:2.0:ins_que_pregvisit1_saq_ehpbhi_p2_v2.0",
+            "instrument:2.1:ins_que_pregvisit1_saq_ehpbhi_m2.1_v3.0",
+            "instrument:2.2:ins_que_pregvisit1_saq_ehpbhi_m2.1_v3.0",
+            "instrument:3.0:ins_que_pregvisit1_saqspec_ehpbhipbs_m3.0_v4.0",
+            "instrument:3.1:ins_que_pregvisit1_saqspec_ehpbhipbs_m3.0_v4.0",
+            "instrument:3.2:ins_que_pregvisit1_saqspec_ehpbhipbs_m3.0_v4.0",
+            "order:02_01",
+            "participant_type:mother"
+         ],
+         "scheduled_study_segment":{
+            "grid_id":"c00e9f7e-7b4a-4f6b-88c8-22a2e65613df",
+            "start_date":"2013-03-26",
+            "start_day":1
+         },
+         "subject":{
+            "name":"Angela Anderson",
+            "person_id":"z6wx-2ya7-ytat",
+            "grid_id":"4d32b581-d6f8-49c8-bc96-52a97d74df20"
+         },
+         "responsible_user":"sgp658",
+         "study":"NCS Hi-Lo",
+         "site":"STEVES SITE"
+      },
+      {
+         "grid_id":"d2b23823-bbe7-4bc2-b1dc-c9cbcb98f037",
+         "activity_name":"Environmental Tap Water Pharmaceuticals Technician Collect Instrument",
+         "activity_time":"17:30",
+         "activity_type":"Environment",
+         "activity_status":"Scheduled",
+         "scheduled_date":"2013-04-10",
+         "last_change_reason":"I'd love to but... I'm donating a kidney later.",
+         "ideal_date":"2013-03-26",
+         "labels":[
+            "collection:environmental",
+            "event:pregnancy_visit_1",
+            "instrument:2.0:ins_env_tapwaterpharmtechcollect_dci_ehpbhi_p2_v1.0",
+            "instrument:2.1:ins_env_tapwaterpharmtechcollect_dci_ehpbhi_m2.1_v1.1a",
+            "instrument:2.2:ins_env_tapwaterpharmtechcollect_dci_ehpbhi_m2.2_v2.0",
+            "instrument:3.0:ins_env_tapwaterpharmtechcollect_dci_ehpbhi_m2.2_v2.0",
+            "instrument:3.1:ins_env_tapwaterpharmtechcollect_dci_ehpbhi_m2.2_v2.0",
+            "instrument:3.2:ins_env_tapwaterpharmtechcollect_dci_ehpbhi_m2.2_v2.0",
+            "order:21_01",
+            "participant_type:mother"
+         ],
+         "scheduled_study_segment":{
+            "grid_id":"c00e9f7e-7b4a-4f6b-88c8-22a2e65613df",
+            "start_date":"2013-03-26",
+            "start_day":1
+         },
+         "subject":{
+            "name":"Angela Anderson",
+            "person_id":"z6wx-2ya7-ytat",
+            "grid_id":"4d32b581-d6f8-49c8-bc96-52a97d74df20"
+         },
+         "responsible_user":"sgp658",
+         "study":"NCS Hi-Lo",
+         "site":"STEVES SITE"
+      },
+      {
+         "grid_id":"79bf7a72-72ae-47ef-b4a1-9fb4332e4c28",
+         "activity_name":"Environmental Vacuum Bag Dust Technician Collect Instrument",
+         "activity_time":"17:30",
+         "activity_type":"Environment",
+         "activity_status":"Scheduled",
+         "scheduled_date":"2013-04-10",
+         "last_change_reason":"I'd love to but... I'm donating a kidney later.",
+         "ideal_date":"2013-03-26",
+         "labels":[
+            "collection:environmental",
+            "event:pregnancy_visit_1",
+            "instrument:2.0:ins_env_vacbagdusttechcollect_dci_ehpbhi_p2_v1.0",
+            "instrument:2.1:ins_env_vacbagdusttechcollect_dci_ehpbhi_m2.1_v1.1",
+            "instrument:2.2:ins_env_vacbagdusttechcollect_dci_ehpbhi_m2.2_v2.0",
+            "instrument:3.0:ins_env_vacbagdusttechcollect_dci_ehpbhi_m2.2_v2.0",
+            "instrument:3.1:ins_env_vacbagdusttechcollect_dci_ehpbhi_m2.2_v2.0",
+            "instrument:3.2:ins_env_vacbagdusttechcollect_dci_ehpbhi_m2.2_v2.0",
+            "order:22_01",
+            "participant_type:mother"
+         ],
+         "scheduled_study_segment":{
+            "grid_id":"c00e9f7e-7b4a-4f6b-88c8-22a2e65613df",
+            "start_date":"2013-03-26",
+            "start_day":1
+         },
+         "subject":{
+            "name":"Angela Anderson",
+            "person_id":"z6wx-2ya7-ytat",
+            "grid_id":"4d32b581-d6f8-49c8-bc96-52a97d74df20"
+         },
+         "responsible_user":"sgp658",
+         "study":"NCS Hi-Lo",
+         "site":"STEVES SITE"
+      },
+      {
+         "grid_id":"85e4c7dd-6d2e-4651-819f-7d78a52397c2",
+         "activity_name":"Biospecimen Adult Urine Instrument",
+         "activity_time":"17:30",
+         "activity_type":"Biospecimen",
+         "activity_status":"Scheduled",
+         "scheduled_date":"2013-04-10",
+         "last_change_reason":"I'd love to but... I'm donating a kidney later.",
+         "ideal_date":"2013-03-26",
+         "labels":[
+            "collection:biological",
+            "event:pregnancy_visit_1",
+            "instrument:2.0:ins_bio_adulturine_dci_ehpbhi_p2_v1.0",
+            "instrument:2.1:ins_bio_adulturine_dci_ehpbhi_m2.1_v1.1",
+            "instrument:2.2:ins_bio_adulturine_dci_ehpbhi_m2.1_v1.1",
+            "instrument:3.0:ins_bio_adulturine_dci_ehpbhi_m2.1_v1.1",
+            "instrument:3.1:ins_bio_adulturine_dci_ehpbhi_m2.1_v1.1",
+            "instrument:3.2:ins_bio_adulturine_dci_ehpbhi_m2.1_v1.1",
+            "order:11_01",
+            "participant_type:mother"
+         ],
+         "scheduled_study_segment":{
+            "grid_id":"c00e9f7e-7b4a-4f6b-88c8-22a2e65613df",
+            "start_date":"2013-03-26",
+            "start_day":1
+         },
+         "subject":{
+            "name":"Angela Anderson",
+            "person_id":"z6wx-2ya7-ytat",
+            "grid_id":"4d32b581-d6f8-49c8-bc96-52a97d74df20"
+         },
+         "responsible_user":"sgp658",
+         "study":"NCS Hi-Lo",
+         "site":"STEVES SITE"
+      },
+      {
+         "grid_id":"f4c3f66c-6203-469e-8355-c4910e2706a9",
+         "activity_name":"Biospecimen Adult Blood Instrument",
+         "activity_time":"17:30",
+         "activity_type":"Biospecimen",
+         "activity_status":"Scheduled",
+         "scheduled_date":"2013-04-10",
+         "last_change_reason":"I'd love to but... I'm donating a kidney later.",
+         "ideal_date":"2013-03-26",
+         "labels":[
+            "collection:biological",
+            "event:pregnancy_visit_1",
+            "instrument:2.0:ins_bio_adultblood_dci_ehpbhi_p2_v1.0",
+            "instrument:2.1:ins_bio_adultblood_dci_ehpbhi_p2_v1.0",
+            "instrument:2.2:ins_bio_adultblood_dci_ehpbhi_m2.2_v2.0",
+            "instrument:3.0:ins_bio_adultblood_dci_ehpbhi_m2.2_v2.0",
+            "instrument:3.1:ins_bio_adultblood_dci_ehpbhi_m2.2_v2.0",
+            "instrument:3.2:ins_bio_adultblood_dci_ehpbhi_m2.2_v2.0",
+            "order:10_01",
+            "participant_type:mother"
+         ],
+         "scheduled_study_segment":{
+            "grid_id":"c00e9f7e-7b4a-4f6b-88c8-22a2e65613df",
+            "start_date":"2013-03-26",
+            "start_day":1
+         },
+         "subject":{
+            "name":"Angela Anderson",
+            "person_id":"z6wx-2ya7-ytat",
+            "grid_id":"4d32b581-d6f8-49c8-bc96-52a97d74df20"
+         },
+         "responsible_user":"sgp658",
+         "study":"NCS Hi-Lo",
+         "site":"STEVES SITE"
+      },
+      {
+         "grid_id":"52bb33cf-c521-4279-823d-dc26d3ddb152",
+         "activity_name":"Pregnancy Health Care Log",
+         "activity_time":"17:30",
+         "activity_type":"Instrument",
+         "activity_status":"Scheduled",
+         "scheduled_date":"2013-04-10",
+         "last_change_reason":"I'd love to but... I'm donating a kidney later.",
+         "ideal_date":"2013-03-26",
+         "labels":[
+            "event:pregnancy_visit_1",
+            "order:95_03"
+         ],
+         "scheduled_study_segment":{
+            "grid_id":"c00e9f7e-7b4a-4f6b-88c8-22a2e65613df",
+            "start_date":"2013-03-26",
+            "start_day":1
+         },
+         "subject":{
+            "name":"Angela Anderson",
+            "person_id":"z6wx-2ya7-ytat",
+            "grid_id":"4d32b581-d6f8-49c8-bc96-52a97d74df20"
+         },
+         "responsible_user":"sgp658",
+         "study":"NCS Hi-Lo",
+         "site":"STEVES SITE"
+      },
+      {
+         "grid_id":"61801ca6-17c8-414e-8b6f-2ca774258a47",
+         "activity_name":"Environmental Tap Water Pesticides Technician Collect Instrument",
+         "activity_time":"17:30",
+         "activity_type":"Environment",
+         "activity_status":"Scheduled",
+         "scheduled_date":"2013-04-10",
+         "last_change_reason":"I'd love to but... I'm donating a kidney later.",
+         "ideal_date":"2013-03-26",
+         "labels":[
+            "collection:environmental",
+            "event:pregnancy_visit_1",
+            "instrument:2.0:ins_env_tapwaterpesttechcollect_dci_ehpbhi_p2_v1.0",
+            "instrument:2.1:ins_env_tapwaterpesttechcollect_dci_ehpbhi_m2.1_v1.1",
+            "instrument:2.2:ins_env_tapwaterpesttechcollect_dci_ehpbhi_m2.2_v2.0",
+            "instrument:3.0:ins_env_tapwaterpesttechcollect_dci_ehpbhi_m2.2_v2.0",
+            "instrument:3.1:ins_env_tapwaterpesttechcollect_dci_ehpbhi_m2.2_v2.0",
+            "instrument:3.2:ins_env_tapwaterpesttechcollect_dci_ehpbhi_m2.2_v2.0",
+            "order:20_01",
+            "participant_type:mother"
+         ],
+         "scheduled_study_segment":{
+            "grid_id":"c00e9f7e-7b4a-4f6b-88c8-22a2e65613df",
+            "start_date":"2013-03-26",
+            "start_day":1
+         },
+         "subject":{
+            "name":"Angela Anderson",
+            "person_id":"z6wx-2ya7-ytat",
+            "grid_id":"4d32b581-d6f8-49c8-bc96-52a97d74df20"
+         },
+         "responsible_user":"sgp658",
+         "study":"NCS Hi-Lo",
+         "site":"STEVES SITE"
+      },
+      {
+         "grid_id":"852742ee-da47-416e-8a9c-1f2af7dfe2d8",
+         "activity_name":"Tracing Module",
+         "activity_time":"17:30",
+         "activity_type":"Instrument",
+         "activity_status":"Scheduled",
+         "scheduled_date":"2013-04-10",
+         "last_change_reason":"I'd love to but... I'm donating a kidney later.",
+         "ideal_date":"2013-03-26",
+         "labels":[
+            "event:pregnancy_visit_1",
+            "instrument:3.0:ins_que_tracing_int_ehpbhilipbs_m3.0_v1.0",
+            "instrument:3.1:ins_que_tracing_int_ehpbhilipbs_m3.0_v1.0",
+            "instrument:3.2:ins_que_tracing_int_ehpbhilipbs_m3.0_v1.0",
+            "order:90_01"
+         ],
+         "scheduled_study_segment":{
+            "grid_id":"c00e9f7e-7b4a-4f6b-88c8-22a2e65613df",
+            "start_date":"2013-03-26",
+            "start_day":1
+         },
+         "subject":{
+            "name":"Angela Anderson",
+            "person_id":"z6wx-2ya7-ytat",
+            "grid_id":"4d32b581-d6f8-49c8-bc96-52a97d74df20"
+         },
+         "responsible_user":"sgp658",
+         "study":"NCS Hi-Lo",
+         "site":"STEVES SITE"
+      },
+      {
+         "grid_id":"c2988434-43f3-47c6-b14e-71b4c3285a11",
+         "activity_name":"Participant Verification Instrument",
+         "activity_time":"17:30",
+         "activity_type":"Instrument",
+         "activity_status":"Scheduled",
+         "scheduled_date":"2013-04-10",
+         "last_change_reason":"I'd love to but... I'm donating a kidney later.",
+         "ideal_date":"2013-03-26",
+         "labels":[
+            "event:pregnancy_visit_1",
+            "instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one",
+            "instrument:3.1:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one",
+            "instrument:3.2:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one",
+            "order:00_01",
+            "participant_type:mother"
+         ],
+         "scheduled_study_segment":{
+            "grid_id":"c00e9f7e-7b4a-4f6b-88c8-22a2e65613df",
+            "start_date":"2013-03-26",
+            "start_day":1
+         },
+         "subject":{
+            "name":"Angela Anderson",
+            "person_id":"z6wx-2ya7-ytat",
+            "grid_id":"4d32b581-d6f8-49c8-bc96-52a97d74df20"
+         },
+         "responsible_user":"sgp658",
+         "study":"NCS Hi-Lo",
+         "site":"STEVES SITE"
+      },
+      {
+         "grid_id":"e07809ec-0fe6-4a6e-bc8d-e530585a22be",
+         "activity_name":"Environmental Sample Kit Distribution Instrument",
+         "activity_time":"17:30",
+         "activity_type":"Environment",
+         "activity_status":"Scheduled",
+         "scheduled_date":"2013-04-10",
+         "last_change_reason":"I'd love to but... I'm donating a kidney later.",
+         "ideal_date":"2013-03-26",
+         "labels":[
+            "collection:environmental",
+            "event:pregnancy_visit_1",
+            "instrument:2.2:ins_env_sampledistrib_dci_ehpbhi_m2.2_v1.0",
+            "instrument:3.0:ins_env_sampledistrib_dci_ehpbhi_m2.2_v1.0",
+            "instrument:3.1:ins_env_sampledistrib_dci_ehpbhi_m2.2_v1.0",
+            "instrument:3.2:ins_env_sampledistrib_dci_ehpbhi_m2.2_v1.0",
+            "order:23_01",
+            "participant_type:mother"
+         ],
+         "scheduled_study_segment":{
+            "grid_id":"c00e9f7e-7b4a-4f6b-88c8-22a2e65613df",
+            "start_date":"2013-03-26",
+            "start_day":1
+         },
+         "subject":{
+            "name":"Angela Anderson",
+            "person_id":"z6wx-2ya7-ytat",
+            "grid_id":"4d32b581-d6f8-49c8-bc96-52a97d74df20"
+         },
+         "responsible_user":"sgp658",
+         "study":"NCS Hi-Lo",
+         "site":"STEVES SITE"
+      },
+      {
+         "grid_id":"ced5604e-0e91-4147-a467-9de8713ffbb4",
+         "activity_name":"Environmental Tap Water TWF Participant Collect SAQ Specification",
+         "activity_time":"17:30",
+         "activity_type":"Environment",
+         "activity_status":"Scheduled",
+         "scheduled_date":"2013-04-10",
+         "last_change_reason":"I'd love to but... I'm donating a kidney later.",
+         "ideal_date":"2013-03-26",
+         "labels":[
+            "collection:environmental",
+            "event:pregnancy_visit_1",
+            "instrument:2.2:ins_env_tapwaterpharmpartcollect_saqspec_ehpbhi_m2.2_v1.0",
+            "instrument:3.0:ins_env_tapwaterpharmpartcollect_saqspec_ehpbhi_m2.2_v1.0",
+            "instrument:3.1:ins_env_tapwaterpharmpartcollect_saqspec_ehpbhi_m2.2_v1.0",
+            "instrument:3.2:ins_env_tapwaterpharmpartcollect_saqspec_ehpbhi_m2.2_v1.0",
+            "order:21_02",
+            "participant_type:mother"
+         ],
+         "scheduled_study_segment":{
+            "grid_id":"c00e9f7e-7b4a-4f6b-88c8-22a2e65613df",
+            "start_date":"2013-03-26",
+            "start_day":1
+         },
+         "subject":{
+            "name":"Angela Anderson",
+            "person_id":"z6wx-2ya7-ytat",
+            "grid_id":"4d32b581-d6f8-49c8-bc96-52a97d74df20"
+         },
+         "responsible_user":"sgp658",
+         "study":"NCS Hi-Lo",
+         "site":"STEVES SITE"
+      },
+      {
+         "grid_id":"b5bed0fc-7a48-428f-b149-be93065eee15",
+         "activity_name":"Environmental Tap Water TWQ Participant Collect SAQ Specification",
+         "activity_time":"17:30",
+         "activity_type":"Environment",
+         "activity_status":"Scheduled",
+         "scheduled_date":"2013-04-10",
+         "last_change_reason":"I'd love to but... I'm donating a kidney later.",
+         "ideal_date":"2013-03-26",
+         "labels":[
+            "collection:environmental",
+            "event:pregnancy_visit_1",
+            "instrument:2.2:ins_env_tapwaterpestpartcollect_saqspec_ehpbhi_m2.2_v1.0",
+            "instrument:3.0:ins_env_tapwaterpestpartcollect_saqspec_ehpbhi_m2.2_v1.0",
+            "instrument:3.1:ins_env_tapwaterpestpartcollect_saqspec_ehpbhi_m2.2_v1.0",
+            "instrument:3.2:ins_env_tapwaterpestpartcollect_saqspec_ehpbhi_m2.2_v1.0",
+            "order:20_02",
+            "participant_type:mother"
+         ],
+         "scheduled_study_segment":{
+            "grid_id":"c00e9f7e-7b4a-4f6b-88c8-22a2e65613df",
+            "start_date":"2013-03-26",
+            "start_day":1
+         },
+         "subject":{
+            "name":"Angela Anderson",
+            "person_id":"z6wx-2ya7-ytat",
+            "grid_id":"4d32b581-d6f8-49c8-bc96-52a97d74df20"
+         },
+         "responsible_user":"sgp658",
+         "study":"NCS Hi-Lo",
+         "site":"STEVES SITE"
+      },
+      {
+         "grid_id":"d579eb25-8a45-4427-a291-06d7d19a3eb3",
+         "activity_name":"Environmental Vacuum Bag Dust (VBD) Participant Collect SAQ Specification",
+         "activity_time":"17:30",
+         "activity_type":"Environment",
+         "activity_status":"Scheduled",
+         "scheduled_date":"2013-04-10",
+         "last_change_reason":"I'd love to but... I'm donating a kidney later.",
+         "ideal_date":"2013-03-26",
+         "labels":[
+            "collection:environmental",
+            "event:pregnancy_visit_1",
+            "instrument:2.2:ins_env_vacbagdustpartcollect_saqspec_ehpbhi_m2.2_v1.0",
+            "instrument:3.0:ins_env_vacbagdustpartcollect_saqspec_ehpbhi_m2.2_v1.0",
+            "instrument:3.1:ins_env_vacbagdustpartcollect_saqspec_ehpbhi_m2.2_v1.0",
+            "instrument:3.2:ins_env_vacbagdustpartcollect_saqspec_ehpbhi_m2.2_v1.0",
+            "order:22_02",
+            "participant_type:mother"
+         ],
+         "scheduled_study_segment":{
+            "grid_id":"c00e9f7e-7b4a-4f6b-88c8-22a2e65613df",
+            "start_date":"2013-03-26",
+            "start_day":1
+         },
+         "subject":{
+            "name":"Angela Anderson",
+            "person_id":"z6wx-2ya7-ytat",
+            "grid_id":"4d32b581-d6f8-49c8-bc96-52a97d74df20"
+         },
+         "responsible_user":"sgp658",
+         "study":"NCS Hi-Lo",
+         "site":"STEVES SITE"
+      },
+      {
+         "grid_id":"a8f02c09-d376-4333-9ca6-b32a167cde2e",
+         "activity_name":"Pregnancy Visit 1 Information Sheet",
+         "activity_time":"14:45",
+         "activity_type":"Information Sheet",
+         "activity_status":"Scheduled",
+         "scheduled_date":"2013-04-08",
+         "last_change_reason":"Dog sick.",
+         "ideal_date":"2013-03-26",
+         "labels":[
+            "event:pregnancy_visit_1",
+            "order:95_02"
+         ],
+         "scheduled_study_segment":{
+            "grid_id":"9188a238-0805-4916-b492-2f7bfaf0620d",
+            "start_date":"2013-03-26",
+            "start_day":1
+         },
+         "subject":{
+            "name":"Dawn Davidson",
+            "person_id":"xfda-a78s-h83b",
+            "grid_id":"bd0521aa-4e62-40f4-8359-ca7c95c15fe1"
+         },
+         "responsible_user":"sgp658",
+         "study":"NCS Hi-Lo",
+         "site":"STEVES SITE"
+      },
+      {
+         "grid_id":"10b76ba6-da37-4a38-8904-1a7226713e43",
+         "activity_name":"Pregnancy Visit 1 SAQ",
+         "activity_time":"14:45",
+         "activity_type":"Instrument",
+         "activity_status":"Scheduled",
+         "scheduled_date":"2013-04-08",
+         "last_change_reason":"Dog sick.",
+         "ideal_date":"2013-03-26",
+         "labels":[
+            "event:pregnancy_visit_1",
+            "instrument:2.0:ins_que_pregvisit1_saq_ehpbhi_p2_v2.0",
+            "instrument:2.1:ins_que_pregvisit1_saq_ehpbhi_m2.1_v3.0",
+            "instrument:2.2:ins_que_pregvisit1_saq_ehpbhi_m2.1_v3.0",
+            "instrument:3.0:ins_que_pregvisit1_saqspec_ehpbhipbs_m3.0_v4.0",
+            "instrument:3.1:ins_que_pregvisit1_saqspec_ehpbhipbs_m3.0_v4.0",
+            "instrument:3.2:ins_que_pregvisit1_saqspec_ehpbhipbs_m3.0_v4.0",
+            "order:02_01",
+            "participant_type:mother"
+         ],
+         "scheduled_study_segment":{
+            "grid_id":"9188a238-0805-4916-b492-2f7bfaf0620d",
+            "start_date":"2013-03-26",
+            "start_day":1
+         },
+         "subject":{
+            "name":"Dawn Davidson",
+            "person_id":"xfda-a78s-h83b",
+            "grid_id":"bd0521aa-4e62-40f4-8359-ca7c95c15fe1"
+         },
+         "responsible_user":"sgp658",
+         "study":"NCS Hi-Lo",
+         "site":"STEVES SITE"
+      },
+      {
+         "grid_id":"efacef51-8e42-4f36-afbe-2fa2f6fc12d9",
+         "activity_name":"Environmental Tap Water Pharmaceuticals Technician Collect Instrument",
+         "activity_time":"14:45",
+         "activity_type":"Environment",
+         "activity_status":"Scheduled",
+         "scheduled_date":"2013-04-08",
+         "last_change_reason":"Dog sick.",
+         "ideal_date":"2013-03-26",
+         "labels":[
+            "collection:environmental",
+            "event:pregnancy_visit_1",
+            "instrument:2.0:ins_env_tapwaterpharmtechcollect_dci_ehpbhi_p2_v1.0",
+            "instrument:2.1:ins_env_tapwaterpharmtechcollect_dci_ehpbhi_m2.1_v1.1a",
+            "instrument:2.2:ins_env_tapwaterpharmtechcollect_dci_ehpbhi_m2.2_v2.0",
+            "instrument:3.0:ins_env_tapwaterpharmtechcollect_dci_ehpbhi_m2.2_v2.0",
+            "instrument:3.1:ins_env_tapwaterpharmtechcollect_dci_ehpbhi_m2.2_v2.0",
+            "instrument:3.2:ins_env_tapwaterpharmtechcollect_dci_ehpbhi_m2.2_v2.0",
+            "order:21_01",
+            "participant_type:mother"
+         ],
+         "scheduled_study_segment":{
+            "grid_id":"9188a238-0805-4916-b492-2f7bfaf0620d",
+            "start_date":"2013-03-26",
+            "start_day":1
+         },
+         "subject":{
+            "name":"Dawn Davidson",
+            "person_id":"xfda-a78s-h83b",
+            "grid_id":"bd0521aa-4e62-40f4-8359-ca7c95c15fe1"
+         },
+         "responsible_user":"sgp658",
+         "study":"NCS Hi-Lo",
+         "site":"STEVES SITE"
+      },
+      {
+         "grid_id":"8a6e43f5-85ee-4153-bb41-8b6c61e0f4bd",
+         "activity_name":"Environmental Vacuum Bag Dust Technician Collect Instrument",
+         "activity_time":"14:45",
+         "activity_type":"Environment",
+         "activity_status":"Scheduled",
+         "scheduled_date":"2013-04-08",
+         "last_change_reason":"Dog sick.",
+         "ideal_date":"2013-03-26",
+         "labels":[
+            "collection:environmental",
+            "event:pregnancy_visit_1",
+            "instrument:2.0:ins_env_vacbagdusttechcollect_dci_ehpbhi_p2_v1.0",
+            "instrument:2.1:ins_env_vacbagdusttechcollect_dci_ehpbhi_m2.1_v1.1",
+            "instrument:2.2:ins_env_vacbagdusttechcollect_dci_ehpbhi_m2.2_v2.0",
+            "instrument:3.0:ins_env_vacbagdusttechcollect_dci_ehpbhi_m2.2_v2.0",
+            "instrument:3.1:ins_env_vacbagdusttechcollect_dci_ehpbhi_m2.2_v2.0",
+            "instrument:3.2:ins_env_vacbagdusttechcollect_dci_ehpbhi_m2.2_v2.0",
+            "order:22_01",
+            "participant_type:mother"
+         ],
+         "scheduled_study_segment":{
+            "grid_id":"9188a238-0805-4916-b492-2f7bfaf0620d",
+            "start_date":"2013-03-26",
+            "start_day":1
+         },
+         "subject":{
+            "name":"Dawn Davidson",
+            "person_id":"xfda-a78s-h83b",
+            "grid_id":"bd0521aa-4e62-40f4-8359-ca7c95c15fe1"
+         },
+         "responsible_user":"sgp658",
+         "study":"NCS Hi-Lo",
+         "site":"STEVES SITE"
+      },
+      {
+         "grid_id":"14ec1a89-0591-4059-b31c-36b0670bb7ff",
+         "activity_name":"Biospecimen Adult Urine Instrument",
+         "activity_time":"14:45",
+         "activity_type":"Biospecimen",
+         "activity_status":"Scheduled",
+         "scheduled_date":"2013-04-08",
+         "last_change_reason":"Dog sick.",
+         "ideal_date":"2013-03-26",
+         "labels":[
+            "collection:biological",
+            "event:pregnancy_visit_1",
+            "instrument:2.0:ins_bio_adulturine_dci_ehpbhi_p2_v1.0",
+            "instrument:2.1:ins_bio_adulturine_dci_ehpbhi_m2.1_v1.1",
+            "instrument:2.2:ins_bio_adulturine_dci_ehpbhi_m2.1_v1.1",
+            "instrument:3.0:ins_bio_adulturine_dci_ehpbhi_m2.1_v1.1",
+            "instrument:3.1:ins_bio_adulturine_dci_ehpbhi_m2.1_v1.1",
+            "instrument:3.2:ins_bio_adulturine_dci_ehpbhi_m2.1_v1.1",
+            "order:11_01",
+            "participant_type:mother"
+         ],
+         "scheduled_study_segment":{
+            "grid_id":"9188a238-0805-4916-b492-2f7bfaf0620d",
+            "start_date":"2013-03-26",
+            "start_day":1
+         },
+         "subject":{
+            "name":"Dawn Davidson",
+            "person_id":"xfda-a78s-h83b",
+            "grid_id":"bd0521aa-4e62-40f4-8359-ca7c95c15fe1"
+         },
+         "responsible_user":"sgp658",
+         "study":"NCS Hi-Lo",
+         "site":"STEVES SITE"
+      },
+      {
+         "grid_id":"0dd74c2d-0c92-45f2-bc59-72f83f28c138",
+         "activity_name":"Biospecimen Adult Blood Instrument",
+         "activity_time":"14:45",
+         "activity_type":"Biospecimen",
+         "activity_status":"Scheduled",
+         "scheduled_date":"2013-04-08",
+         "last_change_reason":"Dog sick.",
+         "ideal_date":"2013-03-26",
+         "labels":[
+            "collection:biological",
+            "event:pregnancy_visit_1",
+            "instrument:2.0:ins_bio_adultblood_dci_ehpbhi_p2_v1.0",
+            "instrument:2.1:ins_bio_adultblood_dci_ehpbhi_p2_v1.0",
+            "instrument:2.2:ins_bio_adultblood_dci_ehpbhi_m2.2_v2.0",
+            "instrument:3.0:ins_bio_adultblood_dci_ehpbhi_m2.2_v2.0",
+            "instrument:3.1:ins_bio_adultblood_dci_ehpbhi_m2.2_v2.0",
+            "instrument:3.2:ins_bio_adultblood_dci_ehpbhi_m2.2_v2.0",
+            "order:10_01",
+            "participant_type:mother"
+         ],
+         "scheduled_study_segment":{
+            "grid_id":"9188a238-0805-4916-b492-2f7bfaf0620d",
+            "start_date":"2013-03-26",
+            "start_day":1
+         },
+         "subject":{
+            "name":"Dawn Davidson",
+            "person_id":"xfda-a78s-h83b",
+            "grid_id":"bd0521aa-4e62-40f4-8359-ca7c95c15fe1"
+         },
+         "responsible_user":"sgp658",
+         "study":"NCS Hi-Lo",
+         "site":"STEVES SITE"
+      },
+      {
+         "grid_id":"6d7e72c4-f9f3-491d-b2e3-7e040091ce06",
+         "activity_name":"Pregnancy Health Care Log",
+         "activity_time":"14:45",
+         "activity_type":"Instrument",
+         "activity_status":"Scheduled",
+         "scheduled_date":"2013-04-08",
+         "last_change_reason":"Dog sick.",
+         "ideal_date":"2013-03-26",
+         "labels":[
+            "event:pregnancy_visit_1",
+            "order:95_03"
+         ],
+         "scheduled_study_segment":{
+            "grid_id":"9188a238-0805-4916-b492-2f7bfaf0620d",
+            "start_date":"2013-03-26",
+            "start_day":1
+         },
+         "subject":{
+            "name":"Dawn Davidson",
+            "person_id":"xfda-a78s-h83b",
+            "grid_id":"bd0521aa-4e62-40f4-8359-ca7c95c15fe1"
+         },
+         "responsible_user":"sgp658",
+         "study":"NCS Hi-Lo",
+         "site":"STEVES SITE"
+      },
+      {
+         "grid_id":"64ddcda6-00a6-45f4-b5af-c7b00a5ea6cb",
+         "activity_name":"Environmental Tap Water Pesticides Technician Collect Instrument",
+         "activity_time":"14:45",
+         "activity_type":"Environment",
+         "activity_status":"Scheduled",
+         "scheduled_date":"2013-04-08",
+         "last_change_reason":"Dog sick.",
+         "ideal_date":"2013-03-26",
+         "labels":[
+            "collection:environmental",
+            "event:pregnancy_visit_1",
+            "instrument:2.0:ins_env_tapwaterpesttechcollect_dci_ehpbhi_p2_v1.0",
+            "instrument:2.1:ins_env_tapwaterpesttechcollect_dci_ehpbhi_m2.1_v1.1",
+            "instrument:2.2:ins_env_tapwaterpesttechcollect_dci_ehpbhi_m2.2_v2.0",
+            "instrument:3.0:ins_env_tapwaterpesttechcollect_dci_ehpbhi_m2.2_v2.0",
+            "instrument:3.1:ins_env_tapwaterpesttechcollect_dci_ehpbhi_m2.2_v2.0",
+            "instrument:3.2:ins_env_tapwaterpesttechcollect_dci_ehpbhi_m2.2_v2.0",
+            "order:20_01",
+            "participant_type:mother"
+         ],
+         "scheduled_study_segment":{
+            "grid_id":"9188a238-0805-4916-b492-2f7bfaf0620d",
+            "start_date":"2013-03-26",
+            "start_day":1
+         },
+         "subject":{
+            "name":"Dawn Davidson",
+            "person_id":"xfda-a78s-h83b",
+            "grid_id":"bd0521aa-4e62-40f4-8359-ca7c95c15fe1"
+         },
+         "responsible_user":"sgp658",
+         "study":"NCS Hi-Lo",
+         "site":"STEVES SITE"
+      },
+      {
+         "grid_id":"9def548b-6a3d-4be9-a2e4-b0ea075eae3b",
+         "activity_name":"Tracing Module",
+         "activity_time":"14:45",
+         "activity_type":"Instrument",
+         "activity_status":"Scheduled",
+         "scheduled_date":"2013-04-08",
+         "last_change_reason":"Dog sick.",
+         "ideal_date":"2013-03-26",
+         "labels":[
+            "event:pregnancy_visit_1",
+            "instrument:3.0:ins_que_tracing_int_ehpbhilipbs_m3.0_v1.0",
+            "instrument:3.1:ins_que_tracing_int_ehpbhilipbs_m3.0_v1.0",
+            "instrument:3.2:ins_que_tracing_int_ehpbhilipbs_m3.0_v1.0",
+            "order:90_01"
+         ],
+         "scheduled_study_segment":{
+            "grid_id":"9188a238-0805-4916-b492-2f7bfaf0620d",
+            "start_date":"2013-03-26",
+            "start_day":1
+         },
+         "subject":{
+            "name":"Dawn Davidson",
+            "person_id":"xfda-a78s-h83b",
+            "grid_id":"bd0521aa-4e62-40f4-8359-ca7c95c15fe1"
+         },
+         "responsible_user":"sgp658",
+         "study":"NCS Hi-Lo",
+         "site":"STEVES SITE"
+      },
+      {
+         "grid_id":"5ccd3626-278f-4e47-876f-a34afdf63d5d",
+         "activity_name":"Environmental Sample Kit Distribution Instrument",
+         "activity_time":"14:45",
+         "activity_type":"Environment",
+         "activity_status":"Scheduled",
+         "scheduled_date":"2013-04-08",
+         "last_change_reason":"Dog sick.",
+         "ideal_date":"2013-03-26",
+         "labels":[
+            "collection:environmental",
+            "event:pregnancy_visit_1",
+            "instrument:2.2:ins_env_sampledistrib_dci_ehpbhi_m2.2_v1.0",
+            "instrument:3.0:ins_env_sampledistrib_dci_ehpbhi_m2.2_v1.0",
+            "instrument:3.1:ins_env_sampledistrib_dci_ehpbhi_m2.2_v1.0",
+            "instrument:3.2:ins_env_sampledistrib_dci_ehpbhi_m2.2_v1.0",
+            "order:23_01",
+            "participant_type:mother"
+         ],
+         "scheduled_study_segment":{
+            "grid_id":"9188a238-0805-4916-b492-2f7bfaf0620d",
+            "start_date":"2013-03-26",
+            "start_day":1
+         },
+         "subject":{
+            "name":"Dawn Davidson",
+            "person_id":"xfda-a78s-h83b",
+            "grid_id":"bd0521aa-4e62-40f4-8359-ca7c95c15fe1"
+         },
+         "responsible_user":"sgp658",
+         "study":"NCS Hi-Lo",
+         "site":"STEVES SITE"
+      },
+      {
+         "grid_id":"6604c707-06b8-4b67-96eb-b438b6d7443b",
+         "activity_name":"Environmental Tap Water TWF Participant Collect SAQ Specification",
+         "activity_time":"14:45",
+         "activity_type":"Environment",
+         "activity_status":"Scheduled",
+         "scheduled_date":"2013-04-08",
+         "last_change_reason":"Dog sick.",
+         "ideal_date":"2013-03-26",
+         "labels":[
+            "collection:environmental",
+            "event:pregnancy_visit_1",
+            "instrument:2.2:ins_env_tapwaterpharmpartcollect_saqspec_ehpbhi_m2.2_v1.0",
+            "instrument:3.0:ins_env_tapwaterpharmpartcollect_saqspec_ehpbhi_m2.2_v1.0",
+            "instrument:3.1:ins_env_tapwaterpharmpartcollect_saqspec_ehpbhi_m2.2_v1.0",
+            "instrument:3.2:ins_env_tapwaterpharmpartcollect_saqspec_ehpbhi_m2.2_v1.0",
+            "order:21_02",
+            "participant_type:mother"
+         ],
+         "scheduled_study_segment":{
+            "grid_id":"9188a238-0805-4916-b492-2f7bfaf0620d",
+            "start_date":"2013-03-26",
+            "start_day":1
+         },
+         "subject":{
+            "name":"Dawn Davidson",
+            "person_id":"xfda-a78s-h83b",
+            "grid_id":"bd0521aa-4e62-40f4-8359-ca7c95c15fe1"
+         },
+         "responsible_user":"sgp658",
+         "study":"NCS Hi-Lo",
+         "site":"STEVES SITE"
+      },
+      {
+         "grid_id":"c8dc75fc-f3e8-49ef-9d9b-76c1f333af0c",
+         "activity_name":"Environmental Tap Water TWQ Participant Collect SAQ Specification",
+         "activity_time":"14:45",
+         "activity_type":"Environment",
+         "activity_status":"Scheduled",
+         "scheduled_date":"2013-04-08",
+         "last_change_reason":"Dog sick.",
+         "ideal_date":"2013-03-26",
+         "labels":[
+            "collection:environmental",
+            "event:pregnancy_visit_1",
+            "instrument:2.2:ins_env_tapwaterpestpartcollect_saqspec_ehpbhi_m2.2_v1.0",
+            "instrument:3.0:ins_env_tapwaterpestpartcollect_saqspec_ehpbhi_m2.2_v1.0",
+            "instrument:3.1:ins_env_tapwaterpestpartcollect_saqspec_ehpbhi_m2.2_v1.0",
+            "instrument:3.2:ins_env_tapwaterpestpartcollect_saqspec_ehpbhi_m2.2_v1.0",
+            "order:20_02",
+            "participant_type:mother"
+         ],
+         "scheduled_study_segment":{
+            "grid_id":"9188a238-0805-4916-b492-2f7bfaf0620d",
+            "start_date":"2013-03-26",
+            "start_day":1
+         },
+         "subject":{
+            "name":"Dawn Davidson",
+            "person_id":"xfda-a78s-h83b",
+            "grid_id":"bd0521aa-4e62-40f4-8359-ca7c95c15fe1"
+         },
+         "responsible_user":"sgp658",
+         "study":"NCS Hi-Lo",
+         "site":"STEVES SITE"
+      },
+      {
+         "grid_id":"31bb3dfa-c91d-4743-89ac-5d786f2307f0",
+         "activity_name":"Environmental Vacuum Bag Dust (VBD) Participant Collect SAQ Specification",
+         "activity_time":"14:45",
+         "activity_type":"Environment",
+         "activity_status":"Scheduled",
+         "scheduled_date":"2013-04-08",
+         "last_change_reason":"Dog sick.",
+         "ideal_date":"2013-03-26",
+         "labels":[
+            "collection:environmental",
+            "event:pregnancy_visit_1",
+            "instrument:2.2:ins_env_vacbagdustpartcollect_saqspec_ehpbhi_m2.2_v1.0",
+            "instrument:3.0:ins_env_vacbagdustpartcollect_saqspec_ehpbhi_m2.2_v1.0",
+            "instrument:3.1:ins_env_vacbagdustpartcollect_saqspec_ehpbhi_m2.2_v1.0",
+            "instrument:3.2:ins_env_vacbagdustpartcollect_saqspec_ehpbhi_m2.2_v1.0",
+            "order:22_02",
+            "participant_type:mother"
+         ],
+         "scheduled_study_segment":{
+            "grid_id":"9188a238-0805-4916-b492-2f7bfaf0620d",
+            "start_date":"2013-03-26",
+            "start_day":1
+         },
+         "subject":{
+            "name":"Dawn Davidson",
+            "person_id":"xfda-a78s-h83b",
+            "grid_id":"bd0521aa-4e62-40f4-8359-ca7c95c15fe1"
+         },
+         "responsible_user":"sgp658",
+         "study":"NCS Hi-Lo",
+         "site":"STEVES SITE"
+      },
+      {
+         "grid_id":"a6fe414f-bfbe-4020-9c76-da05dbc3b650",
+         "activity_name":"9-Month Mother Phone Interview Mother Detail",
+         "activity_time":"13:15",
+         "activity_type":"Instrument",
+         "activity_status":"Scheduled",
+         "scheduled_date":"2013-04-11",
+         "last_change_reason":"I'd love to but... It's against my religion.",
+         "ideal_date":"2013-12-24",
+         "details":"for each child",
+         "labels":[
+            "event:9_month",
+            "instrument:2.0:ins_que_9mmother_int_ehpbhi_p2_v1.1_nine_mth_mother_detail",
+            "instrument:2.1:ins_que_9mmother_int_ehpbhi_p2_v1.1_nine_mth_mother_detail",
+            "instrument:2.2:ins_que_9mmother_int_ehpbhi_p2_v1.1_nine_mth_mother_detail",
+            "instrument:3.0:ins_que_9mmother_int_ehpbhi_p2_v1.1_nine_mth_mother_detail",
+            "instrument:3.1:ins_que_9month_int_ehpbhilipbs_m3.1_v2.0_nine_mth_mother_detail",
+            "instrument:3.2:ins_que_9month_int_ehpbhilipbs_m3.1_v2.0_nine_mth_mother_detail",
+            "order:01_02",
+            "participant_type:child",
+            "references:2.0:ins_que_9mmother_int_ehpbhi_p2_v1.1_part_one",
+            "references:2.1:ins_que_9mmother_int_ehpbhi_p2_v1.1_part_one",
+            "references:2.2:ins_que_9mmother_int_ehpbhi_p2_v1.1_part_one",
+            "references:3.0:ins_que_9mmother_int_ehpbhi_p2_v1.1_part_one",
+            "references:3.1:ins_que_9month_int_ehpbhilipbs_m3.1_v2.0_part_one",
+            "references:3.2:ins_que_9month_int_ehpbhilipbs_m3.1_v2.0_part_one"
+         ],
+         "scheduled_study_segment":{
+            "grid_id":"219c7155-d63a-4f27-a168-461e79d9ebf4",
+            "start_date":"2013-03-26",
+            "start_day":1
+         },
+         "subject":{
+            "name":"Barbara Barnes",
+            "person_id":"byt5-5s89-7a5h",
+            "grid_id":"8978924d-86c1-40d2-a028-e654afd054ed"
+         },
+         "responsible_user":"sgp658",
+         "study":"NCS Hi-Lo",
+         "site":"STEVES SITE"
+      },
+      {
+         "grid_id":"7dbc721b-aa15-4c45-9416-436443059175",
+         "activity_name":"9-Month Mother Phone Interview Part One",
+         "activity_time":"13:15",
+         "activity_type":"Instrument",
+         "activity_status":"Scheduled",
+         "scheduled_date":"2013-04-11",
+         "last_change_reason":"I'd love to but... It's against my religion.",
+         "ideal_date":"2013-12-24",
+         "labels":[
+            "event:9_month",
+            "instrument:2.0:ins_que_9mmother_int_ehpbhi_p2_v1.1_part_one",
+            "instrument:2.1:ins_que_9mmother_int_ehpbhi_p2_v1.1_part_one",
+            "instrument:2.2:ins_que_9mmother_int_ehpbhi_p2_v1.1_part_one",
+            "instrument:3.0:ins_que_9mmother_int_ehpbhi_p2_v1.1_part_one",
+            "instrument:3.1:ins_que_9month_int_ehpbhilipbs_m3.1_v2.0_part_one",
+            "instrument:3.2:ins_que_9month_int_ehpbhilipbs_m3.1_v2.0_part_one",
+            "order:01_01",
+            "participant_type:mother"
+         ],
+         "scheduled_study_segment":{
+            "grid_id":"219c7155-d63a-4f27-a168-461e79d9ebf4",
+            "start_date":"2013-03-26",
+            "start_day":1
+         },
+         "subject":{
+            "name":"Barbara Barnes",
+            "person_id":"byt5-5s89-7a5h",
+            "grid_id":"8978924d-86c1-40d2-a028-e654afd054ed"
+         },
+         "responsible_user":"sgp658",
+         "study":"NCS Hi-Lo",
+         "site":"STEVES SITE"
+      },
+      {
+         "grid_id":"017bc312-db57-4eb2-9fc2-678c8adb52eb",
+         "activity_name":"Tracing Module",
+         "activity_time":"13:15",
+         "activity_type":"Instrument",
+         "activity_status":"Scheduled",
+         "scheduled_date":"2013-04-11",
+         "last_change_reason":"I'd love to but... It's against my religion.",
+         "ideal_date":"2013-12-24",
+         "labels":[
+            "event:9_month",
+            "instrument:3.0:ins_que_tracing_int_ehpbhilipbs_m3.0_v1.0",
+            "instrument:3.1:ins_que_tracing_int_ehpbhilipbs_m3.0_v1.0",
+            "instrument:3.2:ins_que_tracing_int_ehpbhilipbs_m3.0_v1.0",
+            "order:90_01",
+            "participant_type:mother"
+         ],
+         "scheduled_study_segment":{
+            "grid_id":"219c7155-d63a-4f27-a168-461e79d9ebf4",
+            "start_date":"2013-03-26",
+            "start_day":1
+         },
+         "subject":{
+            "name":"Barbara Barnes",
+            "person_id":"byt5-5s89-7a5h",
+            "grid_id":"8978924d-86c1-40d2-a028-e654afd054ed"
+         },
+         "responsible_user":"sgp658",
+         "study":"NCS Hi-Lo",
+         "site":"STEVES SITE"
+      },
+      {
+         "grid_id":"a973904c-e898-4333-a302-7304c8dcc234",
+         "activity_name":"Participant Verification Instrument",
+         "activity_time":"13:15",
+         "activity_type":"Instrument",
+         "activity_status":"Scheduled",
+         "scheduled_date":"2013-04-11",
+         "last_change_reason":"I'd love to but... It's against my religion.",
+         "ideal_date":"2013-12-24",
+         "labels":[
+            "event:9_month",
+            "instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one",
+            "instrument:3.1:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one",
+            "instrument:3.2:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one",
+            "order:00_01",
+            "participant_type:mother"
+         ],
+         "scheduled_study_segment":{
+            "grid_id":"219c7155-d63a-4f27-a168-461e79d9ebf4",
+            "start_date":"2013-03-26",
+            "start_day":1
+         },
+         "subject":{
+            "name":"Barbara Barnes",
+            "person_id":"byt5-5s89-7a5h",
+            "grid_id":"8978924d-86c1-40d2-a028-e654afd054ed"
+         },
+         "responsible_user":"sgp658",
+         "study":"NCS Hi-Lo",
+         "site":"STEVES SITE"
+      },
+      {
+         "grid_id":"b9fe2d53-5373-456c-94fe-c62c493e619f",
+         "activity_name":"Participant Verification Instrument Part Two",
+         "activity_time":"13:15",
+         "activity_type":"Instrument",
+         "activity_status":"Scheduled",
+         "scheduled_date":"2013-04-11",
+         "last_change_reason":"I'd love to but... It's against my religion.",
+         "ideal_date":"2013-12-24",
+         "labels":[
+            "event:9_month",
+            "instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_two",
+            "instrument:3.1:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_two",
+            "instrument:3.2:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_two",
+            "order:00_02",
+            "participant_type:child",
+            "references:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one",
+            "references:3.1:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one",
+            "references:3.2:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one"
+         ],
+         "scheduled_study_segment":{
+            "grid_id":"219c7155-d63a-4f27-a168-461e79d9ebf4",
+            "start_date":"2013-03-26",
+            "start_day":1
+         },
+         "subject":{
+            "name":"Barbara Barnes",
+            "person_id":"byt5-5s89-7a5h",
+            "grid_id":"8978924d-86c1-40d2-a028-e654afd054ed"
+         },
+         "responsible_user":"sgp658",
+         "study":"NCS Hi-Lo",
+         "site":"STEVES SITE"
+      },
+      {
+         "grid_id":"2ab7ccc1-9ed4-4fb7-b5ed-1b80ac8e1fb1",
+         "activity_name":"Pregnant Woman Informed Consent",
+         "activity_time":"9:30",
+         "activity_type":"Consent",
+         "activity_status":"Scheduled",
+         "scheduled_date":"2013-04-10",
+         "last_change_reason":"I'd love to but... I have to go wash my llama",
+         "ideal_date":"2013-03-27",
+         "labels":[
+            "event:pbs_participant_eligibility_screening",
+            "form:2.0:irb_con_informed_consent",
+            "form:2.1:irb_con_informed_consent",
+            "form:2.2:irb_con_informed_consent",
+            "form:3.0:irb_con_informed_consent",
+            "form:3.1:irb_con_informed_consent",
+            "form:3.2:irb_con_informed_consent",
+            "order:90_01",
+            "participant_type:mother"
+         ],
+         "scheduled_study_segment":{
+            "grid_id":"186b7e7c-7812-4762-8e1d-94bf68184c57",
+            "start_date":"2013-03-27",
+            "start_day":1
+         },
+         "subject":{
+            "name":"Elaine Edwinson",
+            "person_id":"wfx6-4tx4-cf8f",
+            "grid_id":"5450e718-8e5c-4a48-80cb-65b0a5df04ce"
+         },
+         "responsible_user":"sgp658",
+         "study":"NCS Hi-Lo",
+         "site":"STEVES SITE"
+      },
+      {
+         "grid_id":"6fcf1049-d524-44b5-b6a3-42043431e190",
+         "activity_name":"PBS Eligibility Screener Interview",
+         "activity_time":"12:45",
+         "activity_type":"Instrument",
+         "activity_status":"Scheduled",
+         "scheduled_date":"2013-04-10",
+         "last_change_reason":"I'd love to but... my dog needs to have a flea bath.",
+         "ideal_date":"2013-03-28",
+         "labels":[
+            "event:pbs_participant_eligibility_screening",
+            "instrument:3.0:ins_que_pbsamplingscreen_int_pbs_m3.0_v1.0",
+            "instrument:3.1:ins_que_pbsamplingscreen_int_pbs_m3.0_v1.0",
+            "instrument:3.2:ins_que_pbsamplingscreen_int_pbs_m3.0_v1.0",
+            "order:10_01"
+         ],
+         "scheduled_study_segment":{
+            "grid_id":"902a9cc4-8ead-4685-b773-53aa1043cd30",
+            "start_date":"2013-03-28",
+            "start_day":1
+         },
+         "subject":{
+            "name":"Francine Folgers",
+            "person_id":"fy84-54sf-wc3s",
+            "grid_id":"96241569-1364-4cac-b30e-4c53d53a4fff"
+         },
+         "responsible_user":"sgp658",
+         "study":"NCS Hi-Lo",
+         "site":"STEVES SITE"
+      },
+      {
+         "grid_id":"a4f31129-ed3f-4f1f-8901-37c4a20730a6",
+         "activity_name":"Tracing Module",
+         "activity_time":"12:45",
+         "activity_type":"Instrument",
+         "activity_status":"Scheduled",
+         "scheduled_date":"2013-04-10",
+         "last_change_reason":"I'd love to but... my dog needs to have a flea bath.",
+         "ideal_date":"2013-03-28",
+         "labels":[
+            "event:pbs_participant_eligibility_screening",
+            "instrument:3.0:ins_que_tracing_int_ehpbhilipbs_m3.0_v1.0",
+            "instrument:3.1:ins_que_tracing_int_ehpbhilipbs_m3.0_v1.0",
+            "instrument:3.2:ins_que_tracing_int_ehpbhilipbs_m3.0_v1.0",
+            "order:10_99"
+         ],
+         "scheduled_study_segment":{
+            "grid_id":"902a9cc4-8ead-4685-b773-53aa1043cd30",
+            "start_date":"2013-03-28",
+            "start_day":1
+         },
+         "subject":{
+            "name":"Francine Folgers",
+            "person_id":"fy84-54sf-wc3s",
+            "grid_id":"96241569-1364-4cac-b30e-4c53d53a4fff"
+         },
+         "responsible_user":"sgp658",
+         "study":"NCS Hi-Lo",
+         "site":"STEVES SITE"
+      },
+      {
+         "grid_id":"56c71a5b-a00a-452b-8dd9-cdd3324dabfc",
+         "activity_name":"Pregnancy Probability Group Follow-Up Interview",
+         "activity_time":"14:15",
+         "activity_type":"Instrument",
+         "activity_status":"Scheduled",
+         "scheduled_date":"2013-04-13",
+         "last_change_reason":"I'd love to but... I have to sit up with a sick ant.",
+         "ideal_date":"2013-04-02",
+         "labels":[
+            "event:pregnancy_probability",
+            "instrument:2.0:ins_que_ppgfollup_int_ehpbhili_p2_v1.2",
+            "instrument:2.1:ins_que_ppgfollup_int_ehpbhili_m2.1_v1.3",
+            "instrument:2.2:ins_que_ppgfollup_int_ehpbhili_m2.1_v1.3",
+            "instrument:3.0:ins_que_ppgfollup_int_ehpbhili_m2.1_v1.3",
+            "instrument:3.1:ins_que_ppgfollup_int_ehpbhili_m2.1_v1.3",
+            "instrument:3.2:ins_que_ppgfollup_int_ehpbhili_m2.1_v1.3",
+            "order:01_01",
+            "participant_type:mother"
+         ],
+         "scheduled_study_segment":{
+            "grid_id":"34bda70c-a060-48d3-9bbd-726f8994a90f",
+            "start_date":"2013-04-02",
+            "start_day":1
+         },
+         "subject":{
+            "name":"tzzz-649b-5zhe",
+            "person_id":"tzzz-649b-5zhe",
+            "grid_id":"6032b3bd-e0e5-41e8-a569-ba63a1201a7f"
+         },
+         "responsible_user":"sgp658",
+         "study":"NCS Hi-Lo",
+         "site":"STEVES SITE"
+      },
+      {
+         "grid_id":"912b653a-e4a4-434b-97f0-91d02dc25830",
+         "activity_name":"Pregnancy Probability Group Follow-Up SAQ",
+         "activity_time":"14:15",
+         "activity_type":"Instrument",
+         "activity_status":"Scheduled",
+         "scheduled_date":"2013-04-13",
+         "last_change_reason":"I'd love to but... I have to sit up with a sick ant.",
+         "ideal_date":"2013-04-02",
+         "labels":[
+            "event:pregnancy_probability",
+            "instrument:2.0:ins_que_ppgfollup_saq_ehpbhili_p2_v1.1",
+            "instrument:2.1:ins_que_ppgfollup_saq_ehpbhili_p2_v1.1",
+            "instrument:2.2:ins_que_ppgfollup_saq_ehpbhili_p2_v1.1",
+            "instrument:3.0:ins_que_ppgfollup_saq_ehpbhili_p2_v1.1",
+            "instrument:3.1:ins_que_ppgfollup_saq_ehpbhili_p2_v1.1",
+            "instrument:3.2:ins_que_ppgfollup_saq_ehpbhili_p2_v1.1",
+            "order:02_01",
+            "participant_type:mother"
+         ],
+         "scheduled_study_segment":{
+            "grid_id":"34bda70c-a060-48d3-9bbd-726f8994a90f",
+            "start_date":"2013-04-02",
+            "start_day":1
+         },
+         "subject":{
+            "name":"tzzz-649b-5zhe",
+            "person_id":"tzzz-649b-5zhe",
+            "grid_id":"6032b3bd-e0e5-41e8-a569-ba63a1201a7f"
+         },
+         "responsible_user":"sgp658",
+         "study":"NCS Hi-Lo",
+         "site":"STEVES SITE"
+      },
+      {
+         "grid_id":"d5cccbd6-d0be-45a2-83ca-eac8d001ebc7",
+         "activity_name":"Participant Verification Instrument",
+         "activity_type":"Instrument",
+         "activity_status":"Scheduled",
+         "scheduled_date":"2013-04-11",
+         "last_change_reason":"Initialized from template",
+         "ideal_date":"2013-04-11",
+         "labels":[
+            "event:informed_consent",
+            "instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one",
+            "instrument:3.1:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one",
+            "instrument:3.2:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one",
+            "order:00_01",
+            "participant_type:mother"
+         ],
+         "scheduled_study_segment":{
+            "grid_id":"e375a23e-0f35-4058-b0b8-004302222804",
+            "start_date":"2013-04-11",
+            "start_day":1
+         },
+         "subject":{
+            "name":"Dawn Davidson",
+            "person_id":"xfda-a78s-h83b",
+            "grid_id":"bd0521aa-4e62-40f4-8359-ca7c95c15fe1"
+         },
+         "responsible_user":"sgp658",
+         "study":"NCS Hi-Lo",
+         "site":"STEVES SITE"
+      },
+      {
+         "grid_id":"58623fb6-a46f-4425-9a14-f896b8538861",
+         "activity_name":"Informed Consent",
+         "activity_type":"Consent",
+         "activity_status":"Scheduled",
+         "scheduled_date":"2013-04-11",
+         "last_change_reason":"Initialized from template",
+         "ideal_date":"2013-04-11",
+         "labels":[
+            "event:informed_consent",
+            "form:2.0:irb_con_informed_consent",
+            "form:2.1:irb_con_informed_consent",
+            "form:2.2:irb_con_informed_consent",
+            "form:3.0:irb_con_informed_consent",
+            "form:3.1:irb_con_informed_consent",
+            "form:3.2:irb_con_informed_consent",
+            "order:01_01",
+            "participant_type:mother"
+         ],
+         "scheduled_study_segment":{
+            "grid_id":"e375a23e-0f35-4058-b0b8-004302222804",
+            "start_date":"2013-04-11",
+            "start_day":1
+         },
+         "subject":{
+            "name":"Dawn Davidson",
+            "person_id":"xfda-a78s-h83b",
+            "grid_id":"bd0521aa-4e62-40f4-8359-ca7c95c15fe1"
+         },
+         "responsible_user":"sgp658",
+         "study":"NCS Hi-Lo",
+         "site":"STEVES SITE"
+      },
+      {
+         "grid_id":"37fbff9b-d93f-4f31-8762-98331897f254",
+         "activity_name":"Participant Verification Instrument",
+         "activity_type":"Instrument",
+         "activity_status":"Scheduled",
+         "scheduled_date":"2013-04-11",
+         "last_change_reason":"Initialized from template",
+         "ideal_date":"2013-04-11",
+         "labels":[
+            "event:informed_consent",
+            "instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one",
+            "instrument:3.1:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one",
+            "instrument:3.2:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one",
+            "order:00_01",
+            "participant_type:mother"
+         ],
+         "scheduled_study_segment":{
+            "grid_id":"f2c3827f-6948-458a-9288-3623548d103d",
+            "start_date":"2013-04-11",
+            "start_day":1
+         },
+         "subject":{
+            "name":"Elaine Edwinson",
+            "person_id":"wfx6-4tx4-cf8f",
+            "grid_id":"5450e718-8e5c-4a48-80cb-65b0a5df04ce"
+         },
+         "responsible_user":"sgp658",
+         "study":"NCS Hi-Lo",
+         "site":"STEVES SITE"
+      },
+      {
+         "grid_id":"0f41d866-80a2-4988-abfe-b818375c1f59",
+         "activity_name":"Informed Consent",
+         "activity_type":"Consent",
+         "activity_status":"Scheduled",
+         "scheduled_date":"2013-04-11",
+         "last_change_reason":"Initialized from template",
+         "ideal_date":"2013-04-11",
+         "labels":[
+            "event:informed_consent",
+            "form:2.0:irb_con_informed_consent",
+            "form:2.1:irb_con_informed_consent",
+            "form:2.2:irb_con_informed_consent",
+            "form:3.0:irb_con_informed_consent",
+            "form:3.1:irb_con_informed_consent",
+            "form:3.2:irb_con_informed_consent",
+            "order:01_01",
+            "participant_type:mother"
+         ],
+         "scheduled_study_segment":{
+            "grid_id":"f2c3827f-6948-458a-9288-3623548d103d",
+            "start_date":"2013-04-11",
+            "start_day":1
+         },
+         "subject":{
+            "name":"Elaine Edwinson",
+            "person_id":"wfx6-4tx4-cf8f",
+            "grid_id":"5450e718-8e5c-4a48-80cb-65b0a5df04ce"
+         },
+         "responsible_user":"sgp658",
+         "study":"NCS Hi-Lo",
+         "site":"STEVES SITE"
+      },
+      {
+         "grid_id":"3e45475f-8b6c-4fd6-a289-22be64ea4127",
+         "activity_name":"Participant Verification Instrument",
+         "activity_type":"Instrument",
+         "activity_status":"Scheduled",
+         "scheduled_date":"2013-04-13",
+         "last_change_reason":"Initialized from template",
+         "ideal_date":"2013-04-13",
+         "labels":[
+            "event:informed_consent",
+            "instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one",
+            "instrument:3.1:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one",
+            "instrument:3.2:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one",
+            "order:00_01",
+            "participant_type:mother"
+         ],
+         "scheduled_study_segment":{
+            "grid_id":"13c12db3-0087-4059-8b3c-3ee32e68a937",
+            "start_date":"2013-04-13",
+            "start_day":1
+         },
+         "subject":{
+            "name":"Francine Folgers",
+            "person_id":"fy84-54sf-wc3s",
+            "grid_id":"96241569-1364-4cac-b30e-4c53d53a4fff"
+         },
+         "responsible_user":"sgp658",
+         "study":"NCS Hi-Lo",
+         "site":"STEVES SITE"
+      },
+      {
+         "grid_id":"6e630add-4550-4b02-922f-04d182a08edc",
+         "activity_name":"Informed Consent",
+         "activity_type":"Consent",
+         "activity_status":"Scheduled",
+         "scheduled_date":"2013-04-13",
+         "last_change_reason":"Initialized from template",
+         "ideal_date":"2013-04-13",
+         "labels":[
+            "event:informed_consent",
+            "form:2.0:irb_con_informed_consent",
+            "form:2.1:irb_con_informed_consent",
+            "form:2.2:irb_con_informed_consent",
+            "form:3.0:irb_con_informed_consent",
+            "form:3.1:irb_con_informed_consent",
+            "form:3.2:irb_con_informed_consent",
+            "order:01_01",
+            "participant_type:mother"
+         ],
+         "scheduled_study_segment":{
+            "grid_id":"13c12db3-0087-4059-8b3c-3ee32e68a937",
+            "start_date":"2013-04-13",
+            "start_day":1
+         },
+         "subject":{
+            "name":"Francine Folgers",
+            "person_id":"fy84-54sf-wc3s",
+            "grid_id":"96241569-1364-4cac-b30e-4c53d53a4fff"
+         },
+         "responsible_user":"sgp658",
+         "study":"NCS Hi-Lo",
+         "site":"STEVES SITE"
+      }
+   ]
+}
