@@ -7,17 +7,19 @@
 #  id         :integer          not null, primary key
 #  updated_at :datetime
 #
+include ActionView::Helpers::TextHelper
 
-class AppointmentSheet < ActiveRecord::Base
+class AppointmentSheet
 
   attr_reader :person
 
   def initialize(person)
     @person = Person.find(person)
-    @event = @person.participant.pending_events.first if @person.participant.pending_events
+    @event = @person.participant.pending_events.first if @person.participant && @person.participant.pending_events
   end
 
   def event_type
+    return "Unknown Event" if @event.nil?
     NcsCode.for_list_name_and_local_code('EVENT_TYPE_CL1', @event.event_type_code).display_text
   end
 
@@ -30,6 +32,10 @@ class AppointmentSheet < ActiveRecord::Base
     phone = Telephone.where(:person_id => @person.id,
                             :phone_type_code => 3,
                             :phone_rank_code => 1).first
+    return nil if phone.nil?
+    if phone.phone_nbr =~ /-/
+      return phone.phone_nbr
+    end
     phone.phone_nbr.insert(-5, '-').insert(-9, '-') if phone
   end
 
@@ -37,6 +43,10 @@ class AppointmentSheet < ActiveRecord::Base
     phone = Telephone.where(:person_id => @person.id,
                             :phone_type_code => 1,
                             :phone_rank_code => 1).first
+    return nil if phone.nil?
+    if phone.phone_nbr =~ /-/
+      return phone.phone_nbr
+    end
     phone.phone_nbr.insert(-5, '-').insert(-9, '-') if phone
   end
 
@@ -45,7 +55,7 @@ class AppointmentSheet < ActiveRecord::Base
   end
 
   def participant_public_id
-    @person.person_id
+    @person.participant.p_id
   end
 
   def participant_language
@@ -58,15 +68,13 @@ class AppointmentSheet < ActiveRecord::Base
   end
 
   def child_consents
-    consents = []
-    @person.participant.children.each do |child|
-      consents << participant_consents(child)
-    end
-    consents
+    @person.participant.children.collect { |c| participant_consents(c) }
   end
 
   def participant_consents(person)
+    return nil if person.participant.nil?
     consents = []
+
     ParticipantConsent.where(:participant_id => person.participant.id).all.each do |consent|
       if consent.phase_one?
         case consent.consent_type_code
@@ -105,27 +113,20 @@ class AppointmentSheet < ActiveRecord::Base
   end
 
   def child_sexes
-    @person.participant.children.collect(&:sex).collect(&:display_text)
+    sexes = @person.participant.children.collect(&:sex).collect(&:display_text)
+    sexes.map { |sex| sex == 'Missing in Error' ? nil : sex }
   end
 
   def child_ages
-    ages = []
-    @person.participant.children.each do |child|
-      ages << age(child.person_dob_date)
-    end
-    ages
+    @person.participant.children.collect { |c| age(c.person_dob_date) unless c.person_dob.nil? }
   end
 
   def age(birth_date)
-    today = Date.today
-    total_months = (today.year * 12 + today.month) - (birth_date.year * 12 + birth_date.month)
+    today = Time.zone.today
+    total_months = (today.year*12 + today.month) - (birth_date.year*12 + birth_date.month)
     years, months = total_months.divmod(12)
     strings = [[years, "year"], [months, "month"]].map do |value, unit|
-      case value
-        when 0 then nil
-        when 1 then "#{value} #{unit}"
-        else "#{value} #{unit}s"
-      end
+      value > 0 ? [pluralize(value, unit)] : nil
     end
     strings.compact.join(", ")
   end
