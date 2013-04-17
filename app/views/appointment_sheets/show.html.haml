@@ -70,13 +70,25 @@
           Child:
           %span.name
             #{@sheet.child_names[child_index]}
-          #sex
+          .child_attributes
+            - if @sheet.child_birth_dates[child_index]
+              = "Birth date: #{@sheet.child_birth_dates[child_index]}"
+            - else
+              .not-found
+                Unknown birth_date
+          .child_attributes
+            - if @sheet.child_due_dates[child_index]
+              = "Due date: #{@sheet.child_due_dates[child_index]}"
+            - else
+              .not-found
+                Unknown due date
+          .child_attributes
             - if @sheet.child_sexes[child_index]
               = @sheet.child_sexes[child_index]
             - else
               .not-found
                 Unknown sex
-          #ages
+          .child_attributes
             - if @sheet.child_ages[child_index]
               = "#{@sheet.child_ages[child_index]} old"
             - else
