@@ -60,19 +60,19 @@ Feature: Viewing an appointment sheet
     Then I should see his age is "8 months old"
     Then I should see the child has consent of "Biological"
     Then I should see the child has consent of "Genetic"
-    Then I should see the the "Pregnancy Visit 1 SAQ" as to be conducted
-    Then I should see the the "Biospecimen Adult Blood Instrument" as to be conducted
-    Then I should see the the "Biospecimen Adult Urine Instrument" as to be conducted
-    Then I should see the the "Environmental Tap Water Pesticides Technician Collect Instrument" as to be conducted
-    Then I should see the the "Environmental Tap Water TWQ Participant Collect SAQ Specification" as to be conducted
-    Then I should see the the "Environmental Tap Water Pharmaceuticals Technician Collect Instrument" as to be conducted
-    Then I should see the the "Environmental Vacuum Bag Dust Technician Collect Instrument" as to be conducted
-    Then I should see the the "Environmental Vacuum Bag Dust (VBD) Participant Collect SAQ Specification" as to be conducted
-    Then I should see the the "Environmental Sample Kit Distribution Instrument" as to be conducted
-    Then I should see the the "Environmental Sample Kit Distribution Instrument" as to be conducted
-    Then I should see the the "Tracing Module" as to be conducted
-    Then I should see the the "Birth Visit Information Sheet" as to be conducted
-    Then I should see the the "Pregnancy Visit 1 Information Sheet" as to be conducted
-    Then I should see the the "Pregnancy Health Care Log" as to be conducted
+    Then I should see the "Pregnancy Visit 1 SAQ" as to be conducted
+    Then I should see the "Biospecimen Adult Blood Instrument" as to be conducted
+    Then I should see the "Biospecimen Adult Urine Instrument" as to be conducted
+    Then I should see the "Environmental Tap Water Pesticides Technician Collect Instrument" as to be conducted
+    Then I should see the "Environmental Tap Water TWQ Participant Collect SAQ Specification" as to be conducted
+    Then I should see the "Environmental Tap Water Pharmaceuticals Technician Collect Instrument" as to be conducted
+    Then I should see the "Environmental Vacuum Bag Dust Technician Collect Instrument" as to be conducted
+    Then I should see the "Environmental Vacuum Bag Dust (VBD) Participant Collect SAQ Specification" as to be conducted
+    Then I should see the "Environmental Sample Kit Distribution Instrument" as to be conducted
+    Then I should see the "Environmental Sample Kit Distribution Instrument" as to be conducted
+    Then I should see the "Tracing Module" as to be conducted
+    Then I should see the "Birth Visit Information Sheet" as to be conducted
+    Then I should see the "Pregnancy Visit 1 Information Sheet" as to be conducted
+    Then I should see the "Pregnancy Health Care Log" as to be conducted
     Then I should the next event as "Pregnancy Visit 2"
 

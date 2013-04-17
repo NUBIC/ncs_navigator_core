@@ -193,7 +193,7 @@ Then /^I should see the child has consent of ("[^"]*")$/ do |child_consent|
   step "I should see #{child_consent}"
 end
 
-Then /^I should see the the ("[^"]*") as to be conducted$/ do |instrument|
+Then /^I should see the ("[^"]*") as to be conducted$/ do |instrument|
   step "I should see #{instrument}"
 end
 
