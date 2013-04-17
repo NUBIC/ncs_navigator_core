@@ -12,6 +12,16 @@ module TestSurveys
 
   ##
   # Starts an Instrument for a {Person} person, {Participant} participant and {Survey} survey,
+  # saves it, and returns the Instrument containing a prepopulated response_set
+  def prepare_prepopulated_instrument(person, participant, survey, mode = Instrument.capi, event = nil)
+    instr = person.build_instrument(survey, mode)
+    person.start_instrument(survey, participant, mode, event, instr)
+    instr.save!
+    instr
+  end
+
+  ## @deprecated use {#prepare_prepopulated_instrument}
+  # Starts an Instrument for a {Person} person, {Participant} participant and {Survey} survey,
   # saves it, and returns the created ResponseSet along with the Instrument.
   def prepare_instrument(person, participant, survey, mode = Instrument.capi, event = nil)
     instr = person.build_instrument(survey, mode)

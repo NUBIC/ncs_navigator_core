@@ -16,6 +16,7 @@ module ResponseSetPrepopulation
   POPULATORS = [
     Birth,
     ChildAndAdhoc,
+    IntroductoryScript,
     LowIntensity,
     MustacheContext,
     NonInterview,
