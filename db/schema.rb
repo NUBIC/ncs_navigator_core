@@ -79,11 +79,6 @@ ActiveRecord::Schema.define(:version => 20130409233256) do
   add_index "answers", ["question_id"], :name => "idx_answers_question_id"
   add_index "answers", ["reference_identifier"], :name => "idx_answers_reference_identifier"
 
-  create_table "appointment_sheets", :force => true do |t|
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
   create_table "contact_links", :force => true do |t|
     t.integer  "psu_code",                       :null => false
     t.string   "contact_link_id",  :limit => 36, :null => false
