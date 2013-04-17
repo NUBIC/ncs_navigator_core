@@ -1,4 +1,4 @@
-#appointment-sheet {
+#appointment-sheet-header {
   margin-left: 15em;
 }
 
@@ -17,7 +17,6 @@
 }
 
 #instrument-list {
-  margin-top: 22em;
   margin-left: 5em;
   font-size: 130%;
 }
@@ -30,13 +29,6 @@
   margin-left: 1em;
 }
 
-.not-found {
-  margin-top: 0.5em;
-  margin-bottom: 0.5em;
-  font-style: italic;
-  font-weight:normal;
-}
-
 #children {
   margin-top: 1em;
 }
@@ -47,31 +39,43 @@
 
 #next-event {
   margin-top: 1em;
-  margin-top: 1em;
   margin-left: 3em;
   font-size: 130%;
 }
 
-.column-container {
-  font-size: 120%;
-
-}
-
-.large-and-bolded {
+#to-be-conducted{
   font-size: 110%;
   font-weight: bold;
 }
 
-.column-one {
-  @include column(8);
-  @include colborder();
-  margin-top: 1em;
-  margin-left: 5em;
+#appointment-sheet {
+  font-size: 120%;
 }
 
-.column-two {
-  @include column(7);
-  @include colborder();
-  margin-top: 1em;
-
+#visit-info {
+  width: 100%;
+  float: left;
 }
+
+#event-info {
+  float: left;
+  margin-left: 2em;
+}
+
+#participant-info {
+  float: right;
+  margin-right: 15em;
+}
+
+.not-found {
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+  font-style: italic;
+  font-weight:normal;
+}
+
+.name {
+  font-size: 110%;
+  font-weight: bold;
+}
+
