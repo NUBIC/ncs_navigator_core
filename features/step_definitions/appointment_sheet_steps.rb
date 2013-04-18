@@ -123,80 +123,84 @@ Given /^whose next event is$/ do |table|
   @participant.save!
 end
 
-Given /^speaks english$/ do
-  @person.update_attribute(:language_code, 1)
+Then /^I see ("[^"]*") scheduled for ("[^"]*") for a ("[^"]*") event$/ do |name, date, event|
+  steps %{
+    And I see #{name}
+    And I see #{date}
+    And I see #{event}
+  }
 end
 
-Given /^is a boy$/ do
-  @child_person.update_attribute(:sex_code, 1)
+Then /^I see ("[^"]*") scheduled for ("[^"]*") for a ("[^"]*") event at ("[^"]*")$/ do |name, date, event, time|
+  steps %{
+    And I see #{name}
+    And I see #{date}
+    And I see #{event}
+    And I see #{time}
+  }
 end
 
-Then /^I should see ("[^"]*") scheduled for ("[^"]*") for a ("[^"]*") event$/ do |name, date, event|
-  step "I should see #{name}"
-  step "I should see #{date}"
-  step "I should see #{event}"
+Then /^I see scheduled event ("[^"]*")$/ do |event|
+  step "I see #{event}"
 end
 
-Then /^I should see ("[^"]*") scheduled for ("[^"]*") for a ("[^"]*") event at ("[^"]*")$/ do |name, date, event, time|
-  step "I should see #{name}"
-  step "I should see #{date}"
-  step "I should see #{event}"
-  step "I should see #{time}"
+Then /^I see the event date of ("[^"]*") and start time of ("[^"]*")$/ do |date, time|
+  steps %{
+    And I see #{date}
+    And I see #{time}
+  }
 end
 
-Then /^I should see scheduled event ("[^"]*")$/ do |event|
-  step "I should see #{event}"
+Then /^I see the address of ("[^"]*"), ("[^"]*"), ("[^"]*")$/ do |address1, address2, city_state|
+  steps %{
+    And I see #{address1}
+    And I see #{address2}
+    And I see #{city_state}
+  }
 end
 
-Then /^I should see the event date of ("[^"]*") and start time of ("[^"]*")$/ do |date, time|
-  step "I should see #{date}"
-  step "I should see #{time}"
+Then /^I see the cell phone number ("[^"]*") and home phone number of ("[^"]*")$/ do |cell, home|
+  steps %{
+    And I see #{cell}
+    And I see #{home}
+  }
 end
 
-Then /^I should see the address of ("[^"]*"), ("[^"]*"), ("[^"]*")$/ do |address1, address2, city_state|
-  step "I should see #{address1}"
-  step "I should see #{address2}"
-  step "I should see #{city_state}"
+Then /^I see the participant's name, ("[^"]*"), and public id, ("[^"]*")$/ do |name, id|
+  steps %{
+    And I see #{name}
+    And I see #{id}
+  }
 end
 
-Then /^I should see the cell phone number ("[^"]*") and home phone number of ("[^"]*")$/ do |cell, home|
-  step "I should see #{cell}"
-  step "I should see #{home}"
+Then /^I see that see speaks ("[^"]*")$/ do |language|
+  step "I see #{language}"
 end
 
-Then /^I should see the participant's name, ("[^"]*"), and public id, ("[^"]*")$/ do |name, id|
-  step "I should see #{name}"
-  step "I should see #{id}"
+Then /^I see that she has consent of ("[^"]*")$/ do |consent|
+  step "I see #{consent}"
 end
 
-Then /^I should see that see speaks ("[^"]*")$/ do |language|
-  step "I should see #{language}"
+Then /^I see that she has a child named ("[^"]*")$/ do |child|
+  step "I see #{child}"
 end
 
-Then /^I should see that she has consent of ("[^"]*")$/ do |consent|
-  step "I should see #{consent}"
+Then /^I see that he is a ("[^"]*")$/ do |sex|
+  step "I see #{sex}"
 end
 
-Then /^I should see that she has a child named ("[^"]*")$/ do |child|
-  step "I should see #{child}"
+Then /^I see his age is ("[^"]*")$/ do |age|
+  step "I see #{age}"
 end
 
-Then /^I should see that he is a ("[^"]*")$/ do |sex|
-  step "I should see #{sex}"
+Then /^I see the child has consent of ("[^"]*")$/ do |child_consent|
+  step "I see #{child_consent}"
 end
 
-Then /^I should see his age is ("[^"]*")$/ do |age|
-  step "I should see #{age}"
+Then /^I see the ("[^"]*") as to be conducted$/ do |instrument|
+  step "I see #{instrument}"
 end
 
-Then /^I should see the child has consent of ("[^"]*")$/ do |child_consent|
-  step "I should see #{child_consent}"
-end
-
-Then /^I should see the ("[^"]*") as to be conducted$/ do |instrument|
-  step "I should see #{instrument}"
-end
-
-Then /^I should the next event as ("[^"]*")$/ do |event|
-  step "I should see #{event}"
+Then /^I see the next event as ("[^"]*")$/ do |event|
+  step "I see #{event}"
 end
