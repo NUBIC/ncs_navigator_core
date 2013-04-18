@@ -108,3 +108,11 @@ Given /^the following (.+) records:$/ do |factory, table|
     Factory(factory.to_sym, hash)
   end
 end
+
+Given /^speaks english$/ do
+  @person.update_attribute(:language_code, 1)
+end
+
+Given /^is a boy$/ do
+  @child_person.update_attribute(:sex_code, 1)
+end
