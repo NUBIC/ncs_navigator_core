@@ -32,22 +32,14 @@ class AppointmentSheet
     phone = Telephone.where(:person_id => @person.id,
                             :phone_type_code => 3,
                             :phone_rank_code => 1).first
-    return nil if phone.nil?
-    if phone.phone_nbr =~ /-/
-      return phone.phone_nbr
-    end
-    phone.phone_nbr.insert(-5, '-').insert(-9, '-') if phone
+    phone.dashed if phone
   end
 
   def home_phone
     phone = Telephone.where(:person_id => @person.id,
                             :phone_type_code => 1,
                             :phone_rank_code => 1).first
-    return nil if phone.nil?
-    if phone.phone_nbr =~ /-/
-      return phone.phone_nbr
-    end
-    phone.phone_nbr.insert(-5, '-').insert(-9, '-') if phone
+    phone.dashed if phone
   end
 
   def participant_full_name
@@ -72,41 +64,48 @@ class AppointmentSheet
   end
 
   def participant_consents(person)
-    return nil if person.participant.nil?
-    consents = []
+    return [] if person.participant.nil?
 
-    ParticipantConsent.where(:participant_id => person.participant.id).all.each do |consent|
-      if consent.phase_one?
-        case consent.consent_type_code
-        when 2
-          consents << "Biological"
-        when 3
-          consents << "Environmental"
-        when 4
-          consents << "Genetic"
-        when 5
-          consents << "Birth Samples"
-        when 6
-          consents << "Child Participation"
-        when 7
-          consents << "Low Intensity"
-        end
-      elsif consent.phase_two?
-        ParticipantConsentSample.where(:participant_id => person.participant.id).all.each do |sample_consent|
-          case sample_consent.sample_consent_type_code
-          when 1
-            consents << "Environmental"
-          when 2
-            consents << "Biological"
-          when 3
-            consents << "Genetic"
-          end
-        end
-      end
+    general_consents = ParticipantConsent.where(:participant_id => person.participant.id).all
+    return [] if general_consents.first.nil?
+    if general_consents.first.phase_one?
+      general_conserts.collect { |consent| participant_consents_phase_one(consent.consent_type_code) }
+    else
+      sample_consents = ParticipantConsentSample.where(:participant_id => person.participant.id).all
+      sample_consents.collect  { |consent| participant_consents_phase_two(consent.sample_consent_type_code) }
     end
-    consents.sort
   end
   private :participant_consents
+
+  def participant_consents_phase_one(type_code)
+    case type_code
+    when 2
+      "Biological"
+    when 3
+      "Environmental"
+    when 4
+      "Genetic"
+    when 5
+      "Birth Samples"
+    when 6
+      "Child Participation"
+    when 7
+      "Low Intensity"
+    end
+  end
+  private :participant_consents_phase_one
+
+  def participant_consents_phase_two(type_code)
+    case type_code
+    when 1
+      "Environmental"
+    when 2
+      "Biological"
+    when 3
+      "Genetic"
+    end
+  end
+  private :participant_consents_phase_two
 
   def child_names
     @person.participant.children.collect(&:full_name)

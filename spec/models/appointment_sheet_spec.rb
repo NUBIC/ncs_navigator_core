@@ -150,7 +150,7 @@ describe AppointmentSheet do
   end
 
   it "has all the mother's consents" do
-    @sheet.mothers_consents.should == ["Biological", "Environmental"]
+    @sheet.mothers_consents.should == ["Environmental", "Biological"]
   end
 
   it "has the children's names" do
@@ -162,11 +162,11 @@ describe AppointmentSheet do
   end
 
   it "has the children's due dates" do
-    @sheet.child_due_dates.should == ['2012-10-10']
+    @sheet.child_due_dates.should == ["10/10/2012"]
   end
 
   it "has the children's birth dates" do
-    @sheet.child_birth_dates.should == ['2012-09-03']
+    @sheet.child_birth_dates.should == ["09/03/2012"]
   end
 
   it "has the children's ages" do
