@@ -45,34 +45,34 @@ Feature: Viewing an appointment sheet
   Scenario: The appointment sheet contains the participant's contact information
     Given an authenticated user
     When I view the appointment sheet for "Dawn Davidson"
-    Then I should see scheduled event "Pregnancy Visit 1"
-    Then I should see the event date of "04/08/2013" and start time of "2:45 PM"
-    Then I should see the address of "123 73rd Ave.", "Apt. 1C", "Rockville, Maryland"
-    Then I should see the cell phone number "444-342-3654" and home phone number of "301-908-1212"
-    Then I should see the participant's name, "Dawn Davidson", and public id, "abc-123-wxyz"
-    Then I should see that see speaks "English"
-    Then I should see that she has consent of "Biological"
-    Then I should see that she has consent of "Environmental"
-    Then I should see that she has a child named "Harley Davidson"
-    Then I should see "Birth date: 08/12/2012"
-    Then I should see "Due date: 09/12/2012"
-    Then I should see that he is a "Male"
-    Then I should see his age is "8 months old"
-    Then I should see the child has consent of "Biological"
-    Then I should see the child has consent of "Genetic"
-    Then I should see the "Pregnancy Visit 1 SAQ" as to be conducted
-    Then I should see the "Biospecimen Adult Blood Instrument" as to be conducted
-    Then I should see the "Biospecimen Adult Urine Instrument" as to be conducted
-    Then I should see the "Environmental Tap Water Pesticides Technician Collect Instrument" as to be conducted
-    Then I should see the "Environmental Tap Water TWQ Participant Collect SAQ Specification" as to be conducted
-    Then I should see the "Environmental Tap Water Pharmaceuticals Technician Collect Instrument" as to be conducted
-    Then I should see the "Environmental Vacuum Bag Dust Technician Collect Instrument" as to be conducted
-    Then I should see the "Environmental Vacuum Bag Dust (VBD) Participant Collect SAQ Specification" as to be conducted
-    Then I should see the "Environmental Sample Kit Distribution Instrument" as to be conducted
-    Then I should see the "Environmental Sample Kit Distribution Instrument" as to be conducted
-    Then I should see the "Tracing Module" as to be conducted
-    Then I should see the "Birth Visit Information Sheet" as to be conducted
-    Then I should see the "Pregnancy Visit 1 Information Sheet" as to be conducted
-    Then I should see the "Pregnancy Health Care Log" as to be conducted
-    Then I should the next event as "Pregnancy Visit 2"
+    And I see scheduled event "Pregnancy Visit 1"
+    And I see the event date of "04/08/2013" and start time of "2:45 PM"
+    And I see the address of "123 73rd Ave.", "Apt. 1C", "Rockville, Maryland"
+    And I see the cell phone number "444-342-3654" and home phone number of "301-908-1212"
+    And I see the participant's name, "Dawn Davidson", and public id, "abc-123-wxyz"
+    And I see that see speaks "English"
+    And I see that she has consent of "Biological"
+    And I see that she has consent of "Environmental"
+    And I see that she has a child named "Harley Davidson"
+    And I see "Birth date: 08/12/2012"
+    And I see "Due date: 09/12/2012"
+    And I see that he is a "Male"
+    And I see his age is "8 months old"
+    And I see the child has consent of "Biological"
+    And I see the child has consent of "Genetic"
+    And I see the "Pregnancy Visit 1 SAQ" as to be conducted
+    And I see the "Biospecimen Adult Blood Instrument" as to be conducted
+    And I see the "Biospecimen Adult Urine Instrument" as to be conducted
+    And I see the "Environmental Tap Water Pesticides Technician Collect Instrument" as to be conducted
+    And I see the "Environmental Tap Water TWQ Participant Collect SAQ Specification" as to be conducted
+    And I see the "Environmental Tap Water Pharmaceuticals Technician Collect Instrument" as to be conducted
+    And I see the "Environmental Vacuum Bag Dust Technician Collect Instrument" as to be conducted
+    And I see the "Environmental Vacuum Bag Dust (VBD) Participant Collect SAQ Specification" as to be conducted
+    And I see the "Environmental Sample Kit Distribution Instrument" as to be conducted
+    And I see the "Environmental Sample Kit Distribution Instrument" as to be conducted
+    And I see the "Tracing Module" as to be conducted
+    And I see the "Birth Visit Information Sheet" as to be conducted
+    And I see the "Pregnancy Visit 1 Information Sheet" as to be conducted
+    And I see the "Pregnancy Health Care Log" as to be conducted
+    And I see the next event as "Pregnancy Visit 2"
 

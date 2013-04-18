@@ -39,12 +39,12 @@ Feature: Viewing upcoming appointments
   Scenario: The schedule lists my upcoming contacts for the next week
     Given an authenticated user
     When I view my scheduled events for 2013-04-08 to 2013-04-13
-    Then I should see "Dawn Davidson" scheduled for "Monday April 8" for a "Pregnancy Visit 1" event at "2:45 PM"
-    Then I should see "Elaine Edwinson" scheduled for "Wednesday April 10" for a "Pbs Participant Eligibility Screening" event at "9:30 AM"
-    Then I should see "Francine Folgers" scheduled for "Wednesday April 10" for a "Pbs Participant Eligibility Screening" event at "12:45 PM"
-    Then I should see "Angela Anderson" scheduled for "Wednesday April 10" for a "Pregnancy Visit 1" event at "5:30 PM"
-    Then I should see "Barbara Barnes" scheduled for "Thursday April 11" for a "9 Month" event at "1:15 PM"
-    Then I should see "Lisa Pressely" scheduled for "Thursday April 11" for a "Pregnancy Visit 1" event at "3:45 PM"
-    Then I should see "Dawn Davidson" scheduled for "Thursday April 11" for a "Informed Consent" event
-    Then I should see "Elaine Edwinson" scheduled for "Thursday April 11" for a "Informed Consent" event
-    Then I should see "Francine Folgers" scheduled for "Saturday April 13" for a "Informed Consent" event
+    Then I see "Dawn Davidson" scheduled for "Monday April 8" for a "Pregnancy Visit 1" event at "2:45 PM"
+    And I see "Elaine Edwinson" scheduled for "Wednesday April 10" for a "Pbs Participant Eligibility Screening" event at "9:30 AM"
+    And I see "Francine Folgers" scheduled for "Wednesday April 10" for a "Pbs Participant Eligibility Screening" event at "12:45 PM"
+    And I see "Angela Anderson" scheduled for "Wednesday April 10" for a "Pregnancy Visit 1" event at "5:30 PM"
+    And I see "Barbara Barnes" scheduled for "Thursday April 11" for a "9 Month" event at "1:15 PM"
+    And I see "Lisa Pressely" scheduled for "Thursday April 11" for a "Pregnancy Visit 1" event at "3:45 PM"
+    And I see "Dawn Davidson" scheduled for "Thursday April 11" for a "Informed Consent" event
+    And I see "Elaine Edwinson" scheduled for "Thursday April 11" for a "Informed Consent" event
+    And I see "Francine Folgers" scheduled for "Saturday April 13" for a "Informed Consent" event
