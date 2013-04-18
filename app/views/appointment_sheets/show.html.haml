@@ -25,7 +25,7 @@
             %br
           = @sheet.address.address_two
           %br
-          = "#{@sheet.address.city}, #{@sheet.address.state.to_s.downcase.capitalize} #{@sheet.address.zip_code}"
+          = "#{@sheet.address.city}, #{@sheet.address.state.to_s.titleize} #{@sheet.address.zip_code}"
         -else
           .not-found
             No address information
@@ -58,7 +58,7 @@
         .not-found
           No mother consents found
       - else
-        - @sheet.mothers_consents.uniq.each do |consent|
+        - @sheet.mothers_consents.each do |consent|
           #consents
             = consent
       - if @sheet.children.empty?
@@ -75,7 +75,7 @@
               = "Birth date: #{@sheet.child_birth_dates[child_index]}"
             - else
               .not-found
-                Unknown birth_date
+                Unknown birth date
           .child_attributes
             - if @sheet.child_due_dates[child_index]
               = "Due date: #{@sheet.child_due_dates[child_index]}"
@@ -102,7 +102,7 @@
               .not-found
                 No consents found for this child
             - else
-              - @sheet.child_consents[child_index].uniq.each do |consent|
+              - @sheet.child_consents[child_index].each do |consent|
                 #consents
                   = consent
 
