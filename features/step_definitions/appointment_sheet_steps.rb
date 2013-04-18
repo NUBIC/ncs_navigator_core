@@ -79,7 +79,7 @@ Given /^who has (.+)$/ do |consent_type|
 end
 
 Given /^whose due date is "([^"]*)"$/ do |due_date|
-  ppg_detail = PpgDetail.create!(:participant_id => @participant,
+  ppg_detail = PpgDetail.create!(:participant_id => @participant.id,
                                  :orig_due_date => '2012-09-12')
 end
 

@@ -11,7 +11,7 @@ FakeWeb.register_uri(:get, /\/api\/v1\/subjects\/registered_with_psc\/schedules.
 FakeWeb.register_uri(:get, /\/api\/v1\/subjects\/xfda-a78s-h83b\/schedules.json$/,
                     :body => "#{Rails.root}/features/fixtures/fakeweb/build_activity_plan_response_for_appointment_sheet.json", :status => ["200", "OK"], :content_type => "application/json")
 
-#FakeWeb.register_uri(:get, /\/api\/v1\/subjects\/((?!registered_with_psc))/, :body => "Unknown", :status => ["401", "Unknown"])
+FakeWeb.register_uri(:get, /\/api\/v1\/subjects\/((?!registered_with_psc|xfda-a78s-h83b))/, :body => "Unknown", :status => ["401", "Unknown"])
 
 FakeWeb.register_uri(:get, /\/api\/v1\/studies.json$/,
                      :body => "#{Rails.root}/features/fixtures/fakeweb/studies.json", :content_type => "application/json")
