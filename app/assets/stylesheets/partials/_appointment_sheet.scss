@@ -9,11 +9,11 @@
 }
 
 #address {
-  margin-top: 1em;
+  @include listed-attributes
 }
 
 #phone {
-  margin-top: 1em;
+  @include listed-attributes
 }
 
 #instrument-list {
@@ -22,7 +22,7 @@
 }
 
 #language {
-  margin-top: 1em;
+  @include listed-attributes
 }
 
 #consents {
@@ -30,7 +30,7 @@
 }
 
 #children {
-  margin-top: 1em;
+  @include listed-attributes
 }
 
 .child_attributes {
