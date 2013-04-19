@@ -109,13 +109,15 @@
   - pending_event = @participant.pending_events.first
   - activities_for_event = []
   - activities_for_event = @participant_activity_plan.scheduled_activities_for_event(pending_event) if pending_event
+
   #before-you-go-info
     Before you go:
-  - if @sheet.last_contact_comment.blank?
-    .not-found
-      No comments from a former contact
-  - else
-    = @sheet.last_contact_comment
+    - if @sheet.last_contact_comment.blank?
+      .not-found
+        No comments from a former contact
+    - else
+      #contact_comments
+        = @sheet.last_contact_comment
   #instrument-list
     - if @participant_activity_plan && pending_event
       %span#to-be-conducted
