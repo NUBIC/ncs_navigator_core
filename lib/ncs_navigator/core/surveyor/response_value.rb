@@ -27,7 +27,6 @@ module NcsNavigator::Core::Surveyor
 
     def self.included(model)
       model.before_save :write_value_to_record
-      model.define_attribute_method :value
     end
 
     ##
@@ -79,9 +78,9 @@ module NcsNavigator::Core::Surveyor
     # from malicious intent, and the error is entirely recoverable (i.e. by not
     # doing anything).
     def value=(v)
-      value_will_change! unless @value == v
-
       @value = v
+      @value_set = true
+      @value
     end
 
     ##
@@ -97,11 +96,17 @@ module NcsNavigator::Core::Surveyor
     # 3. If the response's value is not dirty, then this returns the persisted
     #    value of the response's corresponding value column.
     def value
-      if value_changed?
+      if @value_set
         @value
       else
         value_from_response
       end
+    end
+
+    def reload(*)
+      remove_instance_variable(:@value)
+      remove_instance_variable(:@value_set)
+      super
     end
 
     private
@@ -113,7 +118,7 @@ module NcsNavigator::Core::Surveyor
     end
 
     def write_value_to_record
-      return unless value_changed?
+      return unless @value_set
 
       # before_save callbacks run after before_validation callbacks, and
       # Surveyor installs a presence check on answer_id, so we know that we
