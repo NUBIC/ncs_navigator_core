@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130403145616) do
+ActiveRecord::Schema.define(:version => 20130408184301) do
 
   create_table "addresses", :force => true do |t|
     t.integer  "psu_code",                                                :null => false
@@ -729,7 +729,7 @@ ActiveRecord::Schema.define(:version => 20130403145616) do
     t.string   "low_intensity_state"
     t.string   "high_intensity_state"
     t.text     "enrollment_status_comment"
-    t.boolean  "being_followed",                          :default => false
+    t.boolean  "being_followed",                          :default => true
     t.integer  "lock_version",                            :default => 0
   end
 
