@@ -14,7 +14,7 @@ class AppointmentSheetsController < ApplicationController
   def event_time
     event_activity = @participant_activity_plan.scheduled_activities.find do |sa|
       sa.date == params[:date] &&
-      sa.event == @sheet.event_type.downcase.gsub(/ /,'_') &&
+      sa.event == @sheet.event_type.downcase.tr(' ','_') &&
       sa.person_id == @person.public_id
     end
     Time.parse(event_activity.activity_time).strftime("%l:%M %p") unless event_activity.blank?
