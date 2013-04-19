@@ -937,6 +937,23 @@ module NcsNavigator::Core::Warehouse
                 Event.find_by_event_id('g_e1').event_disposition.should == 45
               end
             end
+
+            describe 'with invalid category/code combination' do
+              let!(:g_e2) {
+                create_warehouse_record_with_defaults(wh_config.model(:Event),
+                  :event_id => 'g_e2',
+                  :participant => ginger_p,
+                  :event_disp => 560,
+                  :event_disp_cat => '4',
+                  :event_type => code_for_event_type('Pregnancy Screener'),
+                  :event_start_date => '2010-11-07')
+              }
+
+              it 'imports and saves event record' do
+                do_import
+                Event.find_by_event_id('g_e2').event_disposition.should == 60
+              end
+            end
           end
         end
       end

@@ -141,7 +141,7 @@ module NcsNavigator::Core::Warehouse::ThreePointTwo
         :event_incentive_noncash => :event_incent_noncash
       },
       :ignored_columns => %w(event_disposition scheduled_study_segment_identifier
-        psc_ideal_date lock_version)
+        psc_ideal_date lock_version imported_invalid)
     )
 
     produce_one_for_one(:instruments, :Instrument,

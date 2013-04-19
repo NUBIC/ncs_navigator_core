@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130408184301) do
+ActiveRecord::Schema.define(:version => 20130415192041) do
 
   create_table "addresses", :force => true do |t|
     t.integer  "psu_code",                                                :null => false
@@ -248,20 +248,20 @@ ActiveRecord::Schema.define(:version => 20130408184301) do
   add_index "event_type_order", ["event_type_code"], :name => "index_event_type_order_on_event_type_code", :unique => true
 
   create_table "events", :force => true do |t|
-    t.integer  "psu_code",                                                                                       :null => false
-    t.string   "event_id",                           :limit => 36,                                               :null => false
+    t.integer  "psu_code",                                                                                           :null => false
+    t.string   "event_id",                           :limit => 36,                                                   :null => false
     t.integer  "participant_id"
-    t.integer  "event_type_code",                                                                                :null => false
+    t.integer  "event_type_code",                                                                                    :null => false
     t.string   "event_type_other"
     t.integer  "event_repeat_key"
     t.integer  "event_disposition"
-    t.integer  "event_disposition_category_code",                                                                :null => false
+    t.integer  "event_disposition_category_code",                                                                    :null => false
     t.date     "event_start_date"
     t.string   "event_start_time"
     t.date     "event_end_date"
     t.string   "event_end_time"
-    t.integer  "event_breakoff_code",                                                                            :null => false
-    t.integer  "event_incentive_type_code",                                                                      :null => false
+    t.integer  "event_breakoff_code",                                                                                :null => false
+    t.integer  "event_incentive_type_code",                                                                          :null => false
     t.decimal  "event_incentive_cash",                             :precision => 12, :scale => 2
     t.string   "event_incentive_noncash"
     t.text     "event_comment"
@@ -271,6 +271,7 @@ ActiveRecord::Schema.define(:version => 20130408184301) do
     t.string   "scheduled_study_segment_identifier"
     t.integer  "lock_version",                                                                    :default => 0
     t.date     "psc_ideal_date"
+    t.boolean  "imported_invalid",                                                                :default => false, :null => false
   end
 
   create_table "fieldworks", :force => true do |t|
