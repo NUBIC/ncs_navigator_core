@@ -540,18 +540,12 @@ module NcsNavigator::Core::Warehouse::ThreePointTwo
       let(:warehouse_model) { wh_config.model(:Instrument) }
       let(:core_model) { Instrument }
 
-      let!(:instrument) { Factory(:instrument, :event => Factory(:mdes_min_event)) }
+      let!(:instrument) { Factory(:instrument) }
 
       include_examples 'one to one'
 
       it 'uses the public ID for event' do
         results.first.event_id.should == Event.first.event_id
-      end
-
-      it 'emits nothing when the associated event has no disposition' do
-        Event.first.tap { |e| e.event_disposition = nil }.save!
-
-        results.should == []
       end
 
       describe 'with manually mapped variables' do
@@ -736,7 +730,7 @@ module NcsNavigator::Core::Warehouse::ThreePointTwo
       let(:warehouse_model) { wh_config.model(:LinkContact) }
       let(:core_model) { ContactLink }
 
-      let!(:contact_link) { Factory(:contact_link, :event => Factory(:mdes_min_event)) }
+      let!(:contact_link) { Factory(:contact_link) }
 
       include_examples 'one to one'
 
@@ -762,12 +756,6 @@ module NcsNavigator::Core::Warehouse::ThreePointTwo
 
       it 'uses the public ID for provider' do
         results.first.provider_id.should == Provider.first.provider_id
-      end
-
-      it 'emits nothing if the associated event has no disposition' do
-        contact_link.event.tap { |e| e.event_disposition = nil }.save!
-
-        results.should == []
       end
     end
 

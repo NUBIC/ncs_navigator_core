@@ -147,9 +147,6 @@ module NcsNavigator::Core::Warehouse::ThreePointZero
 
     produce_one_for_one(:instruments, :Instrument,
       :public_ids => %w(events),
-      :where => %q{
-        EXISTS(SELECT 'x' FROM events e WHERE e.id=t.event_id AND e.event_disposition IS NOT NULL)
-      },
       :column_map => {
         :instrument_start_date => :ins_date_start,
         :instrument_start_time => :ins_start_time,
@@ -221,10 +218,7 @@ module NcsNavigator::Core::Warehouse::ThreePointZero
         :events,
         :contacts,
         :instruments
-      ],
-      :where => %q{
-        EXISTS(SELECT 'x' FROM events e WHERE e.id=t.event_id AND e.event_disposition IS NOT NULL)
-      }
+      ]
     )
 
     produce_one_for_one(:addresses, :Address,
