@@ -113,7 +113,7 @@ class AppointmentSheet
 
   def child_due_dates
     child_dobs.map do |bd|
-      due_date_in_range_of_birth_date(Date.parse(bd))
+      due_date_in_range_of_birth_date(Date.parse(bd)) if bd
     end
   end
 
@@ -132,12 +132,12 @@ class AppointmentSheet
   private :due_date_in_range_of_birth_date
 
   def child_dobs
-    @person.participant.children.collect { |c| c.person_dob_date.strftime('%Y-%m-%d') }
+    @person.participant.children.collect { |c| c.person_dob_date.strftime('%Y-%m-%d') if c.person_dob_date }
   end
   private :child_dobs
 
   def child_birth_dates
-    @person.participant.children.collect { |c| c.person_dob_date.strftime('%m/%d/%Y') }
+    @person.participant.children.collect { |c| c.person_dob_date.strftime('%m/%d/%Y') if c.person_dob_date }
   end
 
   def child_sexes
@@ -173,6 +173,7 @@ class AppointmentSheet
     contacts_connected_to_person = ContactLink.where(:person_id => @person.id).all.collect(&:contact)
     contacts_connected_to_participant = ContactLink.joins(:event).where("events.participant_id = ?", @person.participant.id).collect(&:contact)
     all_contacts = contacts_connected_to_person + contacts_connected_to_participant
+    return nil unless all_contacts.all?(&:contact_date_date)
     all_contacts.uniq.sort_by(&:contact_date_date).last.contact_comment
   end
 
