@@ -1,6 +1,6 @@
 source 'http://rubygems.org'
 
-gem 'rails', '3.1.12'
+gem 'rails', '3.2.13'
 
 gem 'active_model_serializers'
 gem 'bcdatabase', '~> 1.0'
@@ -31,9 +31,9 @@ group :assets do
   # assets:precompile under capistrano.
   # Related (but not exactly the same problem we saw):
   #  https://github.com/rails/sass-rails/commit/0b435834bc37e26c016f2d29885ca3bfe08ae827
-  gem 'sass-rails', "~> 3.1.0", "!= 3.1.6"
+  gem 'sass-rails', "~> 3.2.0", "!= 3.1.6"
   gem 'compass-rails'
-  gem 'coffee-rails', "~> 3.1.0"
+  gem 'coffee-rails', "~> 3.2.0"
   gem 'uglifier'
 end
 
