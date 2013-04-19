@@ -75,6 +75,22 @@ describe AppointmentSheet do
                       :participant_consent_samples => [biologicial_consent, environmental_consent],
                       :participant => participant)
 
+    contact1 = Factory(:contact,
+                       :contact_date_date => Date.parse("2013-01-01"),
+                       :contact_comment => "This is the first contact comment")
+
+    contactlink1 = Factory(:contact_link,
+                           :contact => contact1,
+                           :person => person)
+
+    contact2 = Factory(:contact,
+                       :contact_date_date => Date.parse("2013-01-02"),
+                       :contact_comment => "This is the second contact comment")
+
+    contactlink2 = Factory(:contact_link,
+                           :contact => contact2,
+                           :person => person)
+
     @child  = Factory(:person,
                       :first_name => "Thomas",
                       :last_name => "Edison",
@@ -183,6 +199,10 @@ describe AppointmentSheet do
 
   it "has the participant's children" do
     @sheet.children.should == [@child]
+  end
+
+  it "reports the last contact comment" do
+    @sheet.last_contact_comment.should == "This is the second contact comment"
   end
 
 end

@@ -27,6 +27,7 @@ Feature: Viewing an appointment sheet
     And who has Consent to collect biospecimens
     And speaks english
     And whose due date is "2012-09-12"
+    And has a last contact comment of "Watch out for the big dog!"
     And whose child is
       | person/first_name | Harley              |
       | person/last_name  | Davidson            |
@@ -60,6 +61,7 @@ Feature: Viewing an appointment sheet
     And I see his age is "8 months old"
     And I see the child has consent of "Biological"
     And I see the child has consent of "Genetic"
+    And I see the last comment was "Watch out for the big dog!"
     And I see the "Pregnancy Visit 1 SAQ" as to be conducted
     And I see the "Biospecimen Adult Blood Instrument" as to be conducted
     And I see the "Biospecimen Adult Urine Instrument" as to be conducted

@@ -123,6 +123,14 @@ Given /^whose next event is$/ do |table|
   @participant.save!
 end
 
+Given /^has a last contact comment of "([^"]*)"$/ do |comment|
+  contact = Contact.create!(:contact_comment => "Watch out for the big dog!",
+                            :contact_date_date => "2013-01-01")
+  ContactLink.create!(:contact => contact,
+                      :staff_id => "A staff member",
+                      :person => @person)
+end
+
 Then /^I see ("[^"]*") scheduled for ("[^"]*") for a ("[^"]*") event$/ do |name, date, event|
   steps %{
     And I see #{name}
@@ -203,4 +211,8 @@ end
 
 Then /^I see the next event as ("[^"]*")$/ do |event|
   step "I see #{event}"
+end
+
+Then /^I see the last comment was ("[^"]*")$/ do |comment|
+  step "I see #{comment}"
 end

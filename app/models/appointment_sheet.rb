@@ -169,4 +169,11 @@ class AppointmentSheet
     @person.children
   end
 
+  def last_contact_comment
+    contacts_connected_to_person = ContactLink.where(:person_id => @person.id).all.collect(&:contact)
+    contacts_connected_to_participant = ContactLink.joins(:event).where("events.participant_id = ?", @person.participant.id).collect(&:contact)
+    all_contacts = contacts_connected_to_person + contacts_connected_to_participant
+    all_contacts.uniq.sort_by(&:contact_date_date).last.contact_comment
+  end
+
 end
