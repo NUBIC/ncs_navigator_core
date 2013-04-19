@@ -393,19 +393,11 @@ module NcsNavigator::Core::Warehouse
 
     def set_participant_being_followed
       if @followed_p_ids
-        set_participant_being_followed_by_ids(@followed_p_ids)
+        Participant.update_all(['being_followed = ?', false],
+                               ['p_id NOT IN (?)', @followed_p_ids])
       else
         set_participant_being_followed_using_heuristic
       end
-    end
-
-    def set_participant_being_followed_by_ids(p_ids)
-      ActiveRecord::Base.connection.
-        execute(<<-SQL)
-          UPDATE participants p
-          SET being_followed=true
-          WHERE p.p_id IN ('#{p_ids.join("', '")}')
-        SQL
     end
 
     def set_participant_being_followed_using_heuristic
