@@ -164,8 +164,9 @@ module NcsNavigator::Core::Warehouse::TwoPointTwo
             END) normalized_event_disposition}
       ],
       :where => %q{
-        t.event_disposition IS NOT NULL AND
-        EXISTS(SELECT 'x' FROM contact_links cl WHERE cl.event_id=t.id)
+        t.event_disposition IS NOT NULL OR
+        EXISTS(SELECT 'x' FROM contact_links cl WHERE cl.event_id=t.id) OR
+        EXISTS(SELECT 'x' FROM instruments ins WHERE ins.event_id=t.id)
       },
       :column_map => {
         :normalized_event_disposition => :event_disp,
