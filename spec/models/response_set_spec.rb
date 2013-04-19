@@ -70,6 +70,48 @@ describe ResponseSet do
     end
   end
 
+  describe '#to_mustache' do
+    let(:rs) { ResponseSet.new }
+
+    describe 'with a Survey' do
+      include NcsNavigator::Core::Surveyor::SurveyTaker
+
+      let(:survey) do
+        Surveyor::Parser.new.parse <<-END
+          survey "test" do
+            section "one" do
+              q_helper_c_fname "q_helper_c_fname", :display_type => :hidden, :custom_class => 'helper'
+              a 'value', :string
+
+              q_weight "How much does {{c_fname}} weigh?"
+              a :integer
+            end
+          end
+        END
+      end
+
+      before do
+        rs.survey = survey
+      end
+
+      it 'fills in Mustache helpers' do
+        respond(rs) do |r|
+          r.answer 'helper_c_fname', :value => 'First'
+        end
+
+        rs.save!
+
+        rs.to_mustache.render('{{c_fname}}').should == 'First'
+      end
+
+      describe 'and an unanswered helper question' do
+        it 'maintains the substitution template' do
+          rs.to_mustache.render('{{c_fname}}').should == '{{c_fname}}'
+        end
+      end
+    end
+  end
+
   describe "#contact_link" do
     let(:contact) { Factory(:contact) }
     let!(:contact_link) { Factory(:contact_link, :contact => contact) }
