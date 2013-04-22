@@ -14,7 +14,8 @@ module NcsNavigator::Core::Mdes
         unless model_class.ancestors.include?(NcsCodedAttributeValueHelpers)
           model_class.send(:include, NcsCodedAttributeValueHelpers)
         end
-        model_class.send(:include, extensions_module)
+        ext_mod = model_class.const_set(extensions_module_name, build_extensions_module)
+        model_class.send(:include, ext_mod)
       elsif %w(development staging production).include?(Rails.env)
         fail "NcsCodedAttribute(#{attribute_name.inspect}) created without model class. This should not be possible."
       end
@@ -73,9 +74,14 @@ module NcsNavigator::Core::Mdes
       "validate_ncs_coded_attribute_#{attribute_name}"
     end
 
-    def extensions_module
+    def extensions_module_name
+      "NcsCodedAttributeMethodsFor#{attribute_name.to_s.camelize}"
+    end
+    protected :extensions_module_name
+
+    def build_extensions_module
       nca = self
-      @extensions_module ||= Module.new do
+      Module.new do
         extend ActiveSupport::Concern
 
         included do
@@ -99,7 +105,7 @@ module NcsNavigator::Core::Mdes
         end
       end
     end
-    protected :extensions_module
+    protected :build_extensions_module
 
     module NcsCodedAttributeValueHelpers
       protected
