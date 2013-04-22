@@ -410,26 +410,67 @@ module OperationalDataExtractor
       participant.person
     end
 
-    def get_address(response_set, person, address_type, address_rank)
-      criteria = Hash.new
-      criteria[:response_set_id] = response_set.id
-      criteria[:address_type_code] = address_type.local_code
-      criteria[:address_rank_code] = address_rank.local_code
-      address = Address.where(criteria).first
-      if address.nil?
-        address = Address.new(:person => person, :dwelling_unit => DwellingUnit.new,
-                              :psu => person.psu, :response_set => response_set,
-                              :address_type => address_type, :address_rank => address_rank)
+    def find_address(person, map, address_type, address_rank, address_type_other)
+      by_rs = Hash.new
+      by_rs[:response_set_id] = response_set.id
+      by_rs[:address_type_code] = address_type.local_code if address_type
+      by_rs[:address_type_other] = address_type_other if address_type_other
+
+      by_add = Hash.new
+      address_attribute_value_pairs(map) do |attribute, value|
+        if value && value.is_a?(String)
+          by_add[attribute] = value if value
+        end
+      end
+      by_add[:person_id] = person.id
+      by_add[:address_type_code] = address_type.local_code if address_type
+      by_add[:address_type_other] = address_type_other if address_type_other
+
+      if address  = Address.where(by_rs).last ||
+                                  address = Address.where(by_add).last
+         address.address_rank = address_rank
       end
       address
     end
 
-    def get_telephone(response_set, person, phone_type = nil, phone_rank = primary_rank)
-      criteria = Hash.new
-      criteria[:response_set_id] = response_set.id
-      criteria[:phone_rank_code] = phone_rank.local_code
-      criteria[:phone_type_code] = phone_type.local_code if phone_type
-      phone = Telephone.where(criteria).last
+    def get_address(person, map, address_type, address_rank, address_type_other = nil)
+      address = find_address(person, map, address_type, address_rank,
+                             address_type_other)
+      if address.nil?
+        address = Address.new(:person => person,
+                              :dwelling_unit => DwellingUnit.new,
+                              :psu => person.psu,
+                              :response_set => response_set,
+                              :address_type => address_type,
+                              :address_rank => address_rank,
+                              :address_type_other => address_type_other)
+      end
+      address
+    end
+
+    def find_telephone_by_number(person, number, phone_type)
+      return nil unless number && number.is_a?(String)
+      by_nr = Hash.new
+      by_nr[:phone_nbr] = number
+      by_nr[:person_id] = person.id
+      by_nr[:phone_type_code] = phone_type.local_code if phone_type
+      Telephone.where(by_nr).last
+    end
+
+    def find_telephone(person, number, phone_type, phone_rank)
+      by_rs = Hash.new
+      by_rs[:response_set_id] = response_set.id
+      by_rs[:phone_type_code] = phone_type.local_code if phone_type
+
+      phone  = Telephone.where(by_rs).last
+      if phone || phone  = find_telephone_by_number(person, number, phone_type)
+         phone.phone_rank = phone_rank
+      end
+      phone
+    end
+
+    def get_telephone(person, number, phone_type = nil, phone_rank = primary_rank)
+      phone = find_telephone(person, number, phone_type, phone_rank)
       if phone.nil?
         phone = Telephone.new(:person => person, :psu => person.psu,
                               :response_set => response_set,
@@ -439,8 +480,29 @@ module OperationalDataExtractor
       phone
     end
 
-    def get_email(response_set, person, email_type)
-      email = Email.where(:response_set_id => response_set.id, :email_type_code => email_type.local_code).first
+    def find_email_by_addres(person, address, email_type)
+      return nil unless address && address.is_a?(String)
+      by_add = Hash.new
+      by_add[:email] = address
+      by_add[:person_id] = person.id
+      by_add[:email_type_code] = email_type.local_code if email_type
+      Email.where(by_add).last
+    end
+
+    def find_email(person, address, email_type)
+      by_rs = Hash.new
+      by_rs[:response_set_id] = response_set.id
+      by_rs[:email_type_code] = email_type.local_code if email_type
+
+      email  = Email.where(by_rs).last
+      if email || email = find_email_by_addres(person, address, email_type)
+         email.email_rank = primary_rank
+      end
+      email
+    end
+
+    def get_email(person, email_address, email_type)
+      email = find_email(person, email_address, email_type)
       if email.nil?
         email = Email.new(:person => person, :psu => person.psu,
                           :response_set => response_set,
@@ -448,24 +510,6 @@ module OperationalDataExtractor
                           :email_rank => primary_rank)
       end
       email
-    end
-
-    def get_birth_address(response_set, person)
-      address_type = address_other_type
-      address_rank = primary_rank
-      criteria = Hash.new
-      criteria[:response_set_id] = response_set.id
-      criteria[:address_type_code] = address_type.local_code
-      criteria[:address_rank_code] = address_rank.local_code
-      criteria[:address_type_other] = "Birth"
-      birth_address = Address.where(criteria).first
-      if birth_address.nil?
-        birth_address = Address.new(:person => person, :dwelling_unit => DwellingUnit.new,
-                                    :psu => person.psu, :response_set => response_set,
-                                    :address_type => address_type, :address_rank => address_rank,
-                                    :address_type_other => "Birth")
-      end
-      birth_address
     end
 
     def find_or_build_institution(response_set, institute_type)
@@ -636,30 +680,27 @@ module OperationalDataExtractor
     end
 
     def process_birth_institution_and_address(birth_address_map, institution_map)
-      birth_address = get_birth_address(response_set, participant.person)
       institution = process_institution(institution_map, response_set)
-
-      birth_address_map.each do |key, attribute|
-        if r = data_export_identifier_indexed_responses[key]
-          value = response_value(r)
-          unless value.blank?
-            set_value(birth_address, attribute, value)
-          end
-        end
+      birth_address = get_address(person, birth_address_map,
+                                  address_other_type, primary_rank, "Birth")
+      address_attribute_value_pairs(birth_address_map) do |attribute, value|
+          set_value(birth_address, attribute, value) if value
       end
       [birth_address, institution]
     end
 
-    def process_address(owner, map, address_type = address_other_tyoe, address_rank = primary_rank)
-      address = nil
+    def address_attribute_value_pairs(map)
       map.each do |key, attribute|
-        if r = data_export_identifier_indexed_responses[key]
-          value = response_value(r)
-          unless value.blank?
-            address ||= get_address(response_set, owner, address_type, address_rank)
-            set_value(address, attribute, value)
-          end
-        end
+        r = data_export_identifier_indexed_responses[key]
+        value = response_value(r) if r
+        yield [attribute, value]
+      end
+    end
+
+    def process_address(owner, map, address_type = address_other_tyoe, address_rank = primary_rank)
+      address = get_address(owner, map, address_type, address_rank)
+      address_attribute_value_pairs(map) do |attribute, value|
+          set_value(address, attribute, value) if value
       end
       address
     end
@@ -692,7 +733,7 @@ module OperationalDataExtractor
         if r = data_export_identifier_indexed_responses[key]
           value = response_value(r)
           unless value.blank?
-            phone ||= get_telephone(response_set, owner, phone_type, phone_rank)
+            phone ||= get_telephone(owner, value, phone_type, phone_rank)
             set_value(phone, attribute, value)
           end
         end
@@ -728,7 +769,7 @@ module OperationalDataExtractor
         if r = data_export_identifier_indexed_responses[key]
           value = response_value(r)
           unless value.blank?
-            email ||= get_email(response_set, person, email_type)
+            email ||= get_email(person, value, email_type)
             set_value(email, attribute, value)
           end
         end

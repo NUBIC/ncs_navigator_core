@@ -359,65 +359,223 @@ describe OperationalDataExtractor::Base do
       end
 
       describe "#get_address" do
-
         before do
-          @person = Factory(:person)
-          @response_set = Factory(:response_set)
+          @participant = Factory(:participant)
+          @part_person_link = Factory(:participant_person_link, :participant => @participant, :person => @person)
+          @survey = create_pbs_pregnancy_visit_1_with_work_address_operational_data
+          @response_set, @instrument = prepare_instrument(@person, @participant, @survey)
+          @work_address_map = OperationalDataExtractor::PregnancyVisit::WORK_ADDRESS_MAP
+          @state = NcsCode.for_list_name_and_local_code("STATE_CL1", 14)
+
           @primary_rank = NcsCode.for_list_name_and_local_code('COMMUNICATION_RANK_CL1', 1)
-          @code_address_type = NcsCode.for_list_name_and_local_code('ADDRESS_CATEGORY_CL1', 2)
+          @work_address_type = NcsCode.for_list_name_and_local_code('ADDRESS_CATEGORY_CL1', 2)
+          @home_address_type = NcsCode.for_list_name_and_local_code('ADDRESS_CATEGORY_CL1', 1)
           @address = Factory(:address,
                              :person => @person,
                              :response_set => @response_set,
                              :address_rank_code => 1,
-                             :address_type_code => @code_address_type.local_code)
-
-          @pbs_eligibility_extractor = OperationalDataExtractor::PbsEligibilityScreener.new(@response_set)
+                             :state_code => 14,
+                             :address_type_code => @work_address_type.local_code)
+          @address.address_one = "123 Any Street"
+          @address.city = "Springfield"
+          @address.zip = "65445"
+          @address.save!
         end
 
-        it "fetches an existing address record" do
-          @pbs_eligibility_extractor.get_address(@response_set, @person, @code_address_type, @primary_rank).should == @address
+        def take_address_survey(address_one, rs = @response_set)
+          take_survey(@survey, rs) do |r|
+            r.a "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.WORK_ADDRESS_1", address_one
+            r.a "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.WORK_CITY", "Springfield"
+            r.a "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.WORK_STATE", @state
+            r.a "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.WORK_ZIP", "65445"
+          end
+          rs.save!
+
+          @pregnancy_visit_extractor = OperationalDataExtractor::PregnancyVisit.new(rs)
         end
 
-        it "creates a new record if it can't find an existing record" do
-          @address = nil
-          new_address = @pbs_eligibility_extractor.get_address(@response_set, @person, @code_address_type, @primary_rank)
+        it "retrieves an address record if one of the same type exists within the response_set" do
+          take_address_survey("321 Diff St")
+          @pregnancy_visit_extractor.get_address(
+            @person,
+            @work_address_map,
+            @work_address_type,
+            @primary_rank
+          ).should == @address
+        end
+
+        it "retrieves an address record if one with the same address and type exists" do
+          response_set, instrument = prepare_instrument(@person, @participant,
+                                                        @survey)
+          take_address_survey("123 Any Street", response_set)
+          @pregnancy_visit_extractor.get_address(
+            @person,
+            @work_address_map,
+            @work_address_type,
+            @primary_rank
+          ).should == @address
+        end
+
+        it "creates a new record if it can't find an existing record based on address content" do
+          response_set, instrument = prepare_instrument(@person, @participant,
+                                                        @survey)
+          take_address_survey("312 Diff Street", response_set)
+          new_address = @pregnancy_visit_extractor.get_address(
+            @person,
+            @work_address_map,
+            @work_address_type,
+            @primary_rank
+          )
           new_address.should_not == @address
           new_address.should be_an_instance_of(Address)
         end
 
-        describe "get_birth_address" do
+        it "creates a new record if it can't find an existing record of the same type within the reponse set" do
+          @address.address_type_code = @home_address_type.local_code
+          @address.save!
 
-          before do
-            @person = Factory(:person)
-            @participant = Factory(:participant)
-            @part_person_link = Factory(:participant_person_link, :participant => @participant, :person => @person)
-            @response_set = Factory(:response_set)
-            @birth_address = Factory(:address,
-                               :person => @person,
-                               :response_set => @response_set,
-                               :address_rank_code => 1,
-                               :address_type_code => @code_address_type.local_code,
-                               :address_type_other => "Birth")
-
-            @pbs_eligibility_extractor = OperationalDataExtractor::PbsEligibilityScreener.new(@response_set)
-          end
-
-          it "fetches an existing address record" do
-            @pbs_eligibility_extractor.get_address(@response_set, @person, @code_address_type, @primary_rank).should == @birth_address
-          end
-
-          it "creates a new record if it can't find an existing record" do
-            @birth_address = nil
-            new_address = @pbs_eligibility_extractor.get_address(@response_set, @person, @code_address_type, @primary_rank)
-            new_address.should_not == @birth_address
-            new_address.should be_an_instance_of(Address)
-          end
-
+          take_address_survey("123 Any Street")
+          new_address = @pregnancy_visit_extractor.get_address(
+            @person,
+            @work_address_map,
+            @work_address_type,
+            @primary_rank
+          )
+          new_address.should_not == @address
+          new_address.should be_an_instance_of(Address)
         end
       end
 
-    end
+      describe "#get_birth_address" do
 
+        before do
+          @participant = Factory(:participant)
+          @part_person_link = Factory(:participant_person_link, :participant => @participant, :person => @person)
+          @survey = create_pbs_pregnancy_visit_1_with_birth_institution_operational_data
+          @response_set, @instrument = prepare_instrument(@person, @participant, @survey)
+
+          @birth_address_map = OperationalDataExtractor::PregnancyVisit::BIRTH_ADDRESS_MAP
+          @state = NcsCode.for_list_name_and_local_code("STATE_CL1", 14)
+          @hospital = NcsCode.for_list_name_and_local_code("ORGANIZATION_TYPE_CL1", 1)
+
+          @birth_address_type = NcsCode.for_list_name_and_local_code('ADDRESS_CATEGORY_CL1', 2)
+          @primary_rank = NcsCode.for_list_name_and_local_code('COMMUNICATION_RANK_CL1', 1)
+          @birth_address = Factory(:address,
+                              :person => @person,
+                              :response_set => @response_set,
+                              :address_rank_code => 1,
+                              :address_type_code => @birth_address_type.local_code,
+                              :state_code => 14,
+                              :address_type_other => "Birth")
+          @birth_address.address_one = "123 Any Street"
+          @birth_address.city = "Springfield"
+          @birth_address.zip = "65445"
+          @birth_address.save!
+        end
+
+        def take_birth_survey(address_one, rs = @response_set)
+          take_survey(@survey, rs) do |r|
+            r.a "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.B_ADDRESS_1", address_one
+            r.a "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.B_CITY", "Springfield"
+            r.a "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.B_STATE", @state
+            r.a "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.B_ZIPCODE", "65445"
+          end
+          rs.save!
+
+          @pregnancy_visit_extractor = OperationalDataExtractor::PregnancyVisit.new(rs)
+        end
+
+        it "retrieves an address record if one of the same type exists within the response_set" do
+          take_birth_survey("666 DiffStreet")
+          @pregnancy_visit_extractor.get_address(
+            @person,
+            @birth_address_map,
+            @birth_address_type,
+            @primary_rank,
+            "Birth"
+          ).should == @birth_address
+        end
+
+        it "retrieves an address record if one with the same address and type exists" do
+          response_set, @instrument = prepare_instrument(@person, @participant, @survey)
+          take_birth_survey("123 Any Street", response_set)
+          @pregnancy_visit_extractor.get_address(
+            @person,
+            @birth_address_map,
+            @birth_address_type,
+            @primary_rank,
+            "Birth"
+          ).should == @birth_address
+        end
+
+        it "creates a new record if it can't find an existing record based on address content" do
+          response_set, @instrument = prepare_instrument(@person, @participant, @survey)
+          take_birth_survey("666 DiffStreet", response_set)
+          new_address = @pregnancy_visit_extractor.get_address(
+            @person,
+            @birth_address_map,
+            @birth_address_type,
+            @primary_rank,
+            "Birth"
+          )
+          new_address.should_not == @birth_address
+          new_address.should be_an_instance_of(Address)
+        end
+
+        it "creates a new record if an existing address matches but is not a birth address" do
+          @birth_address.address_type_other = nil
+          @birth_address.save!
+
+          take_birth_survey("123 Any Street")
+          new_address = @pregnancy_visit_extractor.get_address(
+            @person,
+            @birth_address_map,
+            @birth_address_type,
+            @primary_rank,
+            "Birth"
+          )
+          new_address.should_not == @birth_address
+          new_address.should be_an_instance_of(Address)
+        end
+
+
+        it "creates a new record if it can't find record of the same type in the current response_set" do
+          home_address_type = NcsCode.for_list_name_and_local_code('ADDRESS_CATEGORY_CL1', 1)
+          @birth_address.address_type_code = home_address_type.local_code
+          @birth_address.save!
+
+          take_birth_survey("123 Any Street")
+          new_address = @pregnancy_visit_extractor.get_address(
+            @person,
+            @birth_address_map,
+            @birth_address_type,
+            @primary_rank,
+            "Birth"
+          )
+          new_address.should_not == @birth_address
+          new_address.should be_an_instance_of(Address)
+        end
+
+        it "creates a new record if a non-birth address exists in the current response set" do
+          @birth_address.address_type_other = nil
+          @birth_address.save!
+
+          take_birth_survey("123 Any Street")
+          new_address = @pregnancy_visit_extractor.get_address(
+            @person,
+            @birth_address_map,
+            @birth_address_type,
+            @primary_rank,
+            "Birth"
+          )
+          new_address.should_not == @birth_address
+          new_address.should be_an_instance_of(Address)
+        end
+
+
+      end
+
+    end
   end
 
   context "processing emails" do
@@ -472,20 +630,68 @@ describe OperationalDataExtractor::Base do
       end
 
     end
+    describe "#find_email" do
+
+      it "retrieves an email record based on response_set and email type" do
+        @pbs_eligibility_extractor.find_email(
+          @person,
+          'some.new@email.com',
+          @work_email_type_code
+        ).should == @existing_work_email
+      end
+
+      it "retrieves an eamil record based on email address and email type" do
+        @pbs_eligibility_extractor.find_email(
+          @person,
+          @existing_work_email.email,
+          @work_email_type_code,
+        ).should == @existing_work_email
+      end
+
+      it "returns nil if no match exists" do
+        shared_email_type_code = NcsCode.for_list_name_and_local_code(
+                                                  'EMAIL_TYPE_CL1', 3)
+        @pbs_eligibility_extractor.find_email(
+          @person,
+          'doesnt@exist.net',
+          shared_email_type_code
+        ).should be_nil
+      end
+
+    end
 
     describe "#get_email" do
 
-      it "retrieves an email record if one exists" do
-        @pbs_eligibility_extractor.get_email(@response_set, @person, @work_email_type_code).should == @existing_work_email
+      it "retrieves an email record if one of the same type exists within the response_set" do
+        @pbs_eligibility_extractor.get_email(
+          @person,
+          'doesnt@exist.net',
+          @work_email_type_code
+        ).should == @existing_work_email
+      end
+
+      it "retrieves an email record if one with the same address and type exists" do
+        response_set, instrument = prepare_instrument(@person, @participant,
+                                                      @survey)
+        pbs_eligibility_extractor = OperationalDataExtractor::PbsEligibilityScreener.new(response_set)
+        pbs_eligibility_extractor.get_email(
+          @person,
+          @existing_work_email.email,
+          @work_email_type_code
+        ).should == @existing_work_email
       end
 
       it "creates a new email record if one does not exist " do
-        existing_email = @pbs_eligibility_extractor.get_email(@response_set, @person, @work_email_type_code)
-        existing_email.should == @existing_work_email
-        new_email = @pbs_eligibility_extractor.get_email(@response_set, @person, @personal_email_type_code)
+        shared_email_type_code = NcsCode.for_list_name_and_local_code(
+                                                  'EMAIL_TYPE_CL1', 3)
+        new_email = @pbs_eligibility_extractor.get_email(@person,
+                                               'doesnt@exist.net',
+                                               shared_email_type_code)
         new_email.should_not == @existing_work_email
+        new_email.should_not == @existing_email
         new_email.should be_an_instance_of(Email)
       end
+
     end
 
   end
@@ -562,21 +768,80 @@ describe OperationalDataExtractor::Base do
         phone.phone_nbr.should == "4844844848"
       end
 
+      it "doesn't create dupes when the same number is entered in a different instrument" do
+        phone = @pbs_eligibility_extractor.process_telephone(@person, @map)
+        phone.phone_nbr.should == "4844844848"
+      end
+
+    end
+
+    describe "#find_telephone" do
+
+      it "retrieves a phone record based on response_set and phone type" do
+        @pbs_eligibility_extractor.find_telephone(
+          @person,
+          '3213123211',
+          @work_phone_type_code,
+          @primary_rank
+        ).should == @existing_work_phone
+      end
+
+      it "retrieves a phone record based on phone number and phone type" do
+        @pbs_eligibility_extractor.find_telephone(
+          @person,
+          @existing_work_phone.phone_nbr,
+          @work_phone_type_code,
+          @primary_rank
+        ).should == @existing_work_phone
+      end
+
+      it "returns nil if no match exists" do
+        cell_phone_type_code = NcsCode.for_list_name_and_local_code(
+                                                'PHONE_TYPE_CL1', 3)
+        @pbs_eligibility_extractor.find_telephone(
+          @person, '3214567890',
+          cell_phone_type_code,
+          @primary_rank
+        ).should be_nil
+      end
+
     end
 
     describe "#get_telephone" do
 
-      it "retrieves an phone record if one exists" do
-        @pbs_eligibility_extractor.get_telephone(@response_set, @person, @work_phone_type_code).should == @existing_work_phone
+      it "retrieves a phone record if one of the same type exists within the response_set" do
+        @pbs_eligibility_extractor.get_telephone(
+          @person,
+          '3213123211',
+          @work_phone_type_code,
+          @primary_rank
+        ).should == @existing_work_phone
+      end
+
+      it "retrieves a phone record if one with the same number exists" do
+        response_set, instrument = prepare_instrument(@person, @participant,
+                                                      @survey)
+        pbs_eligibility_extractor = OperationalDataExtractor::PbsEligibilityScreener.new(response_set)
+        pbs_eligibility_extractor.get_telephone(
+          @person,
+          @existing_work_phone.phone_nbr,
+          @work_phone_type_code,
+          @primary_rank
+        ).should == @existing_work_phone
       end
 
       it "creates a new phone record if one does not exist " do
-        existing_phone = @pbs_eligibility_extractor.get_telephone(@response_set, @person, @work_phone_type_code)
-        existing_phone.should == @existing_work_phone
-        new_phone = @pbs_eligibility_extractor.get_telephone(@response_set, @person, @home_phone_type_code)
+        cell_phone_type_code = NcsCode.for_list_name_and_local_code(
+                                                'PHONE_TYPE_CL1', 3)
+        new_phone = @pbs_eligibility_extractor.get_telephone(@person,
+                                                        '3214567890',
+                                                        cell_phone_type_code,
+                                                        @primary_rank)
         new_phone.should_not == @existing_work_phone
+        new_phone.should_not == @existing_home_phone
         new_phone.should be_an_instance_of(Telephone)
       end
+
     end
 
   end
@@ -635,7 +900,7 @@ describe OperationalDataExtractor::Base do
       end
 
       it "has nil institution"
-      
+
     end
 
     describe "#finalize_institution" do
@@ -890,21 +1155,21 @@ describe OperationalDataExtractor::Base do
           attribute = "race_code"
           answer = mock_model(Answer, :reference_identifier => "8", :response_class => "answer", :text => "Korean")
           response = mock_model(Response, :answer => answer)
-          @birth_extractor.process_new_type_race(@blank_person_race, attribute, response)
-        end
+            @birth_extractor.process_new_type_race(@blank_person_race, attribute, response)
+          end
 
-        it "populates a 'new' type PersonRace race_code attribute with the code value for 'other' (-5)" do
-          @blank_person_race.race_code.should == -5
-        end
+          it "populates a 'new' type PersonRace race_code attribute with the code value for 'other' (-5)" do
+            @blank_person_race.race_code.should == -5
+          end
 
-        it "populates a 'new' type PersonRace race_other attribute with the text value of the response" do
-          @blank_person_race.race_other.should == "Korean"
+          it "populates a 'new' type PersonRace race_other attribute with the text value of the response" do
+            @blank_person_race.race_other.should == "Korean"
+          end
         end
       end
-    end
 
-    describe "#process_standard_race" do
-      let(:general_question) { Factory(:question, :reference_identifier => "BABY_RACE_1") }
+      describe "#process_standard_race" do
+        let(:general_question) { Factory(:question, :reference_identifier => "BABY_RACE_1") }
       let(:general_answer)   { Factory(:answer, :reference_identifier => "4", :response_class => "answer", :text => "Asian")}
       let(:general_response) { Factory(:response, :question => general_question, :answer => general_answer)}
 

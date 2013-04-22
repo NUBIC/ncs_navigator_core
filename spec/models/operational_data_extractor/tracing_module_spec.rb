@@ -17,10 +17,10 @@ describe OperationalDataExtractor::TracingModule do
       response_set.save!
 
       take_survey(survey, response_set) do |r|
-        r.a "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.ADDRESS_1", '123 Easy St.'
-        r.a "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.CITY", 'Chicago'
-        r.a "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.ZIP", '65432'
-        r.a "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.ZIP4", '1234'
+        r.a "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.ADDRESS_1", 'string', :value => '123 Easy St.'
+        r.a "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.CITY", 'string', :value => 'Chicago'
+        r.a "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.ZIP", 'string', :value => '65432'
+        r.a "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.ZIP4", 'string', :value => '1234'
       end
 
       response_set.responses.reload
