@@ -59,12 +59,13 @@ class ResponseSet < ActiveRecord::Base
   end
 
   ##
-  # Responses in the response set that are targeted for Mustache context helper
-  # questions.
-  def mustache_helper_responses
-    # The reorder(nil) is a hack to work around overly-broad default orders in
-    # Surveyor.
-    responses.reorder(nil).merge(Question.for_mustache_helpers)
+  # Questions in this response set's survey whose answers will provide values
+  # for Mustache helpers.
+  #
+  # This ResponseSet MUST be associated with a persisted Survey before you
+  # invoke this method.
+  def helper_questions
+    survey.questions.for_mustache_helpers
   end
 
   ##
@@ -179,8 +180,11 @@ class ResponseSet < ActiveRecord::Base
   # @private
   class Mustache < ::Mustache
     def initialize(rs)
-      rs.mustache_helper_responses.each do |r|
-        self[r.question.reference_identifier.sub('helper_', '')] = r.value
+      rs.helper_questions.each do |q|
+        key = q.reference_identifier.sub('helper_', '')
+        val = rs.responses.detect { |r| r.question_id == q.id }.try(:value)
+
+        self[key] = val.blank? ? "{{#{key}}}" : val
       end
     end
   end

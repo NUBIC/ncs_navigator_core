@@ -193,3 +193,13 @@ Factory.define :sampled_persons_ineligibility do |spi|
   spi.first_prenatal_visit_code  1
   spi.ineligible_by_code          1
 end
+
+Factory.define :ineligible_batch do |ib|
+  ib.association :provider, :factory => :provider
+  ib.date_first_visit_date       { Date.today }
+  ib.people_count                1
+  ib.pre_screening_status_code   1
+  ib.provider_intro_outcome_code 1
+  ib.psu_code                    20000030
+  ib.sampled_person_code         1
+end

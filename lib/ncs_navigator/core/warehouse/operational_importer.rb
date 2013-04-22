@@ -393,19 +393,11 @@ module NcsNavigator::Core::Warehouse
 
     def set_participant_being_followed
       if @followed_p_ids
-        set_participant_being_followed_by_ids(@followed_p_ids)
+        Participant.update_all(['being_followed = ?', false],
+                               ['p_id NOT IN (?)', @followed_p_ids])
       else
         set_participant_being_followed_using_heuristic
       end
-    end
-
-    def set_participant_being_followed_by_ids(p_ids)
-      ActiveRecord::Base.connection.
-        execute(<<-SQL)
-          UPDATE participants p
-          SET being_followed=true
-          WHERE p.p_id IN ('#{p_ids.join("', '")}')
-        SQL
     end
 
     def set_participant_being_followed_using_heuristic
@@ -519,6 +511,9 @@ module NcsNavigator::Core::Warehouse
     def save_core_record(core_record)
       ident = "#{core_record.class}##{core_record.id}##{core_record.public_id}"
       if core_record.new_record?
+        if core_record.has_attribute?("imported_invalid")
+          core_record.imported_invalid = true unless core_record.valid?
+        end
         log.debug("Creating #{ident}: #{core_record.inspect}.")
         @progress.increment_creates
       elsif core_record.changed?

@@ -123,6 +123,11 @@ class Person < ActiveRecord::Base
     self.age = self.computed_age if self.age.blank?
   end
 
+  def self.associated_with_provider_by_provider_id(provider_id)
+    joins(:person_provider_links).
+      where("person_provider_links.provider_id = ?", provider_id)
+  end
+
   ##
   # How to format the date_move attribute
   # cf. MdesRecord

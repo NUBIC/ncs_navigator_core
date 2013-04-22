@@ -17,7 +17,7 @@ Feature: Fieldwork check-out and check-in
     And I PUT the payload to /api/v1/fieldwork/cf651bcf-ca1d-45ec-87c7-38cb995271df with
       | header:X-Client-ID | 1234567890 |
 
-    Then the response status is 202
+    Then the response status is 204
 
   Scenario: PUT /api/v1/fieldwork/:uuid requires authentication
     Given the payload

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # == Schema Information
-# Schema version: 20130226172617
+# Schema version: 20130415192041
 #
 # Table name: events
 #
@@ -21,6 +21,7 @@
 #  event_type_code                    :integer          not null
 #  event_type_other                   :string(255)
 #  id                                 :integer          not null, primary key
+#  imported_invalid                   :boolean          default(FALSE), not null
 #  lock_version                       :integer          default(0)
 #  participant_id                     :integer
 #  psc_ideal_date                     :date
@@ -976,6 +977,11 @@ describe Event do
         invalid.save!
       end.to raise_error(ActiveRecord::RecordInvalid,
         "Validation failed: Event disposition does not exist in the disposition category.")
+    end
+
+    it "skips the validation for invalid event_disposition combination if imported_invalid is set to 'true'" do
+      invalid.imported_invalid = true
+      invalid.should be_valid
     end
 
   end
