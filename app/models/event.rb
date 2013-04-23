@@ -240,19 +240,19 @@ class Event < ActiveRecord::Base
   }
 
   def self.method_missing(method_name, *args)
-    method_name = method_name.to_s
-    if method_name =~ /_code/
-      return NAMED_EVENT_CODES[method_name.sub("_code", "")]
+    m = method_name.to_s
+    if m =~ /_code/
+      return NAMED_EVENT_CODES[m.sub("_code", "")]
     end
 
     super
   end
 
   def method_missing(method_name, *args)
-    method_name = method_name.to_s
-    if method_name =~ /\?/
-      super unless NAMED_EVENT_CODES[method_name.sub("\?", "")]
-      return NAMED_EVENT_CODES[method_name.sub("\?", "")] == self.event_type_code
+    m = method_name.to_s
+    if m =~ /\?/
+      super unless NAMED_EVENT_CODES[m.sub("\?", "")]
+      return NAMED_EVENT_CODES[m.sub("\?", "")] == self.event_type_code
     end
 
     super
