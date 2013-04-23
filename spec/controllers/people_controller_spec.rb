@@ -277,7 +277,7 @@ describe PeopleController do
 
       describe "unauthorized attempt to access" do
         it "gives a forbidden status code for attempted at unauthorized access" do
-          expect { get :index }.should raise_exception("uncaught throw :warden")
+          expect { get :index }.to raise_exception("uncaught throw :warden")
         end
       end
     end
