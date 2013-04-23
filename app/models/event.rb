@@ -437,6 +437,27 @@ class Event < ActiveRecord::Base
   end
 
   ##
+  # True if this is a consent event and a standalone event
+  # @see Event#consent_event?
+  # @see Event#standalone_event?
+  # @param[Contact]
+  # @return[Boolean]
+  def standalone_consent_event?(contact)
+    consent_event? && stand_alone_event?(contact)
+  end
+
+  ##
+  # A stand-alone Event is an event
+  # that is not associated with another event during same contact
+  # @param[Contact]
+  # @return[Boolean]
+  def stand_alone_event?(contact)
+    ContactLink.select("distinct event_id").where("contact_id in (?)",
+      ContactLink.select(:contact_id).where(:event_id => self.id).all.map(&:contact_id)
+    ).count == 1
+  end
+
+  ##
   # Returns true for all post-natal events (includes Birth)
   # @return [Boolean]
   def postnatal?
@@ -673,10 +694,12 @@ class Event < ActiveRecord::Base
      responded = SurveySection.scoped.joins('INNER JOIN response_sets ON response_sets.survey_id = survey_sections.survey_id
                                                    INNER JOIN responses ON responses.response_set_id = response_sets.id
                                                    INNER JOIN questions ON responses.question_id = questions.id
-                                                   AND questions.survey_section_id = survey_sections.id').select('survey_sections.id').merge(target).uniq
+                                                   AND questions.survey_section_id = survey_sections.id')
+                              .select("survey_sections.id, survey_sections.display_order")
+                              .merge(target).uniq
 
      referenced = SurveySection.scoped.joins(:questions, :survey => :response_sets)
-                              .select('survey_sections.id')
+                              .select("survey_sections.id, survey_sections.display_order")
                               .merge(target).where("questions.display_type IS NULL OR questions.display_type != 'label'").uniq
 
     self.event_breakoff_code = (referenced - responded).empty? ? NcsCode::NO : NcsCode::YES
@@ -904,7 +927,10 @@ class Event < ActiveRecord::Base
     self.participant.events.where(:event_type_code => self.event_type_code).count - 1
   end
 
+  ##
+  #
   def set_suggested_event_breakoff(contact_link)
+    return if closed? || event_breakoff_code.to_i > 0
     if contact_link.instrument && contact_link.instrument.response_sets.exists?
       set_event_breakoff(contact_link.instrument.response_sets)
     end
