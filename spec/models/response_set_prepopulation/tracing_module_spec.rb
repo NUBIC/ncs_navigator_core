@@ -151,20 +151,12 @@ module ResponseSetPrepopulation
 
       describe "asking address information" do
 
-        it "should show if the contact is CATI and the event is birth" do
+        it "should show if the event is birth" do
           event = Factory(:event, :event_type_code => Event.birth_code)
           run_populator(event, Instrument.cati)
           assert_response_value(@response_set,
                                 "prepopulated_should_show_address_for_tracing",
                                 "TRUE")
-        end
-
-        it "should NOT show if the contact is not CATI" do
-          event = Factory(:event, :event_type_code => Event.birth_code)
-          run_populator(event, Instrument.capi)
-          assert_response_value(@response_set,
-                                "prepopulated_should_show_address_for_tracing",
-                                "FALSE")
         end
 
         it "should NOT show if the event is six_month_visit" do
