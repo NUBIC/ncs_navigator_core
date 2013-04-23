@@ -512,7 +512,7 @@ module OperationalDataExtractor
       email
     end
 
-    def find_or_build_institution(response_set, institute_type)
+    def find_or_build_institution(institute_type)
       institution = Institution.where(:response_set_id => response_set.id, :institute_type_code => institute_type.local_code).first
       if institution.nil?
         institution = Institution.new( :psu => person.psu, :institute_type_code => institute_type.local_code, :response_set => response_set)
@@ -520,7 +520,7 @@ module OperationalDataExtractor
       institution
     end
 
-    def get_ppg_detail(response_set, participant)
+    def get_ppg_detail(participant)
       ppg_detail = PpgDetail.where(:response_set_id => response_set.id).first
       if ppg_detail.nil?
         ppg_detail = PpgDetail.new(:participant => participant, :psu => participant.psu,
@@ -575,7 +575,7 @@ module OperationalDataExtractor
         if r = data_export_identifier_indexed_responses[key]
           value = response_value(r)
           unless value.blank?
-            ppg_detail ||= get_ppg_detail(response_set, owner)
+            ppg_detail ||= get_ppg_detail(owner)
             ppg_detail.send("#{attribute}=", ppg_detail_value(prefix, key, value))
           end
         end
@@ -680,7 +680,7 @@ module OperationalDataExtractor
     end
 
     def process_birth_institution_and_address(birth_address_map, institution_map)
-      institution = process_institution(institution_map, response_set)
+      institution = process_institution(institution_map)
       birth_address = get_address(person, birth_address_map,
                                   address_other_type, primary_rank, "Birth")
       address_attribute_value_pairs(birth_address_map) do |attribute, value|
@@ -787,10 +787,10 @@ module OperationalDataExtractor
       type
     end
 
-    def process_institution(map, response_set)
+    def process_institution(map)
       type = find_institution_type(map)
       if type
-        institution = find_or_build_institution(response_set, type)
+        institution = find_or_build_institution(type)
         map.each do |key, attribute|
           if r = data_export_identifier_indexed_responses[key]
             value = response_value(r)

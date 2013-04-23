@@ -337,7 +337,7 @@ describe OperationalDataExtractor::Base do
                 :questions => {:data_export_identifier => "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.BIRTH_PLAN"})
             )
             @response_set.save!
-            birth, institution = @pregnancy_visit_extractor.process_institution(@institution_map, @response_set)
+            birth, institution = @pregnancy_visit_extractor.process_institution(@institution_map)
             institution.should be_nil
           end
         end
@@ -352,7 +352,7 @@ describe OperationalDataExtractor::Base do
               r.refused "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.BIRTH_PLAN"
             end
             @response_set.save!
-            birth, institution = @pregnancy_visit_extractor.process_institution(@institution_map, @response_set)
+            birth, institution = @pregnancy_visit_extractor.process_institution(@institution_map)
             institution.should be_nil
           end
         end
@@ -879,24 +879,24 @@ describe OperationalDataExtractor::Base do
     describe "#find_or_build_institution" do
 
       it "generates a new institution record if one does not exist" do
-        institution = @pregnancy_visit_extractor.find_or_build_institution(@response_set, @hospital)
+        institution = @pregnancy_visit_extractor.find_or_build_institution(@hospital)
         institution.should be_an_instance_of(Institution)
       end
 
       it "the new record should be associated with the response set" do
-        @pregnancy_visit_extractor.find_or_build_institution(@response_set, @hospital).response_set.should eq(@response_set)
+        @pregnancy_visit_extractor.find_or_build_institution(@hospital).response_set.should eq(@response_set)
       end
 
       it "retrieves an institution record if one exists" do
         @existing_institution = Factory(:institution, :institute_type => @hospital, :response_set_id => @response_set.id)
-        @pregnancy_visit_extractor.find_or_build_institution(@response_set, @hospital).should eql(@existing_institution)
+        @pregnancy_visit_extractor.find_or_build_institution(@hospital).should eql(@existing_institution)
       end
     end
 
     describe "#process_institution" do
       it "generates an instituiton record" do
-        @pregnancy_visit_extractor.process_institution(@institution_map, @response_set).should be_an_instance_of(Institution)
-        @pregnancy_visit_extractor.process_institution(@institution_map, @response_set).institute_name.should == "FAKE HOSPITAL MEMORIAL"
+        @pregnancy_visit_extractor.process_institution(@institution_map).should be_an_instance_of(Institution)
+        @pregnancy_visit_extractor.process_institution(@institution_map).institute_name.should == "FAKE HOSPITAL MEMORIAL"
       end
 
       it "has nil institution"
@@ -905,7 +905,7 @@ describe OperationalDataExtractor::Base do
 
     describe "#finalize_institution" do
 
-      let(:institution) { @pregnancy_visit_extractor.process_institution(@institution_map, @response_set) }
+      let(:institution) { @pregnancy_visit_extractor.process_institution(@institution_map) }
 
       it "links the person to the institution" do
         @pregnancy_visit_extractor.finalize_institution(institution)
