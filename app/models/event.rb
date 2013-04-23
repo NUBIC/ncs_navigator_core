@@ -313,6 +313,26 @@ class Event < ActiveRecord::Base
     result
   end
 
+  EVENT_WINDOW = {
+    Event.three_month_visit_code        => { :start => 2,  :end => 5},
+    Event.six_month_visit_code          => { :start => 5,  :end => 8},
+    Event.nine_month_visit_code         => { :start => 8,  :end => 11},
+    Event.twelve_month_visit_code       => { :start => 11, :end => 16},
+    Event.eighteen_month_visit_code     => { :start => 16, :end => 23},
+    Event.twenty_four_month_visit_code  => { :start => 23, :end => 30},
+    Event.thirty_month_visit_code       => { :start => 30, :end => 36},
+    Event.thirty_six_month_visit_code   => { :start => 36, :end => 42},
+    Event.forty_two_month_visit_code    => { :start => 42, :end => 48},
+  }
+
+  def event_window_start_date(date)
+    date + EVENT_WINDOW[self.event_type_code][:start].months
+  end
+
+  def event_window_end_date(date)
+    (date + EVENT_WINDOW[self.event_type_code][:end].months) - 1.day
+  end
+
   def label
     event_type.to_s.downcase.squeeze(' ').gsub(' ', '_')
   end
