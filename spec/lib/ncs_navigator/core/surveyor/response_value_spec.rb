@@ -179,6 +179,12 @@ module NcsNavigator::Core::Surveyor
 
             expect { r.save }.to raise_error(ResponseValue::CannotSetValue)
           end
+
+          it 'does not raise when set to nil' do
+            r.value = nil
+
+            expect { r.save }.to_not raise_error
+          end
         end
       end
     end

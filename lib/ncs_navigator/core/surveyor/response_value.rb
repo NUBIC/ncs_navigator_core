@@ -69,9 +69,10 @@ module NcsNavigator::Core::Surveyor
     #
     # Some response classes don't have values.  (Answer, for example.)
     #
-    # In non-production environments, attempting to set a value for such a
-    # response will cause a ResponseValue::CannotSetValue exception to be
-    # raised.
+    # In non-production environments, attempting to set a concrete value for
+    # such a response will cause a ResponseValue::CannotSetValue exception to be
+    # raised. (Setting to nil does nothing as that is conceptually the value for
+    # a non-value response class.)
     #
     # In production, however, no exception is raised and the attempted setting
     # is logged at WARN level.  Rationale: it's possible that this may result
@@ -130,8 +131,9 @@ module NcsNavigator::Core::Surveyor
       if field
         reset_values
         send("#{field}=", value)
-      else
-        msg = "A value was set for response #{id}, but the response has non-value response class #{k.inspect}.  The value will not be set."
+      elsif !value.nil?
+        response_name = id ? "response #{id}" : "a response to question #{question.try(:reference_identifier) || question_id.inspect}"
+        msg = "A value was set for #{response_name}, but the response has non-value response class #{k.inspect}.  The value will not be set."
 
         if Rails.env.production?
           Rails.logger.warn msg
