@@ -20,8 +20,9 @@ module NcsNavigator::Core::Mdes
     # @return [Array<#run,#to#from>]
     def self.default_migrations(options={})
       [
-        VersionMigrations::ThreeZeroToThreeTwo.new(options),
         VersionMigrations::TwoZeroToTwoOne.new(options)
+        VersionMigrations::TwoTwoToThreeOne.new(options)
+        VersionMigrations::ThreeZeroToThreeTwo.new(options),
       ]
     end
 
