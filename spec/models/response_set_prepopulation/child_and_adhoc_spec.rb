@@ -8,7 +8,7 @@ module ResponseSetPrepopulation
   describe ChildAndAdhoc do
     include SurveyCompletion
 
-    it_should_behave_like 'a survey title acceptor', '_PM_Child', '_BIO_Child', '_Father_M2.1', '_InternetUseContact', '_MultiModeVisitInfo' do
+    it_should_behave_like 'a survey title acceptor', '_PM_Child', '_BIO_Child', '_Father_M2.1', '_InternetUseContact' do
       let(:populator) { ChildAndAdhoc }
     end
 
@@ -79,30 +79,6 @@ module ResponseSetPrepopulation
     let(:populator) { ChildAndAdhoc.new(@response_set) }
 
     context "for ad-hoc prepopulators"
-      describe "prepopulate_is_birth_or_subsequent_event" do
-        before(:each) do
-          init_common_vars(:create_generic_true_false_prepopulator_survey,
-                "INS_QUE_InternetUseContactPref_SUR_EHPBHI_M2.2_V1.1",
-                "prepopulate_is_birth_or_subsequent_event")
-        end
-
-        it "should be TRUE if current event is birth" do
-          event = Factory(:event, :event_type_code => Event::birth_code,
-                          :participant => @participant)
-          run_populator(event)
-          get_response_as_string(@response_set,
-                  "prepopulate_is_birth_or_subsequent_event").should == "TRUE"
-        end
-
-        it "should be FALSE if current event is not birth" do
-          event = Factory(:event, :event_type_code => Event::father_visit_code,
-                          :participant => @participant)
-          run_populator(event)
-          get_response_as_string(@response_set,
-                  "prepopulate_is_birth_or_subsequent_event").should == "FALSE"
-        end
-      end
-
       describe "prepopulated_is_9_months_completed" do
         before(:each) do
           init_common_vars(:create_generic_true_false_prepopulator_survey,
