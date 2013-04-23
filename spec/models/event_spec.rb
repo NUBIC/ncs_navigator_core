@@ -1208,4 +1208,36 @@ describe Event do
 
     end
   end
+
+  context "event windows for a given birth date" do
+    let(:birth_date) { Date.parse('2013-02-10') }
+
+    describe "#event_window_start_date" do
+      it "returns the date the child turns the age of the start month" do
+        [
+          [Event.three_month_visit_code, '2013-04-10'],
+          [Event.six_month_visit_code,   '2013-07-10'],
+          [Event.nine_month_visit_code,  '2013-10-10'],
+        ].each do |event_type_code, expected|
+          event = Factory(:event, :event_type_code => event_type_code)
+          event.event_window_start_date(birth_date).should == Date.parse(expected)
+        end
+      end
+    end
+
+    describe "#event_window_end_date" do
+      it "returns the last day of the end month of the PO designed visit windows
+          e.g. the day before the child turns the next month of age." do
+        [
+          [Event.three_month_visit_code, '2013-07-09'],
+          [Event.six_month_visit_code,   '2013-10-09'],
+          [Event.nine_month_visit_code,  '2014-01-09'],
+        ].each do |event_type_code, expected|
+          event = Factory(:event, :event_type_code => event_type_code)
+          event.event_window_end_date(birth_date).should == Date.parse(expected)
+        end
+      end
+    end
+  end
+
 end
