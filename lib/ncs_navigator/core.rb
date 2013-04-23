@@ -13,6 +13,7 @@ module NcsNavigator
     autoload :Mustache,                   'ncs_navigator/core/mustache'
     autoload :Pbs,                        'ncs_navigator/core/pbs'
     autoload :Psc,                        'ncs_navigator/core/psc'
+    autoload :PscRegistrationProcessor,   'ncs_navigator/core/psc_registration_processor'
     autoload :RecordOfContactImporter,    'ncs_navigator/core/record_of_contact_importer'
     autoload :RedisConfiguration,         'ncs_navigator/core/redis_configuration'
     autoload :SidekiqConfiguration,       'ncs_navigator/core/sidekiq_configuration'
