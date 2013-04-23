@@ -20,11 +20,12 @@ module ContactLinksHelper
   end
 
   def show_continue_action(person, contact_link, event, participant)
-    person && contact_link && continuable?(event) && participant.in_study?
+    person && contact_link && continuable?(event, contact_link.contact) && participant.in_study?
   end
 
-  def continuable?(event)
-    event.continuable?
+  def continuable?(event, contact)
+    can_continue = event.consent_event? ? event.standalone_consent_event?(contact) : !event.closed?
+    event.continuable? && can_continue
   end
 
   ##

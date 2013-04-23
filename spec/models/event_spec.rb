@@ -1158,6 +1158,52 @@ describe Event do
         @event.set_suggested_event_breakoff(@contact_link)
         @event.event_breakoff.local_code.should == NcsCode::YES
       end
+
+      it "does nothing if the event has been closed" do
+        previous = @event.event_breakoff_code
+        @event.event_end_date = Date.parse('2525-12-25')
+        @event.set_suggested_event_breakoff(@contact_link)
+        @event.event_breakoff_code.should == previous
+      end
+
+      it "does nothing if the event_breakoff_code has already been set" do
+        respond(rs) do |r|
+          r.answer 'foo', :value => 'abc'
+          r.answer 'bar', :value => 'def'
+        end
+
+        rs.save!
+
+        @event.event_breakoff_code = NcsCode::YES
+        @event.set_suggested_event_breakoff(@contact_link)
+        # see above that the rs should make this a NO
+        @event.event_breakoff_code.should == NcsCode::YES
+      end
+    end
+
+    describe "#stand_alone_event?" do
+      let(:event) { Factory(:event) }
+      let(:contact) { Factory(:contact) }
+      let!(:contact_link) { Factory(:contact_link, :event => event, :contact => contact) }
+
+      describe "when associated with another event in same contact" do
+
+        it "is false" do
+          other_event = Factory(:event)
+          other_contact_link = Factory(:contact_link, :event => other_event, :contact => contact)
+          event.stand_alone_event?(contact).should be_false
+        end
+
+      end
+
+      describe "when NOT associated with another event in same contact" do
+
+        it "is true" do
+          event.stand_alone_event?(contact).should be_true
+        end
+
+      end
+
     end
   end
 end
