@@ -673,11 +673,11 @@ class Event < ActiveRecord::Base
      responded = SurveySection.scoped.joins('INNER JOIN response_sets ON response_sets.survey_id = survey_sections.survey_id
                                                    INNER JOIN responses ON responses.response_set_id = response_sets.id
                                                    INNER JOIN questions ON responses.question_id = questions.id
-                                                   AND questions.survey_section_id = survey_sections.id').select('survey_sections.id').merge(target).uniq
+                                                   AND questions.survey_section_id = survey_sections.id').select('survey_sections.id').reorder(nil).merge(target).uniq
 
      referenced = SurveySection.scoped.joins(:questions, :survey => :response_sets)
                               .select('survey_sections.id')
-                              .merge(target).where("questions.display_type IS NULL OR questions.display_type != 'label'").uniq
+                              .merge(target).where("questions.display_type IS NULL OR questions.display_type != 'label'").reorder(nil).uniq
 
     self.event_breakoff_code = (referenced - responded).empty? ? NcsCode::NO : NcsCode::YES
   end
