@@ -1,7 +1,6 @@
-# @todo rename these to multimodevisitinfo
 module ResponseSetPrepopulation
 
-  class IntroductoryScript < Populator
+  class MultiModeVisitInfo < Populator
     include NcsNavigator::Core::Surveyor::SurveyTaker
 
     def self.applies_to?(rs)
@@ -26,9 +25,5 @@ module ResponseSetPrepopulation
         'capi'
       end
     end
-
-    def visit_time
-    end
-
   end
 end

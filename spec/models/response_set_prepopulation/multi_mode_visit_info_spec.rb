@@ -3,19 +3,19 @@ require 'spec_helper'
 require File.expand_path('../a_survey_title_acceptor', __FILE__)
 
 module ResponseSetPrepopulation
-  describe IntroductoryScript do
+  describe MultiModeVisitInfo do
     it_should_behave_like 'a survey title acceptor', '_MultiModeVisitInfo_' do
-      let(:populator) { IntroductoryScript }
+      let(:populator) { MultiModeVisitInfo }
     end
 
-    context "with introductory script instrument" do
+    context "with mmvis instrument" do
       def setup(mode, event_type_code = Event.other_code)
         person = Factory(:person)
         participant = Factory(:participant)
         ppl = Factory(:participant_person_link, :participant => participant, :person => person, :relationship_code => 1)
 
         event = Factory(:event, :participant => participant, :event_type_code => event_type_code)
-        survey = create_introductory_script_survey_with_prepopulated_questions
+        survey = create_mmvis_survey_with_prepopulated_questions
         instrument = prepare_prepopulated_instrument(person, participant, survey, mode, event)
         instrument.response_sets.size.should == 1
         @response_set = instrument.response_sets.first

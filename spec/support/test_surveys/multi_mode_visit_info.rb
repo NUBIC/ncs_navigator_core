@@ -1,4 +1,4 @@
-def create_introductory_script_survey_with_prepopulated_questions
+def create_mmvis_survey_with_prepopulated_questions
   survey = Factory(:survey, :title => "INS_CON_MultiModeVisitInfo_DCI_EHPBHILIPBS_M3.0_1.0", :access_code => "ins-con-multimodevisitinfo-dci-ehpbhilipbs-m3-0-1-0")
   survey_section = Factory(:survey_section, :survey_id => survey.id)
 
