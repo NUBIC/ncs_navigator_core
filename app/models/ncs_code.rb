@@ -174,6 +174,11 @@ class NcsCode < ActiveRecord::Base
     for_list_name_and_local_code('EVENT_TYPE_CL1', Event.low_intensity_data_collection_code)
   end
 
+  def self.low_intensity_pregnancy_visit
+    # Pregnancy Visit - Low Intensity Group
+    for_list_name_and_local_code('EVENT_TYPE_CL1', Event.pregnancy_visit_low_intensity_group_code)
+  end
+
   # Special case helper method to get EVENT_TYPE_CL1 for Pregnancy Screener
   # Used to determine if participant should be screened
   def self.pregnancy_screener

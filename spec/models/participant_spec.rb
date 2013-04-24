@@ -2293,6 +2293,39 @@ describe Participant do
     end
   end
 
+  describe "#completed_low_intesity_quex_event?" do
+    let(:participant) { Factory(:participant, :high_intensity => false) }
+
+    context "having completed the Low Intensity Data Collection event" do
+      before do
+        Factory(:event, :participant => participant,
+                :event_type_code => Event.low_intensity_data_collection_code,
+                :event_end_date => Date.parse("2525-12-25"))
+      end
+      it "is true" do
+        participant.should be_completed_low_intensity_quex_event
+      end
+    end
+
+    context "having completed the Pregnancy Visit - Low Intensity Group event" do
+      before do
+        Factory(:event, :participant => participant,
+                :event_type_code => Event.pregnancy_visit_low_intensity_group_code,
+                :event_end_date => Date.parse("2525-12-25"))
+      end
+      it "is true" do
+        participant.should be_completed_low_intensity_quex_event
+      end
+    end
+
+    context "not having completed either the 17 or 33 events" do
+      it "is false" do
+        participant.should_not be_completed_low_intensity_quex_event
+      end
+    end
+
+  end
+
   context "determining if participant consented" do
     let(:participant) { Factory(:participant, :p_type_code => p_type_code) }
 

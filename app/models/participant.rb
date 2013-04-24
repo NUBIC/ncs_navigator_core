@@ -941,7 +941,12 @@ class Participant < ActiveRecord::Base
   # A pregnant woman whose due_date is > 6 months out should take this Lo I Quex too
   def should_take_low_intensity_questionnaire?
     # TODO: determine if due date is > 6 mos
-    low_intensity? && pregnant_or_trying? && !completed_event?(NcsCode.low_intensity_data_collection)
+    low_intensity? && pregnant_or_trying? && !completed_low_intensity_quex_event?
+  end
+
+  def completed_low_intensity_quex_event?
+    completed_event?(NcsCode.low_intensity_data_collection) ||
+    completed_event?(NcsCode.low_intensity_pregnancy_visit)
   end
 
   ##
