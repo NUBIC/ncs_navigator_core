@@ -350,7 +350,7 @@ event:birth order:95_04
 
 
 3 Month - 23 - Day 92
-------------    # also Lo I Postnatal
+---------------------  # also Lo I postnatal
 
 # Multi Mode Visit Info
 event:3_month instrument:3.0:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0 instrument:3.1:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0 instrument:3.2:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0 order:00_00 participant_type:mother
@@ -376,8 +376,11 @@ event:3_month instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_
 # Tracing Instrument
 event:3_month instrument:3.0:ins_que_tracing_int_ehpbhilipbs_m3.0_v1.0 instrument:3.1:ins_que_tracing_int_ehpbhilipbs_m3.0_v1.0 instrument:3.2:ins_que_tracing_int_ehpbhilipbs_m3.0_v1.0 order:90_01 participant_type:mother
 
+# TODO: determine if Lo I Postnatal will do specimen collection
 # Biospecimen Breast Milk Collection SAQ
 collection:biological event:3_month instrument:3.1:ins_bio_breastmilkcoll_saqspec_ehpbhi_m3.1_v1.0 instrument:3.2:ins_bio_breastmilkcoll_saqspec_ehpbhi_m3.1_v1.0 order:95_01 participant_type:mother
+
+
 
 
 
@@ -423,7 +426,7 @@ event:6_month order:95_02
 
 
 9 Month - 26 - Day 274
-------------    # also Lo I Postnatal
+---------------------- # also Lo I postnatal
 
 # Multi Mode Visit Info
 event:9_month instrument:3.0:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0 instrument:3.1:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0 instrument:3.2:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0 order:00_00 participant_type:mother
@@ -442,6 +445,7 @@ event:9_month instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_
 
 # Tracing Instrument
 event:9_month instrument:3.0:ins_que_tracing_int_ehpbhilipbs_m3.0_v1.0 instrument:3.1:ins_que_tracing_int_ehpbhilipbs_m3.0_v1.0 instrument:3.2:ins_que_tracing_int_ehpbhilipbs_m3.0_v1.0 order:90_01 participant_type:mother
+
 
 
 
@@ -502,7 +506,7 @@ event:12_month order:96_01
 
 
 18 Month - 30 - Day 548
--------------    # also Lo I Postnatal
+----------------------- # also Lo I postnatal
 
 # Multi Mode Visit Info
 event:18_month instrument:3.0:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0 instrument:3.1:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0 instrument:3.2:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0 order:00_00 participant_type:mother
@@ -511,8 +515,7 @@ event:18_month instrument:3.0:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.
 event:18_month instrument:2.0:ins_que_18mmother_int_ehpbhi_p2_v1.0_part_one instrument:2.1:ins_que_18mmother_int_ehpbhi_p2_v1.0_part_one instrument:2.2:ins_que_18mmother_int_ehpbhi_m2.2_v2.0_part_one instrument:3.0:ins_que_18mmother_int_ehpbhi_m2.2_v2.0_part_one instrument:3.1:ins_que_18month_int_ehpbhilipbs_m3.1_v3.0_part_one instrument:3.2:ins_que_18month_int_ehpbhilipbs_m3.1_v3.0_part_one order:01_01 participant_type:mother
 
 # 18-Month Mother Interview Mother Detail - (3.1 Mother Habits) - 01_02
-event:18_month instrument:2.0:ins_que_18mmother_int_ehpbhi_p2_v1.0_eighteen_mth_mother_detail instrument:2.1:ins_que_18mmother_int_ehpbhi_p2_v1.0_eighteen_mth_mother_detail instrument:2.2:ins_que_18mmother_int_ehpbhi_m2.2_v2.0_eighteen_mth_mother_detail instrument:3.0:ins_que_18mmother_int_ehpbhi_m2.2_v2.0_eighteen_mth_mother_detail instrument:3.1:ins_que_18month_int_ehpbhilipbs_m3.1_v3.0_eighteen_mth_mother_habits instrument:3.2:ins_que_18month_int_ehpbhilipbs_m3.1_v3.0_eighteen_mth_mother_habits order:01_02 participant_type:child references:2.0:ins_que_18mmother_int_ehpbhi_p2_v1.0_part_one references:2.1:ins_que_18mmother_int_ehpbhi_p2_v1.0_part_one references:2.2:ins_que_18mmother_int_ehpbhi_m2.2_v2.0_part_one references:3.0:ins_que_18mmother_int_ehpbhi_m2.2_v2.0_part_one
-references:3.1:ins_que_18month_int_ehpbhilipbs_m3.1_v3.0_part_one references:3.2:ins_que_18month_int_ehpbhilipbs_m3.1_v3.0_part_one
+event:18_month instrument:2.0:ins_que_18mmother_int_ehpbhi_p2_v1.0_eighteen_mth_mother_detail instrument:2.1:ins_que_18mmother_int_ehpbhi_p2_v1.0_eighteen_mth_mother_detail instrument:2.2:ins_que_18mmother_int_ehpbhi_m2.2_v2.0_eighteen_mth_mother_detail instrument:3.0:ins_que_18mmother_int_ehpbhi_m2.2_v2.0_eighteen_mth_mother_detail instrument:3.1:ins_que_18month_int_ehpbhilipbs_m3.1_v3.0_eighteen_mth_mother_habits instrument:3.2:ins_que_18month_int_ehpbhilipbs_m3.1_v3.0_eighteen_mth_mother_habits order:01_02 participant_type:child references:2.0:ins_que_18mmother_int_ehpbhi_p2_v1.0_part_one references:2.1:ins_que_18mmother_int_ehpbhi_p2_v1.0_part_one references:2.2:ins_que_18mmother_int_ehpbhi_m2.2_v2.0_part_one references:3.0:ins_que_18mmother_int_ehpbhi_m2.2_v2.0_part_one references:3.1:ins_que_18month_int_ehpbhilipbs_m3.1_v3.0_part_one references:3.2:ins_que_18month_int_ehpbhilipbs_m3.1_v3.0_part_one
 
 # 18-Month Mother Interview Part 2 - 01_03
 event:18_month instrument:2.0:ins_que_18mmother_int_ehpbhi_p2_v1.0_part_two instrument:2.1:ins_que_18mmother_int_ehpbhi_p2_v1.0_part_two instrument:2.2:ins_que_18mmother_int_ehpbhi_m2.2_v2.0_part_two instrument:3.0:ins_que_18mmother_int_ehpbhi_m2.2_v2.0_part_two instrument:3.1:ins_que_18month_int_ehpbhilipbs_m3.1_v3.0_part_two instrument:3.2:ins_que_18month_int_ehpbhilipbs_m3.1_v3.0_part_two order:01_03 participant_type:mother references:2.0:ins_que_18mmother_int_ehpbhi_p2_v1.0_part_one references:2.1:ins_que_18mmother_int_ehpbhi_p2_v1.0_part_one references:2.2:ins_que_18mmother_int_ehpbhi_m2.2_v2.0_part_one references:3.0:ins_que_18mmother_int_ehpbhi_m2.2_v2.0_part_one references:3.1:ins_que_18month_int_ehpbhilipbs_m3.1_v3.0_part_one references:3.2:ins_que_18month_int_ehpbhilipbs_m3.1_v3.0_part_one
@@ -556,7 +559,7 @@ event:18_month instrument:3.1:ins_neu_22monthasq_saqspec_ehpbhilipbs_m3.1_v1.0 i
 
 
 24 Month - 31 - Day 730
--------------    # also Lo I Postnatal
+----------------------- # also Lo I postnatal
 
 # Multi Mode Visit Info
 event:24_month instrument:3.0:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0 instrument:3.1:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0 instrument:3.2:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0 order:00_00 participant_type:mother
@@ -604,6 +607,7 @@ event:24_month instrument:3.1:ins_pm_childbp_dci_ehpbhi_m3.1_v1.0 instrument:3.2
 # 27 Month Ages & Stages-3 SAQ
 event:24_month instrument:3.1:ins_neu_27monthasq_saqspec_ehpbhilipbs_m3.1_v1.0 instrument:3.2:ins_neu_27monthasq_saqspec_ehpbhilipbs_m3.1_v1.0 order:95_01 participant_type:child
 
+# TODO: move this to 30 month event - cf. https://code.bioinformatics.northwestern.edu/issues/issues/show/3932
 # 30 Month Ages & Stages-3 SAQ
 event:24_month instrument:3.1:ins_neu_30monthasq_saqspec_ehpbhilipbs_m3.1_v1.0 instrument:3.2:ins_neu_30monthasq_saqspec_ehpbhilipbs_m3.1_v1.0 order:95_02 participant_type:child
 
@@ -635,6 +639,9 @@ event:30_month instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0
 
 # Tracing Instrument
 event:30_month instrument:3.0:ins_que_tracing_int_ehpbhilipbs_m3.0_v1.0 instrument:3.1:ins_que_tracing_int_ehpbhilipbs_m3.0_v1.0 instrument:3.2:ins_que_tracing_int_ehpbhilipbs_m3.0_v1.0 order:90_01 participant_type:mother
+
+# 30 Month Ages & Stages-3 SAQ - 95_00
+event:30_month instrument:3.1:ins_neu_30monthasq_saqspec_ehpbhilipbs_m3.1_v1.0 instrument:3.2:ins_neu_30monthasq_saqspec_ehpbhilipbs_m3.1_v1.0 order:95_00 participant_type:child
 
 # Brief Infant Toddler Social Emotional Assessment (BITSEA) SAQ
 event:30_month instrument:3.1:ins_neu_bitsea_saqspec_ehpbhilipbs_m3.1_v1.0 instrument:3.2:ins_neu_bitsea_saqspec_ehpbhilipbs_m3.1_v1.0 order:95_01 participant_type:child
