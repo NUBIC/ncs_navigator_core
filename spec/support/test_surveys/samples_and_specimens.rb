@@ -133,4 +133,20 @@ module SamplesAndSpecimens
 
     survey
   end
+
+  def create_adult_urine_specimen_status_survey
+    load_survey_questions_string(<<-QUESTIONS)
+      q_SPECIMEN_STATUS "URINE COLLECTION STATUS",
+      :help_text => "THANK THE PARTICIPANT FOR THEIR SAMPLE (OR FOR TRYING IF NO SAMPLE WAS COLLECTED). ENTER THE STATUS OF THE URINE COLLECTION",
+      :pick => :one,
+      :data_export_identifier => "SPEC_URINE.SPECIMEN_STATUS"
+      a_1 "COLLECTED"
+      a_3 "NOT COLLECTED"
+
+      q_TEST "Test question?",
+      :pick => :any,
+      :data_export_identifier=>"TEST_TABLE.TEST"
+      a_3 "Other vitamins or supplements:"
+    QUESTIONS
+  end
 end
