@@ -223,12 +223,16 @@ module NcsNavigator::Core::Mustache
     end
 
     def baby_babies_upcase
-      single_birth? ? "BABY" : "BABIES"
+      baby_babies.upcase
     end
 
     # {BABY’S/BABIES’}
     def babys_babies
       single_birth? ? "baby's" : "babies'"
+    end
+
+    def babys_babies_upcase
+      babys_babies.upcase
     end
 
     def has_baby_have_babies
