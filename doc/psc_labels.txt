@@ -89,6 +89,7 @@ event:pbs_participant_eligibility_screening instrument:3.0:ins_que_tracing_int_e
 event:pbs_participant_eligibility_screening form:2.0:irb_con_informed_consent form:2.1:irb_con_informed_consent form:2.2:irb_con_informed_consent form:3.0:irb_con_informed_consent form:3.1:irb_con_informed_consent form:3.2:irb_con_informed_consent order:90_01 participant_type:mother
 
 
+
 Birth Cohort Screening - 34
 ----------------------------
 # Provider Based Sampling Eligibility Screener-HOSPITAL
@@ -146,10 +147,11 @@ event:pre-pregnancy_visit instrument:2.0:ins_que_prepreg_saq_ehpbhi_p2_v1.1 inst
 event:pre-pregnancy_visit order:95_02
 
 
+
 Pregnancy Visit 1 - 13
 ----------------------
 
-# Multi Mode Visit Info 
+# Multi Mode Visit Info
 event:pregnancy_visit_1 instrument:3.0:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0 instrument:3.1:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0 instrument:3.2:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0 order:00_00 participant_type:mother
 
 # Biospecimen Adult Blood Instrument
@@ -209,6 +211,8 @@ event:pregnancy_visit_1 order:95_02
 # Pregnancy Health Care Log
 event:pregnancy_visit_1 order:95_03
 
+
+
 Pregnancy Visit 2 - 15
 ----------------------
 
@@ -245,6 +249,8 @@ event:pregnancy_visit_2 order:95_01
 # Pregnancy Health Care Log
 event:pregnancy_visit_2 order:95_02
 
+
+
 Low to High Conversion - 32
 ---------------------------
 
@@ -258,6 +264,7 @@ Postnatal - TBD
 # For MDES 3.1 all High Intensity Phone Instruments should be administered
 # for Low Intensity Participants (e.g. 3M, 9M, etc.)
 event:low_intensity_data_collection instrument:2.0:ins_que_lipregnotpreg_int_li_p2_v2.0 instrument:2.1:ins_que_lipregnotpreg_int_li_p2_v2.0 instrument:2.2:ins_que_lipregnotpreg_int_li_p2_v2.0 instrument:3.0:ins_que_lipregnotpreg_int_li_p2_v2.0 instrument:3.1:ins_que_lipregnotpreg_int_li_p2_v2.0 instrument:3.2:ins_que_lipregnotpreg_int_li_p2_v2.0 order:01_01 participant_type:mother
+
 
 
 Father - 19
@@ -278,10 +285,12 @@ event:father instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_p
 # Father Visit Information Sheet
 event:father order:95_02
 
+
+
 Birth LI - 18
 -------------
 
-# Multi Mode Visit Info 
+# Multi Mode Visit Info
 event:birth instrument:3.0:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0 instrument:3.1:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0 instrument:3.2:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0 order:00_00 participant_type:mother
 
 # Birth Interview (LI) Part 1
@@ -301,7 +310,7 @@ event:birth order:00_99 form:2.0:irb_con_informed_consent form:2.1:irb_con_infor
 Birth - 18
 ----------
 
-# Multi Mode Visit Info 
+# Multi Mode Visit Info
 event:birth instrument:3.0:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0 instrument:3.1:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0 instrument:3.2:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0 order:00_00 participant_type:mother
 
 # Biospecimen Cord Blood Instrument
@@ -338,10 +347,12 @@ event:birth order:95_03
 # Infant Health Care Log
 event:birth order:95_04
 
-3 Month - 23
-------------
 
-# Multi Mode Visit Info 
+
+3 Month - 23 - Day 92
+------------    # also Lo I Postnatal
+
+# Multi Mode Visit Info
 event:3_month instrument:3.0:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0 instrument:3.1:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0 instrument:3.2:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0 order:00_00 participant_type:mother
 
 # 3-Month Mother Interview Part 1 - 01_01
@@ -369,10 +380,11 @@ event:3_month instrument:3.0:ins_que_tracing_int_ehpbhilipbs_m3.0_v1.0 instrumen
 collection:biological event:3_month instrument:3.1:ins_bio_breastmilkcoll_saqspec_ehpbhi_m3.1_v1.0 instrument:3.2:ins_bio_breastmilkcoll_saqspec_ehpbhi_m3.1_v1.0 order:95_01 participant_type:mother
 
 
-6 Month - 24
+
+6 Month - 24 - Day 183
 ------------
 
-# Multi Mode Visit Info 
+# Multi Mode Visit Info
 event:6_month instrument:3.0:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0 instrument:3.1:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0 instrument:3.2:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0 order:00_00 participant_type:mother
 
 # Participant Verification Questionnaire Part 1
@@ -408,10 +420,12 @@ collection:biological event:6_month instrument:3.1:ins_bio_childurinecoll_int_eh
 # 6-Month Visit Information Sheet
 event:6_month order:95_02
 
-9 Month - 26
-------------
 
-# Multi Mode Visit Info 
+
+9 Month - 26 - Day 274
+------------    # also Lo I Postnatal
+
+# Multi Mode Visit Info
 event:9_month instrument:3.0:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0 instrument:3.1:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0 instrument:3.2:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0 order:00_00 participant_type:mother
 
 # 9-Month Mother Phone Interview Part 1
@@ -430,10 +444,11 @@ event:9_month instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_
 event:9_month instrument:3.0:ins_que_tracing_int_ehpbhilipbs_m3.0_v1.0 instrument:3.1:ins_que_tracing_int_ehpbhilipbs_m3.0_v1.0 instrument:3.2:ins_que_tracing_int_ehpbhilipbs_m3.0_v1.0 order:90_01 participant_type:mother
 
 
-12 Month - 27
+
+12 Month - 27 - Day 366
 -------------
 
-# Multi Mode Visit Info 
+# Multi Mode Visit Info
 event:12_month instrument:3.0:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0 instrument:3.1:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0 instrument:3.2:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0 order:00_00 participant_type:mother
 
 # 12-Month Mother Interview Part 1
@@ -484,10 +499,12 @@ event:12_month instrument:3.1:ins_neu_bitsea_saqspec_ehpbhilipbs_m3.1_v1.0 instr
 # 12-Month Visit Information Sheet
 event:12_month order:96_01
 
-18 Month - 30
--------------
 
-# Multi Mode Visit Info 
+
+18 Month - 30 - Day 548
+-------------    # also Lo I Postnatal
+
+# Multi Mode Visit Info
 event:18_month instrument:3.0:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0 instrument:3.1:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0 instrument:3.2:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0 order:00_00 participant_type:mother
 
 # 18-Month Mother Interview Part 1 - 01_01
@@ -536,10 +553,12 @@ event:18_month instrument:3.1:ins_neu_20monthasq_saqspec_ehpbhilipbs_m3.1_v1.0 i
 # 22 Month Ages & Stages-3 SAQ
 event:18_month instrument:3.1:ins_neu_22monthasq_saqspec_ehpbhilipbs_m3.1_v1.0 instrument:3.2:ins_neu_22monthasq_saqspec_ehpbhilipbs_m3.1_v1.0 order:95_04 participant_type:child
 
-24 Month - 31
--------------
 
-# Multi Mode Visit Info 
+
+24 Month - 31 - Day 730
+-------------    # also Lo I Postnatal
+
+# Multi Mode Visit Info
 event:24_month instrument:3.0:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0 instrument:3.1:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0 instrument:3.2:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0 order:00_00 participant_type:mother
 
 # 24-Month Mother Interview Part 1 - 01_01
@@ -591,10 +610,12 @@ event:24_month instrument:3.1:ins_neu_30monthasq_saqspec_ehpbhilipbs_m3.1_v1.0 i
 # M-CHAT SAQ
 event:24_month instrument:3.1:ins_neu_mchat_saqspec_ehpbhilipbs_m3.1_v1.0 instrument:3.2:ins_neu_mchat_saqspec_ehpbhilipbs_m3.1_v1.0 order:95_03 participant_type:child
 
-30 Month - 36
+
+
+30 Month - 36 - Day 913
 --------------
 
-# Multi Mode Visit Info 
+# Multi Mode Visit Info
 event:30_month instrument:3.0:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0 instrument:3.1:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0 instrument:3.2:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0 order:00_00 participant_type:mother
 
 # 30-Month Interview Part 1
