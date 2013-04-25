@@ -138,7 +138,7 @@ class ResponseSet < ActiveRecord::Base
     elsif non_interview_report_associated?
       non_interview_report.contact
     elsif instrument_associated?
-      instrument.contact_link.contact
+      instrument.contact_link.try(:contact)
     end
   end
 

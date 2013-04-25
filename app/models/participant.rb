@@ -511,6 +511,8 @@ class Participant < ActiveRecord::Base
   end
 
   ##
+  # For the given event, update the Participant's state accordingly
+  # @param [Event]
   def update_state_to_next_event(event)
     case event.event_type.local_code
     when 34
@@ -546,7 +548,39 @@ class Participant < ActiveRecord::Base
     when 7,8
       # Pregnancy Probability
       follow! if can_follow? && high_intensity?
+    when 11, 12
+      # Pre-Pregnancy
+      non_pregnant_informed_consent! if can_non_pregnant_informed_consent?
+      follow! if can_follow?
+    when 13, 14
+      # Pregnancy Visit 1
+      pregnancy_one_visit! if can_pregnancy_one_visit?
+    when 15, 16
+      # Pregnancy Visit 2
+      pregnancy_two_visit! if can_pregnancy_two_visit?
+    when 18, 23, 24, 25, 26, 27, 28, 30, 31, 36, 37, 38
+      # Birth and Post-natal
+      if low_intensity?
+        birth_event_low! if can_birth_event_low?
+      else
+        birth_event! if can_birth_event?
+      end
+    end
+    update_pregnancy_state(event)
+  end
 
+  ##
+  # Called from update_state_to_next_event
+  #
+  # Some events get new information about the Participant's
+  # pregnancy state. If the given event is one of these events
+  # (PPG FU, Pre-Preg, Screener)
+  # check to see if we know the Participant to be pregnant
+  # and update the Participant's state accordingly.
+  # @param [Event]
+  def update_pregnancy_state(event)
+    prenatal_ppg_status_determining_events = [4,5,6,9,29,7,8,11,12]
+    if prenatal_ppg_status_determining_events.include?(event.event_type.local_code)
       date = event.event_end_date.blank? ? event.event_start_date : event.event_end_date
       if known_to_be_pregnant?(date)
         if(low_intensity? && can_impregnate_low? &&
@@ -558,30 +592,9 @@ class Participant < ActiveRecord::Base
           impregnate!
         end
       end
-
-    when 11, 12
-      # Pre-Pregnancy
-      non_pregnant_informed_consent! if can_non_pregnant_informed_consent?
-      follow! if can_follow?
-
-    when 13, 14
-      # Pregnancy Visit 1
-      pregnancy_one_visit! if can_pregnancy_one_visit?
-
-    when 15, 16
-      # Pregnancy Visit 2
-      pregnancy_two_visit! if can_pregnancy_two_visit?
-
-    when 18, 23, 24, 25, 26, 27, 28, 30, 31, 36, 37, 38
-      # Birth and Post-natal
-      if low_intensity?
-        birth_event_low! if can_birth_event_low?
-      else
-        birth_event! if can_birth_event?
-      end
     end
-
   end
+  private :update_pregnancy_state
 
   ##
   # Display text from the NcsCode list PARTICIPANT_TYPE_CL1
