@@ -141,7 +141,6 @@ class ResponseSet < ActiveRecord::Base
       instrument.contact_link.contact
     end
   end
-  private :contact
 
   ##
   # Similar to the contact method, this returns the Event

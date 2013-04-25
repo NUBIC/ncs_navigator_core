@@ -98,8 +98,10 @@ module OperationalDataExtractor
 
             ppg_status_history ||= PpgStatusHistory.where(:response_set_id => response_set.id).first
             if ppg_status_history.nil?
+              c = response_set.contact
               ppg_status_history = PpgStatusHistory.new(:participant => participant,
-                :psu => participant.psu, :response_set => response_set)
+                :psu => participant.psu, :response_set => response_set,
+                :ppg_status_date => c.try(:contact_date), :ppg_status_date_date => c.try(:contact_date_date))
             end
 
             case key

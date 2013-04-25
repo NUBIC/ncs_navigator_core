@@ -139,6 +139,25 @@ describe OperationalDataExtractor::PpgFollowUp do
 
     end
 
+    it "sets the ppg_status_date to the date of the contact" do
+      contact = Factory(:contact, :contact_date => '2525-12-25')
+      Factory(:contact_link, :instrument => @instrument, :contact => contact, :person => @person)
+
+      take_survey(@survey, @response_set) do |r|
+        r.yes "#{OperationalDataExtractor::PpgFollowUp::INTERVIEW_PREFIX}.TRYING"
+      end
+
+      @response_set.responses.reload
+      @response_set.responses.size.should == 1
+
+      OperationalDataExtractor::PpgFollowUp.new(@response_set).extract_data
+
+      person  = Person.find(@person.id)
+      participant = person.participant
+      participant.ppg_status_histories.first.ppg_status_date.should == contact.contact_date
+      participant.ppg_status_histories.first.ppg_status_date_date.should == contact.contact_date_date
+    end
+
   end
 
   it "extracts telephone operational data from the survey responses" do
