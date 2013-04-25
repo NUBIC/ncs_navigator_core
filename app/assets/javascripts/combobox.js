@@ -48,7 +48,7 @@
                   "(?![^&;]+;)(?!<[^<>]*)(" +
                   $.ui.autocomplete.escapeRegex(request.term) +
                   ")(?![^<>]*>)(?![^&;]+;)", "gi"
-                ), "<strong>$1</strong>" ),
+                ), "$1" ),
               value: text,
               option: this
             };

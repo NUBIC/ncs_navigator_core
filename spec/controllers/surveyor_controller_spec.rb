@@ -5,6 +5,10 @@ require 'spec_helper'
 
 describe SurveyorController do
 
+  before do
+    @routes = Surveyor::Engine.routes
+  end
+
   before(:each) do
     login(user_login)
   end

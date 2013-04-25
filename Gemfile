@@ -37,14 +37,17 @@ group :assets do
   gem 'uglifier'
 end
 
-gem 'jquery-rails'
+# jQuery and jQuery UI should be synced with surveyor
+# jQuery 1.9.0
+gem 'jquery-rails', '2.2.0'
+# jQuery UI 1.10.0
+gem 'jquery-ui-rails', '4.0.2'
 
 gem 'ncs_mdes', '>= 0.11.0'
 # If you change surveyor, change the instruments project also
-# gem 'surveyor', '~> 1.2.0'
 gem 'surveyor',
   :git => 'git://github.com/NUBIC/surveyor.git',
-  :branch => 'ncs'
+  :branch => 'ncs-translations'
 
 gem 'psc'
 gem 'ncs_navigator_configuration', '~> 0.4'
