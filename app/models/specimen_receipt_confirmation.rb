@@ -24,6 +24,7 @@
 
 class SpecimenReceiptConfirmation < ActiveRecord::Base
   include NcsNavigator::Core::Mdes::MdesRecord
+  acts_as_mdes_record :public_id_field => :specimen_id
   belongs_to :specimen_processing_shipping_center
   belongs_to :specimen
   
