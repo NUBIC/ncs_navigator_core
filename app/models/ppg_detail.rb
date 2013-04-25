@@ -33,6 +33,7 @@
 # PPG Details record.
 # There is a one-to-many relationship between Participant and PPG Details.
 class PpgDetail < ActiveRecord::Base
+  include NcsNavigator::Core::ImportAware
   include NcsNavigator::Core::Mdes::MdesRecord
   acts_as_mdes_record :public_id_field => :ppg_details_id
 
@@ -42,7 +43,8 @@ class PpgDetail < ActiveRecord::Base
   ncs_coded_attribute :ppg_pid_status, 'PARTICIPANT_STATUS_CL1'
   ncs_coded_attribute :ppg_first,      'PPG_STATUS_CL2'
 
-  after_create :create_associated_ppg_status_history
+  after_create :create_associated_ppg_status_history,
+    :unless => lambda { self.in_importer_mode? }
 
   ##
   # When creating a new record, this attribute may be used to specify
@@ -73,12 +75,6 @@ class PpgDetail < ActiveRecord::Base
     else
       self.update_attribute(attribute, due_date)
     end
-  end
-
-  def self.importer_mode
-    PpgDetail.skip_callback(:create, :after, :create_associated_ppg_status_history)
-    yield
-    PpgDetail.set_callback(:create, :after, :create_associated_ppg_status_history)
   end
 
   private

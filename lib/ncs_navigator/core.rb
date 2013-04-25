@@ -4,10 +4,12 @@ module NcsNavigator
   module Core
     autoload :VERSION,                  'ncs_navigator/core/version'
 
+    autoload :CaseCloner,                 'ncs_navigator/core/case_cloner'
     autoload :Configuration,              'ncs_navigator/core/configuration'
     autoload :Field,                      'ncs_navigator/core/field'
     autoload :FollowedParticipantChecker, 'ncs_navigator/core/followed_participant_checker'
     autoload :HasPublicId,                'ncs_navigator/core/has_public_id'
+    autoload :ImportAware,                'ncs_navigator/core/import_aware'
     autoload :Mdes,                       'ncs_navigator/core/mdes'
     autoload :MdesInstrumentSurvey,       'ncs_navigator/core/mdes_instrument_survey'
     autoload :Mustache,                   'ncs_navigator/core/mustache'
