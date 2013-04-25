@@ -54,7 +54,7 @@ class Participant < ActiveRecord::Base
   ncs_coded_attribute :pid_age_eligibility, 'AGE_ELIGIBLE_CL2'
 
   has_many :ppg_details, :order => "created_at DESC"
-  has_many :ppg_status_histories, :order => "ppg_status_date DESC"
+  has_many :ppg_status_histories, :order => "ppg_status_date DESC, created_at DESC"
 
   has_many :low_intensity_state_transition_audits,  :class_name => "ParticipantLowIntensityStateTransition",  :foreign_key => "participant_id", :dependent => :destroy
   has_many :high_intensity_state_transition_audits, :class_name => "ParticipantHighIntensityStateTransition", :foreign_key => "participant_id", :dependent => :destroy
@@ -430,7 +430,8 @@ class Participant < ActiveRecord::Base
   private :ppg_status_from_ppg_details
 
   def ppg_status_from_ppg_status_histories(date = Date.today)
-    psh = ppg_status_histories.where(['ppg_status_date_date <= ?', date]).order("ppg_status_date_date DESC").all
+    psh = ppg_status_histories.where(['ppg_status_date_date <= ?', date]).order(
+                                      "ppg_status_date_date DESC, created_at DESC").all
     psh.blank? ? ppg_status_histories.first.ppg_status : psh.first.ppg_status
   end
   private :ppg_status_from_ppg_status_histories
