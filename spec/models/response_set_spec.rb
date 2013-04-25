@@ -22,7 +22,6 @@ require 'spec_helper'
 require File.expand_path('../../shared/models/a_publicly_identified_record', __FILE__)
 
 describe ResponseSet do
-
   it { should belong_to(:person) }
   it { should belong_to(:instrument) }
   it { should belong_to(:participant) }
@@ -352,4 +351,27 @@ describe ResponseSet do
 
   end
 
+  describe 'operational data extraction' do
+    # RMS20130415: I'm adding a spec for the existing behavior.
+    # Not an endorsement of using callbacks for complex logic.
+    it 'happens on save when complete' do
+      rs = FactoryGirl.build(:response_set, :completed_at => Date.new(2012, 1, 8))
+      OperationalDataExtractor::Base.should_receive(:process).with(rs)
+      rs.save!
+    end
+
+    it 'does not happen on save when not complete' do
+      rs = FactoryGirl.build(:response_set, :completed_at => nil)
+      OperationalDataExtractor::Base.should_not_receive(:process)
+      rs.save!
+    end
+
+    it 'does not happen when complete but in importer mode' do
+      ResponseSet.importer_mode do
+        rs = FactoryGirl.build(:response_set, :completed_at => Date.new(2012, 1, 8))
+        OperationalDataExtractor::Base.should_not_receive(:process).with(rs)
+        rs.save!
+      end
+    end
+  end
 end

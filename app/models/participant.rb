@@ -39,9 +39,8 @@
 # pregnancy screener, pregnancy questionnaire, etc. Once born, NCS-eligible babies are assigned Participant IDs.
 # Every Participant is also a Person. People do not become Participants until they are determined eligible for a pregnancy screener.
 class Participant < ActiveRecord::Base
-  class << self; attr_accessor :importer_mode_on; end
-
   include NcsNavigator::Core::Mdes::MdesRecord
+  include NcsNavigator::Core::ImportAware
 
   acts_as_mdes_record :public_id_field => :p_id,
     :public_id_generator => NcsNavigator::Core::Mdes::HumanReadablePublicIdGenerator.new
@@ -102,10 +101,6 @@ class Participant < ActiveRecord::Base
   delegate :age, :first_name, :last_name, :person_dob, :gender, :upcoming_events, :contact_links, :instruments, :start_instrument, :started_survey, :instrument_for, :to => :person
 
   after_create :set_initial_state_for_recruitment_strategy
-
-  def after_initialize
-    self.class.importer_mode_on = false;
-  end
 
   ##
   # Only Hi/Lo strategy uses the low_intensity_state machine.
@@ -980,13 +975,13 @@ class Participant < ActiveRecord::Base
   ##
   # Change the Participant status from Pregnant to Other Probability after having given birth
   def update_ppg_status_after_birth
-    post_transition_ppg_status_update(4) unless self.class.importer_mode_on
+    post_transition_ppg_status_update(4) unless in_importer_mode?
   end
 
   ##
   # Change the Participant status to PPG 3 after child loss
   def update_ppg_status_after_child_loss
-    post_transition_ppg_status_update(3) unless self.class.importer_mode_on
+    post_transition_ppg_status_update(3) unless in_importer_mode?
   end
 
   def last_contact
@@ -1212,12 +1207,6 @@ class Participant < ActiveRecord::Base
     else
       fail "Unhandled event type for participant state #{event.event_type.local_code.inspect}"
     end
-  end
-
-  def self.importer_mode
-    self.importer_mode_on = true
-    yield
-    self.importer_mode_on = false
   end
 
   comma do
