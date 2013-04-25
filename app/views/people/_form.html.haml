@@ -25,7 +25,7 @@
       = label_tag "name","Select Relationship to #{@participant.person}"
       %br
       = select_tag("relationship_code",options_for_select( NcsCode.ncs_code_lookup(:relationship_code), :selected => @relationship_code.to_s), { :prompt => "-- Select Relationship to Participant -- " })
-
+      = hidden_field_tag :participant_id, @participant.id
     - if @provider.nil?
 
       = render "shared/ncs_code_select", { :f => f, :code => :prefix_code, :label_text => "Prefix" }
