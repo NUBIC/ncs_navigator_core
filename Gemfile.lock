@@ -1,19 +1,4 @@
 GIT
-  remote: git://github.com/NUBIC/surveyor.git
-  revision: 7531ee2ffeff12e1452379f7687b61be0bf84499
-  branch: ncs-translations
-  specs:
-    surveyor (1.3.1pre)
-      fastercsv (~> 1.5.4)
-      formtastic (~> 2.1.0)
-      haml (>= 3.1.3, < 5.0)
-      mustache (= 0.99.4)
-      rabl (~> 0.6.13)
-      rails (~> 3.0)
-      sass
-      uuidtools (~> 2.1)
-
-GIT
   remote: git://github.com/rsutphin/database_cleaner.git
   revision: f451054745a36d361127ddd128c362df7f38547d
   branch: dm-pg-single-trunc
@@ -432,6 +417,15 @@ GEM
       state_machine
     stream (0.5)
     stringex (1.5.1)
+    surveyor (1.4.0)
+      fastercsv (~> 1.5.4)
+      formtastic (~> 2.1.0)
+      haml (>= 3.1.3, < 5.0)
+      mustache (= 0.99.4)
+      rabl (~> 0.6.13)
+      rails (~> 3.0)
+      sass
+      uuidtools (~> 2.1)
     term-ansicolor (1.0.7)
     test-unit (2.4.8)
     therubyracer (0.10.1)
@@ -533,7 +527,7 @@ DEPENDENCIES
   spork (> 0.9.0.rc)
   state_machine
   state_machine-audit_trail
-  surveyor!
+  surveyor (= 1.4.0)
   test-unit (= 2.4.8)
   therubyracer
   uglifier
