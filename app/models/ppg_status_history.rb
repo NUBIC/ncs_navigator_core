@@ -64,10 +64,10 @@ class PpgStatusHistory < ActiveRecord::Base
   private
 
     def set_ppg_status_date
-      dt = Date.today
       if response_set && response_set.contact
         dt = response_set.contact.contact_date_date
       end
+      dt ||= Date.today
 
       self.ppg_status_date ||= dt.to_s
       self.ppg_status_date_date ||= dt
