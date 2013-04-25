@@ -209,7 +209,7 @@ module NcsNavigator::Core
 
     def copy_scalar_values(record, clone, log_depth)
       skips = UNIVERSAL_NON_COPIED_ATTRIBUTES +
-        record.class.reflect_on_all_associations(:belongs_to).collect(&:primary_key_name) +
+        record.class.reflect_on_all_associations(:belongs_to).collect(&:association_foreign_key) +
         [public_id_field_or_nil(record)].compact
       scalar_attributes = record.attributes.reject { |name, value| skips.include?(name) || value.nil? }
       log_at log_depth, "- copying scalar attribute#{'s' unless scalar_attributes.keys.size == 1} #{scalar_attributes.keys.inspect}"
