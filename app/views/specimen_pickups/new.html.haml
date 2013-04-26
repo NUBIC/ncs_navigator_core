@@ -11,14 +11,7 @@
           = msg
 .page_section
   = form_for(@specimen_pickup) do |f|
-      
-    %p    
-      = f.fields_for :specimens do |s|
-        = s.label :specimen_id, "Specimen Id:"
-        = s.text_field :specimen_id      
-        
-        = s.hidden_field :instrument_id
-      
+         
     %p
       = f.label :specimen_pickup_datetime, "Specimen Pickup Date and Time:"
       = f.text_field :specimen_pickup_datetime, :class => "datetime"

@@ -5,7 +5,7 @@ namespace :setup do
       if File.exists? "#{Rails.root}/#{dir}/"
         Dir["#{Rails.root}/#{dir}/*.rb"].each do |f|
           puts "---   Parsing survey #{f}"
-          Surveyor::Parser.parse File.read(f)
+          Surveyor::Parser.parse_file f
           puts "--- Completed survey #{f}"
         end
       else

@@ -1,4 +1,5 @@
 # == Schema Information
+# Schema version: 20130327150082
 #
 # Table name: answers
 #
@@ -15,6 +16,8 @@
 #  display_type           :string(255)
 #  help_text              :text
 #  id                     :integer          not null, primary key
+#  input_mask             :string(255)
+#  input_mask_placeholder :string(255)
 #  is_exclusive           :boolean
 #  question_id            :integer
 #  reference_identifier   :string(255)
