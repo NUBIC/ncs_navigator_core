@@ -230,7 +230,7 @@ class PeopleController < ApplicationController
 
     # redirect
     rs_access_code = instrument.response_sets.where(:survey_id => current_survey.id).last.try(:access_code)
-    redirect_to(edit_my_survey_path(:survey_code => params[:survey_access_code], :response_set_code => rs_access_code))
+    redirect_to(surveyor.edit_my_survey_path(:survey_code => params[:survey_access_code], :response_set_code => rs_access_code))
   end
 
   # GET /people/1/start_consent
@@ -249,7 +249,7 @@ class PeopleController < ApplicationController
 
     # redirect
     rs_access_code = consent.response_set.try(:access_code)
-    redirect_to(edit_my_survey_path(:survey_code => params[:survey_access_code], :response_set_code => rs_access_code))
+    redirect_to(surveyor.edit_my_survey_path(:survey_code => params[:survey_access_code], :response_set_code => rs_access_code))
   end
 
   # GET /people/1/start_non_interview_report
@@ -268,7 +268,7 @@ class PeopleController < ApplicationController
 
     # redirect
     rs_access_code = nir.response_set.try(:access_code)
-    redirect_to(edit_my_survey_path(:survey_code => params[:survey_access_code], :response_set_code => rs_access_code))
+    redirect_to(surveyor.edit_my_survey_path(:survey_code => params[:survey_access_code], :response_set_code => rs_access_code))
   end
 
   def responses_for

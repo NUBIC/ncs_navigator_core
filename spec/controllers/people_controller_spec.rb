@@ -4,7 +4,7 @@
 require 'spec_helper'
 
 describe PeopleController do
-
+  include Surveyor::Engine.routes.url_helpers
   context "with an authenticated, authorized user" do
     before(:each) do
       login(admin_login) # authorized user

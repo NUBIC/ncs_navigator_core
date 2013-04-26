@@ -6,7 +6,7 @@ es:
   surveyor:
     take_these_surveys: "Bienvenido, usted puede tomar estas encuestas"
     take_it: "Tomar"
-    completed_survey: "Encuesta completada"
+    completed_survey: ""
     unable_to_find_your_responses: "No se puede encontrar sus respuestas a la encuesta"
     unable_to_update_survey: "No se puede actualizar la encuesta"
     unable_to_find_that_survey: "No se puede encontrar la encuesta"
@@ -16,3 +16,5 @@ es:
     next_section: "Sección siguiente &raquo;"
     select_one: "Seleccione una ..."
     sections: "Secciones"
+    breakoff: "Haga clic aquí para breakoff"
+    language: "Idioma"

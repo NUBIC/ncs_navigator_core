@@ -187,9 +187,10 @@ module OperationalDataExtractor
       ret
     end
 
+    # @todo using reorder because surveyor applies unscoped ordering to responses
     def response_for(response_set, data_export_identifier)
       response_set.responses.includes(:question).where(
-        "questions.data_export_identifier = ?", data_export_identifier).first
+        "questions.data_export_identifier = ?", data_export_identifier).reorder('responses.created_at DESC').first
     end
 
   end

@@ -8,7 +8,7 @@
     - @person.response_sets.each do |rs|
       .survey
         = rs.created_at.to_s(:db)
-        = link_to rs.survey.title, view_my_survey_path(:survey_code => rs.survey.access_code, :response_set_code => rs.access_code), :class => "show_link icon_link"
+        = link_to rs.survey.title, surveyor.view_my_survey_path(:survey_code => rs.survey.access_code, :response_set_code => rs.access_code), :class => "show_link icon_link"
         = link_to "Edit Instrument", edit_instrument_contact_link_path(rs.instrument.contact_link), :class => "edit_link icon_link"
 
     %p
