@@ -94,7 +94,7 @@ module ApplicationHelper
 
   def sample_type(value)
     value = sample_extenstion(value).downcase
-    if value.include? "ur"
+    if ( (value.include? "ur") || (value.include? "bu"))
       "URINE"
     elsif ( (value.include? "rb") || (value.include? "ad") || (value.include? "lv") || (value.include? "px"))
       "WHOLE BLOOD"
@@ -108,6 +108,8 @@ module ApplicationHelper
       "WATER"
     elsif value.include? "cb"
       "CORD BLOOD"
+    elsif value.include? "sc"
+      "SALIVA"
     else
       "TYPE UNKNOWN"
     end
