@@ -72,6 +72,11 @@ class Telephone < ActiveRecord::Base
     self.phone_nbr
   end
 
+  def dashed
+   return self if phone_nbr =~ /-/
+   phone_nbr.insert(-5, '-').insert(-9, '-')
+  end
+
   def self.home_phone_type
     NcsCode.for_list_name_and_local_code("PHONE_TYPE_CL1", HOME_PHONE_CODE)
   end

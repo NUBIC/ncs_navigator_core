@@ -62,7 +62,7 @@ class Event < ActiveRecord::Base
   validate :disposition_code_is_in_disposition_category, :unless => :imported_invalid
 
   before_validation :strip_time_whitespace
-  before_create :set_start_time
+  before_save :set_start_time
   before_save :set_psc_ideal_date
 
   POSTNATAL_EVENTS = [
