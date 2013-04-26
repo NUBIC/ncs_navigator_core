@@ -7,6 +7,7 @@ require 'ncs_navigator/warehouse'
 module NcsNavigator::Core::Warehouse
   autoload :ArchivalStaffAndOutreachPassthrough, 'ncs_navigator/core/warehouse/archival_staff_and_outreach_passthrough'
   autoload :DatabaseEnumeratorHelpers,           'ncs_navigator/core/warehouse/database_enumerator_helpers'
+  autoload :IneligibleBatchEnumerator,        'ncs_navigator/core/warehouse/ineligible_batch_enumerator'
   autoload :InstrumentEnumerator,                'ncs_navigator/core/warehouse/instrument_enumerator'
   autoload :LegacyInstrumentEnumerator,          'ncs_navigator/core/warehouse/legacy_instrument_enumerator'
   autoload :LegacyInstrumentImporter,            'ncs_navigator/core/warehouse/legacy_instrument_importer'
