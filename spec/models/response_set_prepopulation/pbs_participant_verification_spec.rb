@@ -54,6 +54,26 @@ module ResponseSetPrepopulation
           run_populator
           assert_response_value(@response_set_pt2, "prepopulated_is_p_type_fifteen", "FALSE")
         end
+
+        it "should be TRUE if participant is a child and participant's mother has p_code 15" do
+          participant = Factory(:participant, :p_type_code => 15)
+          person_child = Factory(:person)
+          participant.participant_person_links << Factory(:participant_person_link, :person => person_child, :relationship_code => 8) # 8 Child
+          participant.save!
+          @response_set_pt2, @instrument_pt2 = prepare_instrument(person, participant, survey_pt2)
+          run_populator
+          assert_response_value(@response_set_pt2, "prepopulated_is_p_type_fifteen", "TRUE")
+        end
+
+        it "should be FALSE if participant is a child and participant's mother is not of p_code 15" do
+          participant = Factory(:participant, :p_type_code => 10)
+          person_child = Factory(:person)
+          participant.participant_person_links << Factory(:participant_person_link, :person => person_child, :relationship_code => 8) # 8 Child
+          participant.save!
+          @response_set_pt2, @instrument_pt2 = prepare_instrument(person, participant, survey_pt2)
+          run_populator
+          assert_response_value(@response_set_pt2, "prepopulated_is_p_type_fifteen", "FALSE")
+        end
       end
     end
   end
