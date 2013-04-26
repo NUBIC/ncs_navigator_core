@@ -25,7 +25,14 @@ module ResponseSetPrepopulation
         "prepopulated_is_valid_contact_for_all_provided",
         "prepopulated_is_event_type_pbs_participant_eligibility_screening",
         "prepopulated_is_prev_city_provided",
-        "prepopulated_valid_driver_license_provided"
+        "prepopulated_valid_driver_license_provided",
+        "ADDRESS_1",
+        "ADDRESS_2",
+        "UNIT",
+        "CITY",
+        "STATE",
+        "ZIP",
+        "ZIP4"
       ]
     end
 
@@ -72,11 +79,43 @@ module ResponseSetPrepopulation
                     has_answered_prev_city?(question)
                   when "prepopulated_valid_driver_license_provided"
                     has_answered_driver_license?(question)
+                  when "ADDRESS_1"
+                    response_type = "string_value"
+                    value = person.primary_address.try(:address_one)
+                    answer_for(question, 'string')
+                  when "ADDRESS_2"
+                    response_type = "string_value"
+                    value = person.primary_address.try(:address_two)
+                    answer_for(question, 'string')
+                  when "UNIT"
+                    response_type = "string_value"
+                    value = person.primary_address.try(:unit)
+                    answer_for(question, 'string')
+                  when "CITY"
+                    response_type = "string_value"
+                    value = person.primary_address.try(:city)
+                    answer_for(question, 'string')
+                  when "STATE"
+                    answer_for(question, person.primary_address.try(:state_code))
+                  when "ZIP"
+                    response_type = "string_value"
+                    value = person.primary_address.try(:zip)
+                    answer_for(question, 'string')
+                  when "ZIP4"
+                    response_type = "string_value"
+                    value = person.primary_address.try(:zip4)
+                    answer_for(question, 'string')
                   else
                     nil
                   end
 
-          build_response_for_value(response_type, response_set, question, answer, nil)
+          if response_type == "answer"
+            build_response_for_value(response_type, response_set,
+                                     question, answer, nil)
+          else
+            build_response_for_value(response_type, response_set,
+                                     question, answer, value)
+          end
         end
       end
       response_set
@@ -92,7 +131,17 @@ module ResponseSetPrepopulation
     #       30 MONTH AND MODE = CAPI OR PAPI, GO TO PLAN_MOVE.
     #    False
     def should_show_address?(question)
-      answer_for(question, mode == Instrument.cati && event.try(:postnatal?))
+      ri = [
+        Event.birth_code,
+        Event.three_month_visit_code,
+        Event.nine_month_visit_code,
+        Event.eighteen_month_visit_code,
+        Event.twenty_four_month_visit_code,
+        Event.thirty_month_visit_code
+      ].include?(event.try(:event_type_code))
+
+      # There's no need to check mode of contact, it's checked in the survey
+      answer_for(question, ri)
     end
 
     # PROGRAMMER INSTRUCTIONS:
@@ -184,7 +233,7 @@ module ResponseSetPrepopulation
     #  PROGRAMMER INSTRUCTIONS:
     #    -  IF EMAIL_APPT = 2, -1, OR -2, OR
     #    -  IF EMAIL_QUEST COLLECTED PREVIOUSLY AND VALID RESPONSE PROVIDED, GO TO PROGRAMMER INSTRUCTIONS FOLLOWING EMAIL_QUEST.
-    #    -  OTHERWISE, GO TO EMAIL_QUEST.
+    #      -  OTHERWISE, GO TO EMAIL_QUEST.
     def has_answered_email_quest?(question)
       has_answered_question?(question, "TRACING_INT.EMAIL_QUEST")
     end
