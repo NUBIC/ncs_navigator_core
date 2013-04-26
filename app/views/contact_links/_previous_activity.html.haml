@@ -10,6 +10,6 @@
       - instr.response_sets.each do |rs|
         .instrument_response_set
           = link_to "Edit Instrument Responses (#{rs.participant.person.to_s})",
-            edit_my_survey_path(:survey_code => rs.survey.access_code, :response_set_code => rs.access_code),
+            surveyor.edit_my_survey_path(:survey_code => rs.survey.access_code, :response_set_code => rs.access_code),
             :class => "edit_survey_link icon_link",
             :title => "Edit Participant Responses for the #{rs.survey.title} Survey"
