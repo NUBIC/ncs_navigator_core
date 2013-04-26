@@ -8,26 +8,27 @@ module Tracing
 
     # Address One
     q = Factory(:question, :reference_identifier => "ADDRESS_1", :data_export_identifier => "TRACING_INT.ADDRESS_1", :survey_section_id => survey_section.id)
-    a = Factory(:answer, :question_id => q.id, :text => "Address 1", :response_class => "string")
+    a = Factory(:answer, :question_id => q.id, :text => "Address 1", :response_class => "string", :reference_identifier => :string)
     # Address Two
     q = Factory(:question, :reference_identifier => "ADDRESS_2", :data_export_identifier => "TRACING_INT.ADDRESS_2", :survey_section_id => survey_section.id)
-    a = Factory(:answer, :question_id => q.id, :text => "Address 2", :response_class => "string")
+    a = Factory(:answer, :question_id => q.id, :text => "Address 2", :response_class => "string", :reference_identifier => :string)
+
     # Unit
     q = Factory(:question, :reference_identifier => "UNIT", :data_export_identifier => "TRACING_INT.UNIT", :survey_section_id => survey_section.id)
-    a = Factory(:answer, :question_id => q.id, :text => "Unit", :response_class => "string")
+    a = Factory(:answer, :question_id => q.id, :text => "Unit", :response_class => "string", :reference_identifier => :string)
     # City
     q = Factory(:question, :reference_identifier => "CITY", :data_export_identifier => "TRACING_INT.CITY", :survey_section_id => survey_section.id)
-    a = Factory(:answer, :question_id => q.id, :text => "City", :response_class => "string")
+    a = Factory(:answer, :question_id => q.id, :text => "City", :response_class => "string", :reference_identifier => :string)
     # State
     q = Factory(:question, :reference_identifier => "STATE", :data_export_identifier => "TRACING_INT.STATE", :survey_section_id => survey_section.id)
     a = Factory(:answer, :question_id => q.id, :text => "IL", :response_class => "answer", :reference_identifier => "14")
     a = Factory(:answer, :question_id => q.id, :text => "MI", :response_class => "answer", :reference_identifier => "23")
     # Zip
     q = Factory(:question, :reference_identifier => "ZIP", :data_export_identifier => "TRACING_INT.ZIP", :survey_section_id => survey_section.id)
-    a = Factory(:answer, :question_id => q.id, :text => "Zip", :response_class => "string")
+    a = Factory(:answer, :question_id => q.id, :text => "Zip", :response_class => "string", :reference_identifier => :string)
     # plus 4
     q = Factory(:question, :reference_identifier => "ZIP4", :data_export_identifier => "TRACING_INT.ZIP4", :survey_section_id => survey_section.id)
-    a = Factory(:answer, :question_id => q.id, :text => "plus 4", :response_class => "string")
+    a = Factory(:answer, :question_id => q.id, :text => "plus 4", :response_class => "string", :reference_identifier => :string)
 
     survey
   end
