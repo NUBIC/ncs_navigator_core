@@ -1,0 +1,83 @@
+#appointment-sheet {
+  font-size: 100%;
+}
+
+#appointment-sheet-header {
+  margin-left: 12em;
+}
+
+#event-date-and-time {
+  font-size: 100%%;
+  font-weight: 600;
+  margin-top: 1em;
+}
+
+#address {
+  @include listed-attributes
+}
+
+#phone {
+  @include listed-attributes
+}
+
+#instrument-list {
+  margin-left: 5em;
+  font-size: 100%;
+}
+
+#language {
+  @include listed-attributes
+}
+
+#consents {
+  margin-left: 1em;
+}
+
+#children {
+  @include listed-attributes
+}
+
+.child_attributes {
+  margin-top: 0.5em;
+}
+
+#next-event {
+  margin-top: 1em;
+  margin-left: 3em;
+  font-size: 100%;
+}
+
+#to-be-conducted{
+  font-size: 100%;
+  font-weight: bold;
+}
+
+#visit-info {
+  width: 100%;
+  float: left;
+}
+
+#event-info {
+  float: left;
+}
+
+#participant-info {
+  float: right;
+}
+
+.child_attributes {
+  margin-top: 0.5em;
+}
+
+.not-found {
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+  font-style: italic;
+  font-weight:normal;
+}
+
+.name {
+  font-size: 100%;
+  font-weight: bold;
+}
+

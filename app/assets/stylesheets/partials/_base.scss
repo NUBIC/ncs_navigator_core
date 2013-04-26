@@ -44,6 +44,10 @@ $PAGE_HEADER_COLOR : #007c8b;
   -moz-box-shadow: 0px 0px 40px $SHADOW;
 }
 
+@mixin listed-attributes {
+  margin-top: 1em;
+}
+
 //NCS custom colors
 $tab_nav_bg: #406CD5;
 $tab_nav_border: #406CD5;

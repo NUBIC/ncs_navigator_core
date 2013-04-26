@@ -164,4 +164,20 @@ describe Telephone do
     end
   end
 
+  describe "#dashed" do
+    before do
+      @phone = Factory(:telephone)
+    end
+
+    it "inserts dashes into an unformatted(undashed) phone number" do
+      @phone.update_attribute(:phone_nbr, "1234567890")
+      @phone.dashed.should == "123-456-7890"
+    end
+
+    it "passes already formatted numbers as is" do
+      @phone.update_attribute(:phone_nbr, "123-456-7890")
+      @phone.dashed.should == "123-456-7890"
+    end
+  end
+
 end
