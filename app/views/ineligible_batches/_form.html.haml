@@ -1,0 +1,101 @@
+.page_section
+  = form_for([@provider, @ineligible_batch], :html => {:autocomplete => "off"}) do |f|
+
+    = f.label :people_count, "Number of People"
+    = f.text_field :people_count, :required => true,
+      :class => "required", :style => "width: 25px;"
+    = f.hidden_field :provider_id, :value=>@provider.id
+
+    = render "shared/ncs_code_select",
+      { :f => f, :code => :pre_screening_status_code,
+        :label_text => "Pre-Screening Status",
+        :html_attrs => { :class => "required pre_screening_status_selector",
+                         :required => true } }
+
+    = render "shared/ncs_code_select",
+      { :f => f, :code => :sampled_person_code,
+        :label_text => "Sampled Person?",
+        :html_attrs => { :class => "required sampled_person_code_selector",
+                         :required => true } }
+
+    %p
+    = f.label :date_first_visit, "Date of First Visit"
+    %br
+    = f.text_field :date_first_visit, :class => "datepicker required",
+      :required => true
+
+    = render "shared/ncs_code_select",
+      { :f => f, :code => :provider_intro_outcome_code,
+        :label_text => "Outcome of Provider Introduction",
+        :other => :provider_intro_outcome_other,
+        :html_attrs => { :class => "required provider_intro_outcome_code",
+                         :required => true } }
+
+    %div.persons_ineligibility
+      %b
+        Sampled Persons Ineligibility
+      %br
+      = render "shared/ncs_code_select",
+        { :f => f, :code => :age_eligible_code,
+          :label_text => "Is sampled woman age eligible?",
+          :html_attrs => { :class => "required ineligible" } }
+
+      = render "shared/ncs_code_select",
+        { :f => f, :code => :county_of_residence_code,
+          :label_text => "Does sampled woman reside in sample PSU/county?",
+          :html_attrs => { :class => "required ineligible" } }
+
+      = render "shared/ncs_code_select",
+        { :f => f, :code => :pregnancy_eligible_code,
+          :label_text => "Is sampled woman pregnant?",
+          :html_attrs => { :class => "required ineligible" } }
+
+      = render "shared/ncs_code_select",
+        { :f => f, :code => :first_prenatal_visit_code,
+          :label_text => "Is this the first prenatal visit for the sampled woman?",
+          :html_attrs => { :class => "required ineligible" } }
+
+      = render "shared/ncs_code_select",
+        { :f => f, :code => :ineligible_by_code,
+          :label_text => "Who determined sampled woman is ineligible?",
+          :html_attrs => { :class => "required ineligible" } }
+
+    = submit_tag "Submit", :disable_with => 'Submitting...'
+
+:javascript
+  $(function() {
+    function show_hide_persons_ineligibility() {
+      if($('.pre_screening_status_selector').val() === '2') {
+        $('.persons_ineligibility').show();
+        $('.ineligible').prop('required', 'required');
+      }
+      else {
+        $('.persons_ineligibility').hide();
+        $('.ineligible').removeProp('required');
+      }
+    }
+    function show_hide_intro_otherpersons_ineligibility() {
+      if($('.provider_intro_outcome_code').val() === '-5') {
+        $('.other_field').show();
+      }
+      else {
+        $('.other_field').hide();
+      }
+    }
+    show_hide_persons_ineligibility();
+    $('.pre_screening_status_selector').change(show_hide_persons_ineligibility);
+    show_hide_intro_otherpersons_ineligibility();
+    $('.provider_intro_outcome_code').change(
+                                    show_hide_intro_otherpersons_ineligibility);
+    $('#new_ineligible_batch').validate({
+      rules: {
+        'ineligible_batch[date_first_visit]': {
+          minlength: 10,
+          maxlength: 10
+        },
+        'ineligible_batch[people_count]': {
+        number: true
+        }
+      }
+    });
+  });

@@ -100,13 +100,11 @@ NcsNavigatorCore::Application.routes.draw do
     member do
       get :edit_contact_information
       put :update_contact_information
-
       get :staff_list
       get :new_staff
       post :create_staff
       get :edit_staff
       put :update_staff
-
       get :contact_log
       get :post_recruitment_contact
       get :recruited
@@ -114,6 +112,7 @@ NcsNavigatorCore::Application.routes.draw do
       get :refused
       put :process_refused
     end
+    resources :ineligible_batches
     resources :non_interview_providers, :except => [:destroy]
     resources :people, :except => [:index, :destroy, :show]
   end

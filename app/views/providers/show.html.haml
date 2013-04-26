@@ -4,26 +4,100 @@
   = "#{@provider.name_practice}"
 
 .page_section
-  - if @provider.people.empty?
+  - if @patients.empty?
     %b
       Patients at this Location
     #no_records
       No patients exist for provider.
   - else
+    .records_header
+      .page_entries_info
+        = raw page_entries_info @patients
     %table.records
       %tr
         %th
           Patients at this Location
         %th
 
-      - @provider.people.each do |per|
+      - @patients.each do |per|
         %tr{ :class => cycle('even_record', 'odd_record') }
           %td
-            = link_to blank_safe(per.full_name), edit_provider_person_path(@provider, per),
+            = link_to blank_safe(per.full_name),
+              edit_provider_person_path(@provider, per),
               :class => "edit_link icon_link"
           %td
             - if permit?(Role::FIELD_STAFF, Role::PHONE_STAFF)
               = pbs_eligibility_screener_link(per)
-
+    = will_paginate @patients, :param_name => 'patients_page'
   .links
-    = link_to 'Add New Patient', new_provider_person_path(@provider), :class => "add_link icon_link"
+    = link_to 'Add New Patient', new_provider_person_path(@provider),
+      :class => "add_link icon_link"
+  %hr
+  %b
+    Batch patients at this Location
+  - if @batch.empty?
+    #no_records
+      No batch patients exist for provider.
+  - else
+    .records_header
+      .page_entries_info
+        = raw page_entries_info @batch
+    %table.records
+      %tr
+        %th
+          First Visit Date
+        %th
+          Patient Count
+        %th
+          Pre-Screening Status
+        %th
+          Sampled Person?
+        %th
+          Outcome of Introduction
+        %th
+          Age Eligible?
+        %th
+          In sample PSU/county?
+        %th
+          Pregnant?
+        %th
+          First Visit?
+        %th
+          Determined Ineligible By
+        %th
+          Delete Batch
+
+      - @batch.each do |b|
+        %tr{ :class => cycle('even_record', 'odd_record') }
+          %td
+            = b.date_first_visit
+          %td{ :style => "text-align:center;" }
+            = b.people_count
+          %td
+            = b.pre_screening_status.display_text
+          %td
+            = b.sampled_person.display_text
+          %td
+            = b.provider_intro_outcome.display_text
+          %td
+            = b.age_eligible.display_text
+          %td
+            = b.county_of_residence.display_text
+          %td
+            = b.pregnancy_eligible.display_text
+          %td
+            = b.first_prenatal_visit.display_text
+          %td
+            = b.ineligible_by.display_text
+          %td{ :style => "text-align:center;" }
+
+            = link_to '',
+              provider_ineligible_batch_path(@provider.id, b.id),
+              :confirm => "Are you sure you want to delete total of #{b.people_count} patients in this batch?",
+              :method => :delete,
+              :class => "delete_link icon_link"
+    = will_paginate @batch, :param_name => 'inpatients_page'
+  .links
+    = link_to 'Enter non-sampled and pre-screened out women',
+      new_provider_ineligible_batch_path(@provider),
+      :class => "add_link icon_link"

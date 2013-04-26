@@ -29,7 +29,7 @@ describe ProvidersController do
         assigns(:q).sorts[0].name.should == "name_practice"
         assigns(:q).sorts[1].name.should == "id"
       end
-      
+
       it "performs user selected sort first; id second" do 
         get :index, :q => { :s => "name_practice desc" }
         assigns(:q).sorts[0].name.should == "name_practice"
