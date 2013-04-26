@@ -5,7 +5,7 @@ module Field
   # Expects its host object to respond to:
   #
   # * {#login_to_psc} with a {PatientStudyCalendar} instance
-  # * {#current_participants} with a list of {Participant} objects
+  # * {#eligible_participants} with a list of {Participant} objects
   module Scheduling
     include PscSync
 
@@ -14,10 +14,10 @@ module Field
 
       # Ensure we have up-to-date data; we're entering this method out of a
       # lot of manipulations.
-      current_participants.each(&:reload)
+      eligible_participants.each(&:reload)
 
       # Advance.
-      current_participants.each { |p| p.advance(psc) }
+      eligible_participants.each { |p| p.advance(psc) }
     end
   end
 end

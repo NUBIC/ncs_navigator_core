@@ -39,6 +39,7 @@
 # pregnancy screener, pregnancy questionnaire, etc. Once born, NCS-eligible babies are assigned Participant IDs.
 # Every Participant is also a Person. People do not become Participants until they are determined eligible for a pregnancy screener.
 class Participant < ActiveRecord::Base
+  include EligibilityAdjudicator
   include NcsNavigator::Core::Mdes::MdesRecord
   include NcsNavigator::Core::ImportAware
 
