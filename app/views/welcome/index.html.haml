@@ -9,22 +9,25 @@
       %a{ :href => "#actions_tab"}
         Actions
 
+
   #scheduled_events_tab
     - if !@events.blank?
       .front_page_section.page_section
         %h4
-          = "From #{@start_date} to #{@end_date}"
+          = "#{current_user.full_name}'s Schedule, Week of #{@start_date.strftime("%B #{@start_date.day.ordinalize}")}-#{@end_date.strftime("#{@end_date.day.ordinalize}")}"
         - @events.keys.sort.each do |date|
           .events_for_date
-            %b
-              = date
-            - place_activities_with_blank_times_at_the_bottom_of_list(@events[date]).each do |e|
+            = Time.parse(date).strftime("%A")
+            = Time.parse(date).strftime("%B %e")
+            - sort_activities_chronologically_with_blank_times_at_the_bottom_of_list(@events[date]).each do |e|
               .event_participant
                 %span.activity_time
                   = convert_24_hour_time_to_am_pm_time(e.activity_time) if e.activity_time
                 %span.participant_link
                   - path = e.person.participant? ? participant_path(e.person.participant) : person_path(e.person)
-                  = link_to e.person.to_s, path, :class => "show_link icon_link"
+                  = link_to "", "appointment_sheet/#{e.person.id}/#{e.date}" , :class => "add_link icon_link",
+                                                                               :title => "Appointment sheet for \"#{e.person.full_name}\""
+                  = link_to e.person.to_s, path
                 %span.ppg_status
                   = "PPG #{e.person.participant.ppg_status.local_code}" if e.person.participant && !e.person.participant.ppg_status.blank?
                 %span.event_type
@@ -32,6 +35,8 @@
     - else
       .front_page_section.page_section
         No Scheduled Events
+
+
 
   #actions_tab
     .front_page_section.page_section

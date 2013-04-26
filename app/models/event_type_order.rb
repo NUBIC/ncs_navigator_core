@@ -14,7 +14,7 @@
 # This class can also be used to report on the status of the
 # persisted type order.
 class EventTypeOrder < ActiveRecord::Base
-  set_table_name 'event_type_order'
+  self.table_name = 'event_type_order'
 
   def self.persist_if_different
     begin

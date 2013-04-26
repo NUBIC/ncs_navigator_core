@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
 NcsNavigatorCore::Application.routes.draw do
+  mount Surveyor::Engine => "/surveys", :as => "surveyor"
+
   resources :dwelling_units do
     member do
       put :create_household_unit
@@ -236,6 +238,7 @@ NcsNavigatorCore::Application.routes.draw do
   match "/welcome/pending_events", :to => "welcome#pending_events"
   match "welcome/start_pregnancy_screener_instrument", :to => "welcome#start_pregnancy_screener_instrument", :as => "start_pregnancy_screener_instrument"
   match "welcome/start_pbs_eligibility_screener_instrument", :to => "welcome#start_pbs_eligibility_screener_instrument", :as => "start_pbs_eligibility_screener_instrument"
+  match "appointment_sheet/:person/:date", :to => "appointment_sheets#show", :as => "appointment_sheet", :via => [:get]
 
   root :to => "welcome#index"
 

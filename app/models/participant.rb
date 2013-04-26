@@ -39,9 +39,9 @@
 # pregnancy screener, pregnancy questionnaire, etc. Once born, NCS-eligible babies are assigned Participant IDs.
 # Every Participant is also a Person. People do not become Participants until they are determined eligible for a pregnancy screener.
 class Participant < ActiveRecord::Base
-  class << self; attr_accessor :importer_mode_on; end
-
+  include EligibilityAdjudicator
   include NcsNavigator::Core::Mdes::MdesRecord
+  include NcsNavigator::Core::ImportAware
 
   acts_as_mdes_record :public_id_field => :p_id,
     :public_id_generator => NcsNavigator::Core::Mdes::HumanReadablePublicIdGenerator.new
@@ -55,7 +55,7 @@ class Participant < ActiveRecord::Base
   ncs_coded_attribute :pid_age_eligibility, 'AGE_ELIGIBLE_CL2'
 
   has_many :ppg_details, :order => "created_at DESC"
-  has_many :ppg_status_histories, :order => "ppg_status_date DESC"
+  has_many :ppg_status_histories, :order => "ppg_status_date DESC, created_at DESC"
 
   has_many :low_intensity_state_transition_audits,  :class_name => "ParticipantLowIntensityStateTransition",  :foreign_key => "participant_id", :dependent => :destroy
   has_many :high_intensity_state_transition_audits, :class_name => "ParticipantHighIntensityStateTransition", :foreign_key => "participant_id", :dependent => :destroy
@@ -102,10 +102,6 @@ class Participant < ActiveRecord::Base
   delegate :age, :first_name, :last_name, :person_dob, :gender, :upcoming_events, :contact_links, :instruments, :start_instrument, :started_survey, :instrument_for, :to => :person
 
   after_create :set_initial_state_for_recruitment_strategy
-
-  def after_initialize
-    self.class.importer_mode_on = false;
-  end
 
   ##
   # Only Hi/Lo strategy uses the low_intensity_state machine.
@@ -431,7 +427,8 @@ class Participant < ActiveRecord::Base
   private :ppg_status_from_ppg_details
 
   def ppg_status_from_ppg_status_histories(date = Date.today)
-    psh = ppg_status_histories.where(['ppg_status_date_date <= ?', date]).order("ppg_status_date_date DESC").all
+    psh = ppg_status_histories.where(['ppg_status_date_date <= ?', date]).order(
+                                      "ppg_status_date_date DESC, created_at DESC").all
     psh.blank? ? ppg_status_histories.first.ppg_status : psh.first.ppg_status
   end
   private :ppg_status_from_ppg_status_histories
@@ -515,6 +512,8 @@ class Participant < ActiveRecord::Base
   end
 
   ##
+  # For the given event, update the Participant's state accordingly
+  # @param [Event]
   def update_state_to_next_event(event)
     case event.event_type.local_code
     when 34
@@ -550,7 +549,39 @@ class Participant < ActiveRecord::Base
     when 7,8
       # Pregnancy Probability
       follow! if can_follow? && high_intensity?
+    when 11, 12
+      # Pre-Pregnancy
+      non_pregnant_informed_consent! if can_non_pregnant_informed_consent?
+      follow! if can_follow?
+    when 13, 14
+      # Pregnancy Visit 1
+      pregnancy_one_visit! if can_pregnancy_one_visit?
+    when 15, 16
+      # Pregnancy Visit 2
+      pregnancy_two_visit! if can_pregnancy_two_visit?
+    when 18, 23, 24, 25, 26, 27, 28, 30, 31, 36, 37, 38
+      # Birth and Post-natal
+      if low_intensity?
+        birth_event_low! if can_birth_event_low?
+      else
+        birth_event! if can_birth_event?
+      end
+    end
+    update_pregnancy_state(event)
+  end
 
+  ##
+  # Called from update_state_to_next_event
+  #
+  # Some events get new information about the Participant's
+  # pregnancy state. If the given event is one of these events
+  # (PPG FU, Pre-Preg, Screener)
+  # check to see if we know the Participant to be pregnant
+  # and update the Participant's state accordingly.
+  # @param [Event]
+  def update_pregnancy_state(event)
+    prenatal_ppg_status_determining_events = [4,5,6,9,29,7,8,11,12]
+    if prenatal_ppg_status_determining_events.include?(event.event_type.local_code)
       date = event.event_end_date.blank? ? event.event_start_date : event.event_end_date
       if known_to_be_pregnant?(date)
         if(low_intensity? && can_impregnate_low? &&
@@ -562,30 +593,9 @@ class Participant < ActiveRecord::Base
           impregnate!
         end
       end
-
-    when 11, 12
-      # Pre-Pregnancy
-      non_pregnant_informed_consent! if can_non_pregnant_informed_consent?
-      follow! if can_follow?
-
-    when 13, 14
-      # Pregnancy Visit 1
-      pregnancy_one_visit! if can_pregnancy_one_visit?
-
-    when 15, 16
-      # Pregnancy Visit 2
-      pregnancy_two_visit! if can_pregnancy_two_visit?
-
-    when 18, 23, 24, 25, 26, 27, 28, 30, 31, 36, 37, 38
-      # Birth and Post-natal
-      if low_intensity?
-        birth_event_low! if can_birth_event_low?
-      else
-        birth_event! if can_birth_event?
-      end
     end
-
   end
+  private :update_pregnancy_state
 
   ##
   # Display text from the NcsCode list PARTICIPANT_TYPE_CL1
@@ -980,13 +990,13 @@ class Participant < ActiveRecord::Base
   ##
   # Change the Participant status from Pregnant to Other Probability after having given birth
   def update_ppg_status_after_birth
-    post_transition_ppg_status_update(4) unless self.class.importer_mode_on
+    post_transition_ppg_status_update(4) unless in_importer_mode?
   end
 
   ##
   # Change the Participant status to PPG 3 after child loss
   def update_ppg_status_after_child_loss
-    post_transition_ppg_status_update(3) unless self.class.importer_mode_on
+    post_transition_ppg_status_update(3) unless in_importer_mode?
   end
 
   def last_contact
@@ -1212,12 +1222,6 @@ class Participant < ActiveRecord::Base
     else
       fail "Unhandled event type for participant state #{event.event_type.local_code.inspect}"
     end
-  end
-
-  def self.importer_mode
-    self.importer_mode_on = true
-    yield
-    self.importer_mode_on = false
   end
 
   comma do

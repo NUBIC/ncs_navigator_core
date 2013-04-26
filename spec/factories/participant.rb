@@ -30,6 +30,15 @@ FactoryGirl.define do
       low_intensity_state     "moved_to_high_intensity_arm"
     end
 
+    trait :with_self do
+      after_create do |p, _|
+        # Participant#person= can only be used after both the person and
+        # participant have been persisted.
+        p.person = FactoryGirl.create(:person)
+        p.save! # but it also doesn't automatically persist the link
+      end
+    end
+
     ## Pregnancy Probability Groups
 
     trait :in_ppg1 do

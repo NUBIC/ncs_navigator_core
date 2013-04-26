@@ -72,6 +72,8 @@ ActiveRecord::Schema.define(:version => 20130415192041) do
     t.string   "default_value"
     t.string   "api_id"
     t.string   "display_type"
+    t.string   "input_mask"
+    t.string   "input_mask_placeholder"
   end
 
   add_index "answers", ["api_id"], :name => "uq_answers_api_id", :unique => true
@@ -1320,6 +1322,14 @@ ActiveRecord::Schema.define(:version => 20130415192041) do
   end
 
   add_index "survey_sections", ["display_order"], :name => "idx_survey_sections_display_order"
+
+  create_table "survey_translations", :force => true do |t|
+    t.integer  "survey_id"
+    t.string   "locale"
+    t.text     "translation"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "surveys", :force => true do |t|
     t.string   "title"

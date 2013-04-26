@@ -14,12 +14,12 @@ module OperationalDataExtractor
 
       # MDES 2.1 = are the same as 2.0
       # Updates for MDES 2.2
-      "TAP_WATER_TWQ_2[sample_number=1].SAMPLE_ID" => "sample_id",
-      "TAP_WATER_TWQ_2[sample_number=2].SAMPLE_ID" => "sample_id",
-      "TAP_WATER_TWQ_2[sample_number=3].SAMPLE_ID" => "sample_id",
-      "TAP_WATER_TWF_2_SAMPLE[sample_number=1].SAMPLE_ID" => "sample_id",
-      "TAP_WATER_TWF_2_SAMPLE[sample_number=2].SAMPLE_ID" => "sample_id",
-      "TAP_WATER_TWF_2_SAMPLE[sample_number=3].SAMPLE_ID" => "sample_id",
+      "TAP_WATER_TWQ_SAMPLE_2[sample_number=1].SAMPLE_ID" => "sample_id",
+      "TAP_WATER_TWQ_SAMPLE_2[sample_number=2].SAMPLE_ID" => "sample_id",
+      "TAP_WATER_TWQ_SAMPLE_2[sample_number=3].SAMPLE_ID" => "sample_id",
+      "TAP_WATER_TWF_SAMPLE_2[sample_number=1].SAMPLE_ID" => "sample_id",
+      "TAP_WATER_TWF_SAMPLE_2[sample_number=2].SAMPLE_ID" => "sample_id",
+      "TAP_WATER_TWF_SAMPLE_2[sample_number=3].SAMPLE_ID" => "sample_id",
       "VACUUM_BAG_2.SAMPLE_ID" => "sample_id",
         # New from SampleDistrib_DCI
       "SAMPLE_DIST_SAMP[type=1].SAMPLE_ID" => "sample_id",

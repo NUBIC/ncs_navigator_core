@@ -1,0 +1,4013 @@
+{
+   "subject":{
+      "first_name":"Dawn",
+      "last_name":"Davidson",
+      "full_name":"Dawn Davidson",
+      "last_first":"Davidson, Dawn",
+      "birth_date":"2013-03-26",
+      "gender":"Female",
+      "properties":[
+
+      ]
+   },
+   "assignments":[
+      {
+         "id":"xfda-a78s-h83b",
+         "name":"NCS Hi-Lo",
+         "privileges":[
+            "visible",
+            "update-schedule",
+            "calendar-manager",
+            "set-calendar-manager"
+         ],
+         "notifications":[
+            {
+               "message":"/pages/cal/template/amendments?study=1#amendment=35",
+               "title":"Schedule amended according to 02/26/2013 (Rev 38)",
+               "href":"http://localhost:8080/psc/api/v1/subjects/xfda-a78s-h83b/assignments/xfda-a78s-h83b/notifications/bc332301-6b7b-4610-8209-30cf01f15123"
+            },
+            {
+               "message":"/pages/cal/template/amendments?study=1#amendment=36",
+               "title":"Schedule amended according to 02/28/2013 (Rev 39)",
+               "href":"http://localhost:8080/psc/api/v1/subjects/xfda-a78s-h83b/assignments/xfda-a78s-h83b/notifications/dbe438c5-2339-491b-9fed-d0b5bdd7e6b3"
+            },
+            {
+               "message":"/pages/cal/template/amendments?study=1#amendment=37",
+               "title":"Schedule amended according to 03/05/2013 (Rev 40)",
+               "href":"http://localhost:8080/psc/api/v1/subjects/xfda-a78s-h83b/assignments/xfda-a78s-h83b/notifications/51d3c0de-5e58-4dc8-ab7a-f380d6cdd385"
+            },
+            {
+               "message":"/pages/cal/template/amendments?study=1#amendment=38",
+               "title":"Schedule amended according to 03/07/2013 (Rev 41)",
+               "href":"http://localhost:8080/psc/api/v1/subjects/xfda-a78s-h83b/assignments/xfda-a78s-h83b/notifications/511280ba-794f-47ec-adff-bafb89cbc9ae"
+            },
+            {
+               "message":"/pages/cal/template/amendments?study=1#amendment=39",
+               "title":"Schedule amended according to 03/08/2013 (Rev 42)",
+               "href":"http://localhost:8080/psc/api/v1/subjects/xfda-a78s-h83b/assignments/xfda-a78s-h83b/notifications/dfa9a054-6165-4d58-9fc8-50a2771f23a4"
+            },
+            {
+               "message":"/pages/cal/template/amendments?study=1#amendment=40",
+               "title":"Schedule amended according to 03/14/2013 (Rev 43)",
+               "href":"http://localhost:8080/psc/api/v1/subjects/xfda-a78s-h83b/assignments/xfda-a78s-h83b/notifications/6af02efe-82e1-45ff-8c0b-daa9d270f9e4"
+            },
+            {
+               "message":"/pages/cal/template/amendments?study=1#amendment=41",
+               "title":"Schedule amended according to 03/18/2013 (Rev 44)",
+               "href":"http://localhost:8080/psc/api/v1/subjects/xfda-a78s-h83b/assignments/xfda-a78s-h83b/notifications/4d3f5caa-a500-4f63-806e-fcf1019aee86"
+            },
+            {
+               "message":"/pages/cal/template/amendments?study=1#amendment=42",
+               "title":"Schedule amended according to 03/20/2013 (Rev 45)",
+               "href":"http://localhost:8080/psc/api/v1/subjects/xfda-a78s-h83b/assignments/xfda-a78s-h83b/notifications/449a67d5-d049-493f-8c49-b21ef98f09e4"
+            },
+            {
+               "message":"/pages/cal/template/amendments?study=1#amendment=43",
+               "title":"Schedule amended according to 03/20/2013 (Rev 46)",
+               "href":"http://localhost:8080/psc/api/v1/subjects/xfda-a78s-h83b/assignments/xfda-a78s-h83b/notifications/79324003-9378-4bd8-a320-4c4ece171023"
+            },
+            {
+               "message":"/pages/cal/template/amendments?study=1#amendment=44",
+               "title":"Schedule amended according to 03/25/2013 (Rev 47)",
+               "href":"http://localhost:8080/psc/api/v1/subjects/xfda-a78s-h83b/assignments/xfda-a78s-h83b/notifications/7fd847a6-5a5e-44c6-9ec9-99f4e2c16a11"
+            },
+            {
+               "message":"/pages/cal/template/amendments?study=1#amendment=45",
+               "title":"Schedule amended according to 03/26/2013 (Rev 48)",
+               "href":"http://localhost:8080/psc/api/v1/subjects/xfda-a78s-h83b/assignments/xfda-a78s-h83b/notifications/52ffd399-2f42-4061-b0ad-5d738e221672"
+            }
+         ],
+         "populations":[
+
+         ],
+         "current_amendment":{
+            "display_name":"03/26/2013 (Rev 48)",
+            "natural_key":"2013-03-26~Rev 48"
+         },
+         "amendments":[
+            {
+               "display_name":"Initial template",
+               "natural_key":"2011-07-07~[Original]",
+               "applied":true,
+               "href":"http://localhost:8080/psc/api/v1/studies/NCS+Hi-Lo/template/amendments/2011-07-07%7E%5BOriginal%5D"
+            },
+            {
+               "display_name":"09/16/2011 (Rev1)",
+               "natural_key":"2011-09-16~Rev1",
+               "applied":true,
+               "href":"http://localhost:8080/psc/api/v1/studies/NCS+Hi-Lo/template/amendments/2011-09-16%7ERev1"
+            },
+            {
+               "display_name":"12/29/2011 (Rev 2)",
+               "natural_key":"2011-12-29~Rev 2",
+               "applied":true,
+               "href":"http://localhost:8080/psc/api/v1/studies/NCS+Hi-Lo/template/amendments/2011-12-29%7ERev+2"
+            },
+            {
+               "display_name":"02/03/2012 (Rev 3)",
+               "natural_key":"2012-02-03~Rev 3",
+               "applied":true,
+               "href":"http://localhost:8080/psc/api/v1/studies/NCS+Hi-Lo/template/amendments/2012-02-03%7ERev+3"
+            },
+            {
+               "display_name":"02/08/2012 (Rev 4)",
+               "natural_key":"2012-02-08~Rev 4",
+               "applied":true,
+               "href":"http://localhost:8080/psc/api/v1/studies/NCS+Hi-Lo/template/amendments/2012-02-08%7ERev+4"
+            },
+            {
+               "display_name":"02/15/2012 (Rev 5)",
+               "natural_key":"2012-02-15~Rev 5",
+               "applied":true,
+               "href":"http://localhost:8080/psc/api/v1/studies/NCS+Hi-Lo/template/amendments/2012-02-15%7ERev+5"
+            },
+            {
+               "display_name":"02/15/2012 (Rev 6)",
+               "natural_key":"2012-02-15~Rev 6",
+               "applied":true,
+               "href":"http://localhost:8080/psc/api/v1/studies/NCS+Hi-Lo/template/amendments/2012-02-15%7ERev+6"
+            },
+            {
+               "display_name":"02/17/2012 (Rev 7)",
+               "natural_key":"2012-02-17~Rev 7",
+               "applied":true,
+               "href":"http://localhost:8080/psc/api/v1/studies/NCS+Hi-Lo/template/amendments/2012-02-17%7ERev+7"
+            },
+            {
+               "display_name":"03/30/2012 (Rev 8)",
+               "natural_key":"2012-03-30~Rev 8",
+               "applied":true,
+               "href":"http://localhost:8080/psc/api/v1/studies/NCS+Hi-Lo/template/amendments/2012-03-30%7ERev+8"
+            },
+            {
+               "display_name":"07/23/2012 (Rev 13)",
+               "natural_key":"2012-07-23~Rev 13",
+               "applied":true,
+               "href":"http://localhost:8080/psc/api/v1/studies/NCS+Hi-Lo/template/amendments/2012-07-23%7ERev+13"
+            },
+            {
+               "display_name":"07/23/2012 (Rev 14)",
+               "natural_key":"2012-07-23~Rev 14",
+               "applied":true,
+               "href":"http://localhost:8080/psc/api/v1/studies/NCS+Hi-Lo/template/amendments/2012-07-23%7ERev+14"
+            },
+            {
+               "display_name":"07/31/2012 (Rev 15)",
+               "natural_key":"2012-07-31~Rev 15",
+               "applied":true,
+               "href":"http://localhost:8080/psc/api/v1/studies/NCS+Hi-Lo/template/amendments/2012-07-31%7ERev+15"
+            },
+            {
+               "display_name":"08/01/2012 (Rev 16)",
+               "natural_key":"2012-08-01~Rev 16",
+               "applied":true,
+               "href":"http://localhost:8080/psc/api/v1/studies/NCS+Hi-Lo/template/amendments/2012-08-01%7ERev+16"
+            },
+            {
+               "display_name":"09/26/2012 (Rev 17)",
+               "natural_key":"2012-09-26~Rev 17",
+               "applied":true,
+               "href":"http://localhost:8080/psc/api/v1/studies/NCS+Hi-Lo/template/amendments/2012-09-26%7ERev+17"
+            },
+            {
+               "display_name":"10/03/2012 (Rev 18)",
+               "natural_key":"2012-10-03~Rev 18",
+               "applied":true,
+               "href":"http://localhost:8080/psc/api/v1/studies/NCS+Hi-Lo/template/amendments/2012-10-03%7ERev+18"
+            },
+            {
+               "display_name":"10/12/2012 (Rev 19)",
+               "natural_key":"2012-10-12~Rev 19",
+               "applied":true,
+               "href":"http://localhost:8080/psc/api/v1/studies/NCS+Hi-Lo/template/amendments/2012-10-12%7ERev+19"
+            },
+            {
+               "display_name":"10/12/2012 (Rev 20)",
+               "natural_key":"2012-10-12~Rev 20",
+               "applied":true,
+               "href":"http://localhost:8080/psc/api/v1/studies/NCS+Hi-Lo/template/amendments/2012-10-12%7ERev+20"
+            },
+            {
+               "display_name":"10/15/2012 (Rev 21)",
+               "natural_key":"2012-10-15~Rev 21",
+               "applied":true,
+               "href":"http://localhost:8080/psc/api/v1/studies/NCS+Hi-Lo/template/amendments/2012-10-15%7ERev+21"
+            },
+            {
+               "display_name":"10/16/2012 (Rev 22)",
+               "natural_key":"2012-10-16~Rev 22",
+               "applied":true,
+               "href":"http://localhost:8080/psc/api/v1/studies/NCS+Hi-Lo/template/amendments/2012-10-16%7ERev+22"
+            },
+            {
+               "display_name":"10/16/2012 (Rev 23)",
+               "natural_key":"2012-10-16~Rev 23",
+               "applied":true,
+               "href":"http://localhost:8080/psc/api/v1/studies/NCS+Hi-Lo/template/amendments/2012-10-16%7ERev+23"
+            },
+            {
+               "display_name":"11/05/2012 (Rev 24)",
+               "natural_key":"2012-11-05~Rev 24",
+               "applied":true,
+               "href":"http://localhost:8080/psc/api/v1/studies/NCS+Hi-Lo/template/amendments/2012-11-05%7ERev+24"
+            },
+            {
+               "display_name":"11/27/2012 (Rev 25)",
+               "natural_key":"2012-11-27~Rev 25",
+               "applied":true,
+               "href":"http://localhost:8080/psc/api/v1/studies/NCS+Hi-Lo/template/amendments/2012-11-27%7ERev+25"
+            },
+            {
+               "display_name":"12/19/2012 (Rev 26)",
+               "natural_key":"2012-12-19~Rev 26",
+               "applied":true,
+               "href":"http://localhost:8080/psc/api/v1/studies/NCS+Hi-Lo/template/amendments/2012-12-19%7ERev+26"
+            },
+            {
+               "display_name":"01/04/2013 (Rev 27)",
+               "natural_key":"2013-01-04~Rev 27",
+               "applied":true,
+               "href":"http://localhost:8080/psc/api/v1/studies/NCS+Hi-Lo/template/amendments/2013-01-04%7ERev+27"
+            },
+            {
+               "display_name":"01/07/2013 (Rev 28)",
+               "natural_key":"2013-01-07~Rev 28",
+               "applied":true,
+               "href":"http://localhost:8080/psc/api/v1/studies/NCS+Hi-Lo/template/amendments/2013-01-07%7ERev+28"
+            },
+            {
+               "display_name":"01/07/2013 (Rev 29)",
+               "natural_key":"2013-01-07~Rev 29",
+               "applied":true,
+               "href":"http://localhost:8080/psc/api/v1/studies/NCS+Hi-Lo/template/amendments/2013-01-07%7ERev+29"
+            },
+            {
+               "display_name":"01/08/2013 (Rev 30)",
+               "natural_key":"2013-01-08~Rev 30",
+               "applied":true,
+               "href":"http://localhost:8080/psc/api/v1/studies/NCS+Hi-Lo/template/amendments/2013-01-08%7ERev+30"
+            },
+            {
+               "display_name":"01/08/2013 (Rev 31)",
+               "natural_key":"2013-01-08~Rev 31",
+               "applied":true,
+               "href":"http://localhost:8080/psc/api/v1/studies/NCS+Hi-Lo/template/amendments/2013-01-08%7ERev+31"
+            },
+            {
+               "display_name":"01/17/2013 (Rev 32)",
+               "natural_key":"2013-01-17~Rev 32",
+               "applied":true,
+               "href":"http://localhost:8080/psc/api/v1/studies/NCS+Hi-Lo/template/amendments/2013-01-17%7ERev+32"
+            },
+            {
+               "display_name":"01/18/2013 (Rev 33)",
+               "natural_key":"2013-01-18~Rev 33",
+               "applied":true,
+               "href":"http://localhost:8080/psc/api/v1/studies/NCS+Hi-Lo/template/amendments/2013-01-18%7ERev+33"
+            },
+            {
+               "display_name":"01/23/2013 (Rev 34)",
+               "natural_key":"2013-01-23~Rev 34",
+               "applied":true,
+               "href":"http://localhost:8080/psc/api/v1/studies/NCS+Hi-Lo/template/amendments/2013-01-23%7ERev+34"
+            },
+            {
+               "display_name":"01/23/2013 (Rev 35)",
+               "natural_key":"2013-01-23~Rev 35",
+               "applied":true,
+               "href":"http://localhost:8080/psc/api/v1/studies/NCS+Hi-Lo/template/amendments/2013-01-23%7ERev+35"
+            },
+            {
+               "display_name":"02/01/2013 (Rev 36)",
+               "natural_key":"2013-02-01~Rev 36",
+               "applied":true,
+               "href":"http://localhost:8080/psc/api/v1/studies/NCS+Hi-Lo/template/amendments/2013-02-01%7ERev+36"
+            },
+            {
+               "display_name":"02/08/2013 (Rev 37)",
+               "natural_key":"2013-02-08~Rev 37",
+               "applied":true,
+               "href":"http://localhost:8080/psc/api/v1/studies/NCS+Hi-Lo/template/amendments/2013-02-08%7ERev+37"
+            },
+            {
+               "display_name":"02/26/2013 (Rev 38)",
+               "natural_key":"2013-02-26~Rev 38",
+               "applied":true,
+               "href":"http://localhost:8080/psc/api/v1/studies/NCS+Hi-Lo/template/amendments/2013-02-26%7ERev+38"
+            },
+            {
+               "display_name":"02/28/2013 (Rev 39)",
+               "natural_key":"2013-02-28~Rev 39",
+               "applied":true,
+               "href":"http://localhost:8080/psc/api/v1/studies/NCS+Hi-Lo/template/amendments/2013-02-28%7ERev+39"
+            },
+            {
+               "display_name":"03/05/2013 (Rev 40)",
+               "natural_key":"2013-03-05~Rev 40",
+               "applied":true,
+               "href":"http://localhost:8080/psc/api/v1/studies/NCS+Hi-Lo/template/amendments/2013-03-05%7ERev+40"
+            },
+            {
+               "display_name":"03/07/2013 (Rev 41)",
+               "natural_key":"2013-03-07~Rev 41",
+               "applied":true,
+               "href":"http://localhost:8080/psc/api/v1/studies/NCS+Hi-Lo/template/amendments/2013-03-07%7ERev+41"
+            },
+            {
+               "display_name":"03/08/2013 (Rev 42)",
+               "natural_key":"2013-03-08~Rev 42",
+               "applied":true,
+               "href":"http://localhost:8080/psc/api/v1/studies/NCS+Hi-Lo/template/amendments/2013-03-08%7ERev+42"
+            },
+            {
+               "display_name":"03/14/2013 (Rev 43)",
+               "natural_key":"2013-03-14~Rev 43",
+               "applied":true,
+               "href":"http://localhost:8080/psc/api/v1/studies/NCS+Hi-Lo/template/amendments/2013-03-14%7ERev+43"
+            },
+            {
+               "display_name":"03/18/2013 (Rev 44)",
+               "natural_key":"2013-03-18~Rev 44",
+               "applied":true,
+               "href":"http://localhost:8080/psc/api/v1/studies/NCS+Hi-Lo/template/amendments/2013-03-18%7ERev+44"
+            },
+            {
+               "display_name":"03/20/2013 (Rev 45)",
+               "natural_key":"2013-03-20~Rev 45",
+               "applied":true,
+               "href":"http://localhost:8080/psc/api/v1/studies/NCS+Hi-Lo/template/amendments/2013-03-20%7ERev+45"
+            },
+            {
+               "display_name":"03/20/2013 (Rev 46)",
+               "natural_key":"2013-03-20~Rev 46",
+               "applied":true,
+               "href":"http://localhost:8080/psc/api/v1/studies/NCS+Hi-Lo/template/amendments/2013-03-20%7ERev+46"
+            },
+            {
+               "display_name":"03/25/2013 (Rev 47)",
+               "natural_key":"2013-03-25~Rev 47",
+               "applied":true,
+               "href":"http://localhost:8080/psc/api/v1/studies/NCS+Hi-Lo/template/amendments/2013-03-25%7ERev+47"
+            },
+            {
+               "display_name":"03/26/2013 (Rev 48)",
+               "natural_key":"2013-03-26~Rev 48",
+               "applied":true,
+               "href":"http://localhost:8080/psc/api/v1/studies/NCS+Hi-Lo/template/amendments/2013-03-26%7ERev+48"
+            }
+         ]
+      }
+   ],
+   "days":{
+      "2013-03-26":{
+         "hidden_activities":"false",
+         "activities":[
+            {
+               "id":"e6a50810-ae7e-4481-aa7e-7e93875481a2",
+               "study":"NCS Hi-Lo",
+               "study_segment":"HI-Intensity: Pregnancy Visit 1",
+               "ideal_date":"2013-03-26",
+               "current_state":{
+                  "name":"NA",
+                  "date":"2013-03-26",
+                  "reason":"Removed in revision 03/25/2013 (Rev 47)"
+               },
+               "activity":{
+                  "name":"Child Consent",
+                  "type":"Consent"
+               },
+               "assignment":{
+                  "id":"xfda-a78s-h83b",
+                  "name":"NCS Hi-Lo",
+                  "subject_coordinator":{
+                     "username":"sgp658"
+                  },
+                  "id":"xfda-a78s-h83b",
+                  "privileges":[
+                     "update"
+                  ]
+               },
+               "subject":"Dawn Davidson",
+               "condition":"If Participant will not have PV2 event",
+               "labels":"event:pregnancy_visit_1 order:90_99 participant_type:child",
+               "state_history":[
+                  {
+                     "name":"conditional",
+                     "date":"2013-03-26",
+                     "reason":"Initialized from template"
+                  },
+                  {
+                     "name":"conditional",
+                     "date":"2013-03-26",
+                     "time":"17:14",
+                     "reason":"Yep."
+                  },
+                  {
+                     "name":"conditional",
+                     "date":"2013-03-26",
+                     "reason":"State change in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"conditional",
+                     "date":"2013-03-26",
+                     "reason":"State change in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"conditional",
+                     "date":"2013-03-26",
+                     "reason":"State change in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"conditional",
+                     "date":"2013-03-26",
+                     "reason":"State change in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"conditional",
+                     "date":"2013-03-26",
+                     "reason":"State change in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"conditional",
+                     "date":"2013-03-26",
+                     "reason":"State change in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"conditional",
+                     "date":"2013-03-26",
+                     "reason":"State change in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"conditional",
+                     "date":"2013-03-26",
+                     "reason":"State change in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"conditional",
+                     "date":"2013-03-26",
+                     "reason":"State change in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"conditional",
+                     "date":"2013-03-26",
+                     "reason":"State change in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"conditional",
+                     "date":"2013-03-26",
+                     "reason":"State change in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"conditional",
+                     "date":"2013-03-26",
+                     "reason":"State change in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"conditional",
+                     "date":"2013-03-26",
+                     "reason":"State change in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"conditional",
+                     "date":"2013-03-26",
+                     "reason":"State change in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"conditional",
+                     "date":"2013-03-26",
+                     "reason":"State change in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"conditional",
+                     "date":"2013-03-26",
+                     "reason":"State change in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"conditional",
+                     "date":"2013-03-26",
+                     "reason":"State change in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"conditional",
+                     "date":"2013-03-26",
+                     "reason":"State change in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"conditional",
+                     "date":"2013-03-26",
+                     "reason":"State change in revision 02/28/2013 (Rev 39)"
+                  },
+                  {
+                     "name":"conditional",
+                     "date":"2013-03-26",
+                     "reason":"State change in revision 03/18/2013 (Rev 44)"
+                  },
+                  {
+                     "name":"NA",
+                     "date":"2013-03-26",
+                     "reason":"Removed in revision 03/25/2013 (Rev 47)"
+                  }
+               ]
+            },
+            {
+               "id":"3cc9d266-562d-4906-8e6a-e0d8b7b38db9",
+               "study":"NCS Hi-Lo",
+               "study_segment":"PBS-Eligibility: PBS-Eligibility",
+               "ideal_date":"2013-03-26",
+               "plan_day":"1",
+               "current_state":{
+                  "name":"occurred",
+                  "date":"2013-03-26",
+                  "reason":""
+               },
+               "activity":{
+                  "name":"Pregnant Woman Informed Consent",
+                  "type":"Consent"
+               },
+               "assignment":{
+                  "id":"xfda-a78s-h83b",
+                  "name":"NCS Hi-Lo",
+                  "subject_coordinator":{
+                     "username":"sgp658"
+                  },
+                  "id":"xfda-a78s-h83b",
+                  "privileges":[
+                     "update"
+                  ]
+               },
+               "subject":"Dawn Davidson",
+               "condition":"if participant is eligible",
+               "labels":"event:pbs_participant_eligibility_screening form:2.0:irb_con_informed_consent form:2.1:irb_con_informed_consent form:2.2:irb_con_informed_consent form:3.0:irb_con_informed_consent form:3.1:irb_con_informed_consent form:3.2:irb_con_informed_consent order:90_01 participant_type:mother",
+               "formatted_plan_day":"Day 1",
+               "state_history":[
+                  {
+                     "name":"conditional",
+                     "date":"2013-03-26",
+                     "reason":"Initialized from template"
+                  },
+                  {
+                     "name":"occurred",
+                     "date":"2013-03-26",
+                     "reason":""
+                  }
+               ]
+            },
+            {
+               "id":"5d2cb085-629b-4f7f-b7c1-7f17caafa708",
+               "study":"NCS Hi-Lo",
+               "study_segment":"PBS-Eligibility: PBS-Eligibility",
+               "ideal_date":"2013-03-26",
+               "plan_day":"1",
+               "current_state":{
+                  "name":"occurred",
+                  "date":"2013-03-26",
+                  "reason":""
+               },
+               "activity":{
+                  "name":"PBS Eligibility Screener Interview",
+                  "type":"Instrument"
+               },
+               "assignment":{
+                  "id":"xfda-a78s-h83b",
+                  "name":"NCS Hi-Lo",
+                  "subject_coordinator":{
+                     "username":"sgp658"
+                  },
+                  "id":"xfda-a78s-h83b",
+                  "privileges":[
+                     "update"
+                  ]
+               },
+               "subject":"Dawn Davidson",
+               "labels":"event:pbs_participant_eligibility_screening instrument:3.0:ins_que_pbsamplingscreen_int_pbs_m3.0_v1.0 instrument:3.1:ins_que_pbsamplingscreen_int_pbs_m3.0_v1.0 instrument:3.2:ins_que_pbsamplingscreen_int_pbs_m3.0_v1.0 order:10_01",
+               "formatted_plan_day":"Day 1",
+               "state_history":[
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Initialized from template"
+                  },
+                  {
+                     "name":"occurred",
+                     "date":"2013-03-26",
+                     "reason":""
+                  }
+               ]
+            },
+            {
+               "id":"998cf64f-1784-428e-bb39-d294fbc44864",
+               "study":"NCS Hi-Lo",
+               "study_segment":"HI-Intensity: Pregnancy Visit 1",
+               "ideal_date":"2013-03-26",
+               "plan_day":"1",
+               "current_state":{
+                  "name":"canceled",
+                  "date":"2013-03-26",
+                  "reason":"Does not include an instrument for MDES version 3.0."
+               },
+               "activity":{
+                  "name":"Reconsideration Instrument",
+                  "type":"Instrument"
+               },
+               "assignment":{
+                  "id":"xfda-a78s-h83b",
+                  "name":"NCS Hi-Lo",
+                  "subject_coordinator":{
+                     "username":"sgp658"
+                  },
+                  "id":"xfda-a78s-h83b",
+                  "privileges":[
+                     "update"
+                  ]
+               },
+               "subject":"Dawn Davidson",
+               "labels":"event:pregnancy_visit_1 instrument:3.1:ins_con_reconsideration_dci_ehpbhi_m3.1_v1.0 instrument:3.2:ins_con_reconsideration_dci_ehpbhi_m3.1_v1.0 order:94_01 participant_type:mother",
+               "formatted_plan_day":"Day 1",
+               "state_history":[
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Initialized from template"
+                  },
+                  {
+                     "name":"canceled",
+                     "date":"2013-03-26",
+                     "reason":"Does not include an instrument for MDES version 3.0."
+                  }
+               ]
+            },
+            {
+               "id":"a34110a3-9b6c-4fee-8d5a-d5814822128f",
+               "study":"NCS Hi-Lo",
+               "study_segment":"PBS-Eligibility: PBS-Eligibility",
+               "ideal_date":"2013-03-26",
+               "plan_day":"1",
+               "current_state":{
+                  "name":"occurred",
+                  "date":"2013-03-26",
+                  "reason":""
+               },
+               "activity":{
+                  "name":"Tracing Module",
+                  "type":"Instrument"
+               },
+               "assignment":{
+                  "id":"xfda-a78s-h83b",
+                  "name":"NCS Hi-Lo",
+                  "subject_coordinator":{
+                     "username":"sgp658"
+                  },
+                  "id":"xfda-a78s-h83b",
+                  "privileges":[
+                     "update"
+                  ]
+               },
+               "subject":"Dawn Davidson",
+               "labels":"event:pbs_participant_eligibility_screening instrument:3.0:ins_que_tracing_int_ehpbhilipbs_m3.0_v1.0 instrument:3.1:ins_que_tracing_int_ehpbhilipbs_m3.0_v1.0 instrument:3.2:ins_que_tracing_int_ehpbhilipbs_m3.0_v1.0 order:10_99",
+               "formatted_plan_day":"Day 1",
+               "state_history":[
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Initialized from template"
+                  },
+                  {
+                     "name":"occurred",
+                     "date":"2013-03-26",
+                     "reason":""
+                  }
+               ]
+            }
+         ]
+      },
+      "2013-04-08":{
+         "hidden_activities":"false",
+         "activities":[
+            {
+               "id":"a6837d64-f8cf-4f07-9bcb-7c1e51c263e3",
+               "study":"NCS Hi-Lo",
+               "study_segment":"HI-Intensity: Pregnancy Visit 1",
+               "ideal_date":"2013-03-26",
+               "plan_day":"1",
+               "current_state":{
+                  "name":"occurred",
+                  "date":"2013-04-08",
+                  "reason":""
+               },
+               "activity":{
+                  "name":"Child Consent Birth to Six Months",
+                  "type":"Consent"
+               },
+               "assignment":{
+                  "id":"xfda-a78s-h83b",
+                  "name":"NCS Hi-Lo",
+                  "subject_coordinator":{
+                     "username":"sgp658"
+                  },
+                  "id":"xfda-a78s-h83b",
+                  "privileges":[
+                     "update"
+                  ]
+               },
+               "subject":"Dawn Davidson",
+               "condition":"If Participant will not have PV2 event",
+               "labels":"event:pregnancy_visit_1 form:2.0:irb_con_informed_consent form:2.1:irb_con_informed_consent form:2.2:irb_con_informed_consent form:3.0:irb_con_informed_consent form:3.1:irb_con_informed_consent form:3.2:irb_con_informed_consent order:90_99 participant_type:child",
+               "formatted_plan_day":"Day 1",
+               "state_history":[
+                  {
+                     "name":"conditional",
+                     "date":"2013-03-26",
+                     "reason":"Activity added in amendment 03/25/2013 (Rev 47)"
+                  },
+                  {
+                     "name":"conditional",
+                     "date":"2013-03-26",
+                     "reason":"State change in revision 03/26/2013 (Rev 48)"
+                  },
+                  {
+                     "name":"conditional",
+                     "date":"2013-03-26",
+                     "reason":"State change in revision 03/26/2013 (Rev 48)"
+                  },
+                  {
+                     "name":"conditional",
+                     "date":"2013-04-08",
+                     "time":"12:30",
+                     "reason":""
+                  },
+                  {
+                     "name":"conditional",
+                     "date":"2013-04-08",
+                     "time":"13:30",
+                     "reason":"I'd love to but... I'm teaching my cat to sing."
+                  },
+                  {
+                     "name":"occurred",
+                     "date":"2013-04-08",
+                     "reason":""
+                  }
+               ]
+            },
+            {
+               "id":"644bf83f-0c49-444c-9581-2e1ee5c2ea86",
+               "study":"NCS Hi-Lo",
+               "study_segment":"HI-Intensity: Pregnancy Visit 1",
+               "ideal_date":"2013-03-26",
+               "plan_day":"1",
+               "current_state":{
+                  "name":"occurred",
+                  "date":"2013-04-08",
+                  "reason":""
+               },
+               "activity":{
+                  "name":"Pregnant Woman Informed Consent",
+                  "type":"Consent"
+               },
+               "assignment":{
+                  "id":"xfda-a78s-h83b",
+                  "name":"NCS Hi-Lo",
+                  "subject_coordinator":{
+                     "username":"sgp658"
+                  },
+                  "id":"xfda-a78s-h83b",
+                  "privileges":[
+                     "update"
+                  ]
+               },
+               "subject":"Dawn Davidson",
+               "labels":"event:pregnancy_visit_1 form:2.0:irb_con_informed_consent form:2.1:irb_con_informed_consent form:2.2:irb_con_informed_consent form:3.0:irb_con_informed_consent form:3.1:irb_con_informed_consent form:3.2:irb_con_informed_consent order:00_99 participant_type:mother",
+               "formatted_plan_day":"Day 1",
+               "state_history":[
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Initialized from template"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "time":"17:14",
+                     "reason":"Yep."
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/28/2013 (Rev 39)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 03/18/2013 (Rev 44)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 03/26/2013 (Rev 48)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 03/26/2013 (Rev 48)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-04-08",
+                     "time":"12:30",
+                     "reason":""
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-04-08",
+                     "time":"13:30",
+                     "reason":"I'd love to but... I'm teaching my cat to sing."
+                  },
+                  {
+                     "name":"occurred",
+                     "date":"2013-04-08",
+                     "reason":""
+                  }
+               ]
+            },
+            {
+               "id":"42458867-8980-45e7-808d-7fd62cdf1ab9",
+               "study":"NCS Hi-Lo",
+               "study_segment":"HI-Intensity: Pregnancy Visit 1",
+               "ideal_date":"2013-03-26",
+               "plan_day":"1",
+               "current_state":{
+                  "name":"occurred",
+                  "date":"2013-04-08",
+                  "reason":""
+               },
+               "activity":{
+                  "name":"Participant Verification Instrument",
+                  "type":"Instrument"
+               },
+               "assignment":{
+                  "id":"xfda-a78s-h83b",
+                  "name":"NCS Hi-Lo",
+                  "subject_coordinator":{
+                     "username":"sgp658"
+                  },
+                  "id":"xfda-a78s-h83b",
+                  "privileges":[
+                     "update"
+                  ]
+               },
+               "subject":"Dawn Davidson",
+               "labels":"event:pregnancy_visit_1 instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one instrument:3.1:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one instrument:3.2:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one order:00_01 participant_type:mother",
+               "formatted_plan_day":"Day 1",
+               "state_history":[
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Initialized from template"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "time":"17:14",
+                     "reason":"Yep."
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/28/2013 (Rev 39)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 03/18/2013 (Rev 44)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 03/26/2013 (Rev 48)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 03/26/2013 (Rev 48)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-04-08",
+                     "time":"12:30",
+                     "reason":""
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-04-08",
+                     "time":"13:30",
+                     "reason":"I'd love to but... I'm teaching my cat to sing."
+                  },
+                  {
+                     "name":"occurred",
+                     "date":"2013-04-08",
+                     "reason":""
+                  }
+               ]
+            },
+            {
+               "id":"4675139a-6898-46fc-9d10-d1eac48990ef",
+               "study":"NCS Hi-Lo",
+               "study_segment":"HI-Intensity: Pregnancy Visit 1",
+               "ideal_date":"2013-03-26",
+               "plan_day":"1",
+               "current_state":{
+                  "name":"occurred",
+                  "date":"2013-04-08",
+                  "reason":""
+               },
+               "activity":{
+                  "name":"Pregnancy Visit 1 Interview",
+                  "type":"Instrument"
+               },
+               "assignment":{
+                  "id":"xfda-a78s-h83b",
+                  "name":"NCS Hi-Lo",
+                  "subject_coordinator":{
+                     "username":"sgp658"
+                  },
+                  "id":"xfda-a78s-h83b",
+                  "privileges":[
+                     "update"
+                  ]
+               },
+               "subject":"Dawn Davidson",
+               "labels":"event:pregnancy_visit_1 instrument:2.0:ins_que_pregvisit1_int_ehpbhi_p2_v2.0 instrument:2.1:ins_que_pregvisit1_int_ehpbhi_m2.1_v2.1 instrument:2.2:ins_que_pregvisit1_int_ehpbhi_m2.1_v2.1 instrument:3.0:ins_que_pregvisit1_int_ehpbhipbs_m3.0_v3.0 instrument:3.1:ins_que_pregvisit1_int_ehpbhipbs_m3.0_v3.0 instrument:3.2:ins_que_pregvisit1_int_ehpbhipbs_m3.0_v3.0 order:01_01 participant_type:mother",
+               "formatted_plan_day":"Day 1",
+               "state_history":[
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Initialized from template"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "time":"17:14",
+                     "reason":"Yep."
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/28/2013 (Rev 39)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 03/18/2013 (Rev 44)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 03/26/2013 (Rev 48)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 03/26/2013 (Rev 48)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-04-08",
+                     "time":"12:30",
+                     "reason":""
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-04-08",
+                     "time":"13:30",
+                     "reason":"I'd love to but... I'm teaching my cat to sing."
+                  },
+                  {
+                     "name":"occurred",
+                     "date":"2013-04-08",
+                     "reason":""
+                  }
+               ]
+            },
+            {
+               "id":"0dd74c2d-0c92-45f2-bc59-72f83f28c138",
+               "study":"NCS Hi-Lo",
+               "study_segment":"HI-Intensity: Pregnancy Visit 1",
+               "ideal_date":"2013-03-26",
+               "plan_day":"1",
+               "current_state":{
+                  "name":"scheduled",
+                  "date":"2013-04-08",
+                  "time":"14:45",
+                  "reason":"Dog sick."
+               },
+               "activity":{
+                  "name":"Biospecimen Adult Blood Instrument",
+                  "type":"Biospecimen"
+               },
+               "assignment":{
+                  "id":"xfda-a78s-h83b",
+                  "name":"NCS Hi-Lo",
+                  "subject_coordinator":{
+                     "username":"sgp658"
+                  },
+                  "id":"xfda-a78s-h83b",
+                  "privileges":[
+                     "update"
+                  ]
+               },
+               "subject":"Dawn Davidson",
+               "labels":"collection:biological event:pregnancy_visit_1 instrument:2.0:ins_bio_adultblood_dci_ehpbhi_p2_v1.0 instrument:2.1:ins_bio_adultblood_dci_ehpbhi_p2_v1.0 instrument:2.2:ins_bio_adultblood_dci_ehpbhi_m2.2_v2.0 instrument:3.0:ins_bio_adultblood_dci_ehpbhi_m2.2_v2.0 instrument:3.1:ins_bio_adultblood_dci_ehpbhi_m2.2_v2.0 instrument:3.2:ins_bio_adultblood_dci_ehpbhi_m2.2_v2.0 order:10_01 participant_type:mother",
+               "formatted_plan_day":"Day 1",
+               "state_history":[
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Initialized from template"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "time":"17:14",
+                     "reason":"Yep."
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/28/2013 (Rev 39)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 03/18/2013 (Rev 44)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 03/26/2013 (Rev 48)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 03/26/2013 (Rev 48)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-04-08",
+                     "time":"12:30",
+                     "reason":""
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-04-08",
+                     "time":"13:30",
+                     "reason":"I'd love to but... I'm teaching my cat to sing."
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-04-10",
+                     "time":"17:30",
+                     "reason":"Measles."
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-04-08",
+                     "time":"14:45",
+                     "reason":"Dog sick."
+                  }
+               ]
+            },
+            {
+               "id":"14ec1a89-0591-4059-b31c-36b0670bb7ff",
+               "study":"NCS Hi-Lo",
+               "study_segment":"HI-Intensity: Pregnancy Visit 1",
+               "ideal_date":"2013-03-26",
+               "plan_day":"1",
+               "current_state":{
+                  "name":"scheduled",
+                  "date":"2013-04-08",
+                  "time":"14:45",
+                  "reason":"Dog sick."
+               },
+               "activity":{
+                  "name":"Biospecimen Adult Urine Instrument",
+                  "type":"Biospecimen"
+               },
+               "assignment":{
+                  "id":"xfda-a78s-h83b",
+                  "name":"NCS Hi-Lo",
+                  "subject_coordinator":{
+                     "username":"sgp658"
+                  },
+                  "id":"xfda-a78s-h83b",
+                  "privileges":[
+                     "update"
+                  ]
+               },
+               "subject":"Dawn Davidson",
+               "labels":"collection:biological event:pregnancy_visit_1 instrument:2.0:ins_bio_adulturine_dci_ehpbhi_p2_v1.0 instrument:2.1:ins_bio_adulturine_dci_ehpbhi_m2.1_v1.1 instrument:2.2:ins_bio_adulturine_dci_ehpbhi_m2.1_v1.1 instrument:3.0:ins_bio_adulturine_dci_ehpbhi_m2.1_v1.1 instrument:3.1:ins_bio_adulturine_dci_ehpbhi_m2.1_v1.1 instrument:3.2:ins_bio_adulturine_dci_ehpbhi_m2.1_v1.1 order:11_01 participant_type:mother",
+               "formatted_plan_day":"Day 1",
+               "state_history":[
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Initialized from template"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "time":"17:14",
+                     "reason":"Yep."
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/28/2013 (Rev 39)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 03/18/2013 (Rev 44)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 03/26/2013 (Rev 48)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 03/26/2013 (Rev 48)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-04-08",
+                     "time":"12:30",
+                     "reason":""
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-04-08",
+                     "time":"13:30",
+                     "reason":"I'd love to but... I'm teaching my cat to sing."
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-04-10",
+                     "time":"17:30",
+                     "reason":"Measles."
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-04-08",
+                     "time":"14:45",
+                     "reason":"Dog sick."
+                  }
+               ]
+            },
+            {
+               "id":"5ccd3626-278f-4e47-876f-a34afdf63d5d",
+               "study":"NCS Hi-Lo",
+               "study_segment":"HI-Intensity: Pregnancy Visit 1",
+               "ideal_date":"2013-03-26",
+               "plan_day":"1",
+               "current_state":{
+                  "name":"scheduled",
+                  "date":"2013-04-08",
+                  "time":"14:45",
+                  "reason":"Dog sick."
+               },
+               "activity":{
+                  "name":"Environmental Sample Kit Distribution Instrument",
+                  "type":"Environment"
+               },
+               "assignment":{
+                  "id":"xfda-a78s-h83b",
+                  "name":"NCS Hi-Lo",
+                  "subject_coordinator":{
+                     "username":"sgp658"
+                  },
+                  "id":"xfda-a78s-h83b",
+                  "privileges":[
+                     "update"
+                  ]
+               },
+               "subject":"Dawn Davidson",
+               "labels":"collection:environmental event:pregnancy_visit_1 instrument:2.2:ins_env_sampledistrib_dci_ehpbhi_m2.2_v1.0 instrument:3.0:ins_env_sampledistrib_dci_ehpbhi_m2.2_v1.0 instrument:3.1:ins_env_sampledistrib_dci_ehpbhi_m2.2_v1.0 instrument:3.2:ins_env_sampledistrib_dci_ehpbhi_m2.2_v1.0 order:23_01 participant_type:mother",
+               "formatted_plan_day":"Day 1",
+               "state_history":[
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Initialized from template"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "time":"17:14",
+                     "reason":"Yep."
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/28/2013 (Rev 39)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 03/18/2013 (Rev 44)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 03/26/2013 (Rev 48)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 03/26/2013 (Rev 48)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-04-08",
+                     "time":"12:30",
+                     "reason":""
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-04-08",
+                     "time":"13:30",
+                     "reason":"I'd love to but... I'm teaching my cat to sing."
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-04-10",
+                     "time":"17:30",
+                     "reason":"Measles."
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-04-08",
+                     "time":"14:45",
+                     "reason":"Dog sick."
+                  }
+               ]
+            },
+            {
+               "id":"64ddcda6-00a6-45f4-b5af-c7b00a5ea6cb",
+               "study":"NCS Hi-Lo",
+               "study_segment":"HI-Intensity: Pregnancy Visit 1",
+               "ideal_date":"2013-03-26",
+               "plan_day":"1",
+               "current_state":{
+                  "name":"scheduled",
+                  "date":"2013-04-08",
+                  "time":"14:45",
+                  "reason":"Dog sick."
+               },
+               "activity":{
+                  "name":"Environmental Tap Water Pesticides Technician Collect Instrument",
+                  "type":"Environment"
+               },
+               "assignment":{
+                  "id":"xfda-a78s-h83b",
+                  "name":"NCS Hi-Lo",
+                  "subject_coordinator":{
+                     "username":"sgp658"
+                  },
+                  "id":"xfda-a78s-h83b",
+                  "privileges":[
+                     "update"
+                  ]
+               },
+               "subject":"Dawn Davidson",
+               "labels":"collection:environmental event:pregnancy_visit_1 instrument:2.0:ins_env_tapwaterpesttechcollect_dci_ehpbhi_p2_v1.0 instrument:2.1:ins_env_tapwaterpesttechcollect_dci_ehpbhi_m2.1_v1.1 instrument:2.2:ins_env_tapwaterpesttechcollect_dci_ehpbhi_m2.2_v2.0 instrument:3.0:ins_env_tapwaterpesttechcollect_dci_ehpbhi_m2.2_v2.0 instrument:3.1:ins_env_tapwaterpesttechcollect_dci_ehpbhi_m2.2_v2.0 instrument:3.2:ins_env_tapwaterpesttechcollect_dci_ehpbhi_m2.2_v2.0 order:20_01 participant_type:mother",
+               "formatted_plan_day":"Day 1",
+               "state_history":[
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Initialized from template"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "time":"17:14",
+                     "reason":"Yep."
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/28/2013 (Rev 39)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 03/18/2013 (Rev 44)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 03/26/2013 (Rev 48)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 03/26/2013 (Rev 48)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-04-08",
+                     "time":"12:30",
+                     "reason":""
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-04-08",
+                     "time":"13:30",
+                     "reason":"I'd love to but... I'm teaching my cat to sing."
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-04-10",
+                     "time":"17:30",
+                     "reason":"Measles."
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-04-08",
+                     "time":"14:45",
+                     "reason":"Dog sick."
+                  }
+               ]
+            },
+            {
+               "id":"efacef51-8e42-4f36-afbe-2fa2f6fc12d9",
+               "study":"NCS Hi-Lo",
+               "study_segment":"HI-Intensity: Pregnancy Visit 1",
+               "ideal_date":"2013-03-26",
+               "plan_day":"1",
+               "current_state":{
+                  "name":"scheduled",
+                  "date":"2013-04-08",
+                  "time":"14:45",
+                  "reason":"Dog sick."
+               },
+               "activity":{
+                  "name":"Environmental Tap Water Pharmaceuticals Technician Collect Instrument",
+                  "type":"Environment"
+               },
+               "assignment":{
+                  "id":"xfda-a78s-h83b",
+                  "name":"NCS Hi-Lo",
+                  "subject_coordinator":{
+                     "username":"sgp658"
+                  },
+                  "id":"xfda-a78s-h83b",
+                  "privileges":[
+                     "update"
+                  ]
+               },
+               "subject":"Dawn Davidson",
+               "labels":"collection:environmental event:pregnancy_visit_1 instrument:2.0:ins_env_tapwaterpharmtechcollect_dci_ehpbhi_p2_v1.0 instrument:2.1:ins_env_tapwaterpharmtechcollect_dci_ehpbhi_m2.1_v1.1a instrument:2.2:ins_env_tapwaterpharmtechcollect_dci_ehpbhi_m2.2_v2.0 instrument:3.0:ins_env_tapwaterpharmtechcollect_dci_ehpbhi_m2.2_v2.0 instrument:3.1:ins_env_tapwaterpharmtechcollect_dci_ehpbhi_m2.2_v2.0 instrument:3.2:ins_env_tapwaterpharmtechcollect_dci_ehpbhi_m2.2_v2.0 order:21_01 participant_type:mother",
+               "formatted_plan_day":"Day 1",
+               "state_history":[
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Initialized from template"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "time":"17:14",
+                     "reason":"Yep."
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/28/2013 (Rev 39)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 03/18/2013 (Rev 44)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 03/26/2013 (Rev 48)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 03/26/2013 (Rev 48)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-04-08",
+                     "time":"12:30",
+                     "reason":""
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-04-08",
+                     "time":"13:30",
+                     "reason":"I'd love to but... I'm teaching my cat to sing."
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-04-10",
+                     "time":"17:30",
+                     "reason":"Measles."
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-04-08",
+                     "time":"14:45",
+                     "reason":"Dog sick."
+                  }
+               ]
+            },
+            {
+               "id":"6604c707-06b8-4b67-96eb-b438b6d7443b",
+               "study":"NCS Hi-Lo",
+               "study_segment":"HI-Intensity: Pregnancy Visit 1",
+               "ideal_date":"2013-03-26",
+               "plan_day":"1",
+               "current_state":{
+                  "name":"scheduled",
+                  "date":"2013-04-08",
+                  "time":"14:45",
+                  "reason":"Dog sick."
+               },
+               "activity":{
+                  "name":"Environmental Tap Water TWF Participant Collect SAQ Specification",
+                  "type":"Environment"
+               },
+               "assignment":{
+                  "id":"xfda-a78s-h83b",
+                  "name":"NCS Hi-Lo",
+                  "subject_coordinator":{
+                     "username":"sgp658"
+                  },
+                  "id":"xfda-a78s-h83b",
+                  "privileges":[
+                     "update"
+                  ]
+               },
+               "subject":"Dawn Davidson",
+               "labels":"collection:environmental event:pregnancy_visit_1 instrument:2.2:ins_env_tapwaterpharmpartcollect_saqspec_ehpbhi_m2.2_v1.0 instrument:3.0:ins_env_tapwaterpharmpartcollect_saqspec_ehpbhi_m2.2_v1.0 instrument:3.1:ins_env_tapwaterpharmpartcollect_saqspec_ehpbhi_m2.2_v1.0 instrument:3.2:ins_env_tapwaterpharmpartcollect_saqspec_ehpbhi_m2.2_v1.0 order:21_02 participant_type:mother",
+               "formatted_plan_day":"Day 1",
+               "state_history":[
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Initialized from template"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "time":"17:14",
+                     "reason":"Yep."
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/28/2013 (Rev 39)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 03/18/2013 (Rev 44)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 03/26/2013 (Rev 48)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 03/26/2013 (Rev 48)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-04-08",
+                     "time":"12:30",
+                     "reason":""
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-04-08",
+                     "time":"13:30",
+                     "reason":"I'd love to but... I'm teaching my cat to sing."
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-04-10",
+                     "time":"17:30",
+                     "reason":"Measles."
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-04-08",
+                     "time":"14:45",
+                     "reason":"Dog sick."
+                  }
+               ]
+            },
+            {
+               "id":"c8dc75fc-f3e8-49ef-9d9b-76c1f333af0c",
+               "study":"NCS Hi-Lo",
+               "study_segment":"HI-Intensity: Pregnancy Visit 1",
+               "ideal_date":"2013-03-26",
+               "plan_day":"1",
+               "current_state":{
+                  "name":"scheduled",
+                  "date":"2013-04-08",
+                  "time":"14:45",
+                  "reason":"Dog sick."
+               },
+               "activity":{
+                  "name":"Environmental Tap Water TWQ Participant Collect SAQ Specification",
+                  "type":"Environment"
+               },
+               "assignment":{
+                  "id":"xfda-a78s-h83b",
+                  "name":"NCS Hi-Lo",
+                  "subject_coordinator":{
+                     "username":"sgp658"
+                  },
+                  "id":"xfda-a78s-h83b",
+                  "privileges":[
+                     "update"
+                  ]
+               },
+               "subject":"Dawn Davidson",
+               "labels":"collection:environmental event:pregnancy_visit_1 instrument:2.2:ins_env_tapwaterpestpartcollect_saqspec_ehpbhi_m2.2_v1.0 instrument:3.0:ins_env_tapwaterpestpartcollect_saqspec_ehpbhi_m2.2_v1.0 instrument:3.1:ins_env_tapwaterpestpartcollect_saqspec_ehpbhi_m2.2_v1.0 instrument:3.2:ins_env_tapwaterpestpartcollect_saqspec_ehpbhi_m2.2_v1.0 order:20_02 participant_type:mother",
+               "formatted_plan_day":"Day 1",
+               "state_history":[
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Initialized from template"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "time":"17:14",
+                     "reason":"Yep."
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/28/2013 (Rev 39)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 03/18/2013 (Rev 44)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 03/26/2013 (Rev 48)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 03/26/2013 (Rev 48)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-04-08",
+                     "time":"12:30",
+                     "reason":""
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-04-08",
+                     "time":"13:30",
+                     "reason":"I'd love to but... I'm teaching my cat to sing."
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-04-10",
+                     "time":"17:30",
+                     "reason":"Measles."
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-04-08",
+                     "time":"14:45",
+                     "reason":"Dog sick."
+                  }
+               ]
+            },
+            {
+               "id":"31bb3dfa-c91d-4743-89ac-5d786f2307f0",
+               "study":"NCS Hi-Lo",
+               "study_segment":"HI-Intensity: Pregnancy Visit 1",
+               "ideal_date":"2013-03-26",
+               "plan_day":"1",
+               "current_state":{
+                  "name":"scheduled",
+                  "date":"2013-04-08",
+                  "time":"14:45",
+                  "reason":"Dog sick."
+               },
+               "activity":{
+                  "name":"Environmental Vacuum Bag Dust (VBD) Participant Collect SAQ Specification",
+                  "type":"Environment"
+               },
+               "assignment":{
+                  "id":"xfda-a78s-h83b",
+                  "name":"NCS Hi-Lo",
+                  "subject_coordinator":{
+                     "username":"sgp658"
+                  },
+                  "id":"xfda-a78s-h83b",
+                  "privileges":[
+                     "update"
+                  ]
+               },
+               "subject":"Dawn Davidson",
+               "labels":"collection:environmental event:pregnancy_visit_1 instrument:2.2:ins_env_vacbagdustpartcollect_saqspec_ehpbhi_m2.2_v1.0 instrument:3.0:ins_env_vacbagdustpartcollect_saqspec_ehpbhi_m2.2_v1.0 instrument:3.1:ins_env_vacbagdustpartcollect_saqspec_ehpbhi_m2.2_v1.0 instrument:3.2:ins_env_vacbagdustpartcollect_saqspec_ehpbhi_m2.2_v1.0 order:22_02 participant_type:mother",
+               "formatted_plan_day":"Day 1",
+               "state_history":[
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Initialized from template"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "time":"17:14",
+                     "reason":"Yep."
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/28/2013 (Rev 39)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 03/18/2013 (Rev 44)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 03/26/2013 (Rev 48)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 03/26/2013 (Rev 48)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-04-08",
+                     "time":"12:30",
+                     "reason":""
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-04-08",
+                     "time":"13:30",
+                     "reason":"I'd love to but... I'm teaching my cat to sing."
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-04-10",
+                     "time":"17:30",
+                     "reason":"Measles."
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-04-08",
+                     "time":"14:45",
+                     "reason":"Dog sick."
+                  }
+               ]
+            },
+            {
+               "id":"8a6e43f5-85ee-4153-bb41-8b6c61e0f4bd",
+               "study":"NCS Hi-Lo",
+               "study_segment":"HI-Intensity: Pregnancy Visit 1",
+               "ideal_date":"2013-03-26",
+               "plan_day":"1",
+               "current_state":{
+                  "name":"scheduled",
+                  "date":"2013-04-08",
+                  "time":"14:45",
+                  "reason":"Dog sick."
+               },
+               "activity":{
+                  "name":"Environmental Vacuum Bag Dust Technician Collect Instrument",
+                  "type":"Environment"
+               },
+               "assignment":{
+                  "id":"xfda-a78s-h83b",
+                  "name":"NCS Hi-Lo",
+                  "subject_coordinator":{
+                     "username":"sgp658"
+                  },
+                  "id":"xfda-a78s-h83b",
+                  "privileges":[
+                     "update"
+                  ]
+               },
+               "subject":"Dawn Davidson",
+               "labels":"collection:environmental event:pregnancy_visit_1 instrument:2.0:ins_env_vacbagdusttechcollect_dci_ehpbhi_p2_v1.0 instrument:2.1:ins_env_vacbagdusttechcollect_dci_ehpbhi_m2.1_v1.1 instrument:2.2:ins_env_vacbagdusttechcollect_dci_ehpbhi_m2.2_v2.0 instrument:3.0:ins_env_vacbagdusttechcollect_dci_ehpbhi_m2.2_v2.0 instrument:3.1:ins_env_vacbagdusttechcollect_dci_ehpbhi_m2.2_v2.0 instrument:3.2:ins_env_vacbagdusttechcollect_dci_ehpbhi_m2.2_v2.0 order:22_01 participant_type:mother",
+               "formatted_plan_day":"Day 1",
+               "state_history":[
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Initialized from template"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "time":"17:14",
+                     "reason":"Yep."
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/28/2013 (Rev 39)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 03/18/2013 (Rev 44)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 03/26/2013 (Rev 48)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 03/26/2013 (Rev 48)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-04-08",
+                     "time":"12:30",
+                     "reason":""
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-04-08",
+                     "time":"13:30",
+                     "reason":"I'd love to but... I'm teaching my cat to sing."
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-04-10",
+                     "time":"17:30",
+                     "reason":"Measles."
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-04-08",
+                     "time":"14:45",
+                     "reason":"Dog sick."
+                  }
+               ]
+            },
+            {
+               "id":"84ebb7a7-3252-440b-ac2b-b254fdb91800",
+               "study":"NCS Hi-Lo",
+               "study_segment":"HI-Intensity: Pregnancy Visit 1",
+               "ideal_date":"2013-03-26",
+               "plan_day":"1",
+               "current_state":{
+                  "name":"conditional",
+                  "date":"2013-04-08",
+                  "time":"14:45",
+                  "reason":"Dog sick."
+               },
+               "activity":{
+                  "name":"Birth Visit Information Sheet",
+                  "type":"Information Sheet"
+               },
+               "assignment":{
+                  "id":"xfda-a78s-h83b",
+                  "name":"NCS Hi-Lo",
+                  "subject_coordinator":{
+                     "username":"sgp658"
+                  },
+                  "id":"xfda-a78s-h83b",
+                  "privileges":[
+                     "update"
+                  ]
+               },
+               "subject":"Dawn Davidson",
+               "condition":"if this is only visit before birth of baby",
+               "labels":"event:pregnancy_visit_1 order:95_01",
+               "formatted_plan_day":"Day 1",
+               "state_history":[
+                  {
+                     "name":"conditional",
+                     "date":"2013-03-26",
+                     "reason":"Initialized from template"
+                  },
+                  {
+                     "name":"conditional",
+                     "date":"2013-03-26",
+                     "time":"17:14",
+                     "reason":"Yep."
+                  },
+                  {
+                     "name":"conditional",
+                     "date":"2013-03-26",
+                     "reason":"State change in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"conditional",
+                     "date":"2013-03-26",
+                     "reason":"State change in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"conditional",
+                     "date":"2013-03-26",
+                     "reason":"State change in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"conditional",
+                     "date":"2013-03-26",
+                     "reason":"State change in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"conditional",
+                     "date":"2013-03-26",
+                     "reason":"State change in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"conditional",
+                     "date":"2013-03-26",
+                     "reason":"State change in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"conditional",
+                     "date":"2013-03-26",
+                     "reason":"State change in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"conditional",
+                     "date":"2013-03-26",
+                     "reason":"State change in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"conditional",
+                     "date":"2013-03-26",
+                     "reason":"State change in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"conditional",
+                     "date":"2013-03-26",
+                     "reason":"State change in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"conditional",
+                     "date":"2013-03-26",
+                     "reason":"State change in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"conditional",
+                     "date":"2013-03-26",
+                     "reason":"State change in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"conditional",
+                     "date":"2013-03-26",
+                     "reason":"State change in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"conditional",
+                     "date":"2013-03-26",
+                     "reason":"State change in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"conditional",
+                     "date":"2013-03-26",
+                     "reason":"State change in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"conditional",
+                     "date":"2013-03-26",
+                     "reason":"State change in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"conditional",
+                     "date":"2013-03-26",
+                     "reason":"State change in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"conditional",
+                     "date":"2013-03-26",
+                     "reason":"State change in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"conditional",
+                     "date":"2013-03-26",
+                     "reason":"State change in revision 02/28/2013 (Rev 39)"
+                  },
+                  {
+                     "name":"conditional",
+                     "date":"2013-03-26",
+                     "reason":"State change in revision 03/18/2013 (Rev 44)"
+                  },
+                  {
+                     "name":"conditional",
+                     "date":"2013-03-26",
+                     "reason":"State change in revision 03/26/2013 (Rev 48)"
+                  },
+                  {
+                     "name":"conditional",
+                     "date":"2013-03-26",
+                     "reason":"State change in revision 03/26/2013 (Rev 48)"
+                  },
+                  {
+                     "name":"conditional",
+                     "date":"2013-04-08",
+                     "time":"12:30",
+                     "reason":""
+                  },
+                  {
+                     "name":"conditional",
+                     "date":"2013-04-08",
+                     "time":"13:30",
+                     "reason":"I'd love to but... I'm teaching my cat to sing."
+                  },
+                  {
+                     "name":"conditional",
+                     "date":"2013-04-10",
+                     "time":"17:30",
+                     "reason":"Measles."
+                  },
+                  {
+                     "name":"conditional",
+                     "date":"2013-04-08",
+                     "time":"14:45",
+                     "reason":"Dog sick."
+                  }
+               ]
+            },
+            {
+               "id":"a8f02c09-d376-4333-9ca6-b32a167cde2e",
+               "study":"NCS Hi-Lo",
+               "study_segment":"HI-Intensity: Pregnancy Visit 1",
+               "ideal_date":"2013-03-26",
+               "plan_day":"1",
+               "current_state":{
+                  "name":"scheduled",
+                  "date":"2013-04-08",
+                  "time":"14:45",
+                  "reason":"Dog sick."
+               },
+               "activity":{
+                  "name":"Pregnancy Visit 1 Information Sheet",
+                  "type":"Information Sheet"
+               },
+               "assignment":{
+                  "id":"xfda-a78s-h83b",
+                  "name":"NCS Hi-Lo",
+                  "subject_coordinator":{
+                     "username":"sgp658"
+                  },
+                  "id":"xfda-a78s-h83b",
+                  "privileges":[
+                     "update"
+                  ]
+               },
+               "subject":"Dawn Davidson",
+               "labels":"event:pregnancy_visit_1 order:95_02",
+               "formatted_plan_day":"Day 1",
+               "state_history":[
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Initialized from template"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "time":"17:14",
+                     "reason":"Yep."
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/28/2013 (Rev 39)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 03/18/2013 (Rev 44)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 03/26/2013 (Rev 48)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 03/26/2013 (Rev 48)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-04-08",
+                     "time":"12:30",
+                     "reason":""
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-04-08",
+                     "time":"13:30",
+                     "reason":"I'd love to but... I'm teaching my cat to sing."
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-04-10",
+                     "time":"17:30",
+                     "reason":"Measles."
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-04-08",
+                     "time":"14:45",
+                     "reason":"Dog sick."
+                  }
+               ]
+            },
+            {
+               "id":"6d7e72c4-f9f3-491d-b2e3-7e040091ce06",
+               "study":"NCS Hi-Lo",
+               "study_segment":"HI-Intensity: Pregnancy Visit 1",
+               "ideal_date":"2013-03-26",
+               "plan_day":"1",
+               "current_state":{
+                  "name":"scheduled",
+                  "date":"2013-04-08",
+                  "time":"14:45",
+                  "reason":"Dog sick."
+               },
+               "activity":{
+                  "name":"Pregnancy Health Care Log",
+                  "type":"Instrument"
+               },
+               "assignment":{
+                  "id":"xfda-a78s-h83b",
+                  "name":"NCS Hi-Lo",
+                  "subject_coordinator":{
+                     "username":"sgp658"
+                  },
+                  "id":"xfda-a78s-h83b",
+                  "privileges":[
+                     "update"
+                  ]
+               },
+               "subject":"Dawn Davidson",
+               "labels":"event:pregnancy_visit_1 order:95_03",
+               "formatted_plan_day":"Day 1",
+               "state_history":[
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Initialized from template"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "time":"17:14",
+                     "reason":"Yep."
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/28/2013 (Rev 39)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 03/18/2013 (Rev 44)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 03/26/2013 (Rev 48)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 03/26/2013 (Rev 48)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-04-08",
+                     "time":"12:30",
+                     "reason":""
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-04-08",
+                     "time":"13:30",
+                     "reason":"I'd love to but... I'm teaching my cat to sing."
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-04-10",
+                     "time":"17:30",
+                     "reason":"Measles."
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-04-08",
+                     "time":"14:45",
+                     "reason":"Dog sick."
+                  }
+               ]
+            },
+            {
+               "id":"10b76ba6-da37-4a38-8904-1a7226713e43",
+               "study":"NCS Hi-Lo",
+               "study_segment":"HI-Intensity: Pregnancy Visit 1",
+               "ideal_date":"2013-03-26",
+               "plan_day":"1",
+               "current_state":{
+                  "name":"scheduled",
+                  "date":"2013-04-08",
+                  "time":"14:45",
+                  "reason":"Dog sick."
+               },
+               "activity":{
+                  "name":"Pregnancy Visit 1 SAQ",
+                  "type":"Instrument"
+               },
+               "assignment":{
+                  "id":"xfda-a78s-h83b",
+                  "name":"NCS Hi-Lo",
+                  "subject_coordinator":{
+                     "username":"sgp658"
+                  },
+                  "id":"xfda-a78s-h83b",
+                  "privileges":[
+                     "update"
+                  ]
+               },
+               "subject":"Dawn Davidson",
+               "labels":"event:pregnancy_visit_1 instrument:2.0:ins_que_pregvisit1_saq_ehpbhi_p2_v2.0 instrument:2.1:ins_que_pregvisit1_saq_ehpbhi_m2.1_v3.0 instrument:2.2:ins_que_pregvisit1_saq_ehpbhi_m2.1_v3.0 instrument:3.0:ins_que_pregvisit1_saqspec_ehpbhipbs_m3.0_v4.0 instrument:3.1:ins_que_pregvisit1_saqspec_ehpbhipbs_m3.0_v4.0 instrument:3.2:ins_que_pregvisit1_saqspec_ehpbhipbs_m3.0_v4.0 order:02_01 participant_type:mother",
+               "formatted_plan_day":"Day 1",
+               "state_history":[
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Initialized from template"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "time":"17:14",
+                     "reason":"Yep."
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/28/2013 (Rev 39)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 03/18/2013 (Rev 44)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 03/26/2013 (Rev 48)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 03/26/2013 (Rev 48)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-04-08",
+                     "time":"12:30",
+                     "reason":""
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-04-08",
+                     "time":"13:30",
+                     "reason":"I'd love to but... I'm teaching my cat to sing."
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-04-10",
+                     "time":"17:30",
+                     "reason":"Measles."
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-04-08",
+                     "time":"14:45",
+                     "reason":"Dog sick."
+                  }
+               ]
+            },
+            {
+               "id":"9def548b-6a3d-4be9-a2e4-b0ea075eae3b",
+               "study":"NCS Hi-Lo",
+               "study_segment":"HI-Intensity: Pregnancy Visit 1",
+               "ideal_date":"2013-03-26",
+               "plan_day":"1",
+               "current_state":{
+                  "name":"scheduled",
+                  "date":"2013-04-08",
+                  "time":"14:45",
+                  "reason":"Dog sick."
+               },
+               "activity":{
+                  "name":"Tracing Module",
+                  "type":"Instrument"
+               },
+               "assignment":{
+                  "id":"xfda-a78s-h83b",
+                  "name":"NCS Hi-Lo",
+                  "subject_coordinator":{
+                     "username":"sgp658"
+                  },
+                  "id":"xfda-a78s-h83b",
+                  "privileges":[
+                     "update"
+                  ]
+               },
+               "subject":"Dawn Davidson",
+               "labels":"event:pregnancy_visit_1 instrument:3.0:ins_que_tracing_int_ehpbhilipbs_m3.0_v1.0 instrument:3.1:ins_que_tracing_int_ehpbhilipbs_m3.0_v1.0 instrument:3.2:ins_que_tracing_int_ehpbhilipbs_m3.0_v1.0 order:90_01",
+               "formatted_plan_day":"Day 1",
+               "state_history":[
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Initialized from template"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "time":"17:14",
+                     "reason":"Yep."
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/26/2013 (Rev 38)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 02/28/2013 (Rev 39)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 03/18/2013 (Rev 44)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 03/26/2013 (Rev 48)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-03-26",
+                     "reason":"Shifted forward 0 days in revision 03/26/2013 (Rev 48)"
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-04-08",
+                     "time":"12:30",
+                     "reason":""
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-04-08",
+                     "time":"13:30",
+                     "reason":"I'd love to but... I'm teaching my cat to sing."
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-04-10",
+                     "time":"17:30",
+                     "reason":"Measles."
+                  },
+                  {
+                     "name":"scheduled",
+                     "date":"2013-04-08",
+                     "time":"14:45",
+                     "reason":"Dog sick."
+                  }
+               ]
+            }
+         ]
+      },
+      "2013-04-11":{
+         "hidden_activities":"false",
+         "activities":[
+            {
+               "id":"58623fb6-a46f-4425-9a14-f896b8538861",
+               "study":"NCS Hi-Lo",
+               "study_segment":"Informed Consent: Informed Consent",
+               "ideal_date":"2013-04-11",
+               "plan_day":"1",
+               "current_state":{
+                  "name":"scheduled",
+                  "date":"2013-04-11",
+                  "reason":"Initialized from template"
+               },
+               "activity":{
+                  "name":"Informed Consent",
+                  "type":"Consent"
+               },
+               "assignment":{
+                  "id":"xfda-a78s-h83b",
+                  "name":"NCS Hi-Lo",
+                  "subject_coordinator":{
+                     "username":"sgp658"
+                  },
+                  "id":"xfda-a78s-h83b",
+                  "privileges":[
+                     "update"
+                  ]
+               },
+               "subject":"Dawn Davidson",
+               "labels":"event:informed_consent form:2.0:irb_con_informed_consent form:2.1:irb_con_informed_consent form:2.2:irb_con_informed_consent form:3.0:irb_con_informed_consent form:3.1:irb_con_informed_consent form:3.2:irb_con_informed_consent order:01_01 participant_type:mother",
+               "formatted_plan_day":"Day 1",
+               "state_history":[
+                  {
+                     "name":"scheduled",
+                     "date":"2013-04-11",
+                     "reason":"Initialized from template"
+                  }
+               ]
+            },
+            {
+               "id":"1257ef1c-2735-47b9-81db-905bdc580df6",
+               "study":"NCS Hi-Lo",
+               "study_segment":"Informed Consent: Informed Consent",
+               "ideal_date":"2013-04-11",
+               "plan_day":"1",
+               "current_state":{
+                  "name":"conditional",
+                  "date":"2013-04-11",
+                  "reason":"Initialized from template"
+               },
+               "activity":{
+                  "name":"Non-Interview Report",
+                  "type":"Consent"
+               },
+               "assignment":{
+                  "id":"xfda-a78s-h83b",
+                  "name":"NCS Hi-Lo",
+                  "subject_coordinator":{
+                     "username":"sgp658"
+                  },
+                  "id":"xfda-a78s-h83b",
+                  "privileges":[
+                     "update"
+                  ]
+               },
+               "subject":"Dawn Davidson",
+               "condition":"If Participant refused to consent",
+               "labels":"event:informed_consent form:3.0:irb_con_noninterviewreport form:3.1:irb_con_noninterviewreport form:3.2:irb_con_noninterviewreport order:91_02 participant_type:mother",
+               "formatted_plan_day":"Day 1",
+               "state_history":[
+                  {
+                     "name":"conditional",
+                     "date":"2013-04-11",
+                     "reason":"Initialized from template"
+                  }
+               ]
+            },
+            {
+               "id":"777d537b-d029-492f-bc86-494211fc1cf9",
+               "study":"NCS Hi-Lo",
+               "study_segment":"Informed Consent: Informed Consent",
+               "ideal_date":"2013-04-11",
+               "plan_day":"1",
+               "current_state":{
+                  "name":"conditional",
+                  "date":"2013-04-11",
+                  "reason":"Initialized from template"
+               },
+               "activity":{
+                  "name":"Non-interview Respondent Questionnaire",
+                  "type":"Consent"
+               },
+               "assignment":{
+                  "id":"xfda-a78s-h83b",
+                  "name":"NCS Hi-Lo",
+                  "subject_coordinator":{
+                     "username":"sgp658"
+                  },
+                  "id":"xfda-a78s-h83b",
+                  "privileges":[
+                     "update"
+                  ]
+               },
+               "subject":"Dawn Davidson",
+               "condition":"If Participant refused to consent",
+               "labels":"event:informed_consent instrument:3.0:ins_que_nonintrespques_int_ehpbhilipbs_m3.0_v1.0 instrument:3.1:ins_que_nonintrespques_int_ehpbhilipbs_m3.0_v1.0 instrument:3.2:ins_que_nonintrespques_int_ehpbhilipbs_m3.0_v1.0 order:91_01 participant_type:mother",
+               "formatted_plan_day":"Day 1",
+               "state_history":[
+                  {
+                     "name":"conditional",
+                     "date":"2013-04-11",
+                     "reason":"Initialized from template"
+                  }
+               ]
+            },
+            {
+               "id":"d5cccbd6-d0be-45a2-83ca-eac8d001ebc7",
+               "study":"NCS Hi-Lo",
+               "study_segment":"Informed Consent: Informed Consent",
+               "ideal_date":"2013-04-11",
+               "plan_day":"1",
+               "current_state":{
+                  "name":"scheduled",
+                  "date":"2013-04-11",
+                  "reason":"Initialized from template"
+               },
+               "activity":{
+                  "name":"Participant Verification Instrument",
+                  "type":"Instrument"
+               },
+               "assignment":{
+                  "id":"xfda-a78s-h83b",
+                  "name":"NCS Hi-Lo",
+                  "subject_coordinator":{
+                     "username":"sgp658"
+                  },
+                  "id":"xfda-a78s-h83b",
+                  "privileges":[
+                     "update"
+                  ]
+               },
+               "subject":"Dawn Davidson",
+               "labels":"event:informed_consent instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one instrument:3.1:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one instrument:3.2:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one order:00_01 participant_type:mother",
+               "formatted_plan_day":"Day 1",
+               "state_history":[
+                  {
+                     "name":"scheduled",
+                     "date":"2013-04-11",
+                     "reason":"Initialized from template"
+                  }
+               ]
+            }
+         ]
+      }
+   },
+   "study_segments":[
+      {
+         "id":"f6630fe0-532c-4e7f-b67f-e36f03fadc9e",
+         "name":"PBS-Eligibility: PBS-Eligibility",
+         "assignment":{
+            "id":"xfda-a78s-h83b",
+            "name":"NCS Hi-Lo",
+            "subject_coordinator":{
+               "username":"sgp658"
+            },
+            "id":"xfda-a78s-h83b",
+            "privileges":[
+               "update"
+            ]
+         },
+         "subject":"Dawn Davidson",
+         "range":{
+            "start_date":"2013-03-26",
+            "stop_date":"2013-03-26"
+         },
+         "planned":{
+            "segment":{
+               "id":"f1ec472e-145b-48b4-b4f6-ec5d18e60dc5",
+               "name":"PBS-Eligibility"
+            },
+            "epoch":{
+               "id":"4950389a-cd24-4ae0-8c3f-248732ffa093",
+               "name":"PBS-Eligibility"
+            },
+            "study":{
+               "assigned_identifier":"NCS Hi-Lo"
+            }
+         }
+      },
+      {
+         "id":"9188a238-0805-4916-b492-2f7bfaf0620d",
+         "name":"HI-Intensity: Pregnancy Visit 1",
+         "assignment":{
+            "id":"xfda-a78s-h83b",
+            "name":"NCS Hi-Lo",
+            "subject_coordinator":{
+               "username":"sgp658"
+            },
+            "id":"xfda-a78s-h83b",
+            "privileges":[
+               "update"
+            ]
+         },
+         "subject":"Dawn Davidson",
+         "range":{
+            "start_date":"2013-03-26",
+            "stop_date":"2013-04-08"
+         },
+         "planned":{
+            "segment":{
+               "id":"ca65bbbb-7e47-4f71-a4f0-071e7f73f380",
+               "name":"Pregnancy Visit 1"
+            },
+            "epoch":{
+               "id":"7955eab9-f505-45d2-9c79-eeaa19cf5382",
+               "name":"HI-Intensity"
+            },
+            "study":{
+               "assigned_identifier":"NCS Hi-Lo"
+            }
+         }
+      },
+      {
+         "id":"e375a23e-0f35-4058-b0b8-004302222804",
+         "name":"Informed Consent: Informed Consent",
+         "assignment":{
+            "id":"xfda-a78s-h83b",
+            "name":"NCS Hi-Lo",
+            "subject_coordinator":{
+               "username":"sgp658"
+            },
+            "id":"xfda-a78s-h83b",
+            "privileges":[
+               "update"
+            ]
+         },
+         "subject":"Dawn Davidson",
+         "range":{
+            "start_date":"2013-04-11",
+            "stop_date":"2013-04-11"
+         },
+         "planned":{
+            "segment":{
+               "id":"183e9d42-8341-4980-ada4-3b399db57b43",
+               "name":"Informed Consent"
+            },
+            "epoch":{
+               "id":"439ad51e-5277-4f14-b786-c516909a970a",
+               "name":"Informed Consent"
+            },
+            "study":{
+               "assigned_identifier":"NCS Hi-Lo"
+            }
+         }
+      }
+   ]
+}

@@ -28,81 +28,91 @@ describe EligibilityAdjudicator do
     context "when ineligible" do
 
       before do
-        @participant.stub!(:ineligible? => true)
+        Participant.any_instance.stub(:ineligible? => true)
+        @adjudication = Participant.adjudicate_eligibility_and_disqualify_ineligible(@participant)
       end
 
       it "removes ppg_details from the participant" do
-        EligibilityAdjudicator.adjudicate_eligibility(@person)
         PpgDetail.where(:participant_id => @response_set.participant).count.should == 0
       end
 
       it "deletes all participant_person_links for a participant" do
-        EligibilityAdjudicator.adjudicate_eligibility(@person)
         ParticipantPersonLink.where(:participant_id => @response_set.participant).count.should == 0
       end
 
       it "sets the participant_id to nil for all events associated with the person" do
-        participant_id = @response_set.participant.id
-        EligibilityAdjudicator.adjudicate_eligibility(@person)
-        Event.where(:participant_id => participant_id).count.should be 0
+        Event.where(:participant_id => @response_set.participant_id).count.should be 0
       end
 
       it "does not delete the event records" do
-        EligibilityAdjudicator.adjudicate_eligibility(@person)
         Event.exists?(@event.id).should be_true
       end
 
       it "sets the participant_id to nil for the response set" do
-        participant_id = @response_set.participant.id
-        EligibilityAdjudicator.adjudicate_eligibility(@person)
-        ResponseSet.where(:participant_id => participant_id).all? { |rs| rs.participant_id.nil? }.should be_true
+        ResponseSet.where(:participant_id => @response_set.participant_id).all? { |rs| rs.participant_id.nil? }.should be_true
       end
 
       it "creates a SamplePersonsIneligibility record" do
-        EligibilityAdjudicator.adjudicate_eligibility(@person)
         SampledPersonsIneligibility.count.should == 1
       end
 
       it "deletes participant record" do
-        EligibilityAdjudicator.adjudicate_eligibility(@person)
         Participant.count.should == 0
+      end
+
+      it "groups the person as ineligible" do
+        @adjudication[:eligible].should be_empty
+        @adjudication[:ineligible].should == [@participant]
       end
     end
 
     context "when eligible" do
       before do
-        @participant.stub!(:eligible? => true)
+        Participant.any_instance.stub(:eligible? => true)
+        @adjudication = Participant.adjudicate_eligibility_and_disqualify_ineligible(@participant)
       end
 
       it "does not remove ppg_details from the participant" do
-        EligibilityAdjudicator.adjudicate_eligibility(@person)
         PpgDetail.where(:participant_id => @response_set.participant).count.should == 1
       end
 
       it "does not delete participant_person_links for a participant" do
-        EligibilityAdjudicator.adjudicate_eligibility(@person)
         ParticipantPersonLink.where(:participant_id => @response_set.participant.id).count.should == 3
       end
 
       it "does not disturb the participant association with events associated with the person" do
-        participant_id = @response_set.participant.id
-        EligibilityAdjudicator.adjudicate_eligibility(@person)
-        Event.where(:participant_id => participant_id).count.should be 1
+        Event.where(:participant_id => @response_set.participant_id).count.should be 1
       end
 
       it "does not set the participant_id to nil for the response set" do
-        EligibilityAdjudicator.adjudicate_eligibility(@person)
         ResponseSet.find(@response_set.id).participant_id.should_not be_nil
       end
 
       it "does not create a SamplePersonsIneligibility record" do
-        EligibilityAdjudicator.adjudicate_eligibility(@person)
         SampledPersonsIneligibility.count.should == 0
       end
 
       it "does not deletes participant record" do
-        EligibilityAdjudicator.adjudicate_eligibility(@person)
         Participant.count.should be 1
+      end
+
+      it "adjudicates the person as eligible" do  
+        @adjudication[:eligible].should == [@participant]
+        @adjudication[:ineligible].should be_empty
+      end
+    end
+
+    context "when multiple participants" do
+      let(:jeff) { Factory(:participant).tap{ |p| p.stub(:ineligible? => false) } }
+      let(:greg) { Factory(:participant).tap{ |p| p.stub(:ineligible? => true) } }
+      let(:steve) { Factory(:participant).tap{ |p| p.stub(:ineligible? => false) } }
+      
+      it "groups by eligiblity" do
+        a = Participant.adjudicate_eligibility(jeff, steve, greg)
+        a.should == {
+          :eligible => [jeff, steve],
+          :ineligible => [greg]
+        }
       end
     end
 

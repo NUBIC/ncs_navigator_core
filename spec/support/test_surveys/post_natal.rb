@@ -526,4 +526,44 @@ module PostNatal
     survey
   end
 
+  def create_12_month_mother_supplement_survey
+    load_survey_questions_string(<<-QUESTIONS)
+      q_SUPPLEMENT "Which of the following supplements was your child given at least 3 days a week during the past 2 weeks?",
+      :help_text => "SELECT ALL THAT APPLY",
+      :pick => :any,
+      :data_export_identifier=>"TWELVE_MTH_SAQ_SUPPLEMENT_2.SUPPLEMENT"
+      a_1 "Fluoride"
+      a_2 "Iron"
+      a_3 "Vitamin D"
+      a_5 "Other vitamins or supplements:"
+      a_neg_7 "Not applicable (child not given supplements)"
+      a_neg_1 "REFUSED"
+      a_neg_2 "DON'T KNOW"
+
+      q_TEST "Test question?",
+      :pick => :any,
+      :data_export_identifier=>"TEST_TABLE.TEST"
+      a_5 "Other vitamins or supplements:"
+    QUESTIONS
+  end
+
+  def create_6_month_mother_supplement_survey
+    load_survey_questions_string(<<-QUESTIONS)
+      q_SUPPLEMENT "Which of the following supplements was your child given at least three days a week during the past 2 weeks?",
+      :help_text => "SELECT ALL THAT APPLY",
+      :pick => :any,
+      :data_export_identifier=>"SIX_MTH_SAQ_SUPP.SUPPLEMENT"
+      a_1 "Fluoride"
+      a_2 "Iron"
+      a_3 "Vitamin D"
+      a_neg_7 "Other vitamins or supplements"
+
+      q_TEST "Test question?",
+      :pick => :any,
+      :data_export_identifier=>"TEST_TABLE.TEST"
+      a_neg_7 "Other vitamins or supplements:"
+    QUESTIONS
+  end
+
 end
+

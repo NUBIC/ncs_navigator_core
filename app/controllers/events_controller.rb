@@ -56,8 +56,9 @@ class EventsController < ApplicationController
           # do not set participant
         elsif participant = @event.participant
           if participant.ineligible?
-            if @event.screener_event? && person = @event.participant.try(:person)
-              EligibilityAdjudicator.adjudicate_eligibility(person)
+            if @event.screener_event?
+              Participant.adjudicate_eligibility_and_disqualify_ineligible(participant)
+              @event.reload
             end
           elsif @event.informed_consent? && participant.withdrawn?
             participant.unenroll!(psc, "Participant has withdrawn from the study.")

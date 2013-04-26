@@ -1,4 +1,7 @@
-input.text, 
+@import "partials/base";
+@import "partials/appointment_sheet_print";
+
+input.text,
 input[type="text"] {
   border: none;
 }
