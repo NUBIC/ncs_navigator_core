@@ -314,24 +314,59 @@ class Event < ActiveRecord::Base
     result
   end
 
+  # Tables 1,2 from FSM 2013-09
   EVENT_WINDOW = {
-    Event.three_month_visit_code        => { :start => 2,  :end => 5},
-    Event.six_month_visit_code          => { :start => 5,  :end => 8},
-    Event.nine_month_visit_code         => { :start => 8,  :end => 11},
-    Event.twelve_month_visit_code       => { :start => 11, :end => 16},
-    Event.eighteen_month_visit_code     => { :start => 16, :end => 23},
-    Event.twenty_four_month_visit_code  => { :start => 23, :end => 30},
-    Event.thirty_month_visit_code       => { :start => 30, :end => 36},
-    Event.thirty_six_month_visit_code   => { :start => 36, :end => 42},
-    Event.forty_two_month_visit_code    => { :start => 42, :end => 48},
+    :high =>{
+      Event.birth_code                    => { :start => 0.days,    :end => 10.days},
+      Event.three_month_visit_code        => { :start => 2.months,  :end => 5.months - 1.day},
+      Event.six_month_visit_code          => { :start => 5.months,  :end => 8.months - 1.day},
+      Event.nine_month_visit_code         => { :start => 8.months,  :end => 11.months - 1.day},
+      Event.twelve_month_visit_code       => { :start => 11.months, :end => 16.months - 1.day},
+      Event.eighteen_month_visit_code     => { :start => 16.months, :end => 23.months - 1.day},
+      Event.twenty_four_month_visit_code  => { :start => 23.months, :end => 30.months - 1.day},
+      Event.thirty_month_visit_code       => { :start => 30.months, :end => 36.months - 1.day},
+      Event.thirty_six_month_visit_code   => { :start => 36.months, :end => 42.months - 1.day},
+      Event.forty_two_month_visit_code    => { :start => 42.months, :end => 48.months - 1.day}},
+    :low =>{
+      Event.birth_code                    => { :start => 0.days,    :end => 2.months - 1.day},
+      Event.three_month_visit_code        => { :start => 2.months,  :end => 7.months - 1.day},
+      Event.nine_month_visit_code         => { :start => 7.months,  :end => 14.months - 1.day},
+      Event.eighteen_month_visit_code     => { :start => 14.months, :end => 23.months - 1.day},
+      Event.twenty_four_month_visit_code  => { :start => 23.months, :end => 30.months - 1.day},
+      Event.thirty_month_visit_code       => { :start => 30.months, :end => 36.months - 1.day},
+      Event.thirty_six_month_visit_code   => { :start => 36.months, :end => 42.months - 1.day},
+      Event.forty_two_month_visit_code    => { :start => 42.months, :end => 48.months - 1.day}}
   }
 
-  def event_window_start_date(date)
-    date + EVENT_WINDOW[self.event_type_code][:start].months
+  # @param at - :start || :end
+  # @param birth_date [Date] - DOB of child participant
+  # @param intensity [Date]  - :high or :low
+  # @return nil or Date
+  def window(at, birth_date = self.child_dob, intensity = self.try(:participant).try(:intensity))
+    return nil if ![:start,:end].include?(at) || birth_date.nil? || ![:high,:low].include?(intensity)
+    return nil if EVENT_WINDOW[intensity][self.event_type_code].nil?
+    birth_date + EVENT_WINDOW[intensity][self.event_type_code][at]
   end
 
-  def event_window_end_date(date)
-    (date + EVENT_WINDOW[self.event_type_code][:end].months) - 1.day
+  # @todo this is a workaround since child events are being
+  #        associated with the mother self.participant should be the
+  #        child for child events.
+  #
+  #
+  # @note when the participant is the mother and there are multiple
+  #        children this assumes all children have the same birthday
+  #
+  # The NCS child this event relates to
+  # @return nil or Person
+  def child_dob
+    case
+    when participant.try(:mother)
+      participant.person.person_dob_date
+    when (c = participant.try(:children)) &&  c.try(:size) > 0
+      c.first.person_dob_date
+    else
+      nil
+    end
   end
 
   def label
