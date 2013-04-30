@@ -21,7 +21,7 @@ class NonInterviewReportsController < ApplicationController
   def edit
     @non_interview_report = NonInterviewReport.find(params[:id])
     if response_set = @non_interview_report.response_set
-      redirect_to edit_my_survey_path(
+      redirect_to surveyor.edit_my_survey_path(
         :survey_code => response_set.survey.access_code,
         :response_set_code => response_set.access_code)
     end
