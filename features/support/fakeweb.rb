@@ -8,7 +8,14 @@ FakeWeb.register_uri(:get, /\/api\/v1\/subjects\/registered_with_psc$/,
 FakeWeb.register_uri(:get, /\/api\/v1\/subjects\/registered_with_psc\/schedules.json$/,
                     :body => "#{Rails.root}/features/fixtures/fakeweb/registered_with_psc_schedule.json", :status => ["200", "OK"], :content_type => "application/json")
 
-FakeWeb.register_uri(:get, /\/api\/v1\/subjects\/((?!registered_with_psc))/, :body => "Unknown", :status => ["401", "Unknown"])
+
+FakeWeb.register_uri(:get, /\/api\/v1\/subjects\/w324-rteb-2c7z$/,
+                     :body => "#{Rails.root}/features/fixtures/fakeweb/registered_with_psc.json", :status => ["200", "OK"], :content_type => "application/json")
+
+FakeWeb.register_uri(:get, /\/api\/v1\/subjects\/w324-rteb-2c7z\/schedules.json$/,
+                    :body => "#{Rails.root}/features/fixtures/fakeweb/event_windows_participant_schedule.json", :status => ["200", "OK"], :content_type => "application/json")
+
+FakeWeb.register_uri(:get, /\/api\/v1\/subjects\/((?!(registered_with_psc|w324-rteb-2c7z)))/, :body => "Unknown", :status => ["401", "Unknown"])
 
 FakeWeb.register_uri(:get, /\/api\/v1\/studies.json$/,
                      :body => "#{Rails.root}/features/fixtures/fakeweb/studies.json", :content_type => "application/json")

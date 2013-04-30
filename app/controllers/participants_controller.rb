@@ -45,14 +45,10 @@ class ParticipantsController < ApplicationController
     @person = @participant.person
     @participant_activity_plan = psc.build_activity_plan(@participant)
 
-    @scheduled_activities_grouped_by_date = {}
-    @participant_activity_plan.scheduled_activities.each do |a|
-      date = a.date
-      if @scheduled_activities_grouped_by_date.has_key?(date)
-        @scheduled_activities_grouped_by_date[date] << a
-      else
-        @scheduled_activities_grouped_by_date[date] = [a]
-      end
+    # @todo this does not handle events associated with the child
+    @scheduled_activities_grouped_by_date =
+      @participant_activity_plan.scheduled_activities.group_by{|a| a.date}.reduce({}) do |m,(date,activities)|
+      m.merge({date => activities.group_by{|a| @participant.events.find{|e| e.matches_activity(a)}}})
     end
   end
 

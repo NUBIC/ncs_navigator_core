@@ -1,0 +1,213 @@
+{
+   "subject":{},
+   "assignments":[],
+   "days":{
+      "2013-05-10":{
+         "hidden_activities":"false",
+         "activities":[
+	     {
+		 "id":"083b43ed-701b-4dd8-b8c1-ca79c0c852b8",
+		 "study":"NCS Hi-Lo",
+		 "study_segment":"Child",
+		 "ideal_date":"2013-05-10",
+		 "plan_day":"1",
+		 "current_state":{
+                     "name":"scheduled",
+                     "date":"2013-05-10",
+                     "reason":"Initialized from template"
+		 },
+		 "activity":{
+                     "name":"Birth Interview Part One",
+                     "type":"Instrument"
+		 },
+		 "assignment":{
+                     "id":"dsy6-xfty-dfsb",
+                     "name":"NCS Hi-Lo",
+                     "subject_coordinator":{
+			 "username":"admin"
+                     },
+                     "id":"dsy6-xfty-dfsb",
+                     "privileges":[
+			 "update"
+                     ]
+		 },
+		 "subject":"Jill Pill",
+		 "labels":"event:birth instrument:2.0:ins_que_birth_int_ehpbhi_p2_v2.0_part_one instrument:2.1:ins_que_birth_int_ehpbhi_p2_v2.0_part_one instrument:2.2:ins_que_birth_int_ehpbhi_p2_v2.0_part_one instrument:3.0:ins_que_birth_int_ehpbhipbs_m3.0_v3.0_part_one instrument:3.1:ins_que_birth_int_ehpbhipbs_m3.0_v3.0_part_one instrument:3.2:ins_que_birth_int_m3.2_v3.1_part_one order:01_01 participant_type:mother",
+		 "formatted_plan_day":"Day 1",
+		 "state_history":[
+                     {
+			 "name":"scheduled",
+			 "date":"2013-05-10",
+			 "reason":"Initialized from template"
+                     }
+		 ]
+             },
+	     {
+		 "id":"a9daf1b7-4949-48e4-b216-eb78c87806ce",
+		 "study":"NCS Hi-Lo",
+		 "study_segment":"Child",
+		 "ideal_date":"2013-05-10",
+		 "plan_day":"1",
+		 "current_state":{
+                     "name":"scheduled",
+                     "date":"2013-05-10",
+                     "reason":"Initialized from template"
+		 },
+		 "activity":{
+                     "name":"Birth Interview Part Two",
+                     "type":"Instrument"
+		 },
+		 "assignment":{
+                     "id":"dsy6-xfty-dfsb",
+                     "name":"NCS Hi-Lo",
+                     "subject_coordinator":{
+			 "username":"admin"
+                     },
+                     "id":"dsy6-xfty-dfsb",
+                     "privileges":[
+			 "update"
+                     ]
+		 },
+		 "subject":"Jill Pill",
+		 "details":"w/in 10 days of birth",
+		 "labels":"event:birth instrument:2.0:ins_que_birth_int_ehpbhi_p2_v2.0_part_two instrument:2.1:ins_que_birth_int_ehpbhi_p2_v2.0_part_two instrument:2.2:ins_que_birth_int_ehpbhi_p2_v2.0_part_two instrument:3.0:ins_que_birth_int_ehpbhipbs_m3.0_v3.0_part_two instrument:3.1:ins_que_birth_int_ehpbhipbs_m3.0_v3.0_part_two instrument:3.2:ins_que_birth_int_m3.2_v3.1_part_two order:01_03 participant_type:mother references:2.0:ins_que_birth_int_ehpbhi_p2_v2.0_part_one references:2.1:ins_que_birth_int_ehpbhi_p2_v2.0_part_one references:2.2:ins_que_birth_int_ehpbhi_p2_v2.0_part_one references:3.0:ins_que_birth_int_ehpbhipbs_m3.0_v3.0_part_one references:3.1:ins_que_birth_int_ehpbhipbs_m3.0_v3.0_part_one references:3.2:ins_que_birth_int_m3.2_v3.1_part_one",
+		 "formatted_plan_day":"Day 1",
+		 "state_history":[
+                     {
+			 "name":"scheduled",
+			 "date":"2013-05-10",
+			 "reason":"Initialized from template"
+                     }
+		 ]
+             }
+	     
+         ]
+      },
+       "2013-08-10":{
+           "hidden_activities":"false",
+           "activities":[
+               {
+		   "id":"924ff907-c3c0-439d-873c-10a4dc8d5104",
+		   "study":"NCS Hi-Lo",
+		   "study_segment":"Child",
+		   "ideal_date":"2013-08-10",
+		   "plan_day":"92",
+		   "current_state":{
+                       "name":"scheduled",
+                       "date":"2013-08-10",
+                       "reason":"Initialized from template"
+		   },
+		   "activity":{
+                       "name":"3-Month Mother Phone Interview Child Detail",
+                       "type":"Instrument"
+		   },
+		   "assignment":{
+                       "id":"dsy6-xfty-dfsb",
+                       "name":"NCS Hi-Lo",
+                       "subject_coordinator":{
+			   "username":"admin"
+                       },
+                       "id":"dsy6-xfty-dfsb",
+                       "privileges":[
+			   "update"
+                       ]
+		   },
+		   "subject":"Jill Pill",
+		   "details":"for each child",
+		   "labels":"event:3_month instrument:2.0:ins_que_3mmother_int_ehpbhi_p2_v1.1_child_detail instrument:2.1:ins_que_3mmother_int_ehpbhi_p2_v1.1_child_detail instrument:2.2:ins_que_3mmother_int_ehpbhi_p2_v1.1_child_detail instrument:3.0:ins_que_3mmother_int_ehpbhi_p2_v1.1_child_detail instrument:3.1:ins_que_3month_int_ehpbhilipbs_m3.1_v2.0_child_habits instrument:3.2:ins_que_3month_int_ehpbhilipbs_m3.1_v2.0_child_habits order:01_02 participant_type:child references:2.0:ins_que_3mmother_int_ehpbhi_p2_v1.1_part_one references:2.1:ins_que_3mmother_int_ehpbhi_p2_v1.1_part_one references:2.2:ins_que_3mmother_int_ehpbhi_p2_v1.1_part_one references:3.0:ins_que_3mmother_int_ehpbhi_p2_v1.1_part_one references:3.1:ins_que_3month_int_ehpbhilipbs_m3.1_v2.0_part_one references:3.2:ins_que_3month_int_ehpbhilipbs_m3.1_v2.0_part_one",
+		   "formatted_plan_day":"Day 92",
+		   "state_history":[
+                       {
+			   "name":"scheduled",
+			   "date":"2013-08-10",
+			   "reason":"Initialized from template"
+                       }
+		   ]
+               },
+               {
+		   "id":"e90c346d-e445-41e7-951d-f7e8023b2d5a",
+		   "study":"NCS Hi-Lo",
+		   "study_segment":"Child",
+		   "ideal_date":"2013-08-10",
+		   "plan_day":"92",
+		   "current_state":{
+                       "name":"scheduled",
+                       "date":"2013-08-10",
+                       "reason":"Initialized from template"
+		   },
+		   "activity":{
+                       "name":"3-Month Mother Phone Interview Child Habits",
+                       "type":"Instrument"
+		   },
+		   "assignment":{
+                       "id":"dsy6-xfty-dfsb",
+                       "name":"NCS Hi-Lo",
+                       "subject_coordinator":{
+			   "username":"admin"
+                       },
+                       "id":"dsy6-xfty-dfsb",
+                       "privileges":[
+			   "update"
+                       ]
+		   },
+		   "subject":"Jill Pill",
+		   "details":"for each child",
+		   "labels":"event:3_month instrument:2.0:ins_que_3mmother_int_ehpbhi_p2_v1.1_child_habits instrument:2.1:ins_que_3mmother_int_ehpbhi_p2_v1.1_child_habits instrument:2.2:ins_que_3mmother_int_ehpbhi_p2_v1.1_child_habits instrument:3.0:ins_que_3mmother_int_ehpbhi_p2_v1.1_child_habits order:01_04 participant_type:child references:2.0:ins_que_3mmother_int_ehpbhi_p2_v1.1_part_one references:2.1:ins_que_3mmother_int_ehpbhi_p2_v1.1_part_one references:2.2:ins_que_3mmother_int_ehpbhi_p2_v1.1_part_one references:3.0:ins_que_3mmother_int_ehpbhi_p2_v1.1_part_one",
+		   "formatted_plan_day":"Day 92",
+		   "state_history":[
+                       {
+			   "name":"scheduled",
+			   "date":"2013-08-10",
+			   "reason":"Initialized from template"
+                       }
+		   ]
+               },
+	       {
+		   "id":"15b1ae39-0cd6-4131-a90c-194b7d6cf682",
+		   "study":"NCS Hi-Lo",
+		   "study_segment":"Informed Consent: Informed Consent",
+		   "ideal_date":"2013-08-10",
+		   "plan_day":"1",
+		   "current_state":{
+                       "name":"scheduled",
+                       "date":"2013-08-10",
+                       "time":"9:58",
+                       "reason":""
+		   },
+		   "activity":{
+                       "name":"Informed Consent",
+                       "type":"Consent"
+		   },
+		   "assignment":{
+                       "id":"dsy6-xfty-dfsb",
+                       "name":"NCS Hi-Lo",
+                       "subject_coordinator":{
+			   "username":"admin"
+                       },
+                       "id":"dsy6-xfty-dfsb",
+                       "privileges":[
+			   "update"
+                       ]
+		   },
+		   "subject":"Jill Pill",
+		   "labels":"event:informed_consent form:2.0:irb_con_informed_consent form:2.1:irb_con_informed_consent form:2.2:irb_con_informed_consent form:3.0:irb_con_informed_consent form:3.1:irb_con_informed_consent form:3.2:irb_con_informed_consent order:01_01 participant_type:mother",
+		   "formatted_plan_day":"Day 1",
+		   "state_history":[
+                       {
+			   "name":"scheduled",
+			   "date":"2013-10-02",
+			   "reason":"Initialized from template"
+                       },
+                       {
+			   "name":"scheduled",
+			   "date":"2013-08-10",
+			   "time":"9:58",
+			   "reason":""
+                       }
+		   ]
+               }
+           ]
+       }
+   },
+   "study_segments":[]
+}

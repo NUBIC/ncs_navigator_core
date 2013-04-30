@@ -28,6 +28,9 @@
                 = blank_safe(event.event_start_date)
                 = " - "
                 = blank_safe(event.event_end_date)
+              %div
+                Window:
+                = render :partial => "events/event_window", :locals => {:event => event}
               #span.disposition
                 - if event.event_disposition
                   - disp = DispositionMapper.disposition_text_for_event(event)
