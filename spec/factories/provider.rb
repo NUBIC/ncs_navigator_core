@@ -35,7 +35,6 @@ FactoryGirl.define do
     ppl.provider_intro_outcome_code     1
     ppl.sampled_person_code             1
     ppl.pre_screening_status_code       1
-    ppl.ineligible_batch_identifier  nil
   end
 
   factory :personnel_provider_link do |ppl|
