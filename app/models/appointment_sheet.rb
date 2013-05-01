@@ -7,9 +7,9 @@
 #  id         :integer          not null, primary key
 #  updated_at :datetime
 #
-include ActionView::Helpers::TextHelper
 
 class AppointmentSheet
+  include ActionView::Helpers::TextHelper
 
   attr_reader :person
 
