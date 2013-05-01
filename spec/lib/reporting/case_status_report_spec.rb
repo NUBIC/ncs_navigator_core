@@ -62,6 +62,17 @@ describe Reporting::CaseStatusReport do
       @e2 = Factory(:event, :participant => @p2, :event_type => @loi, :scheduled_study_segment_identifier => scheduled_study_segment_identifier_2)
     end
 
+    describe 'generate_report' do
+      it 'displays address and telephone type' do
+        pending 'generate report cannot be run due to fetch_netids_from_psc_report_rows'
+        VCR.use_cassette('psc/case_status_report') do
+          csvreport = reporter.generate_report
+          csvreport[0][17].should == 'Phone Number Type'
+          csvreport[0][23].should == 'Address Type'
+        end
+      end
+    end
+
     it "gets data for all scheduled case statuses" do
       VCR.use_cassette('psc/case_status_report') do
 
@@ -75,6 +86,64 @@ describe Reporting::CaseStatusReport do
         cs2 = case_statuses.last
         cs2.q_last_name.should == @per2.last_name
         cs2.q_address_one.should == @per2.addresses.first.address_one
+      end
+    end
+
+    it "displays the most recent highest ranked address" do
+      Factory(:address, :person => @per1, :state => @state, :address_one => "2 Peanut Drive", :address_type_code => -5)
+      Factory(:address, :person => @per1, :state => @state, :address_one => "3 Peanut Drive", :address_type_code => 1, :address_rank_code => 2)
+
+      VCR.use_cassette('psc/case_status_report') do
+        case_statuses = reporter.case_statuses
+        case_statuses.size.should == 2
+        cs1 = case_statuses.first
+        @per1.addresses.size.should == 3
+        cs1.q_address_one.should == "1 Peanut Drive"
+      end
+    end
+
+    # @todo don't think multiple addresses are desired but keeping changes minimal until clarification
+    #       happens when there are multiple addresses with the highest ranked type
+    it "displays only one address" do
+      pending 'select required fields from top_addresses_sql table instead of addresses'
+      Factory(:address, :person => @per1, :state => @state, :address_one => "2 Peanut Drive", :address_type_code => -5)
+      Factory(:address, :person => @per1, :state => @state, :address_one => "0 Peanut Drive")
+      Factory(:address, :person => @per1, :state => @state, :address_one => "3 Peanut Drive", :address_type_code => 1, :address_rank_code => 2)
+
+      VCR.use_cassette('psc/case_status_report') do
+        case_statuses = reporter.case_statuses
+        case_statuses.size.should == 2
+        cs1 = case_statuses.first
+        @per1.addresses.size.should == 3
+        cs1.q_address_one.should == "0 Peanut Drive"
+      end
+    end
+
+    it "displays the most recent highest ranked phone number" do
+      Factory(:telephone, :person => @per1, :phone_nbr => "4195551212", :phone_type_code => -5)
+      Factory(:telephone, :person => @per1, :phone_nbr => "4195551212", :phone_type_code => -5, :phone_rank_code => 2)
+      VCR.use_cassette('psc/case_status_report') do
+        case_statuses = reporter.case_statuses
+        case_statuses.size.should == 2
+        cs1 = case_statuses.first
+        @per1.telephones.size.should == 3
+        cs1.q_phone.should == "3125551212"
+      end
+    end
+
+    # @todo don't think multiple phone numbers are desired but keeping changes minimal until clarification
+    #       happens when there are multiple phones with the highest ranked type
+    it "displays only one phone number" do
+      pending 'select required fields from top_phones_sql table instead of telephones'
+      Factory(:telephone, :person => @per1, :phone_nbr => "4195551212", :phone_type_code => -5)
+      Factory(:telephone, :person => @per1, :phone_nbr => "2035551212")
+      Factory(:telephone, :person => @per1, :phone_nbr => "4195551212", :phone_type_code => -5, :phone_rank_code => 2)
+      VCR.use_cassette('psc/case_status_report') do
+        case_statuses = reporter.case_statuses
+        case_statuses.size.should == 2
+        cs1 = case_statuses.first
+        @per1.telephones.size.should == 4
+        cs1.q_phone.should == "2035551212"
       end
     end
 
