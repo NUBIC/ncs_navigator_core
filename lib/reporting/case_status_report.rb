@@ -81,6 +81,32 @@ module Reporting
       end
     end
 
+    # @todo move this to the model along with PeopleHelper
+    # @ todo consider ranks, currently only primary is considered i.e.
+    #   and a.address_rank_code = 1
+    def top_addresses_sql
+      sql= <<-SQL
+        SELECT DISTINCT ON (person_id) person_id, address_type_code as address_type
+          FROM addresses
+          ORDER BY person_id,
+                   position(CAST(address_type_code AS char) in '#{PeopleHelper::TYPE_ORDER.to_s}'),
+                   updated_at
+      SQL
+    end
+
+    # @todo move this to the model along with PeopleHelper
+    # @ todo consider ranks, currently only primary is considered i.e.
+    #   and t.phone_rank_code = 1
+    def top_phones_sql
+      sql= <<-SQL
+        SELECT DISTINCT ON (person_id) person_id, phone_type_code as phone_type
+          FROM telephones
+          ORDER BY person_id,
+                   position(CAST(phone_type_code AS char) in '#{PeopleHelper::TYPE_ORDER.to_s}'),
+                   updated_at
+      SQL
+    end
+
     ##
     # Runs a query to get the Participant data for those with scheduled activities
     # in the given date range
@@ -90,10 +116,10 @@ module Reporting
       return [] if ids.blank?
       sql = <<-SQL
         with addrsql as
-        (select min(address_type_code) as address_type, person_id from addresses group by person_id
+        (#{top_addresses_sql}
         )
         ,phonesql as
-        (select min(phone_type_code) as phone_type, person_id from telephones group by person_id
+        (#{top_phones_sql}
         )
         select part.id as q_id, part.p_id, part.high_intensity as q_high_intensity, pers.first_name as q_first_name, pers.last_name as q_last_name,
          max(e.event_start_date) as q_event_date, event_code.display_text as q_event_name, e.event_start_time as q_event_time,
