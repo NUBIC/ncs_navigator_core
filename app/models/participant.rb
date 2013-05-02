@@ -999,11 +999,6 @@ class Participant < ActiveRecord::Base
     post_transition_ppg_status_update(3) unless in_importer_mode?
   end
 
-  def last_contact
-    contacts.order("contact_date desc").first
-  end
-  alias :most_recent_contact :last_contact
-
   ##
   # Returns the contacts for this participant
   # Participant -> Event -> ContactLink -> Contact
@@ -1353,7 +1348,7 @@ class Participant < ActiveRecord::Base
       elsif postnatal?
         PatientStudyCalendar::LOW_INTENSITY_POSTNATAL
       elsif pregnant?
-        if due_date && !due_date_is_greater_than_follow_up_interval(most_recent_contact.contact_date_date)
+        if due_date && !due_date_is_greater_than_follow_up_interval(most_recent_contact_date)
           PatientStudyCalendar::LOW_INTENSITY_BIRTH_VISIT_INTERVIEW
         else
           lo_intensity_follow_up
@@ -1461,7 +1456,7 @@ class Participant < ActiveRecord::Base
     #
     # @return[Date]
     def next_scheduled_event_date
-      (interval == 0) ? get_date_to_schedule_next_event_from_contact_link : (date_used_to_schedule_next_event.to_date + interval)
+      (interval == 0) ? get_date_to_schedule_next_event_from_contacts_and_events : (date_used_to_schedule_next_event.to_date + interval)
     end
 
     ##
@@ -1474,19 +1469,35 @@ class Participant < ActiveRecord::Base
       elsif contact_links.blank?
         self.created_at.to_date
       else
-        get_date_to_schedule_next_event_from_contact_link
+        get_date_to_schedule_next_event_from_contacts_and_events
       end
     end
 
     ##
-    # The date from the most_recent_contact/last_contact.
+    # The most recent contact, event end, or event start date (as available)
+    #
     # @return[Date]
-    def get_date_to_schedule_next_event_from_contact_link
-      if last_contact && last_contact.contact_date_date
-        last_contact.contact_date_date
-      else
-        fail 'Could not decide the next scheduled event date without the contact date'
+    def get_date_to_schedule_next_event_from_contacts_and_events
+      date = most_recent_contact_date || most_recent_event_end_date || most_recent_event_start_date
+      unless date
+        fail 'Cannot decide the next scheduled event date without some contact or event date'
       end
+      date
+    end
+
+    def most_recent_contact_date
+      contacts.where('contact_date_date IS NOT NULL').
+        order('contact_date_date DESC').select(:contact_date_date).first.try(:contact_date_date)
+    end
+
+    def most_recent_event_end_date
+      events.where('event_end_date IS NOT NULL').
+        order('event_end_date DESC').select(:event_end_date).first.try(:event_end_date)
+    end
+
+    def most_recent_event_start_date
+      events.where('event_start_date IS NOT NULL').
+        order('event_start_date DESC').select(:event_start_date).first.try(:event_start_date)
     end
 
     def next_event_is_birth?
