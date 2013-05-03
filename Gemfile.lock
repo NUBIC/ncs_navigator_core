@@ -510,7 +510,7 @@ DEPENDENCIES
   lograge
   mustache
   ncs_mdes (>= 0.11.0)
-  ncs_mdes_warehouse (~> 0.12)
+  ncs_mdes_warehouse (~> 0.13, >= 0.13.1)
   ncs_navigator_authority
   ncs_navigator_configuration (~> 0.4)
   paper_trail (~> 2)
