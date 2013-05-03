@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130415192041) do
+ActiveRecord::Schema.define(:version => 20130502152819) do
 
   create_table "addresses", :force => true do |t|
     t.integer  "psu_code",                                                :null => false
@@ -675,6 +675,7 @@ ActiveRecord::Schema.define(:version => 20130415192041) do
     t.datetime "updated_at"
     t.integer  "response_set_id"
     t.integer  "primary_caregiver_flag_code",               :default => -4, :null => false
+    t.string   "multi_birth_id",              :limit => 36
   end
 
   create_table "participant_staff_relationships", :force => true do |t|
