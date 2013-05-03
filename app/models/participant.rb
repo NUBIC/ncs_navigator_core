@@ -1152,31 +1152,14 @@ class Participant < ActiveRecord::Base
   def set_state_for_imported_event(event)
     register! if can_register?  # assume known to PSC
 
+    update_consent_and_protocol_status_as_of(event.event_end_date || event.event_start_date)
+
     case event.event_type.local_code
     when 4, 5, 6, 29, 34
       # Pregnancy Screener Events or PBS Eligibility Screener
       assign_to_pregnancy_probability_group! if can_assign_to_pregnancy_probability_group?
     when 10
-      # Informed Consent
-      if low_intensity?
-        granting_consents = event.match_consents_by_date(participant_consents).select { |c| c.consent_given_code == NcsCode::YES }
-        has_any_consent = !granting_consents.empty?
-        has_hi_consent = granting_consents.any? { |c| [1].include?(c.consent_type_code) || [1, 2, 6].include?(c.consent_form_type_code) }
-
-        Rails.logger.debug("Applying informed consent event #{event.event_id} to lo participant #{p_id}'s state.")
-        Rails.logger.debug("  has_any_consent=#{has_any_consent.inspect} has_hi_consent=#{has_hi_consent.inspect} granting_consents=#{granting_consents.collect(&:public_id).inspect}")
-
-        # Have to have consented to low first
-        if has_any_consent
-          low_intensity_consent! if can_low_intensity_consent?
-        end
-
-        if has_hi_consent
-          enroll_in_high_intensity_arm! if can_enroll_in_high_intensity_arm?
-          high_intensity_conversion! if can_high_intensity_conversion?
-        end
-      end
-      # if already hi, do nothing
+      # Informed Consent -- consent status handled in update_consent_and_protocol_status_as_of
     when 7, 8
       # Pregnancy Probability
       follow_low_intensity! if can_follow_low_intensity?
@@ -1228,6 +1211,30 @@ class Participant < ActiveRecord::Base
       fail "Unhandled event type for participant state #{event.event_type.local_code.inspect}"
     end
   end
+
+  ##
+  # Looks to see if the participant has a hi-intensity consent that is valid as
+  # of the given date. Checking is done in memory because the consents will be
+  # pre-loaded by the import process.
+  def update_consent_and_protocol_status_as_of(date)
+    return if high_intensity?
+    return unless date
+
+    granted_consents = participant_consents.
+      find_all { |pc| pc.consent_date && pc.consent_date <= date && pc.consented? }
+
+    low_intensity_consent! if can_low_intensity_consent? && !granted_consents.empty?
+
+    any_appropriate_high_consents = granted_consents.detect { |pc| pc.high_intensity? }
+
+    if any_appropriate_high_consents
+      enroll_in_high_intensity_arm! if can_enroll_in_high_intensity_arm?
+      # Assume the high intensity conversion event was performed since the
+      # person consented to high intensity.
+      high_intensity_conversion! if can_high_intensity_conversion?
+    end
+  end
+  private :update_consent_and_protocol_status_as_of
 
   comma do
 
