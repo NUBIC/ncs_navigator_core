@@ -10,7 +10,7 @@
 
 require 'spec_helper'
 
-describe AppointmentSheet do
+describe AppointmentSheet, :shared_test_data do
   before :all do
     person = Factory(:person,
                      :person_id => "k47r-7z99-aw5e",
