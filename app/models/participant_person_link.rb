@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 # == Schema Information
-# Schema version: 20130306200153
+# Schema version: 20130502152819
 #
 # Table name: participant_person_links
 #
 #  created_at                  :datetime
 #  id                          :integer          not null, primary key
 #  is_active_code              :integer          not null
+#  multi_birth_id              :string(36)
 #  participant_id              :integer          not null
 #  person_id                   :integer          not null
 #  person_pid_id               :string(36)       not null
