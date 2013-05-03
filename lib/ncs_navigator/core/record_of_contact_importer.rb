@@ -62,7 +62,7 @@ class NcsNavigator::Core::RecordOfContactImporter
 
       if !@last_event || event.id != @last_event.id
         # n.b.: implicit assumption is that events are in order
-        participant.set_state_for_event_type(event)
+        participant.set_state_for_imported_event(event)
         @last_event = event
       end
 

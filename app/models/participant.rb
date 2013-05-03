@@ -1149,7 +1149,7 @@ class Participant < ActiveRecord::Base
   # so it simply will set the state to the most probable given the
   # event type and the current state
   # @param [Event]
-  def set_state_for_event_type(event)
+  def set_state_for_imported_event(event)
     register! if can_register?  # assume known to PSC
 
     case event.event_type.local_code
