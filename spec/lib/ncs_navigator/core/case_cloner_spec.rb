@@ -1,14 +1,17 @@
 require 'spec_helper'
 
 module NcsNavigator::Core
-  describe CaseCloner do
+  describe CaseCloner, :shared_test_data do
     let(:cloner) { CaseCloner.new(mother.p_id) }
 
-    let!(:earlier_person) { Factory(:person) }
+    before(:all) do
+      mother = FactoryGirl.create(:participant, :with_self, :p_type_code => 3, :p_id => 'M')
+      child1 = FactoryGirl.create(:participant, :with_self, :p_type_code => 6, :p_id => 'C1')
+      child2 = FactoryGirl.create(:participant, :with_self, :p_type_code => 6, :p_id => 'C2')
 
-    let!(:mother) { FactoryGirl.create(:participant, :with_self, :p_type_code => 3) }
-    let!(:child1) { FactoryGirl.create(:participant, :with_self, :p_type_code => 6) }
-    let!(:child2) { FactoryGirl.create(:participant, :with_self, :p_type_code => 6) }
+      link_mother_child(mother, child1)
+      link_mother_child(mother, child2)
+    end
 
     def link_mother_child(mother, child)
       Factory(:participant_person_link,
@@ -17,10 +20,11 @@ module NcsNavigator::Core
         :participant => child, :person => mother.person, :relationship_code => 2)
     end
 
-    before do
-      link_mother_child(mother, child1)
-      link_mother_child(mother, child2)
-    end
+    # Not lets because they are ref'd from other before(:all).
+    # See https://github.com/rspec/rspec-core/issues/500
+    def mother; Participant.where(:p_id => 'M').first; end
+    def child1; Participant.where(:p_id => 'C1').first; end
+    def child2; Participant.where(:p_id => 'C2').first; end
 
     describe '#source_participants' do
       let(:actual) { cloner.source_participants }
@@ -141,84 +145,74 @@ module NcsNavigator::Core
       end
 
       describe 'for related data' do
-        let!(:threem_event) { Factory(:event, :participant => mother, :event_type_code => 23) }
+        before(:all) do
+          threem_event =  Factory(:event, :participant => mother, :event_type_code => 23)
 
-        let!(:threem_contact_1) { Factory(:contact) }
-        let!(:threem_contact_link_1) {
-          Factory(:contact_link, :contact => threem_contact_1, :person => mother.person, :event => threem_event, :instrument => threem_interview)
-        }
+          threem_interview =  Factory(:instrument)
 
-        let!(:threem_contact_2) { Factory(:contact) }
-        let!(:threem_contact_link_2) {
-          Factory(:contact_link, :contact => threem_contact_2, :person => mother.person, :event => threem_event, :instrument => threem_interview)
-        }
+          threem_contact_1 =  Factory(:contact)
+          threem_contact_link_1 =
+            Factory(:contact_link, :contact => threem_contact_1, :person => mother.person, :event => threem_event, :instrument => threem_interview)
 
-        let!(:threem_interview) { Factory(:instrument) }
+          threem_contact_2 =  Factory(:contact)
+          threem_contact_link_2 =
+            Factory(:contact_link, :contact => threem_contact_2, :person => mother.person, :event => threem_event, :instrument => threem_interview)
 
-        let!(:threem_survey_mother) {
-          load_survey_string(<<-SURV)
-            survey '3M Mother' do
-              section '1' do
-                q_alpha 'How are things?'
-                a_1 'Okay'
-                a_2 'Fine'
+          threem_survey_mother =
+            load_survey_string(<<-SURV)
+              survey '3M Mother' do
+                section '1' do
+                  q_alpha 'How are things?'
+                  a_1 'Okay'
+                  a_2 'Fine'
+                end
               end
-            end
-          SURV
-        }
+            SURV
 
-        let!(:threem_survey_child) {
-          load_survey_string(<<-SURV)
-            survey '3M Child' do
-              section '1' do
-                q_beta 'And how is the baby?'
-                a_1 'Cute'
-                a_2 'Not cute'
+          threem_survey_child =
+            load_survey_string(<<-SURV)
+              survey '3M Child' do
+                section '1' do
+                  q_beta 'And how is the baby?'
+                  a_1 'Cute'
+                  a_2 'Not cute'
+                end
               end
-            end
-          SURV
-        }
+            SURV
 
-        let!(:threem_mother_rs) {
-          Factory(:response_set,
-            :instrument => threem_interview, :survey => threem_survey_mother,
-            :participant => mother, :person => mother.person
-          )
-        }
-        let!(:threem_child1_rs)  {
-          Factory(:response_set,
-            :instrument => threem_interview, :survey => threem_survey_child,
-            :participant => child1, :person => mother.person
-          )
-        }
-        let!(:threem_child2_rs)  {
-          Factory(:response_set,
-            :instrument => threem_interview, :survey => threem_survey_child,
-            :participant => child2, :person => mother.person
-          )
-        }
+          threem_mother_rs =
+            Factory(:response_set,
+              :instrument => threem_interview, :survey => threem_survey_mother,
+              :participant => mother, :person => mother.person
+            )
+          threem_child1_rs =
+            Factory(:response_set,
+              :instrument => threem_interview, :survey => threem_survey_child,
+              :participant => child1, :person => mother.person
+            )
+          threem_child2_rs =
+            Factory(:response_set,
+              :instrument => threem_interview, :survey => threem_survey_child,
+              :participant => child2, :person => mother.person
+            )
 
-        let!(:child1_consent_event) { Factory(:event, :event_type_code => 10, :participant => child1) }
-        let!(:mother_consent_event) { Factory(:event, :event_type_code => 10, :participant => mother) }
+          child1_consent_event =  Factory(:event, :event_type_code => 10, :participant => child1)
+          mother_consent_event =  Factory(:event, :event_type_code => 10, :participant => mother)
 
-        let!(:child1_consent_cl) { Factory(:contact_link, :event => child1_consent_event, :contact => consent_contact) }
-        let!(:mother_consent_cl) { Factory(:contact_link, :event => mother_consent_event, :contact => consent_contact) }
-        let!(:child1_consent_during_threem) { Factory(:contact_link, :event => child1_consent_event, :contact => threem_contact_1) }
+          consent_contact =
+            Factory(:contact)
 
-        let!(:consent_contact) {
-          Factory(:contact)
-        }
+          child1_consent_cl =  Factory(:contact_link, :event => child1_consent_event, :contact => consent_contact)
+          mother_consent_cl =  Factory(:contact_link, :event => mother_consent_event, :contact => consent_contact)
+          child1_consent_during_threem =  Factory(:contact_link, :event => child1_consent_event, :contact => threem_contact_1)
 
-        let!(:consent) {
-          Factory(:participant_consent, :participant => mother,
-            :consent_form_type_code => 1, :contact => consent_contact)
-        }
+          consent =
+            Factory(:participant_consent, :participant => mother,
+              :consent_form_type_code => 1, :contact => consent_contact)
 
-        let!(:sample_consent) {
-          Factory(:participant_consent_sample, :participant_consent => consent)
-        }
+          sample_consent =
+            Factory(:participant_consent_sample, :participant_consent => consent)
 
-        before do
           Factory(:address, :person => mother.person)
           Factory(:email, :person => mother.person)
           Factory(:telephone, :person => mother.person)
@@ -307,6 +301,8 @@ module NcsNavigator::Core
         end
 
         it 'reuses the same cloned object when there are multiple referencing paths' do
+          threem_survey_mother = Survey.where(:title => '3M Mother').first
+
           participant_rs = mother_clone.response_sets.where(:survey_id => threem_survey_mother).first
           instrument_rs = mother_clone.events.where(:event_type_code => 23).first.
             contact_links.first.instrument.response_sets.where(:survey_id => threem_survey_mother).first
