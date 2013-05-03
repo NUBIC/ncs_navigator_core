@@ -1172,7 +1172,8 @@ class Participant < ActiveRecord::Base
         end
 
         if has_hi_consent
-          move_to_high_intensity_if_required
+          enroll_in_high_intensity_arm! if can_enroll_in_high_intensity_arm?
+          high_intensity_conversion! if can_high_intensity_conversion?
         end
       end
       # if already hi, do nothing
@@ -1187,21 +1188,30 @@ class Participant < ActiveRecord::Base
       impregnate_low! if can_impregnate_low? && known_to_be_pregnant?(event.import_sort_date)
     when 11, 12
       # Pre-Pregnancy
-      move_to_high_intensity_if_required
-      non_pregnant_informed_consent! if can_non_pregnant_informed_consent?
-      lose_pregnancy! if can_lose_pregnancy?
-      follow!
+      if high_intensity?
+        non_pregnant_informed_consent! if can_non_pregnant_informed_consent?
+        lose_pregnancy! if can_lose_pregnancy?
+        follow!
+      else
+        Rails.logger.warn("Received a high intensity event (#{event.event_type_code} / #{event.event_start_date} / #{event.public_id}) for low intensity participant #{p_id}. Ignoring.")
+      end
     when 13, 14
       # Pregnancy Visit 1
-      move_to_high_intensity_if_required
-      pregnant_informed_consent! if can_pregnant_informed_consent?
-      impregnate! if can_impregnate?
-      # pregnancy_one_visit!
+      if high_intensity?
+        pregnant_informed_consent! if can_pregnant_informed_consent?
+        impregnate! if can_impregnate?
+        # pregnancy_one_visit!
+      else
+        Rails.logger.warn("Received a high intensity event (#{event.event_type_code} / #{event.event_start_date} / #{event.public_id}) for low intensity participant #{p_id}. Ignoring.")
+      end
     when 15, 16
       # Pregnancy Visit 2
-      move_to_high_intensity_if_required
-      late_pregnant_informed_consent! if can_late_pregnant_informed_consent?
-      pregnancy_one_visit! if can_pregnancy_one_visit?
+      if high_intensity?
+        late_pregnant_informed_consent! if can_late_pregnant_informed_consent?
+        pregnancy_one_visit! if can_pregnancy_one_visit?
+      else
+        Rails.logger.warn("Received a high intensity event (#{event.event_type_code} / #{event.event_start_date.inspect} / #{event.public_id}) for low intensity participant #{p_id}. Ignoring.")
+      end
     when 18, 23, 24, 25, 26, 27, 28, 30, 31, 36, 37, 38
       # Birth and Post-natal
       if low_intensity?
@@ -1513,11 +1523,6 @@ class Participant < ActiveRecord::Base
       ppg_info_source = NcsCode.for_list_name_and_local_code("INFORMATION_SOURCE_CL3", -5)
       ppg_info_mode   = NcsCode.for_list_name_and_local_code("CONTACT_TYPE_CL1", -5)
       PpgStatusHistory.create(:psu => self.psu, :ppg_status => new_ppg_status, :ppg_info_source => ppg_info_source, :ppg_info_mode => ppg_info_mode, :participant_id => self.id)
-    end
-
-    def move_to_high_intensity_if_required
-      enroll_in_high_intensity_arm! if can_enroll_in_high_intensity_arm?
-      high_intensity_conversion! if can_high_intensity_conversion?
     end
 
     ##
