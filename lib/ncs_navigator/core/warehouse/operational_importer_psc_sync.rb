@@ -175,13 +175,29 @@ module NcsNavigator::Core::Warehouse
       p_id = psc_participant.participant.p_id
       start_date = event_details['start_date']
       label = event_details['event_type_label']
+      arm = event_details['recruitment_arm']
 
-      say_subtask_message("looking for #{label} in template")
+      say_subtask_message("looking for #{label} in template for #{arm}")
       possible_segments = select_segments(label)
       selected_segment = nil
       if possible_segments.empty?
         fail "No segment found for event type label #{label.inspect}"
-      elsif possible_segments.size == 1
+      end
+
+      arm_eligible_segments = possible_segments.select { |seg| eligible_segment_for_arm?(seg, arm) }
+      if arm_eligible_segments.empty?
+        say_subtask_message("skipping because there are no #{arm}-appropriate segments")
+        log.debug("Deferring #{event_id} indefinitely to #{opts[:defer_key]} because there is not #{arm}-appropriate segment. Inappropriate segment(s):")
+        possible_segments.each do |seg|
+          log.debug("- #{seg.parent['name']}: #{seg['name']}")
+        end
+        redis.sadd(opts[:defer_key], event_id)
+        return
+      end
+
+      possible_segments = arm_eligible_segments
+
+      if possible_segments.size == 1
         selected_segment = possible_segments.first
       elsif segment_selectable_by_hi_v_lo?(possible_segments)
         selected_segment = possible_segments.inject({}) { |h, seg|
@@ -233,6 +249,11 @@ module NcsNavigator::Core::Warehouse
         collect { |label_elt| label_elt.xpath('../../..') }.flatten.uniq
     end
     private :select_segments
+
+    def eligible_segment_for_arm?(segment_elt, recruit_arm)
+      (segment_elt.parent['name'] == 'LO-Intensity') ^ (recruit_arm == 'hi')
+    end
+    private :eligible_segment_for_arm?
 
     def segment_selectable_by_hi_v_lo?(possible_segments)
       epoch_names = possible_segments.collect { |seg| seg.parent['name'] }
