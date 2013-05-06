@@ -177,6 +177,12 @@ module NcsNavigator::Core::Warehouse
       label = event_details['event_type_label']
       arm = event_details['recruitment_arm']
 
+      if label == 'informed_consent'
+        say_subtask_message("skipping informed consent event")
+        log.debug("Skipping informed consent for #{p_id} on #{start_date} (#{event_id})")
+        return
+      end
+
       say_subtask_message("looking for #{label} in template for #{arm}")
       possible_segments = select_segments(label)
       selected_segment = nil
