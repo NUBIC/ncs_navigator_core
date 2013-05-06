@@ -370,7 +370,7 @@ namespace :import do
             msg = "Activity #{a.activity_name} is a consent activity. Canceling activity for participant #{part.p_id}."
             $stderr.print("\n#{msg}")
             Rails.logger.info(msg)
-            reason ="Study Center is not configured to collection samples or specimens."
+            reason = msg
             psc.update_activity_state(a.activity_id, part, Psc::ScheduledActivity::CANCELED, Date.parse(a.ideal_date), reason)
           end
         end
