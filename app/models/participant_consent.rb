@@ -83,6 +83,14 @@ class ParticipantConsent < ActiveRecord::Base
   CHILD_CONSENT_6_MONTHS_TO_AGE_OF_MAJORITY = 5
   NEW_ADULT_CONSENT = 6
 
+  HIGH_INTENSITY_CONSENT_TYPES = [GENERAL]
+
+  HIGH_INTENSITY_CONSENT_FORM_TYPES = [
+    PREGNANT_WOMAN_CONSENT,
+    NON_PREGNANT_WOMAN_CONSENT,
+    NEW_ADULT_CONSENT
+  ]
+
   def self.consent_types
     NcsNavigatorCore.mdes.types.find { |t| t.name == 'consent_type_cl1' }.
       code_list.collect { |cl| [cl.value, cl.label.to_s.strip] }
@@ -193,6 +201,11 @@ class ParticipantConsent < ActiveRecord::Base
 
   def phase_two?
     !phase_one?
+  end
+
+  def high_intensity?
+    HIGH_INTENSITY_CONSENT_TYPES.include?(consent_type_code) ||
+      HIGH_INTENSITY_CONSENT_FORM_TYPES.include?(consent_form_type_code)
   end
 
   def description

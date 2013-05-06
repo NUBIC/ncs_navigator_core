@@ -125,7 +125,7 @@ module NcsNavigator::Core::Warehouse
             events_and_links.each do |event_and_links|
               core_event = apply_mdes_record_to_core(Event, event_and_links[:event])
 
-              participant.set_state_for_event_type(core_event)
+              participant.set_state_for_imported_event(core_event)
 
               @sync_loader.cache_event(core_event, participant) if for_psc
 

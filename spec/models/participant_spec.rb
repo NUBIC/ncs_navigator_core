@@ -2212,48 +2212,50 @@ describe Participant do
     end
   end
 
-  describe '#set_state_for_event_type' do
-    describe 'for informed consent' do
+  describe '#set_state_for_imported_event' do
+    describe 'for consent-based hi-lo conversion' do
       let(:participant) { Factory(:participant) }
 
       let(:event) {
-        Factory(:event, :event_type_code => 10, :event_start_date => Date.new(2010, 4, 1), :participant => participant)
+        Factory(:event, :event_type_code => 13, :participant => participant,
+          :event_start_date => event_start_date, :event_end_date => event_end_date)
       }
 
-      let(:out_of_event_date) { event.event_start_date - 7 }
-      let(:in_event_date) { event.event_start_date + 7 }
+      let(:event_start_date) { Date.new(2010, 4, 8) }
+      let(:event_end_date) { Date.new(2010, 4, 15) }
 
       let(:consent_type) { -4 }
       let(:consent_form_type) { -4 }
-      let(:consent_date) { in_event_date }
+      let(:consent_date) { event_end_date }
+      let(:consent_given_code) { 1 }
 
       let(:a_consent) {
         Factory(:participant_consent, :participant => participant,
-          :consent_given_code => 1, :consent_type_code => consent_type, :consent_form_type_code => consent_form_type,
-          :consent_date => consent_date)
+          :consent_given_code => consent_given_code, :consent_date => consent_date,
+          :consent_type_code => consent_type, :consent_form_type_code => consent_form_type)
       }
 
       before do
         participant.participant_consents = [a_consent]
       end
 
-      shared_context 'set_state_for_event_type leaving hi' do
+      shared_context 'set_state_for_imported_event leaving hi' do
         it 'leaves the participant on hi' do
-          participant.set_state_for_event_type(event)
+          participant.set_state_for_imported_event(event)
           participant.should be_high_intensity
         end
       end
 
-      shared_context 'set_state_for_event_type leaving lo' do
+      shared_context 'set_state_for_imported_event leaving lo' do
         it 'leaves the participant on lo' do
-          participant.set_state_for_event_type(event)
+          participant.set_state_for_imported_event(event)
           participant.should_not be_high_intensity
         end
       end
 
-      shared_context 'set_state_for_event_type converting hi' do
+      shared_context 'set_state_for_imported_event converting hi' do
         it 'converts the participant to hi' do
-          participant.set_state_for_event_type(event)
+          participant.set_state_for_imported_event(event)
           participant.should be_high_intensity
         end
       end
@@ -2263,36 +2265,41 @@ describe Participant do
           participant.high_intensity = true
         end
 
-        describe 'and the event has no consents' do
-          let(:consent_date) { out_of_event_date }
-
-          include_context 'set_state_for_event_type leaving hi'
+        describe 'and the participant has no high consent' do
+          include_context 'set_state_for_imported_event leaving hi'
         end
 
-        describe 'and the event has an old lo consent (7)' do
-          let(:consent_type) { 7 }
-
-          include_examples 'set_state_for_event_type leaving hi'
-        end
-
-        describe 'and the event has a new lo consent (7)' do
-          let(:consent_form_type) { 7 }
-
-          include_context 'set_state_for_event_type leaving hi'
-        end
-
-        describe 'and the event has an old hi consent (1)' do
-          let(:consent_type) { 1 }
-
-          include_context 'set_state_for_event_type leaving hi'
-        end
-
-        [1, 2, 6].each do |form_type|
-          describe "and the event has a new hi consent (#{form_type})" do
-            let(:consent_form_type) { form_type }
-
-            include_context 'set_state_for_event_type leaving hi'
+        shared_context 'set_state_for_imported_event stay hi for all consent types' do
+          describe '(old hi consent)' do
+            let(:consent_type) { 1 }
+            include_context 'set_state_for_imported_event leaving hi'
           end
+
+          [1, 2, 6].each do |form_type|
+            describe "(new hi consent #{form_type})" do
+              let(:consent_form_type) { form_type }
+
+              include_context 'set_state_for_imported_event leaving hi'
+            end
+          end
+        end
+
+        describe 'and the participant has hi consent in the future' do
+          let(:consent_date) { event_end_date + 4 }
+
+          include_context 'set_state_for_imported_event stay hi for all consent types'
+        end
+
+        describe 'and the participant has hi consent on the same date as the event' do
+          let(:consent_date) { event_end_date }
+
+          include_context 'set_state_for_imported_event stay hi for all consent types'
+        end
+
+        describe 'and the participant has hi consent in the past' do
+          let(:consent_date) { event_start_date - 4 }
+
+          include_context 'set_state_for_imported_event stay hi for all consent types'
         end
       end
 
@@ -2301,61 +2308,109 @@ describe Participant do
           participant.high_intensity = false
         end
 
-        describe 'and the event has no consents' do
-          let(:consent_date) { out_of_event_date }
+        shared_context 'set_state_for_imported_event convert to hi for all hi consent types' do
+          describe '(old hi consent)' do
+            let(:consent_type) { 1 }
+            include_context 'set_state_for_imported_event converting hi'
+          end
 
-          include_context 'set_state_for_event_type leaving lo'
-        end
+          [1, 2, 6].each do |form_type|
+            describe "(new hi consent #{form_type})" do
+              let(:consent_form_type) { form_type }
 
-        describe 'and the event has an old lo consent (7)' do
-          let(:consent_type) { 7 }
-
-          include_context 'set_state_for_event_type leaving lo'
-        end
-
-        describe 'and the event has a new lo consent (7)' do
-          let(:consent_form_type) { 7 }
-
-          include_context 'set_state_for_event_type leaving lo'
-        end
-
-        describe 'and the event has an old hi consent (1)' do
-          let(:consent_type) { 1 }
-
-          include_context 'set_state_for_event_type converting hi'
-        end
-
-        [1, 2, 6].each do |form_type|
-          describe "and the event has a new hi consent (#{form_type})" do
-            let(:consent_form_type) { form_type }
-
-            include_context 'set_state_for_event_type converting hi'
+              include_context 'set_state_for_imported_event converting hi'
+            end
           end
         end
 
-        describe 'when the event has both a hi and a lo consent' do
-          let(:another_consent) {
-            Factory(:participant_consent, :participant => participant,
-              :consent_given_code => 1, :consent_type_code => 1, :consent_form_type_code => -7,
-              :consent_date => in_event_date)
-          }
-
-          let(:consent_type) { 7 }
-
-          before do
-            participant.participant_consents << another_consent
+        shared_context 'set_state_for_imported_event leave lo for all hi consent types' do
+          describe '(old hi consent)' do
+            let(:consent_type) { 1 }
+            include_context 'set_state_for_imported_event leaving lo'
           end
 
-          include_context 'set_state_for_event_type converting hi'
+          [1, 2, 6].each do |form_type|
+            describe "(new hi consent #{form_type})" do
+              let(:consent_form_type) { form_type }
+
+              include_context 'set_state_for_imported_event leaving lo'
+            end
+          end
+        end
+
+        describe 'and the participant has hi consent in the future' do
+          let(:consent_date) { event_end_date + 4 }
+
+          include_context 'set_state_for_imported_event leave lo for all hi consent types'
+        end
+
+        describe 'and the participant has hi consent on the same date as the event' do
+          let(:consent_date) { event_end_date }
+
+          include_context 'set_state_for_imported_event convert to hi for all hi consent types'
+        end
+
+        describe 'and the participant has hi consent in the past' do
+          let(:consent_date) { event_start_date - 4 }
+
+          include_context 'set_state_for_imported_event convert to hi for all hi consent types'
         end
 
         describe 'when consent is not given' do
-          before do
-            a_consent.consent_form_type_code = 1
-            a_consent.consent_given_code = 2
+          let(:consent_given_code) { 2 }
+
+          describe 'and the participant has hi consent in the future' do
+            let(:consent_date) { event_end_date + 4 }
+
+            include_context 'set_state_for_imported_event leave lo for all hi consent types'
           end
 
-          include_context 'set_state_for_event_type leaving lo'
+          describe 'and the participant has hi consent on the same date as the event' do
+            let(:consent_date) { event_end_date }
+
+            include_context 'set_state_for_imported_event leave lo for all hi consent types'
+          end
+
+          describe 'and the participant has hi consent in the past' do
+            let(:consent_date) { event_start_date - 4 }
+
+            include_context 'set_state_for_imported_event leave lo for all hi consent types'
+          end
+        end
+
+        describe 'when the event has no end date' do
+          let(:event_end_date) { nil }
+
+          describe 'and the participant has hi consent in the future from the start date' do
+            let(:consent_date) { event_start_date + 4 }
+
+            include_context 'set_state_for_imported_event leave lo for all hi consent types'
+          end
+
+          describe 'and the participant has hi consent on the start date of the event' do
+            let(:consent_date) { event_start_date }
+
+            include_context 'set_state_for_imported_event convert to hi for all hi consent types'
+          end
+
+          describe 'and the participant has hi consent in the past' do
+            let(:consent_date) { event_start_date - 4 }
+
+            include_context 'set_state_for_imported_event convert to hi for all hi consent types'
+          end
+        end
+
+        describe 'when the event has no dates at all' do
+          let(:event_start_date) { nil }
+          let(:event_end_date) { nil }
+
+          include_context 'set_state_for_imported_event leave lo for all hi consent types'
+        end
+
+        describe 'when a hi consent has no date' do
+          let(:consent_date) { nil }
+
+          include_context 'set_state_for_imported_event leave lo for all hi consent types'
         end
       end
     end
