@@ -464,26 +464,6 @@ describe Participant do
 
     end
 
-    describe "#last_contact" do
-
-      before(:each) do
-        person = Factory(:person)
-        @participant = Factory(:participant, :high_intensity => true)
-        @participant.person = person
-      end
-
-      it "returns nil if no previous contacts" do
-        @participant.last_contact.should be_nil
-      end
-
-      it "returns the most recent contact" do
-        event = Factory(:event, :participant => @participant)
-        contact = Factory(:contact, :contact_date_date => 1.day.ago)
-        contact_link = Factory(:contact_link, :person => @participant.person, :event => event, :contact => contact)
-
-        @participant.last_contact.should == contact
-      end
-    end
   end
 
   describe "#upcoming_births" do
@@ -757,20 +737,11 @@ describe Participant do
           @participant.next_scheduled_event.event.should == PatientStudyCalendar::CHILD_CHILD
         end
 
+        # More tests below
         context "next event date" do
           it "should be date of the participant last contact date" do
             Factory(:contact_link, :person => @participant.person, :event => @event, :contact => Factory(:contact, :contact_date => '2012-01-02'))
             @participant.next_scheduled_event.date.should == Date.new(2012, 01, 02)
-          end
-
-          it 'fails if no contacts' do
-            Participant.any_instance.stub(:last_contact).and_return(nil)
-            expect { @participant.next_scheduled_event.date }.to raise_error(/Could not decide the next scheduled event date without the contact date/)
-          end
-
-          it 'fails if last_contact without contact_date' do
-            Factory(:contact_link, :person => @participant.person, :event => @event, :contact => Factory(:contact))
-            expect { @participant.next_scheduled_event.date }.to raise_error(/Could not decide the next scheduled event date without the contact date/)
           end
 
           context "with due_date" do
@@ -784,6 +755,103 @@ describe Participant do
               @participant.next_scheduled_event.date.should == Date.new(2012, 10, 02)
             end
           end
+        end
+      end
+    end
+
+    describe 'the next event date' do
+      let(:participant) { Factory(:participant) }
+      let(:event1) {
+        Factory(:event, :participant => participant,
+          :event_start_date => Date.new(2011, 3, 1), :event_end_date => Date.new(2011, 3, 7))
+      }
+      let(:event2) {
+        Factory(:event, :participant => participant,
+          :event_start_date => Date.new(2011, 2, 15), :event_end_date => Date.new(2011, 3, 9))
+      }
+
+      let(:contactA) { Factory(:contact, :contact_date => '2011-02-01') }
+      let(:contactB) { Factory(:contact, :contact_date => '2011-02-04') }
+
+      let!(:linkA1) { Factory(:contact_link, :contact => contactA, :event => event1) }
+      let!(:linkA2) { Factory(:contact_link, :contact => contactA, :event => event2) }
+      let!(:linkB2) { Factory(:contact_link, :contact => contactB, :event => event2) }
+
+      let(:actual) { participant.next_scheduled_event.date }
+
+      describe 'when all contacts have dates' do
+        it 'uses the most recent date' do
+          actual.should == Date.new(2011, 2, 4)
+        end
+      end
+
+      describe 'when a contact does not have a date' do
+        before do
+          contactB.contact_date = '9777-97-97'
+          contactB.contact_date_date = nil
+          contactB.save!
+        end
+
+        it 'uses the most recent non-blank contact date' do
+          actual.should == Date.new(2011, 2, 1)
+        end
+      end
+
+      describe 'when no contacts have dates' do
+        before do
+          contactA.contact_date = '9444-94-94'
+          contactA.contact_date_date = nil
+          contactA.save!
+          contactB.contact_date = '9777-97-97'
+          contactB.contact_date_date = nil
+          contactB.save!
+        end
+
+        it 'uses the most recent event end date' do
+          actual.should == event2.event_end_date
+        end
+      end
+
+      describe 'when no contacts have dates and no events have end dates' do
+        before do
+          contactA.contact_date = '9444-94-94'
+          contactA.contact_date_date = nil
+          contactA.save!
+          contactB.contact_date = '9777-97-97'
+          contactB.contact_date_date = nil
+          contactB.save!
+
+          event1.event_end_date = nil
+          event1.save!
+          event2.event_end_date = nil
+          event2.save!
+        end
+
+        it 'uses the most recent event start date' do
+          actual.should == event1.event_start_date
+        end
+      end
+
+      describe 'when no contacts have dates and no events have any dates' do
+        before do
+          contactA.contact_date = '9444-94-94'
+          contactA.contact_date_date = nil
+          contactA.save!
+          contactB.contact_date = '9777-97-97'
+          contactB.contact_date_date = nil
+          contactB.save!
+
+          event1.event_start_date = nil
+          event1.event_end_date = nil
+          event1.save!
+          event2.event_start_date = nil
+          event2.event_end_date = nil
+          event2.save!
+        end
+
+        it 'fails' do
+          expect { actual }.
+            to raise_error('Cannot decide the next scheduled event date without some contact or event date')
         end
       end
     end
