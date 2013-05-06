@@ -187,7 +187,7 @@ class EventsController < ApplicationController
   # @param [Participant]
   def cancel_scheduled_consents_for_consented_participant(participant)
     psc.scheduled_activities(participant).each do |a|
-      if psc.should_cancel_consent_activity?(a)
+      if a.cancelable_consent_activity?
         psc.update_activity_state(a.activity_id, participant, Psc::ScheduledActivity::CANCELED, Date.parse(a.ideal_date),
           "Consent activity cancelled as the Participant [#{participant.p_id}] has already consented.")
       end

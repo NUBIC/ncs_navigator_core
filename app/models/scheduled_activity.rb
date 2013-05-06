@@ -156,6 +156,21 @@ class ScheduledActivity
   end
 
   ##
+  # True if the activity is a consent activity, but is not a child consent activity
+  # and is not a part of the Informed Consent Epoch
+  # @return [Boolean]
+  def cancelable_consent_activity?
+    skippable_segments = [
+      PatientStudyCalendar::INFORMED_CONSENT_GENERAL_CONSENT,
+      PatientStudyCalendar::INFORMED_CONSENT_CHILD_CONSENT_BIRTH,
+      PatientStudyCalendar::INFORMED_CONSENT_CHILD_CONSENT_SIX_MONTHS,
+      PatientStudyCalendar::INFORMED_CONSENT_WITHDRAWAL,
+      PatientStudyCalendar::INFORMED_CONSENT_RECONSENT,
+    ]
+    consent_activity? && !child_consent? && !skippable_segments.include?(study_segment)
+  end
+
+  ##
   # All other consent activities that are not a child consent
   # reconsent or withdrawal
   # @return [Boolean]

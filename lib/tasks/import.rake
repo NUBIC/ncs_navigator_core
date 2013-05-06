@@ -366,7 +366,7 @@ namespace :import do
         next
       elsif part.consented?
         psc.scheduled_activities(part).each do |a|
-          if psc.should_cancel_consent_activity?(a)
+          if a.cancelable_consent_activity?
             msg = "Activity #{a.activity_name} is a consent activity. Canceling activity for participant #{part.p_id}."
             $stderr.print("\n#{msg}")
             Rails.logger.info(msg)

@@ -46,6 +46,50 @@ describe ScheduledActivity do
     end
   end
 
+  describe "#cancelable_consent_activity?" do
+    let(:sa) do
+      ScheduledActivity.new(
+        :activity_type => activity_type,
+        :activity_name => activity_name,
+        :study_segment => study_segment)
+    end
+
+    describe "an Instrument activity type" do
+      let(:activity_type) { 'Instrument' }
+      let(:activity_name) { 'New Adult Consent' }
+      let(:study_segment) { PatientStudyCalendar::CHILD_CHILD }
+      it "is false" do
+        sa.should_not be_cancelable_consent_activity
+      end
+    end
+
+    describe "a child consent activity" do
+      let(:activity_type) { 'Consent' }
+      let(:activity_name) { 'Child Consent' }
+      let(:study_segment) { PatientStudyCalendar::CHILD_CHILD }
+      it "is false" do
+        sa.should_not be_cancelable_consent_activity
+      end
+    end
+
+    describe "an activity in the Informed Consent Epoch" do
+      let(:activity_type) { 'Consent' }
+      let(:activity_name) { 'New Adult Consent' }
+      let(:study_segment) { PatientStudyCalendar::INFORMED_CONSENT_RECONSENT }
+      it "is false" do
+        sa.should_not be_cancelable_consent_activity
+      end
+    end
+
+    describe "a non child consent activity not in the Informed Consent Epoch" do
+      let(:activity_type) { 'Consent' }
+      let(:activity_name) { 'New Adult Consent' }
+      let(:study_segment) { PatientStudyCalendar::CHILD_CHILD }
+      it "is true" do
+        sa.should be_cancelable_consent_activity
+      end
+    end
+  end
 
   describe "#open?" do
     let(:sa) { ScheduledActivity.new(attrs) }
