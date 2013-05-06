@@ -199,10 +199,6 @@ module NcsNavigator::Core::Warehouse
 
       if possible_segments.size == 1
         selected_segment = possible_segments.first
-      elsif segment_selectable_by_hi_v_lo?(possible_segments)
-        selected_segment = possible_segments.inject({}) { |h, seg|
-          h[seg.parent['name'] == 'LO-Intensity' ? 'lo' : 'hi'] = seg; h
-        }[event_details['recruitment_arm']]
       elsif segment_selectable_by_pre_post_natal?(possible_segments)
         pre_or_post = redis.get(sync_key['p', p_id, 'postnatal']) ? 'post' : 'pre'
         selected_segment = possible_segments.inject({}) { |h, seg|
@@ -254,13 +250,6 @@ module NcsNavigator::Core::Warehouse
       (segment_elt.parent['name'] == 'LO-Intensity') ^ (recruit_arm == 'hi')
     end
     private :eligible_segment_for_arm?
-
-    def segment_selectable_by_hi_v_lo?(possible_segments)
-      epoch_names = possible_segments.collect { |seg| seg.parent['name'] }
-      # "there are two different epochs and one of them is LO-Intensity"
-      epoch_names.size == 2 && epoch_names.include?('LO-Intensity') && epoch_names.uniq.size == 2
-    end
-    private :segment_selectable_by_hi_v_lo?
 
     def segment_selectable_by_pre_post_natal?(possible_segments)
       segment_names = possible_segments.collect { |seg| seg['name'] }
