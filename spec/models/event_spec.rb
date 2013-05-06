@@ -1133,6 +1133,8 @@ describe Event do
       let(:rs) { Factory(:response_set, :survey => survey, :user_id => @person.id) }
 
       before do
+        @event.event_breakoff_code = -4
+        @event.save!
         @instrument.response_sets << rs
       end
 
