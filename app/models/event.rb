@@ -465,6 +465,13 @@ class Event < ActiveRecord::Base
   end
 
   ##
+  # Date and time of when the event was started
+  # @return [Array<Date,String>]
+  def started_at
+    [event_start_date, event_start_time]
+  end
+
+  ##
   # @return [Array<Fixnum>] the event type codes for events which are not related
   #   to a specific participant
   def self.non_participant_event_type_codes

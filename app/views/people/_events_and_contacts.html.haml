@@ -1,13 +1,18 @@
 .page_section
-  - @person.participants.each do |participant|
-    .participant_events
-      - if participant.events.blank?
-        %p
-          = "No events exist for #{blank_safe(participant.person.to_s)} at this time."
-      - else
-        - participant.events.chronological.reverse_order.each do |event|
+  .participant_contacts
+    - if @events_and_contacts.blank?
+      = "No events or contacts exist for #{blank_safe(@person.to_s)}."
+    - else
+      - sort_by_started_at(@events_and_contacts).each do |row|
+        -if row.is_a?(ContactLink)
+          - contact = row.contact
+          %div.event{ :style => "padding:0.5em;"}
+            = link_to contact.contact_type, edit_contact_link_contact_path(row, contact), :class => "edit_link icon_link"
+            = contact.contact_date
+            = DispositionMapper.disposition_text_for_contact(contact)
+        - else
+          - event = row
           - event_name = event.to_s
-          - person = participant.person
           .event
             .header
               .event_actions
@@ -16,11 +21,11 @@
                     = link_to "Close Event", edit_event_path(event, :close => 'true'),
                       :class => "close_link icon_link",
                       :confirm => "Are you certain that this event should be closed?"
-                  = link_to "Mark Out of Window", mark_event_out_of_window_participant_path(participant),
+                  = link_to "Mark Out of Window", mark_event_out_of_window_participant_path(@participant),
                     :class => "out_of_window_link icon_link",
                     :confirm => "Are you certain that this event is out of window?"
                 %span.new_contact_for_previous_event
-                  = link_to "New Contact", new_person_contact_path(person, :event_id => event.id),
+                  = link_to "New Contact", new_person_contact_path(@person, :event_id => event.id),
                     :class => "add_link icon_link", :title => "New Contact for #{event_name}"
               %span.type
                 = link_to event_name, edit_event_path(event), :class => "edit_link icon_link"
@@ -28,6 +33,9 @@
                 = blank_safe(event.event_start_date)
                 = " - "
                 = blank_safe(event.event_end_date)
+              %span.relationship
+                -if @person != event.participant.person
+                  = @person.relationship_to_person_via_participant(event.participant.person)
               #span.disposition
                 - if event.event_disposition
                   - disp = DispositionMapper.disposition_text_for_event(event)
@@ -50,8 +58,10 @@
                     %th
                       Disposition
                     %th
+                      Relationship
+                    %th
                       Continue
-                  - event.contact_links.map(&:contact).uniq.sort_by{ |c| c.contact_date.to_s }.each do |contact|
+                  - event.contact_links.map(&:contact).uniq.sort_by { |c| c.contact_date.to_s }.each do |contact|
                     - cl = contact.contact_links.where(:event_id => event.id).first
                     - cls = cycle('even_record', 'odd_record')
                     %tr{ :class => cls }
@@ -66,17 +76,20 @@
                       %td
                         = DispositionMapper.disposition_text_for_contact(contact)
                       %td
+                        -if @person != cl.person
+                          = @person.relationship_to_person_via_participant(cl.person)
+                      %td
                         - if contact.open? && event.open?
                           - link_text = contact.contact_date.blank? ? "Continue Contact" : "Continue Contact on #{contact.contact_date}"
                           = link_to link_text, decision_page_contact_link_path(cl),
                             :class => "continue_link icon_link"
                     - unless contact.contact_comment.blank?
                       %tr{ :class => "comment_#{cls} #{cls}"  }
-                        %td{ :colspan => 6 }
+                        %td{ :colspan => 7 }
                           = blank_safe(contact.contact_comment, 'No comment')
                     - unless contact.non_interview_reports.blank?
                       %tr{ :class => "comment_#{cls} #{cls}"  }
-                        %td{ :colspan => 6 }
+                        %td{ :colspan => 7 }
                           %b
                             Non-Interview Reports
                           - contact.non_interview_reports.each do |nir|
