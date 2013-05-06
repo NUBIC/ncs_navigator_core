@@ -147,7 +147,7 @@ describe OperationalDataExtractor::PostNatal do
       neighbor.telephones.first.phone_nbr.should == "3125551212"
 
       neighbor.addresses.first.should_not be_nil
-      neighbor.addresses.first.to_s.should == "123 Easy St. Chicago, ILLINOIS 65432-1234"
+      neighbor.addresses.first.to_s.should == "123 Easy St. Chicago, Illinois 65432-1234"
       neighbor.addresses.first.address_rank_code.should == 1
     end
 

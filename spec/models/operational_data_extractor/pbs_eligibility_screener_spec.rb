@@ -124,7 +124,7 @@ describe OperationalDataExtractor::PbsEligibilityScreener do
       person = Person.find(person.id)
       person.addresses.size.should == 1
       address = person.addresses.first
-      address.to_s.should == "123 Easy St. Chicago, ILLINOIS 65432-1234"
+      address.to_s.should == "123 Easy St. Chicago, Illinois 65432-1234"
       address.address_rank_code.should == 1
     end
 
@@ -155,7 +155,7 @@ describe OperationalDataExtractor::PbsEligibilityScreener do
       person = Person.find(person.id)
       person.addresses.size.should == 1
       address = person.addresses.first
-      address.to_s.should == "123 Easy St. Chicago, ILLINOIS"
+      address.to_s.should == "123 Easy St. Chicago, Illinois"
       address.address_rank_code.should == 1
     end
 
@@ -186,7 +186,7 @@ describe OperationalDataExtractor::PbsEligibilityScreener do
       person = Person.find(person.id)
       person.addresses.size.should == 1
       address = person.addresses.first
-      address.to_s.should == "123 Easy St. Chicago, ILLINOIS"
+      address.to_s.should == "123 Easy St. Chicago, Illinois"
       address.address_rank_code.should == 1
     end
 

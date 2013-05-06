@@ -109,7 +109,7 @@ describe OperationalDataExtractor::PregnancyVisit do
       father.telephones.first.phone_rank_code.should == 1
 
       father.addresses.first.should_not be_nil
-      father.addresses.first.to_s.should == "123 Easy St. Chicago, ILLINOIS 65432-1234"
+      father.addresses.first.to_s.should == "123 Easy St. Chicago, Illinois 65432-1234"
       father.addresses.first.address_rank_code.should == 1
     end
 
@@ -146,7 +146,7 @@ describe OperationalDataExtractor::PregnancyVisit do
       friend.telephones.first.phone_nbr.should == "3125551212"
 
       friend.addresses.first.should_not be_nil
-      friend.addresses.first.to_s.should == "123 Easy St. Chicago, ILLINOIS 65432-1234"
+      friend.addresses.first.to_s.should == "123 Easy St. Chicago, Illinois 65432-1234"
     end
 
     it "creates another new person record and associates it with the particpant" do
@@ -182,7 +182,7 @@ describe OperationalDataExtractor::PregnancyVisit do
       neighbor.telephones.first.phone_nbr.should == "3125551212"
 
       neighbor.addresses.first.should_not be_nil
-      neighbor.addresses.first.to_s.should == "123 Tapestry St. Chicago, ILLINOIS 65432-1234"
+      neighbor.addresses.first.to_s.should == "123 Tapestry St. Chicago, Illinois 65432-1234"
     end
 
     it "creates an other relative person record and associates it with the particpant" do
@@ -688,7 +688,7 @@ describe OperationalDataExtractor::PregnancyVisit do
       OperationalDataExtractor::PregnancyVisit.new(response_set).extract_data
       @participant.person.institutions.first.addresses.size.should == 1
       address = @participant.person.institutions.first.addresses.first
-      address.to_s.should == "123 Hospital Way Chicago, ILLINOIS 65432"
+      address.to_s.should == "123 Hospital Way Chicago, Illinois 65432"
 
       take_survey(survey, response_set) do |r|
         r.a "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.BIRTH_PLAN", @hospital
@@ -707,7 +707,7 @@ describe OperationalDataExtractor::PregnancyVisit do
 
       @participant.person.institutions.first.addresses.size.should == 1
       address = @participant.person.institutions.first.addresses.first
-      address.to_s.should == "321 Hospital Way 4 Moab, ILLINOIS 23456"
+      address.to_s.should == "321 Hospital Way 4 Moab, Illinois 23456"
     end
   end
 
@@ -744,7 +744,7 @@ describe OperationalDataExtractor::PregnancyVisit do
 
       @participant.person.institutions.first.addresses.size.should == 1
       address = @participant.person.institutions.first.addresses.first
-      address.to_s.should == "123 Hospital Way Chicago, ILLINOIS 65432"
+      address.to_s.should == "123 Hospital Way Chicago, Illinois 65432"
     end
 
     it "for work address for PBS PV1" do
@@ -771,7 +771,7 @@ describe OperationalDataExtractor::PregnancyVisit do
       person.addresses.size.should == 1
       address = person.addresses.first
       address.address_type.should == Address.work_address_type
-      address.to_s.should == "123 Work Way 3333 Chicago, ILLINOIS 65432-1234"
+      address.to_s.should == "123 Work Way 3333 Chicago, Illinois 65432-1234"
     end
 
     it "for birth address, with institution,for PBS PV2" do
@@ -796,7 +796,7 @@ describe OperationalDataExtractor::PregnancyVisit do
 
       @participant.person.institutions.first.addresses.size.should == 1
       address = @participant.person.institutions.first.addresses.first
-      address.to_s.should == "123 Hospital Way Chicago, ILLINOIS 65432"
+      address.to_s.should == "123 Hospital Way Chicago, Illinois 65432"
     end
 
     it "for work address for PBS PV2" do
@@ -823,7 +823,7 @@ describe OperationalDataExtractor::PregnancyVisit do
       person.addresses.size.should == 1
       address = person.addresses.first
       address.address_type.should == Address.work_address_type
-      address.to_s.should == "123 Work Way 3333 Chicago, ILLINOIS 65432-1234"
+      address.to_s.should == "123 Work Way 3333 Chicago, Illinois 65432-1234"
     end
 
     it "for confirm work address for PBS PV2" do
@@ -852,7 +852,7 @@ describe OperationalDataExtractor::PregnancyVisit do
       address = person.addresses.first
       address.address_type.should == Address.work_address_type
       address.address_rank.should == ode.duplicate_rank
-      address.to_s.should == "123 Confirm Work Way 3333 Chicago, ILLINOIS 65432-1234"
+      address.to_s.should == "123 Confirm Work Way 3333 Chicago, Illinois 65432-1234"
     end
   end
 

@@ -88,7 +88,7 @@ describe OperationalDataExtractor::TracingModule do
     person = Person.find(person.id)
     person.addresses.size.should == 1
     address = person.addresses.first
-    address.to_s.should == "123 Easy St. Chicago, ILLINOIS 65432-1234"
+    address.to_s.should == "123 Easy St. Chicago, Illinois 65432-1234"
     address.address_rank_code.should == 1
   end
 
@@ -123,7 +123,7 @@ describe OperationalDataExtractor::TracingModule do
     person  = Person.find(person.id)
     person.addresses.size.should == 1
     address = person.addresses.first
-    address.to_s.should == "345 Easy St. Chicago, ILLINOIS 60666-1234"
+    address.to_s.should == "345 Easy St. Chicago, Illinois 60666-1234"
     address.address_type.should == home
     address.address_rank_code.should == 1
   end
@@ -259,7 +259,7 @@ describe OperationalDataExtractor::TracingModule do
       friend.telephones.first.phone_type.should == home
 
       friend.addresses.first.should_not be_nil
-      friend.addresses.first.to_s.should == "123 Easy St. Chicago, ILLINOIS 65432-1234"
+      friend.addresses.first.to_s.should == "123 Easy St. Chicago, Illinois 65432-1234"
     end
 
     it "creates another new person record and associates it with the particpant" do
@@ -298,7 +298,7 @@ describe OperationalDataExtractor::TracingModule do
       neighbor.primary_cell_phone.phone_nbr.should == "3125556789"
 
       neighbor.addresses.first.should_not be_nil
-      neighbor.addresses.first.to_s.should == "123 Tapestry St. Chicago, ILLINOIS 65432-1234"
+      neighbor.addresses.first.to_s.should == "123 Tapestry St. Chicago, Illinois 65432-1234"
     end
 
     it "creates a third person record and associates it with the particpant" do
@@ -336,7 +336,7 @@ describe OperationalDataExtractor::TracingModule do
       aunt.primary_cell_phone.phone_nbr.should == "3125556789"
 
       aunt.addresses.first.should_not be_nil
-      aunt.addresses.first.to_s.should == "123 Regency St. Chicago, ILLINOIS 65432-1234"
+      aunt.addresses.first.to_s.should == "123 Regency St. Chicago, Illinois 65432-1234"
     end
 
   end
