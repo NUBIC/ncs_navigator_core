@@ -125,10 +125,6 @@ module ApplicationHelper
     dash.blank? ? "UNKNOWN" : value[dash + 1, value.length]
   end
 
-  def continuable?(event)
-    event.continuable?
-  end
-
   ## Displaying the Staff name that is associated with the Participant(Initiated the Contact)
   #  Used in the Participants,Contact_Links excel reports to display the Originating Staff and Current Staff.
   def staff_name(staff_id)

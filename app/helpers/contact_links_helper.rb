@@ -27,6 +27,7 @@ module ContactLinksHelper
     can_continue = event.consent_event? ? event.standalone_consent_event?(contact) : !event.closed?
     event.continuable? && can_continue
   end
+  private :continuable?
 
   ##
   # To handle the internal_surveys, some surveys are started via
