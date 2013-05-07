@@ -177,7 +177,7 @@ module NcsNavigator::Core::Warehouse
       label = event_details['event_type_label']
       arm = event_details['recruitment_arm']
 
-      if label == 'informed_consent'
+      if informed_consent_label?(label)
         say_subtask_message("skipping informed consent event")
         log.debug("Skipping informed consent for #{p_id} on #{start_date} (#{event_id})")
         return
@@ -270,6 +270,10 @@ module NcsNavigator::Core::Warehouse
       possible_segments.size == 2 && segment_names.include?('Birth Cohort') && segment_names.uniq.size == 2
     end
     private :segment_selectable_by_birth_cohort?
+
+    def informed_consent_label?(label)
+      label == 'informed_consent'
+    end
 
     ###### CONTACT LINK SA HISTORY UPDATES
 
@@ -431,7 +435,7 @@ module NcsNavigator::Core::Warehouse
           find_psc_event([psc_event], imported_event['start_date'], imported_event['event_type_label'])
         }
       }.reject { |psc_event| latest_imported_event_date && (psc_event[:start_date] < latest_imported_event_date) }.
-        reject { |psc_event| psc_event[:event_type_label] == 'informed_consent' }
+        reject { |psc_event| informed_consent_label?(psc_event[:event_type_label]) }
 
       scheduled_events.each do |implied_event|
         event_type_label = implied_event[:event_type_label]
