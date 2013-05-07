@@ -14,7 +14,7 @@ ts = NcsNavigator::Warehouse::TransformStatus.new
 transformer = NcsNavigator::Warehouse::Transformers::EnumTransformer.new(
   config, NcsNavigator::Core::Warehouse::InstrumentEnumerator.new(config),
   :filters => [
-    NcsNavigator::Warehouse::Transformers::ApplyGlobalValuesFilter.new(config)
+    NcsNavigator::Warehouse::Filters::ApplyGlobalValuesFilter.new(config)
   ]
 )
 
