@@ -265,13 +265,16 @@ class ParticipantConsent < ActiveRecord::Base
         set_answer(ra, 'consent_withdraw_reason_code')
         set_answer_value(ra, 'consent_withdraw_date')
         set_answer(ra, 'who_wthdrw_consent_code')
-        set_answer(ra, 'collect_specimen_consent', (participant_consent_samples.count > 0) ? '1' : '2')
 
-        self.participant_consent_samples.each do |s|
-          if s.sample_consent_given_code && s.sample_consent_given_code != NcsCode::MISSING_IN_ERROR
-            a = "sample_consent_given_code_#{s.sample_consent_type_code}"
-            v = s.sample_consent_given_code.to_s
-            ra.answer a, v
+        unless self.phase_one?
+          set_answer(ra, 'collect_specimen_consent', (participant_consent_samples.count > 0) ? '1' : '2')
+
+          self.participant_consent_samples.each do |s|
+            if s.sample_consent_given_code && s.sample_consent_given_code != NcsCode::MISSING_IN_ERROR
+              a = "sample_consent_given_code_#{s.sample_consent_type_code}"
+              v = s.sample_consent_given_code.to_s
+              ra.answer a, v
+            end
           end
         end
 
