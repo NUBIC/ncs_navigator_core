@@ -17,7 +17,8 @@ class AppointmentSheetsController < ApplicationController
       sa.event == @sheet.event_type.downcase.tr(' ','_') &&
       sa.person_id == @person.public_id
     end
-    Time.parse(event_activity.activity_time).strftime("%l:%M %p") unless event_activity.blank?
+    Time.parse(event_activity.activity_time).strftime("%l:%M %p") unless event_activity.blank? ||
+                                                                         event_activity.activity_time.blank?
   end
 
 
