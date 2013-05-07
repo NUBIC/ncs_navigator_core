@@ -1,7 +1,7 @@
 class AppointmentSheetsController < ApplicationController
 
   def show
-    @sheet = AppointmentSheet.new(params[:person])
+    @sheet = AppointmentSheet.new(params[:person], params[:date])
     @person = @sheet.person
     @participant = @person.participant
     @participant_activity_plan = psc.build_activity_plan(@participant)
