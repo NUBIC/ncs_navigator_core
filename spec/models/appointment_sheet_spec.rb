@@ -121,8 +121,8 @@ describe AppointmentSheet do
                       :participant_consent_samples => [child_biologicial_consent, child_genetic_consent],
                       :participant => child_participant)
 
-    @sheet = AppointmentSheet.new(person.id.to_s)
-    @missing_info_sheet = AppointmentSheet.new(Factory(:person).id.to_s)
+    @sheet = AppointmentSheet.new(person.id.to_s, date)
+    @missing_info_sheet = AppointmentSheet.new(Factory(:person).id.to_s, date)
   end
 
   it "has an event type" do
@@ -141,7 +141,7 @@ describe AppointmentSheet do
     @sheet.cell_phone.should == "301-908-1212"
   end
 
-  it "'cell phone returns nil if phone is nil" do
+  it "cell phone returns nil if phone is nil" do
     @missing_info_sheet.cell_phone.should be_nil
   end
 
@@ -166,7 +166,7 @@ describe AppointmentSheet do
   end
 
   it "has all the mother's consents" do
-    @sheet.mothers_consents.should == ["Environmental", "Biological"]
+    @sheet.mothers_consents.should == ["General", "Environmental", "Biological"]
   end
 
   it "has the children's names" do
@@ -190,7 +190,7 @@ describe AppointmentSheet do
   end
 
   it "has the children's consents" do
-    @sheet.child_consents.should == [["Biological", "Genetic"]]
+    @sheet.child_consents.should == [["General", "Biological", "Genetic"]]
   end
 
   it "has next event" do
