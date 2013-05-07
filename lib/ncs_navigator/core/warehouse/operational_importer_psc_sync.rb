@@ -175,18 +175,36 @@ module NcsNavigator::Core::Warehouse
       p_id = psc_participant.participant.p_id
       start_date = event_details['start_date']
       label = event_details['event_type_label']
+      arm = event_details['recruitment_arm']
 
-      say_subtask_message("looking for #{label} in template")
+      if informed_consent_label?(label)
+        say_subtask_message("skipping informed consent event")
+        log.debug("Skipping informed consent for #{p_id} on #{start_date} (#{event_id})")
+        return
+      end
+
+      say_subtask_message("looking for #{label} in template for #{arm}")
       possible_segments = select_segments(label)
       selected_segment = nil
       if possible_segments.empty?
         fail "No segment found for event type label #{label.inspect}"
-      elsif possible_segments.size == 1
+      end
+
+      arm_eligible_segments = possible_segments.select { |seg| eligible_segment_for_arm?(seg, arm) }
+      if arm_eligible_segments.empty?
+        say_subtask_message("skipping because there are no #{arm}-appropriate segments")
+        log.debug("Deferring #{event_id} indefinitely to #{opts[:defer_key]} because there is not #{arm}-appropriate segment. Inappropriate segment(s):")
+        possible_segments.each do |seg|
+          log.debug("- #{seg.parent['name']}: #{seg['name']}")
+        end
+        redis.sadd(opts[:defer_key], event_id)
+        return
+      end
+
+      possible_segments = arm_eligible_segments
+
+      if possible_segments.size == 1
         selected_segment = possible_segments.first
-      elsif segment_selectable_by_hi_v_lo?(possible_segments)
-        selected_segment = possible_segments.inject({}) { |h, seg|
-          h[seg.parent['name'] == 'LO-Intensity' ? 'lo' : 'hi'] = seg; h
-        }[event_details['recruitment_arm']]
       elsif segment_selectable_by_pre_post_natal?(possible_segments)
         pre_or_post = redis.get(sync_key['p', p_id, 'postnatal']) ? 'post' : 'pre'
         selected_segment = possible_segments.inject({}) { |h, seg|
@@ -234,12 +252,10 @@ module NcsNavigator::Core::Warehouse
     end
     private :select_segments
 
-    def segment_selectable_by_hi_v_lo?(possible_segments)
-      epoch_names = possible_segments.collect { |seg| seg.parent['name'] }
-      # "there are two different epochs and one of them is LO-Intensity"
-      epoch_names.size == 2 && epoch_names.include?('LO-Intensity') && epoch_names.uniq.size == 2
+    def eligible_segment_for_arm?(segment_elt, recruit_arm)
+      (segment_elt.parent['name'] == 'LO-Intensity') ^ (recruit_arm == 'hi')
     end
-    private :segment_selectable_by_hi_v_lo?
+    private :eligible_segment_for_arm?
 
     def segment_selectable_by_pre_post_natal?(possible_segments)
       segment_names = possible_segments.collect { |seg| seg['name'] }
@@ -254,6 +270,10 @@ module NcsNavigator::Core::Warehouse
       possible_segments.size == 2 && segment_names.include?('Birth Cohort') && segment_names.uniq.size == 2
     end
     private :segment_selectable_by_birth_cohort?
+
+    def informed_consent_label?(label)
+      label == 'informed_consent'
+    end
 
     ###### CONTACT LINK SA HISTORY UPDATES
 
@@ -415,7 +435,7 @@ module NcsNavigator::Core::Warehouse
           find_psc_event([psc_event], imported_event['start_date'], imported_event['event_type_label'])
         }
       }.reject { |psc_event| latest_imported_event_date && (psc_event[:start_date] < latest_imported_event_date) }.
-        reject { |psc_event| psc_event[:event_type_label] == 'informed_consent' }
+        reject { |psc_event| informed_consent_label?(psc_event[:event_type_label]) }
 
       scheduled_events.each do |implied_event|
         event_type_label = implied_event[:event_type_label]

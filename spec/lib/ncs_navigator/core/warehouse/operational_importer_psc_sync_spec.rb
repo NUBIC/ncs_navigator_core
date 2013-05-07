@@ -384,6 +384,8 @@ module NcsNavigator::Core::Warehouse
       end
 
       describe 'when the event already has scheduled activities' do
+        let(:recruitment_arm) { 'hi' }
+
         before do
           psc_participant.stub!(:scheduled_events).and_return([{
                 :event_type_label => event_type_label,
@@ -392,7 +394,7 @@ module NcsNavigator::Core::Warehouse
               }])
 
           add_event_hash('e1', '2010-01-11',
-            :event_type_label => event_type_label)
+            :event_type_label => event_type_label, :recruitment_arm => recruitment_arm)
         end
 
         shared_examples_for 'a new event' do
@@ -414,6 +416,7 @@ module NcsNavigator::Core::Warehouse
         end
 
         describe 'and the event type is repeatable' do
+          let(:recruitment_arm) { 'lo' }
           let(:event_type_label) { 'low_to_high_conversion' }
           let(:candidate_segment) { SEGMENT_IDS[:lo_hi_conversion] }
 
@@ -640,6 +643,61 @@ module NcsNavigator::Core::Warehouse
             before do
               update_event_hash(screener_event_id, :pbs_birth_cohort => true)
             end
+          end
+        end
+
+        describe 'when a hi participant with a lo-only event' do
+          before do
+            redis.del("#{ns}:psc_sync:p:#{p_id}:events")
+            %w(e7 e15).each do |e|
+              redis.sadd("#{ns}:psc_sync:p:#{p_id}:events", e)
+            end
+            add_event_hash('e15', '2010-01-11',
+              :event_type_label => 'low_intensity_data_collection', :recruitment_arm => 'hi')
+            add_event_hash('e7', '2010-04-07',
+              :event_type_label => 'birth', :recruitment_arm => 'hi')
+          end
+
+          it 'does not schedule the lo segment' do
+            psc_participant.should_not_receive(:append_study_segment).
+              with('2010-01-11', SEGMENT_IDS[:lo_ppg_12])
+
+            importer.schedule_events(psc_participant)
+
+            redis.smembers(unschedulable_key).should == %w(e15)
+          end
+
+          it 'schedules the hi segments' do
+            psc_participant.should_receive(:append_study_segment).
+              with('2010-04-07', SEGMENT_IDS[:hi_child])
+
+            importer.schedule_events(psc_participant)
+          end
+        end
+
+        describe 'when a lo participant with a hi-only event' do
+          before do
+            %w(e4 e1 e10).each do |e|
+              update_event_hash(e, :recruitment_arm => 'lo')
+            end
+          end
+
+          it 'does not schedule the hi segments' do
+            psc_participant.should_not_receive(:append_study_segment).
+              with('2010-01-11', SEGMENT_IDS[:pv1])
+            psc_participant.should_not_receive(:append_study_segment).
+              with('2010-04-04', SEGMENT_IDS[:pv2])
+
+            importer.schedule_events(psc_participant)
+
+            redis.smembers(unschedulable_key).sort.should == %w(e1 e4)
+          end
+
+          it 'schedules lo segments' do
+            psc_participant.should_receive(:append_study_segment).
+              with('2010-10-10', SEGMENT_IDS[:lo_birth])
+
+            importer.schedule_events(psc_participant)
           end
         end
       end
