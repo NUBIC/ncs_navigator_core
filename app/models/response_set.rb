@@ -93,7 +93,8 @@ class ResponseSet < ActiveRecord::Base
   end
 
   ##
-  # Borrowed from Registar to assist with handling mandatary questions.
+  # Borrowed from internal NUBIC project Registar {http://projects.nubic.northwestern.edu/}
+  # to assist with handling mandatary questions.
   def first_incomplete_section
     survey.sections.detect{ |section| !section_mandatory_questions_complete?(section) }
   end
@@ -125,7 +126,7 @@ class ResponseSet < ActiveRecord::Base
     triggered.each{ |q| return false unless is_answered?(q) }
     return true
   end
-  # End theft of Registar
+  # End theft
   ##
 
   def as_json(options = nil)

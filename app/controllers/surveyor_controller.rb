@@ -55,7 +55,9 @@ class SurveyorController < ApplicationController
   end
 
   ##
-  # Update method copied from Surveyor gem and modified with code ideas borrowed from Registar
+  # Update method copied from Surveyor {https://github.com/NUBIC/surveyor}
+  # gem and modified with code ideas borrowed from
+  # internal NUBIC project Registar {http://projects.nubic.northwestern.edu/}
   # to handle mandatory questions.
   def update
     saved = load_and_update_response_set_with_retries
@@ -66,7 +68,7 @@ class SurveyorController < ApplicationController
       format.html do
         if @response_set.nil?
           return redirect_with_message(available_surveys_path, :notice, t('surveyor.unable_to_find_your_responses'))
-        # This section taken from Registar
+        # This section taken from internal NUBIC project Registar
         elsif !@response_set.mandatory_questions_complete?
           flash[:notice] = "Please Complete ALL required questions"
           redirect_to surveyor.edit_my_survey_path(
