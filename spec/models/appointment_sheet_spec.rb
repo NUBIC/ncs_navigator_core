@@ -16,7 +16,7 @@ describe AppointmentSheet do
                      :person_id => "k47r-7z99-aw5e",
                      :first_name => "Samantha",
                      :last_name => "Edison")
-    date = "2013-04-08"
+    date = Date.parse("2013-04-08")
 
     participant = Factory(:participant)
 
@@ -121,8 +121,8 @@ describe AppointmentSheet do
                       :participant_consent_samples => [child_biologicial_consent, child_genetic_consent],
                       :participant => child_participant)
 
-    @sheet = AppointmentSheet.new(person.id.to_s, date)
-    @missing_info_sheet = AppointmentSheet.new(Factory(:person).id.to_s, date)
+    @sheet = AppointmentSheet.new(person, date)
+    @missing_info_sheet = AppointmentSheet.new(Factory(:person), date)
   end
 
   it "has an event type" do

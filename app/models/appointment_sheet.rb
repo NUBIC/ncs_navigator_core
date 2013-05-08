@@ -14,9 +14,9 @@ class AppointmentSheet
   attr_reader :person
 
   def initialize(person, date)
-    @person = Person.find(person)
+    @person = person
     @event = @person.participant.pending_events.first if @person.participant && @person.participant.pending_events
-    @date = Date.parse(date)
+    @date = date
   end
 
   def event_type
@@ -71,7 +71,7 @@ class AppointmentSheet
     return [] if general_consents.first.nil?
     consents = ["General"]
     if general_consents.first.phase_one?
-      consents + general_conserts.collect { |consent| participant_consents_phase_one(consent.consent_type_code) }
+      consents + general_consents.collect { |consent| participant_consents_phase_one(consent.consent_type_code) }
     else
       sample_consents = ParticipantConsentSample.where(:participant_id => person.participant.id).all
       consents + sample_consents.collect  { |consent| participant_consents_phase_two(consent.sample_consent_type_code) }
