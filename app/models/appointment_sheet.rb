@@ -67,47 +67,26 @@ class AppointmentSheet
   def participant_consents(person)
     return [] if person.participant.nil?
 
-    general_consents = ParticipantConsent.where(:participant_id => person.participant.id).all
-    return [] if general_consents.first.nil?
-    consents = ["General"]
-    if general_consents.first.phase_one?
-      consents + general_consents.collect { |consent| participant_consents_phase_one(consent.consent_type_code) }
+    consents = ParticipantConsent.where(:participant_id => person.participant.id)
+                                 .includes(:participant_consent_samples).all
+    return [] if consents.first.nil?
+    if consents.first.phase_one?
+      consents.collect { |consent| consent_print(consent.consent_type.display_text) }
     else
-      sample_consents = ParticipantConsentSample.where(:participant_id => person.participant.id).all
-      consents + sample_consents.collect  { |consent| participant_consents_phase_two(consent.sample_consent_type_code) }
+      general_consent = ["General"]
+      general_consent + consents.first.participant_consent_samples.collect { |consent| consent_print(consent.sample_consent_type.display_text) }
     end
   end
   private :participant_consents
 
-  def participant_consents_phase_one(type_code)
-    case type_code
-    when 2
-      "Biological"
-    when 3
-      "Environmental"
-    when 4
-      "Genetic"
-    when 5
-      "Birth Samples"
-    when 6
-      "Child Participation"
-    when 7
-      "Low Intensity"
+  def consent_print(text)
+    if text =~ /^Consent to collect (.*)$/
+      /^Consent to collect (.*)$/.match(text).captures.first.titleize
+    else
+      text.sub(" consent","").titleize
     end
   end
-  private :participant_consents_phase_one
-
-  def participant_consents_phase_two(type_code)
-    case type_code
-    when 1
-      "Environmental"
-    when 2
-      "Biological"
-    when 3
-      "Genetic"
-    end
-  end
-  private :participant_consents_phase_two
+  private :consent_print
 
   def child_names
     @person.participant.children.collect(&:full_name)

@@ -58,22 +58,21 @@ describe AppointmentSheet do
                          :phone_rank_code => 1,
                          :person => person)
 
-    environmental_consent = Factory(:participant_consent_sample,
-                                    :sample_consent_type_code => 1,
-                                    :participant => participant)
-
-    biologicial_consent = Factory(:participant_consent_sample,
-                                  :sample_consent_type_code => 2,
+    participant_consent = Factory(:participant_consent,
+                                  :consent_type_code => nil,
                                   :participant => participant)
 
-    ppg_detail = Factory(:ppg_detail,
-                          :orig_due_date => '2012-10-10',
-                          :participant => participant)
+    environmental_consent = Factory(:participant_consent_sample,
+                                    :sample_consent_type => NcsCode.for_list_name_and_local_code('CONSENT_TYPE_CL2', 1),
+                                    :participant_consent => participant_consent)
 
-    consent = Factory(:participant_consent,
-                      :consent_type_code => nil,
-                      :participant_consent_samples => [biologicial_consent, environmental_consent],
-                      :participant => participant)
+    biologicial_consent = Factory(:participant_consent_sample,
+                                  :sample_consent_type_code => NcsCode.for_list_name_and_local_code('CONSENT_TYPE_CL2', 2),
+                                  :participant_consent => participant_consent)
+
+    ppg_detail = Factory(:ppg_detail,
+                         :orig_due_date => '2012-10-10',
+                         :participant => participant)
 
     contact1 = Factory(:contact,
                        :contact_date_date => Date.parse("2013-01-01"),
@@ -108,18 +107,17 @@ describe AppointmentSheet do
             :participant => participant,
             :relationship_code => 8)
 
+    child_consent = Factory(:participant_consent,
+                            :consent_type_code => nil,
+                            :participant => child_participant)
+
     child_biologicial_consent = Factory(:participant_consent_sample,
-                                        :sample_consent_type_code => 2,
-                                        :participant => child_participant)
+                                        :sample_consent_type_code => NcsCode.for_list_name_and_local_code('CONSENT_TYPE_CL2', 2),
+                                        :participant_consent => child_consent)
 
     child_genetic_consent = Factory(:participant_consent_sample,
-                                    :sample_consent_type_code => 3,
-                                    :participant => child_participant)
-
-    consent = Factory(:participant_consent,
-                      :consent_type_code => nil,
-                      :participant_consent_samples => [child_biologicial_consent, child_genetic_consent],
-                      :participant => child_participant)
+                                    :sample_consent_type_code => NcsCode.for_list_name_and_local_code('CONSENT_TYPE_CL2', 3),
+                                    :participant_consent => child_consent)
 
     @sheet = AppointmentSheet.new(person, date)
     @missing_info_sheet = AppointmentSheet.new(Factory(:person), date)
@@ -166,7 +164,7 @@ describe AppointmentSheet do
   end
 
   it "has all the mother's consents" do
-    @sheet.mothers_consents.should == ["General", "Environmental", "Biological"]
+    @sheet.mothers_consents.should == ["General", "Environmental Samples", "Biospecimens"]
   end
 
   it "has the children's names" do
@@ -190,7 +188,7 @@ describe AppointmentSheet do
   end
 
   it "has the children's consents" do
-    @sheet.child_consents.should == [["General", "Biological", "Genetic"]]
+    @sheet.child_consents.should == [["General", "Biospecimens", "Genetic Material"]]
   end
 
   it "has next event" do
@@ -203,6 +201,26 @@ describe AppointmentSheet do
 
   it "reports the last contact comment" do
     @sheet.last_contact_comment.should == "This is the second contact comment"
+  end
+
+  it "lists phase one consents for phase one participants" do
+    person = Factory(:person)
+    phase_one_participant = Factory(:participant)
+    Factory(:participant_person_link,
+            :person => person,
+            :participant => phase_one_participant,
+            :relationship_code => 1)
+    (1..3).each do |type|
+      Factory(:participant_consent,
+              :consent_type => NcsCode.for_list_name_and_local_code('CONSENT_TYPE_CL1', type),
+              :participant => phase_one_participant)
+    end
+    @sheet_with_phase_one_part = AppointmentSheet.new(person,
+                                                      Date.parse("2013-04-08"))
+
+    @sheet_with_phase_one_part.mothers_consents.should == ["General",
+                                                           "Biospecimens",
+                                                           "Environmental Samples"]
   end
 
 end
