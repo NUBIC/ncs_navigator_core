@@ -142,43 +142,74 @@ class ParticipantsController < ApplicationController
 
   ##
   # Schedule an Informed Consent segment in PSC
+  # @see #schedule_consent_event
   def schedule_informed_consent_event
     schedule_consent_event('Informed Consent', :schedule_general_informed_consent, params[:date])
   end
 
   ##
   # Schedule a Reconsent segment in PSC
+  # @see #schedule_consent_event
   def schedule_reconsent_event
     schedule_consent_event('Re-Consent', :schedule_reconsent, params[:date])
   end
 
   ##
   # Schedule a Withdrawal segment in PSC
+  # @see #schedule_consent_event
   def schedule_withdrawal_event
     schedule_consent_event('Withdrawal', :schedule_withdrawal, params[:date])
   end
 
   ##
   # Schedule a Child Consent Birth to 6 month segment in PSC
+  # @see #schedule_consent_event
   def schedule_child_consent_birth_to_six_months_event
     schedule_consent_event('Child Consent', :schedule_child_consent_birth_to_six_months, params[:date])
   end
 
   ##
   # Schedule a Child Consent 6 month to Age of Majority segment in PSC
+  # @see #schedule_consent_event
   def schedule_child_consent_six_month_to_age_of_majority_event
     schedule_consent_event('Child Consent', :schedule_child_consent_six_month_to_age_of_majority, params[:date])
   end
 
-  def schedule_consent_event(typ, method, date)
-    if @participant.date_available_for_informed_consent_event?(date)
-      resp = Event.send(method, psc, @participant, date)
-      msg = resp.success? ? "#{typ} event scheduled for Participant." : 'Could not schedule informed consent'
-      redirect_to(participant_path(@participant), :notice => msg)
-    else
-      msg = "Informed Consent Event already scheduled for that date. Please choose another date."
-      redirect_to(participant_path(@participant), :flash => { :warning => msg } )
+  ##
+  # Private method to help the scheduling of the different types of
+  # standalone consent events. This will schedule the event for the
+  # provided date if it is able to. If not, let the user know the
+  # reason why the scheduling was unable to be completed.
+  #
+  # @param typ [String] the type of the consent
+  # @param method [Symbol] the message to send on Event
+  # @param date_string [String] the date parameter sent by the user
+  def schedule_consent_event(typ, method, date_string)
+
+    msg = 'Could not schedule informed consent.'
+    flash_type = :warning
+
+    begin
+      date = Date.parse(date_string)
+
+      if @participant.date_available_for_informed_consent_event?(date)
+        # send method to Event and update msg and flash_type if successful
+        resp = Event.send(method, psc, @participant, date)
+        if resp.success?
+          msg =  "#{typ} event scheduled for Participant."
+          flash_type = :notice
+        end
+      else
+        msg += " Informed Consent Event already scheduled for that date. Please choose another date."
+      end
+
+    rescue ArgumentError
+      # if date cannot be parsed do not allow user to schedule the informed consent event
+      # simply let the user know
+      msg += " Date provided [#{date_string}] was invalid. Please choose another date."
     end
+
+    redirect_to(participant_path(@participant), :flash => { flash_type => msg } )
   end
   private :schedule_consent_event
 

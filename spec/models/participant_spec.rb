@@ -2628,24 +2628,12 @@ describe Participant do
                 :psc_ideal_date => event_date, :participant => participant)
       end
 
-      context "given an unparseable date" do
-        let(:event_date) { dt }
-        it "returns false" do
-          participant.date_available_for_informed_consent_event?("asdf").should be_false
-        end
-      end
-
       context "on the given date" do
         let(:event_date) { dt }
         it "returns false" do
           participant.date_available_for_informed_consent_event?(dt).should be_false
         end
 
-        describe "as string" do
-          it "returns false" do
-            participant.date_available_for_informed_consent_event?(dt.to_s).should be_false
-          end
-        end
       end
 
       context "without an Informed Consent event on that date" do
