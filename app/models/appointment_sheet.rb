@@ -21,7 +21,7 @@ class AppointmentSheet
 
   def event_type
     return "Unknown Event" if @event.blank?
-    NcsCode.for_list_name_and_local_code('EVENT_TYPE_CL1', @event.event_type_code).display_text
+    @event.event_type.display_text
   end
 
   def address
