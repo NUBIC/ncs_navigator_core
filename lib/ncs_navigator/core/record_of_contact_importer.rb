@@ -256,7 +256,10 @@ class NcsNavigator::Core::RecordOfContactImporter
     contact.contact_location_other  = row[:contact_location_other] unless row[:contact_location_other].blank?
     apply_coded_value(contact, :contact_private, row, row_index)
     apply_coded_value(contact, :who_contacted, row, row_index)
+    contact.who_contacted_other     = row[:who_contacted_other] unless row[:who_contacted_other].blank?
     contact.contact_comment         = row[:contact_comment] unless row[:contact_comment].blank?
+    contact.contact_private_detail  = row[:contact_private_detail] unless row[:contact_private_detail].blank?
+    contact.contact_distance        = row[:contact_distance] unless row[:contact_distance].blank?
     contact
   end
 
