@@ -1155,7 +1155,7 @@ class Participant < ActiveRecord::Base
     update_consent_and_protocol_status_as_of(event.event_end_date || event.event_start_date)
 
     case event.event_type.local_code
-    when 4, 5, 6, 29, 34
+    when 4, 5, 6, 9, 29, 34
       # Pregnancy Screener Events or PBS Eligibility Screener
       assign_to_pregnancy_probability_group! if can_assign_to_pregnancy_probability_group?
     when 10
@@ -1205,7 +1205,7 @@ class Participant < ActiveRecord::Base
     when 32
       # The Low-High conversion event itself does not indicate that the person
       # was converted. Conversion is handled in 10 "Informed Consent".
-    when 17, 19, 21, 1, -5
+    when 1, 2, 3, 17, 19, 20, 21, -5
       # Do not correspond to states in state machine
     else
       fail "Unhandled event type for participant state #{event.event_type.local_code.inspect}"
