@@ -2,6 +2,7 @@
 
 
 class ParticipantsController < ApplicationController
+  include ListHelper
   layout proc { |controller| controller.request.xhr? ? nil : 'application'  }
 
   permit Role::SYSTEM_ADMINISTRATOR, Role::USER_ADMINISTRATOR, Role::ADMINISTRATIVE_STAFF, Role::STAFF_SUPERVISOR ,
@@ -39,10 +40,21 @@ class ParticipantsController < ApplicationController
     @participants = Participant.in_ppg_group(params[:ppg_group].to_i)
   end
 
+  def events_and_contact_links
+    rows = @participant.events +
+           @participant.person.contact_links.collect(&:event) +
+           @participant.person.contact_links.select {|cl| cl.event.nil?}
+    rows.compact.uniq.flatten
+  end
+  private :events_and_contact_links
+
   ##
   # GET /participants/:id
   def show
     @person = @participant.person
+    @participant = @person.participant
+    @events_and_contacts = events_and_contact_links
+
     @participant_activity_plan = psc.build_activity_plan(@participant)
 
     @scheduled_activities_grouped_by_date = {}

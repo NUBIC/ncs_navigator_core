@@ -59,6 +59,12 @@ class ContactLink < ActiveRecord::Base
   alias completed? closed?
   alias complete? closed?
 
+  ##
+  # Date and time of when the contact was started
+  def started_at
+    contact.started_at
+  end
+
   def contact_disposition
     return "" if event.blank?
     disp = DispositionMapper.disposition_text(event.event_disposition_category, contact.contact_disposition)

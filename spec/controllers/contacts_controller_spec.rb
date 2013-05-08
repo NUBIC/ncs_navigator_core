@@ -218,6 +218,66 @@ describe ContactsController do
       end
     end
 
+    context "for an existing person" do
+      describe "PUT update" do
+        before(:each) do
+          @person = Factory(:person)
+          participant = Factory(:participant)
+          participant.person = @person
+          participant.save!
+
+          @contact_link = Factory(
+            :contact_link,
+            :person => @person,
+            :provider => nil,
+            :contact => Factory(:contact),
+            :event => nil
+          )
+          @contact_link_event = Factory(
+            :contact_link,
+            :person => @person,
+            :provider => nil,
+            :contact => Factory(:contact),
+            :event => Factory(:event)
+          )
+          @contact_link_no_part = Factory(
+            :contact_link,
+            :person => Factory(:person),
+            :provider => nil,
+            :contact => Factory(:contact),
+            :event => nil
+          )
+        end
+
+        def valid_attributes(contact_link, person = @person)
+          {
+            "person_id" => contact_link.person.id,
+            "contact_link_id" => contact_link.id,
+            "id" => contact_link.contact.id
+          }
+        end
+
+        it "redirects to the contact link's decision page when linked to an event but not to a provider" do
+          post :update, valid_attributes(@contact_link_event)
+          response.should redirect_to(
+              decision_page_contact_link_path(@contact_link_event)
+          )
+        end
+
+        it "redirects to participant when not linked to an event" do
+          post :update, valid_attributes(@contact_link)
+          response.should redirect_to(participant_path(@person.participant))
+        end
+
+        it "redirects to contact links if not linked to an event and person is not a participant" do
+          @person.participant = nil
+          @person.save!
+          post :update, valid_attributes(@contact_link_no_part)
+          response.should redirect_to(contact_links_path)
+        end
+      end
+    end
+
     context "for a low_intensity_ppg2_participant" do
       let(:date) { Date.parse("2525-02-01") }
       before(:each) do

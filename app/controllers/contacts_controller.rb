@@ -97,10 +97,14 @@ class ContactsController < ApplicationController
       end
       redirect_path = link.provider.pbs_list ? pbs_list_path(link.provider.pbs_list) : pbs_lists_path
       notice = "Contact for #{link.provider} was successfully updated."
-    else
+    elsif link.event
       redirect_path = decision_page_contact_link_path(link)
-      notice = "Contact was successfully updated."
+    elsif @person.participant
+      redirect_path = participant_path(@person.participant)
+    else
+      redirect_path = contact_links_path
     end
+    notice ||= "Contact was successfully updated."
     redirect_to(redirect_path, :notice => notice)
   end
   private :post_update_redirect_path

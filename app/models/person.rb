@@ -474,6 +474,18 @@ class Person < ActiveRecord::Base
   alias :is_first_child? :first_child?
 
   ##
+  # Determine relationship to another person
+  # @param [Person]
+  # @return [String]
+  def relationship_to_person_via_participant(person)
+    rel = person.participant_person_links.find { |ppl|
+      ppl.participant == participant
+    }.try(:relationship)
+
+    rel.try(:display_text) || 'None'
+  end
+
+  ##
   # From INFORMATION_SOURCE_CL4, the code for Person/Self
   # @return[Integer]
   def self.person_self_code
