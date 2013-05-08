@@ -83,10 +83,11 @@ describe OperationalDataExtractor::InformedConsent do
         consent.consent_comments.should == "comments"
       end
 
-      it "sets the ParticipantConsentSample attributes to the Response values" do
+      it "does not create ParticipantConsentSample records by default" do
         response_set = consent.response_set
 
         take_survey(survey, response_set) do |r|
+
           r.a "sample_consent_given_code_1", yes21
           r.a "sample_consent_given_code_2", no21
           r.a "sample_consent_given_code_3", yes21
@@ -98,6 +99,27 @@ describe OperationalDataExtractor::InformedConsent do
         OperationalDataExtractor::InformedConsent.new(response_set).extract_data
 
         consent = ParticipantConsent.find(consent_id)
+        consent.participant_consent_samples.should be_empty
+      end
+
+      it "sets the ParticipantConsentSample attributes to the Response values
+          if collect_specimen_consent was answered in the affirmative" do
+        response_set = consent.response_set
+
+        take_survey(survey, response_set) do |r|
+          r.a "collect_specimen_consent", yes
+          r.a "sample_consent_given_code_1", yes21
+          r.a "sample_consent_given_code_2", no21
+          r.a "sample_consent_given_code_3", yes21
+        end
+
+        response_set.responses.reload
+        response_set.responses.size.should == 4
+
+        OperationalDataExtractor::InformedConsent.new(response_set).extract_data
+
+        consent = ParticipantConsent.find(consent_id)
+        consent.participant_consent_samples.size.should == 3
         [ [1, yes21], [2, no21], [3, yes21] ].each do |code, val|
           consent.participant_consent_samples.where(:sample_consent_type_code => code).all.each do |s|
             s.sample_consent_given.should == val
