@@ -640,26 +640,10 @@ class PatientStudyCalendar
   def cancel_consent_activities(participant, scheduled_study_segment_identifier, date, reason)
     return unless participant.consented?
     activities_for_scheduled_segment(participant, scheduled_study_segment_identifier).each do |a|
-      if should_cancel_consent_activity?(a)
+      if a.cancelable_consent_activity?
         update_activity_state(a.activity_id, participant, Psc::ScheduledActivity::CANCELED, date, reason)
       end
     end
-  end
-
-  ##
-  # True if the activity is a consent activity, but is not a child consent activity
-  # and is not a part of the Informed Consent Epoch
-  # @param activity [ScheduledActivity]
-  # @return [Boolean]
-  def should_cancel_consent_activity?(activity)
-    skippable_segments = [
-      INFORMED_CONSENT_GENERAL_CONSENT,
-      INFORMED_CONSENT_CHILD_CONSENT_BIRTH,
-      INFORMED_CONSENT_CHILD_CONSENT_SIX_MONTHS,
-      INFORMED_CONSENT_WITHDRAWAL,
-      INFORMED_CONSENT_RECONSENT,
-    ]
-    activity.consent_activity? && !activity.child_consent? && !skippable_segments.include?(activity.study_segment)
   end
 
   ##

@@ -406,11 +406,11 @@ namespace :import do
         next
       elsif part.consented?
         psc.scheduled_activities(part).each do |a|
-          if psc.should_cancel_consent_activity?(a)
+          if a.cancelable_consent_activity?
             msg = "Activity #{a.activity_name} is a consent activity. Canceling activity for participant #{part.p_id}."
             $stderr.puts("#{msg}")
             Rails.logger.info(msg)
-            reason ="Study Center is not configured to collection samples or specimens."
+            reason = msg
             psc.update_activity_state(a.activity_id, part, Psc::ScheduledActivity::CANCELED, Date.parse(a.ideal_date), reason)
           end
         end
