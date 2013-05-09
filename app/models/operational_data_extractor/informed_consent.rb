@@ -28,6 +28,7 @@ module OperationalDataExtractor
       "sample_consent_given_code_1"  => "sample_consent_given_code",
       "sample_consent_given_code_2"  => "sample_consent_given_code",
       "sample_consent_given_code_3"  => "sample_consent_given_code",
+      "collect_specimen_consent"     => "collect_specimen_consent"
     }
 
     def maps
@@ -51,20 +52,8 @@ module OperationalDataExtractor
       end
 
       # Set values on the ParticipantConsentSamples
-      ParticipantConsentSample::SAMPLE_CONSENT_TYPE_CODES.each do |code|
-        samples = consent.participant_consent_samples.where(:sample_consent_type_code => code).all
-        # There should be only one - but might as well update all samples associated with this consent
-        samples.each do |sample|
-          key = "sample_consent_given_code_#{code}"
-          if r = data_export_identifier_indexed_responses[key]
-            value = response_value(r)
-            unless value.blank?
-              sample.sample_consent_given_code = value
-              sample.save!
-            end
-          end
-        end
-      end
+      create_participant_consent_sample_records(data_export_identifier_indexed_responses, consent)
+
       update_enrollment_status(consent)
 
       if consent.withdrawal? && consent.person_wthdrw_consent.nil?
@@ -73,6 +62,27 @@ module OperationalDataExtractor
 
       consent.save!
     end
+
+    ##
+    # If the respondant answered YES to the question "Should Specimen/Sample Consent be asked?"
+    # create ParticipantConsentSample records associated with the given ParticipantConsent.
+    # @param data_export_identifier_indexed_responses [Hash]
+    # @param consent [ParticipantConsent]
+    def create_participant_consent_sample_records(data_export_identifier_indexed_responses, consent)
+      if create_samples_response = data_export_identifier_indexed_responses['collect_specimen_consent']
+        if response_value(create_samples_response).to_i == NcsCode::YES
+          ParticipantConsentSample::SAMPLE_CONSENT_TYPE_CODES.each do |code|
+            if r = data_export_identifier_indexed_responses["sample_consent_given_code_#{code}"]
+              if value = response_value(r)
+                consent.participant_consent_samples.create(
+                  :sample_consent_type_code => code, :sample_consent_given_code => value)
+              end
+            end
+          end
+        end
+      end
+    end
+    private :create_participant_consent_sample_records
 
     ##
     # Either enroll or unenroll the participant based on the
@@ -86,5 +96,6 @@ module OperationalDataExtractor
         participant.withdraw_from_study!(consent)
       end
     end
+    private :update_enrollment_status
   end
 end
