@@ -293,28 +293,69 @@ namespace :import do
     end
   end
 
+  desc 'Schedule Re-consent Event for a particular date for all followed Participants'
+  task :schedule_reconsent => [:psc_setup, :environment, :set_whodunnit, :find_followed_participants_for_psc] do
+    require 'highline'
+
+    hl = HighLine.new
+    date_str = hl.ask("Date to schedule reconsent ['YYYY-MM-DD']: ")
+
+    participants_unable_to_be_scheduled = []
+
+    begin
+      date = Date.parse(date_str)
+      expected_followed_participants_for_psc.each do |pt|
+
+        msg = "Re-consent event scheduled for #{pt.p_id}."
+
+        if pt.date_available_for_informed_consent_event?(date)
+          resp = Event.schedule_reconsent(psc, pt, date)
+          unless resp.success?
+            msg = "!!! Could not schedule informed consent for #{p.p_id} !!!"
+            participants_unable_to_be_scheduled << p
+          end
+        else
+          msg = "!!! Date [#{date_str}] unavailable for participant #{pt.p_id} !!!"
+          participants_unable_to_be_scheduled << p
+        end
+        $stderr.puts(msg)
+        Rails.logger.info(msg)
+      end
+
+      result = "All #{expected_followed_participants_for_psc.size} participants scheduled for reconsent."
+      unless participants_unable_to_be_scheduled.empty?
+        result = "#{participants_unable_to_be_scheduled.size} participants need to be rescheduled.\n"
+        result << "#{participants_unable_to_be_scheduled.map(&:p_id).join(',')}"
+      end
+      $stderr.puts(result)
+      Rails.logger.info(result)
+
+    rescue ArgumentError
+      $stderr.puts("Was unable to parse given date [#{date_str}].")
+    end
+  end
+
   desc 'Cancel scheduled events that have no matching mdes versioned instrument in PSC for followed participants'
   task :cancel_activities_with_non_matching_mdes_instruments => [:psc_setup, :environment, :set_whodunnit]  do
     non_children_participants.each do |part|
       msg = "Looking for activities to cancel for participant #{part.p_id}..."
-      $stderr.print(msg)
+      $stderr.puts(msg)
       Rails.logger.info(msg)
 
       if part.person.nil?
         per_nil_msg = "No person exists for #{part.p_id}"
-        $stderr.print(per_nil_msg)
+        $stderr.puts(per_nil_msg)
         Rails.logger.info(per_nil_msg)
         next
       else
         psc.scheduled_activities(part).each do |a|
           if a.has_non_matching_mdes_version_instrument?
             msg = "Activity #{a.activity_name} has non matching mdes versioned instrument. Canceling activity for participant #{part.p_id}."
-            $stderr.print("\n#{msg}")
+            $stderr.puts("#{msg}")
             Rails.logger.info(msg)
             reason = "Does not include an instrument for MDES version #{NcsNavigatorCore.mdes.version}."
             psc.update_activity_state(a.activity_id, part, Psc::ScheduledActivity::CANCELED, Date.parse(a.ideal_date), reason)
           end
-          $stderr.puts
         end
       end
     end
@@ -324,24 +365,23 @@ namespace :import do
   task :cancel_collection_activities => [:psc_setup, :environment, :set_whodunnit]  do
     if NcsNavigatorCore.expanded_phase_two?
       msg = "No need to cancel activities. Cases is configured for expanded phase two."
-      $stderr.print("\n#{msg}")
-
+      $stderr.puts("#{msg}")
       Rails.logger.info(msg)
     else
       non_children_participants.each do |part|
         if part.person.nil?
           per_nil_msg = "No person exists for #{part.p_id}"
-          $stderr.print(per_nil_msg)
+          $stderr.puts(per_nil_msg)
           Rails.logger.info(per_nil_msg)
           next
         else
           msg = "Looking for activities to cancel for participant #{part.p_id}..."
-          $stderr.print(msg)
+          $stderr.puts(msg)
           Rails.logger.info(msg)
           psc.scheduled_activities(part).each do |a|
             if Instrument.collection?(a.labels)
               msg = "Activity #{a.activity_name} is a collection activity. Canceling activity for participant #{part.p_id}."
-              $stderr.print("\n#{msg}")
+              $stderr.puts("#{msg}")
               Rails.logger.info(msg)
               reason ="Study Center is not configured to collection samples or specimens."
               psc.update_activity_state(a.activity_id, part, Psc::ScheduledActivity::CANCELED, Date.parse(a.ideal_date), reason)
@@ -356,19 +396,19 @@ namespace :import do
   task :cancel_consent_activities => [:psc_setup, :environment, :set_whodunnit]  do
     non_children_participants.each do |part|
       msg = "Looking for activities to cancel for participant #{part.p_id}..."
-      $stderr.print(msg)
+      $stderr.puts(msg)
       Rails.logger.info(msg)
 
       if part.person.nil?
         per_nil_msg = "No person exists for #{part.p_id}"
-        $stderr.print(per_nil_msg)
+        $stderr.puts(per_nil_msg)
         Rails.logger.info(per_nil_msg)
         next
       elsif part.consented?
         psc.scheduled_activities(part).each do |a|
           if psc.should_cancel_consent_activity?(a)
             msg = "Activity #{a.activity_name} is a consent activity. Canceling activity for participant #{part.p_id}."
-            $stderr.print("\n#{msg}")
+            $stderr.puts("#{msg}")
             Rails.logger.info(msg)
             reason ="Study Center is not configured to collection samples or specimens."
             psc.update_activity_state(a.activity_id, part, Psc::ScheduledActivity::CANCELED, Date.parse(a.ideal_date), reason)
@@ -376,7 +416,7 @@ namespace :import do
         end
       else
         msg = "No need to cancel activities for participant. #{participant} has not yet consented."
-        $stderr.print("\n#{msg}")
+        $stderr.puts("#{msg}")
         Rails.logger.info(msg)
       end
     end

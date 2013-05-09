@@ -965,6 +965,17 @@ class Participant < ActiveRecord::Base
   end
 
   ##
+  # Check if an informed consent event exists on the given date.
+  # Return false if an event is already scheduled on that date.
+  # @param date [Date]
+  # @return [Boolean]
+  def date_available_for_informed_consent_event?(date)
+    ics = events.where(:event_type_code => Event.informed_consent_code)
+    ics_dates = ics.map(&:psc_ideal_date)
+    !ics_dates.include?(date)
+  end
+
+  ##
   # True if the participant state is in one of the initial states
   # i.e. not updated from an action in the study
   def new_participant_in_study?
