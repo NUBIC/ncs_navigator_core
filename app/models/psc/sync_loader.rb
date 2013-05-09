@@ -46,7 +46,6 @@ module Psc
       lkey = sync_key['p', participant.public_id, 'events']
 
       start_date = event.event_start_date || event.event_end_date
-      puts "start_date: #{start_date.inspect}"
 
       unless start_date
         fail "Event #{event.event_id.inspect} has no start or end dates. It cannot be sync'd to PSC."
