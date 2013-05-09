@@ -41,13 +41,20 @@ module OperationalDataExtractor
     }
 
     ADDRESS_MAP = {
-      "#{INTERVIEW_PREFIX}.ADDRESS_1"       => "address_one",
-      "#{INTERVIEW_PREFIX}.ADDRESS_2"       => "address_two",
-      "#{INTERVIEW_PREFIX}.UNIT"            => "unit",
-      "#{INTERVIEW_PREFIX}.CITY"            => "city",
-      "#{INTERVIEW_PREFIX}.STATE"           => "state_code",
-      "#{INTERVIEW_PREFIX}.ZIP"             => "zip",
-      "#{INTERVIEW_PREFIX}.ZIP4"            => "zip4"
+      "#{INTERVIEW_PREFIX}.ADDRESS_1"           => "address_one",
+      "#{INTERVIEW_PREFIX}.ADDRESS_2"           => "address_two",
+      "#{INTERVIEW_PREFIX}.UNIT"                => "unit",
+      "#{INTERVIEW_PREFIX}.CITY"                => "city",
+      "#{INTERVIEW_PREFIX}.STATE"               => "state_code",
+      "#{INTERVIEW_PREFIX}.ZIP"                 => "zip",
+      "#{INTERVIEW_PREFIX}.ZIP4"                => "zip4",
+      "#{HOSPITAL_INTERVIEW_PREFIX}.ADDRESS_1"  => "address_one",
+      "#{HOSPITAL_INTERVIEW_PREFIX}.ADDRESS_2"  => "address_two",
+      "#{HOSPITAL_INTERVIEW_PREFIX}.UNIT"       => "unit",
+      "#{HOSPITAL_INTERVIEW_PREFIX}.CITY"       => "city",
+      "#{HOSPITAL_INTERVIEW_PREFIX}.STATE"      => "state_code",
+      "#{HOSPITAL_INTERVIEW_PREFIX}.ZIP"        => "zip",
+      "#{HOSPITAL_INTERVIEW_PREFIX}.ZIP4"       => "zip4"
     }
 
     TELEPHONE_MAP1 = {
