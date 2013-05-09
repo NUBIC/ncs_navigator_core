@@ -60,6 +60,7 @@ class SurveyorController < ApplicationController
   # internal NUBIC project Registar {http://projects.nubic.northwestern.edu/}
   # to handle mandatory questions.
   def update
+    question_ids_for_dependencies = (params[:r] || []).map{|k,v| v["question_id"] }.compact.uniq
     saved = load_and_update_response_set_with_retries
 
     return redirect_with_message(surveyor_finish, :notice, t('surveyor.completed_survey')) if saved && params[:finish]
@@ -75,13 +76,12 @@ class SurveyorController < ApplicationController
             :section => @response_set.first_incomplete_section.id, :review => true)
         else
           flash[:notice] = t('surveyor.unable_to_update_survey') unless saved
-          redirect_to surveyor.edit_my_survey_path(
-            :anchor => anchor_from(params[:section]), :section => section_id_from(params[:section]))
+          redirect_to surveyor.edit_my_survey_path(:anchor => anchor_from(params[:section]), :section => section_id_from(params))
         end
       end
       format.js do
         if @response_set
-          render :json => @response_set.reload.all_dependencies
+          render :json => @response_set.reload.all_dependencies(question_ids_for_dependencies)
         else
           render :text => "No response set #{params[:response_set_code]}",
             :status => 404
