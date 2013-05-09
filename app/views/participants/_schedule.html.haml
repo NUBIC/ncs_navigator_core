@@ -4,12 +4,19 @@
       .day
         .ideal_date
           = date
-        .activities
-          - @scheduled_activities_grouped_by_date[date].each do |activity|
-            .activity
-              %span{ :title => activity.current_state, :class => "#{activity.current_state}_link" }
-                &nbsp;
-              = activity.activity_time
-              = link_to "#{activity.activity_name}", psc_assignment_path(@participant.person.public_id), :class => "icon_link external_link"
+        - @scheduled_activities_grouped_by_date[date].each do |event,activities|
+          .activities
+            .activities_info
+              = "Event:"
+              = event
+            .activities_info
+              = "Window:"
+              = render( :partial => "events/event_window", :locals => {:event => event})
+            - activities.each do |activity|
+              .activity
+                %span{ :title => activity.current_state, :class => "#{activity.current_state}_link" }
+                  &nbsp;
+                = activity.activity_time
+                = link_to "#{activity.activity_name}", psc_assignment_path(@participant.person.public_id), :class => "icon_link external_link"
   - else
     Subject does not yet have a schedule
