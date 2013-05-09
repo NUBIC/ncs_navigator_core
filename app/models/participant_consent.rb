@@ -330,19 +330,18 @@ class ParticipantConsent < ActiveRecord::Base
     where_clause << "participant_consents.contact_id = ?"
     rs = ResponseSet.includes(:participant_consent).where(
             where_clause, survey.id, person.id, participant.id, contact.id).first
-    rs.nil? ? create_consent(person, participant, survey, contact, contact_link) : rs.participant_consent
+    if rs.nil?
+      consent = create_consent!(person, participant, survey, contact, contact_link)
+      create_informed_consent_event(participant, contact, contact_link)
+    else
+      consent = rs.participant_consent
+    end
+    consent
   end
 
-  def self.create_consent(person, participant, survey, contact, contact_link)
+  def self.create_consent!(person, participant, survey, contact, contact_link)
     pc = participant.participant_consents.build(:contact => contact, :psu => participant.psu)
     pc.build_response_set(:survey_id => survey.id, :user_id => person.id, :participant_id => participant.id)
-
-    ParticipantConsentSample::SAMPLE_CONSENT_TYPE_CODES.each do |code|
-      pc.participant_consent_samples.build(:sample_consent_type_code => code, :participant => @participant)
-    end
-
-    create_informed_consent_event(participant, contact, contact_link)
-
     pc.save!
     pc
   end
