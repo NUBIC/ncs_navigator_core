@@ -92,6 +92,43 @@ class ResponseSet < ActiveRecord::Base
     result
   end
 
+  ##
+  # Borrowed from internal NUBIC project Registar {http://projects.nubic.northwestern.edu/}
+  # to assist with handling mandatary questions.
+  def first_incomplete_section
+    survey.sections.detect{ |section| !section_mandatory_questions_complete?(section) }
+  end
+
+  def complete!
+    result = true
+    if self.completed_at.blank?
+      clear_untriggered_responses!
+      if mandatory_questions_complete?
+        self.completed_at = Time.now
+        self.save!
+      else
+        result = false
+      end
+    end
+    result
+  end
+
+  def clear_untriggered_responses!
+     responses.includes(:question).each do |r|
+       r.destroy unless r.question.triggered?(self)
+     end
+  end
+
+  def section_mandatory_questions_complete?(sec)
+    qs = SurveySection.find(sec).questions.find(:all,:conditions=>["display_type != 'label' and display_type!='image'"])
+    triggered = qs.select{ |q| q.triggered?(self) and q.mandatory? }
+    return true if triggered.empty?
+    triggered.each{ |q| return false unless is_answered?(q) }
+    return true
+  end
+  # End theft
+  ##
+
   def as_json(options = nil)
     super.merge({
       'p_id' => participant.try(:public_id),
