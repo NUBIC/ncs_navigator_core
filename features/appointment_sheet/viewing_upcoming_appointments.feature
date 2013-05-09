@@ -35,7 +35,6 @@ Feature: Viewing upcoming appointments
       | person/person_id  | fy84-54sf-wc3s      |
       | p_id              | abc-128-wxyz        |
 
-  @javascript
   Scenario: The schedule lists my upcoming contacts for the next week
     Given an authenticated user
     When I view my scheduled events for 2013-04-08 to 2013-04-13
