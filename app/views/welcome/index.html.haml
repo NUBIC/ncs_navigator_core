@@ -14,7 +14,7 @@
     - if !@events.blank?
       .front_page_section.page_section
         %h4
-          = "#{current_user.full_name}'s Schedule, Week of #{@start_date.strftime("%B #{@start_date.day.ordinalize}")}-#{@end_date.strftime("#{@end_date.day.ordinalize}")}"
+          = "#{current_user.full_name}'s Schedule, from #{@start_date.strftime("%B #{@start_date.day}, %Y")} to #{@end_date.strftime("%B #{@end_date.day}, %Y")}"
         - @events.keys.sort.each do |date|
           .events_for_date
             = Time.parse(date).strftime("%A")
@@ -25,13 +25,11 @@
                   = convert_24_hour_time_to_am_pm_time(e.activity_time) if e.activity_time
                 %span.participant_link
                   - path = e.person.participant? ? participant_path(e.person.participant) : person_path(e.person)
-                  = link_to "", "appointment_sheet/#{e.person.id}/#{e.date}" , :class => "add_link icon_link",
-                                                                               :title => "Appointment sheet for \"#{e.person.full_name}\""
                   = link_to e.person.to_s, path
                 %span.ppg_status
                   = "PPG #{e.person.participant.ppg_status.local_code}" if e.person.participant && !e.person.participant.ppg_status.blank?
                 %span.event_type
-                  = e.event_type
+                  = link_to e.event_type, "appointment_sheet/#{e.person.id}/#{e.date}", :title => "Appointment sheet for \"#{e.person.full_name}\""
     - else
       .front_page_section.page_section
         No Scheduled Events

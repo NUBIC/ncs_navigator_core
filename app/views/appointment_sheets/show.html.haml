@@ -98,7 +98,7 @@
           - if @sheet.child_consents.empty?
             No consents found for children
           - else
-            - if @sheet.child_consents[child_index].nil?
+            - if @sheet.child_consents[child_index].empty?
               .not-found
                 No consents found for this child
             - else
