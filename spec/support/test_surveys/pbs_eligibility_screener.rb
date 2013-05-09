@@ -137,6 +137,47 @@ module PbsEligibilityScreener
     survey
   end
 
+  def create_hospital_eligibility_screener_survey_with_address_operational_data
+    survey = Factory(:survey, :title => "INS_QUE_PBSampScreenHosp_INT_M3.2_V1.0", :access_code => "ins-que-pbsampscreenhosp-int-m3-2-v1-0")
+    survey_section = Factory(:survey_section, :survey_id => survey.id)
+
+    # Address One
+    q = Factory(:question, :reference_identifier => "ADDRESS_1", :data_export_identifier => "PBS_ELIG_SCREENER_HOSP.ADDRESS_1", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "Address 1", :response_class => "string")
+    a = Factory(:answer, :question_id => q.id, :text => "Refused", :response_class => "answer", :reference_identifier => "neg_1")
+    a = Factory(:answer, :question_id => q.id, :text => "Don't know", :response_class => "answer", :reference_identifier => "neg_2")
+    # Address Two
+    q = Factory(:question, :reference_identifier => "ADDRESS_2", :data_export_identifier => "PBS_ELIG_SCREENER_HOSP.ADDRESS_2", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "Address 2", :response_class => "string")
+    a = Factory(:answer, :question_id => q.id, :text => "Refused", :response_class => "answer", :reference_identifier => "neg_1")
+    a = Factory(:answer, :question_id => q.id, :text => "Don't know", :response_class => "answer", :reference_identifier => "neg_2")
+    # Unit
+    q = Factory(:question, :reference_identifier => "UNIT", :data_export_identifier => "PBS_ELIG_SCREENER_HOSP.UNIT", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "Unit", :response_class => "string")
+    a = Factory(:answer, :question_id => q.id, :text => "Refused", :response_class => "answer", :reference_identifier => "neg_1")
+    a = Factory(:answer, :question_id => q.id, :text => "Don't know", :response_class => "answer", :reference_identifier => "neg_2")
+    # City
+    q = Factory(:question, :reference_identifier => "CITY", :data_export_identifier => "PBS_ELIG_SCREENER_HOSP.CITY", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "City", :response_class => "string")
+    a = Factory(:answer, :question_id => q.id, :text => "Refused", :response_class => "answer", :reference_identifier => "neg_1")
+    a = Factory(:answer, :question_id => q.id, :text => "Don't know", :response_class => "answer", :reference_identifier => "neg_2")
+    # State
+    q = Factory(:question, :reference_identifier => "STATE", :data_export_identifier => "PBS_ELIG_SCREENER_HOSP.STATE", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "IL", :response_class => "answer", :reference_identifier => "14")
+    a = Factory(:answer, :question_id => q.id, :text => "MI", :response_class => "answer", :reference_identifier => "23")
+    # Zip
+    q = Factory(:question, :reference_identifier => "ZIP", :data_export_identifier => "PBS_ELIG_SCREENER_HOSP.ZIP", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "Zip", :response_class => "string")
+    a = Factory(:answer, :question_id => q.id, :text => "Refused", :response_class => "answer", :reference_identifier => "neg_1")
+    a = Factory(:answer, :question_id => q.id, :text => "Don't know", :response_class => "answer", :reference_identifier => "neg_2")
+    # plus 4
+    q = Factory(:question, :reference_identifier => "ZIP4", :data_export_identifier => "PBS_ELIG_SCREENER_HOSP.ZIP4", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "plus 4", :response_class => "string")
+    a = Factory(:answer, :question_id => q.id, :text => "Refused", :response_class => "answer", :reference_identifier => "neg_1")
+    a = Factory(:answer, :question_id => q.id, :text => "Don't know", :response_class => "answer", :reference_identifier => "neg_2")
+    survey
+  end
+
   def create_pbs_eligibility_screener_survey_with_telephone_operational_data
     survey = Factory(:survey, :title => "INS_QUE_PBSamplingScreen_INT_PBS_M3.0_V1.0", :access_code => "ins-que-pbsamplingscreen-int-pbs-m3-0-v1-0")
     survey_section = Factory(:survey_section, :survey_id => survey.id)
