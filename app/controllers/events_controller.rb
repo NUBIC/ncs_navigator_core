@@ -48,13 +48,16 @@ class EventsController < ApplicationController
     respond_to do |format|
       if @event.update_attributes(params[:event])
 
-        post_update_event_actions(@event, @event.participant)
+        # TODO: remove some of the coupling between post_update_event_actions
+        #       and redirect_path as the event type and participant eligibility
+        #       are affecting the latter of the two methods.
+        participant = post_update_event_actions(@event, @event.participant)
 
         format.html do
           if params[:commit] == "Continue" && @contact_link
             redirect_to(edit_contact_link_contact_path(@contact_link, @contact_link.contact, :next_event => true), :notice => notice)
           else
-            redirect_to(redirect_path, :notice => notice)
+            redirect_to(redirect_path(@event, participant), :notice => notice)
           end
         end
         format.json { head :ok }
@@ -98,14 +101,12 @@ class EventsController < ApplicationController
   end
   private :set_suggested_values_for_event
 
-  def redirect_path
-    path = events_path
-    if @event.provider_recruitment_event?
-      path = provider_recruitment_event_redirect_path
-    elsif !@event.participant.nil?
-      path = participant_path(@event.participant)
+  def redirect_path(event, participant)
+    if event.provider_recruitment_event?
+      provider_recruitment_event_redirect_path
+    else
+      participant.nil? ? events_path : participant_path(participant)
     end
-    path
   end
   private :redirect_path
 
@@ -115,6 +116,20 @@ class EventsController < ApplicationController
   end
   private :provider_recruitment_event_redirect_path
 
+  ##
+  # After an event has been updated do the following:
+  # 1) Mark Activity Occurred
+  # 2) Cancel previously scheduled consent activities
+  #    if the participant consented during this event
+  # 3) Update associated events with data from this event
+  # 4) Update the state of the Participant
+  #
+  # #update_participant_state alters the participant record
+  # and therefore is returned from this method
+  # Provider Recruitment Events also return nil
+  #
+  # @see #update_participant_state
+  # @return [Participant]
   def post_update_event_actions(event, participant)
     # Update PSC activities
     mark_activity_occurred(event, participant)
@@ -128,7 +143,11 @@ class EventsController < ApplicationController
     event.update_associated_informed_consent_event
 
     # Update Participant state
-    update_participant_state(event, participant) unless event.provider_recruitment_event?
+    if event.provider_recruitment_event?
+      nil
+    else
+      update_participant_state(event, participant)
+    end
   end
   private :post_update_event_actions
 
@@ -137,16 +156,22 @@ class EventsController < ApplicationController
   # next state. However in the case of a screened Participant found to
   # be ineligible we adjudicate the Participant and act accordingly or if
   # the Participant has withdrawn from the study we unenroll the Participant.
+  #
+  # If the participant is determined ineligible during a screener event
+  # this method will return nil
+  #
   # @see Participant#advance
   # @see Participant#adjudicate_eligibility_and_disqualify_ineligible
   # @see Participant#unenroll
   # @param [Event]
   # @param [Participant]
+  # @return [Participant]
   def update_participant_state(event, participant)
     if participant
       if participant.ineligible?
         if event.screener_event?
           Participant.adjudicate_eligibility_and_disqualify_ineligible(participant)
+          return nil
         end
       elsif event.informed_consent? && participant.withdrawn?
         participant.unenroll!(psc, "Participant has withdrawn from the study.")
@@ -154,6 +179,7 @@ class EventsController < ApplicationController
         participant.advance(psc)
       end
     end
+    participant
   end
   private :update_participant_state
 

@@ -83,7 +83,7 @@ class ContactsController < ApplicationController
         format.json { render :json => @contact }
       else
         set_disposition_group
-        format.html { render :action => "new" }
+        format.html { render :action => "edit" }
         format.json { render :json => @contact.errors }
       end
     end

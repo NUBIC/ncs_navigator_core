@@ -986,7 +986,11 @@ class Event < ActiveRecord::Base
   end
 
   def set_suggested_event_repeat_key
-    self.participant.events.where(:event_type_code => self.event_type_code).count - 1
+    if self.participant.nil?
+      0
+    else
+      self.participant.events.where(:event_type_code => self.event_type_code).count - 1
+    end
   end
 
   ##
