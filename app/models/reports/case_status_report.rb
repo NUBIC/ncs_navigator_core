@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-module Reporting
+module Reports
   class CaseStatusReport
 
     REPORT_HEADERS = [
