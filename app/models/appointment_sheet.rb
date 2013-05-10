@@ -154,7 +154,8 @@ class AppointmentSheet
     contacts_connected_to_participant = ContactLink.joins(:event).where("events.participant_id = ?", @person.participant.id).collect(&:contact)
     all_contacts = contacts_connected_to_person + contacts_connected_to_participant
     return nil unless all_contacts.all?(&:contact_date_date)
-    all_contacts.uniq.sort_by(&:contact_date_date).last.contact_comment
+    last_contact = all_contacts.uniq.sort_by(&:contact_date_date).last
+    last_contact.contact_comment unless last_contact.blank?
   end
 
 end
