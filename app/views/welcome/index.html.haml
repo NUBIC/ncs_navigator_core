@@ -74,8 +74,9 @@
                   = link_to "Upcoming Birth Report", {:controller => "reports", :action => "upcoming_births"}, :class => "report_link icon_link"
                 - #%li
                 - # = link_to "Consented Participants", {:controller => "reports", :action => "number_of_consents_by_type"}, :class => "report_link icon_link"
-                %li
-                  = link_to "Field Activity Report", fieldwork_index_path, :class => "report_link icon_link"
+                - if @fieldwork_present
+                  %li
+                    = link_to "Field Activity Report", fieldwork_index_path, :class => "report_link icon_link"
         .column-2
           %h4
             Searching

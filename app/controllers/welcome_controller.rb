@@ -7,6 +7,7 @@ class WelcomeController < ApplicationController
     if @scheduled_activities = get_scheduled_activities_report(:current_user => current_user.username)
       @events = join_scheduled_events_by_date(parse_scheduled_activities(@scheduled_activities))
     end
+    @fieldwork_present = Fieldwork.count > 0
   end
 
   def upcoming_activities
