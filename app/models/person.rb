@@ -482,10 +482,18 @@ class Person < ActiveRecord::Base
   alias :is_first_child? :first_child?
 
   ##
-  # Determine relationship to another person
+  # Determine relationship to another person and return
+  # the display_text of that NcsCode value for the
+  # relationship in the ParticipantPersonLink record.
+  # Returns 'N/A' if person param nil
+  # Returns 'None' if relationship cannot be found
+  # @see ParticipantPersonLink#relationship
+  # @see NcsCode#display_text
   # @param [Person]
   # @return [String]
   def relationship_to_person_via_participant(person)
+    return 'N/A' if person.nil?
+
     rel = person.participant_person_links.find { |ppl|
       ppl.participant == participant
     }.try(:relationship)
