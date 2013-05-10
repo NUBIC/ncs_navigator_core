@@ -576,8 +576,18 @@ module NcsNavigator::Core
           person = importer.get_person_record(@row)
           person.class.should == Person
         end
-
       end
     end
+
+    context "importing contact attributes" do
+
+      it "string can be converted to a decimal" do
+        contact = Factory(:contact)
+        contact.update_attribute(:contact_distance, "34.343")
+        contact.contact_distance = 34.343
+      end
+    end
+
   end
+
 end
