@@ -156,13 +156,21 @@ class Person < ActiveRecord::Base
 
   ##
   # Override to_s to return the full name of the Person
-  # aliased as :name and :full_name
   # @return [String]
   def to_s
+    full_name
+  end
+
+  ##
+  # Return the full name (first_name + last_name) of the Person
+  # aliased also as :name
+  # @see #first_name
+  # @see #last_name
+  # @return [String]
+  def full_name
     "#{first_name} #{last_name}".strip
   end
-  alias :name :to_s
-  alias :full_name :to_s
+  alias :name :full_name
 
   ##
   # Helper method to set first and last name from full name
