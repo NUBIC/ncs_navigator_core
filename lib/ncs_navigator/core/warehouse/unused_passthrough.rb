@@ -28,7 +28,7 @@ module NcsNavigator::Core::Warehouse
     def create_emitter
       @emitter ||= NcsNavigator::Warehouse::XmlEmitter.new(
         @wh_config, path,
-        :zip => false, :'include-pii' => true, :contents => contents)
+        :zip => false, :'include-pii' => true, :content => contents)
     end
 
     def path

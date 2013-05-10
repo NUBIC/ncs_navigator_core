@@ -32,7 +32,7 @@ module NcsNavigator::Core::Warehouse
 
       it 'uses the #contents' do
         NcsNavigator::Warehouse::XmlEmitter.should_receive(:new).
-          with(anything, anything, include(:contents => passthrough.contents))
+          with(anything, anything, include(:content => passthrough.contents))
 
         emitter # trigger creation
       end
