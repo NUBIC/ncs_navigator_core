@@ -656,7 +656,7 @@ class Participant < ActiveRecord::Base
   end
 
    def child_participant?
-     self.p_type_code == 6
+     self.p_type_code == 6 || self.p_type_code == 12
    end
 
   ##
