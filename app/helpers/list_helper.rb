@@ -6,10 +6,10 @@ module ListHelper
   # @param [Array<[Array<Date, String>]>]
   # @return [Array<[Array<Date, String>]>]
   def sort_by_started_at(list)
-    list.sort_by do |x|
+    list.sort_by { |x|
       sd, st = x.started_at
-      [ sd || Date.new(2111,1,1), st || "23:59" ]
-    end
+      [ sd || Date.new(1911,1,1), st || "23:59" ]
+    }.reverse!
   end
 
 end

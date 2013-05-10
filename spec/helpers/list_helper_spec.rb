@@ -59,13 +59,13 @@ describe ListHelper do
 
     it "sorts events and contact_links related to the mother by date, time" do
       list = [@event, @cl_ev, @cl]
-      sort_by_started_at(list).should == [@cl_ev, @event, @cl]
+      sort_by_started_at(list).should == [@cl, @event, @cl_ev]
     end
 
     it "handles sorting events and contact_links that don't have date or time set" do
       ev_no_date = Factory(:event, :participant => @m_participant)
       list = [@event, @cl_ev, @cl, ev_no_date]
-      sort_by_started_at(list).should == [@cl_ev, @event, @cl, ev_no_date]
+      sort_by_started_at(list).should == [@cl, @event, @cl_ev, ev_no_date]
     end
 
   end
