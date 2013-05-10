@@ -141,7 +141,6 @@ class SurveyorController < ApplicationController
   # filtering out the informed consent events.
   # @see Event#chronological to see how ordering is determined
   def determine_current_event(event)
-
     contact_ids = event.contact_links.map(&:contact_id).uniq
     events = Event.joins(:contact_links).where("contact_links.contact_id in (?)", contact_ids).chronological
     if events.size > 1
@@ -152,11 +151,15 @@ class SurveyorController < ApplicationController
   end
 
   ##
-  # The most recent contact link for the event
+  # The most recently updated contact link for the event
+  # Used only to redirect user after surveyor_finish
+  # @see #surveyor_finish
+  # @see #determine_redirect
   # @return [ContactLink]
   def most_recent_contact_link
-    @event.contact_links.last
+    @event.contact_links.order('updated_at DESC').first
   end
+  private :most_recent_contact_link
 
   def build_instrument_context
     @response_set.to_mustache
