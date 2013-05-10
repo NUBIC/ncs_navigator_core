@@ -1266,6 +1266,11 @@ describe Event do
     end
 
     context "with a participant" do
+      let(:grandmother) do
+        mother  = Factory(:participant_person_link,
+                          :person => Factory(:person, :person_dob => '1967-12-12'),
+                          :participant => Factory(:participant, :high_intensity => true))
+      end
       let(:mother) do
         mother  = Factory(:participant_person_link,
                           :person => Factory(:person, :person_dob => '1988-01-01'),
@@ -1275,13 +1280,13 @@ describe Event do
       let(:child1) do
         Factory(:participant_person_link,
                 :person => Factory(:person, :person_dob => '2013-02-10'),
-                :participant => Factory(:participant, :high_intensity => true))
+                :participant => Factory(:participant, :p_type_code => 6, :high_intensity => true))
       end
 
       let(:child2) do
         Factory(:participant_person_link,
                 :person => Factory(:person, :person_dob => '2013-02-10'),
-                :participant => Factory(:participant, :high_intensity => true))
+                :participant => Factory(:participant, :p_type_code => 6, :high_intensity => true))
       end
 
       it "returns a date when the event is associated with the child" do
@@ -1304,6 +1309,30 @@ describe Event do
 
         event.window(:start).should == Date.parse('2013-02-10')
         event.window(:end).should == Date.parse('2013-02-20')
+      end
+
+      it "returns the correct date when there is a grandmother" do
+        Factory(:participant_person_link,
+                :participant => mother.participant,
+                :person => child1.person,
+                :relationship_code => 8)
+
+        Factory(:participant_person_link,
+                :participant => mother.participant,
+                :person => grandmother.person,
+                :relationship_code => 2)
+
+        Factory(:participant_person_link,
+                :participant => grandmother.participant,
+                :person => mother.person,
+                :relationship_code => 8)
+        event = Factory(:event, :event_type_code => Event.birth_code, :participant => mother.participant)
+        event2 = Factory(:event, :event_type_code => Event.birth_code, :participant => child1.participant)
+
+        event.window(:start).should == Date.parse('2013-02-10')
+        event.window(:end).should == Date.parse('2013-02-20')
+        event2.window(:start).should == Date.parse('2013-02-10')
+        event2.window(:end).should == Date.parse('2013-02-20')
       end
 
       it "returns a date when the event is associated with the mother and there are multiple children with the same birthday" do

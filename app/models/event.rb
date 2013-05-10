@@ -348,22 +348,28 @@ class Event < ActiveRecord::Base
     birth_date + EVENT_WINDOW[intensity][self.event_type_code][at]
   end
 
-  # @todo this is a workaround since child events are being
-  #        associated with the mother self.participant should be the
-  #        child for child events.
+
+  # @return nil or Person
+  def child_dob
+    child_participant.try(:person).try(:person_dob_date)
+  end
+
+  # @todo this is a workaround since child events are being associated
+  #        with the mother self.participant should be the child for
+  #        child events. This method should be removed when the
+  #        association is changed
   #
   #
   # @note when the participant is the mother and there are multiple
-  #        children this assumes all children have the same birthday
+  #        children this will pick one
   #
-  # The NCS child this event relates to
-  # @return nil or Person
-  def child_dob
+  # The participant child this event relates to
+  def child_participant
     case
-    when participant.try(:mother)
-      participant.person.person_dob_date
-    when (c = participant.try(:children)) &&  c.try(:size) > 0
-      c.first.person_dob_date
+    when participant.try(:child_participant?)
+      participant
+    when (c = participant.try(:children))
+      c.find{|child| child.participant.try(:child_participant?)}.try(:participant)
     else
       nil
     end
