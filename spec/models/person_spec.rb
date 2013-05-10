@@ -652,16 +652,25 @@ describe Person do
     end
 
     it "finds that child's mother is Biological Mother" do
-      child.relationship_to_person_via_participant(mother)
+      rel = child.relationship_to_person_via_participant(mother)
+      rel.should == 'Biological Mother'
     end
 
     it "finds that child has no relation to stranger1" do
-      child.relationship_to_person_via_participant(stranger1)
+      rel = child.relationship_to_person_via_participant(stranger1)
+      rel.should == 'None'
     end
 
     it "finds that child has no relation to stranger2 who is not a participant" do
-      child.relationship_to_person_via_participant(stranger2)
+      rel = child.relationship_to_person_via_participant(stranger2)
+      rel.should == 'None'
     end
+
+    it "returns 'N/A' if given nil" do
+      rel = child.relationship_to_person_via_participant(nil)
+      rel.should == 'N/A'
+    end
+
   end
 
 
