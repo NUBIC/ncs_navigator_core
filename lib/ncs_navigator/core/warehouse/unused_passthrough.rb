@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-
 require 'ncs_navigator/core'
+require 'ncs_navigator/warehouse'
 
 module NcsNavigator::Core::Warehouse
   module UnusedPassthrough
@@ -21,10 +21,14 @@ module NcsNavigator::Core::Warehouse
       create_emitter.emit_xml
     end
 
+    def contents
+      @contents ||= NcsNavigator::Warehouse::Contents.new(@wh_config, :tables => unused_tables)
+    end
+
     def create_emitter
       @emitter ||= NcsNavigator::Warehouse::XmlEmitter.new(
         @wh_config, path,
-        :zip => false, :'include-pii' => true, :tables => unused_tables)
+        :zip => false, :'include-pii' => true, :contents => contents)
     end
 
     def path
