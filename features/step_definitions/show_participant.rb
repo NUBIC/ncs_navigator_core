@@ -2,7 +2,7 @@ Given /^a participant with scheduled activities$/ do
 
   child = Factory(:participant_person_link,
                   :person => Factory(:person, :person_dob => Time.zone.today.to_s(:db)),
-                  :participant => Factory(:participant, :high_intensity => true))
+                  :participant => Factory(:participant, :p_type_code => 6, :high_intensity => true))
 
   mother  = Factory(:participant_person_link,
                     :person => Factory(:person, :person_id => "w324-rteb-2c7z"),
