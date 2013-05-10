@@ -17,6 +17,9 @@ module NavigationHelpers
     when /the welcome summary page/
       '/welcome/summary'
 
+    when /the pending events page/
+      '/welcome/pending_events'
+
     when /the welcome index page/
       '/'
 

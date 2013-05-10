@@ -66,15 +66,16 @@ Given /^whose homephone is (\d*-\d*-\d*)$/ do |phone|
 end
 
 Given /^has a general consent$/ do
-  @general_consent = ParticipantConsent.create!(:consent_type_code => nil)
-  @participant.participant_consents << @general_consent
+  @general_consent = ParticipantConsent.create!(:consent_type_code => nil,
+                                                :participant_id => @participant.id)
   @participant.save!
 end
 
 Given /^who has (.+)$/ do |consent_type|
   code = NcsCode.for_list_name_and_display_text('CONSENT_TYPE_CL2', consent_type)
-  sample_consent = ParticipantConsentSample.create!(:sample_consent_type_code => code)
-  @participant.participant_consent_samples << sample_consent
+  pc = ParticipantConsent.where(:participant_id => @participant.id).first
+  sample_consent = ParticipantConsentSample.create!(:sample_consent_type => code,
+                                                    :participant_consent => pc)
   @participant.save!
 end
 
@@ -104,8 +105,9 @@ end
 
 Given /^the child has (.+)$/ do |consent_type|
   code = NcsCode.for_list_name_and_display_text('CONSENT_TYPE_CL2', consent_type)
-  sample_consent = ParticipantConsentSample.create!(:sample_consent_type_code => code)
-  @child_participant.participant_consent_samples << sample_consent
+  pc = ParticipantConsent.where(:participant_id => @child_participant.id).first
+  sample_consent = ParticipantConsentSample.create!(:sample_consent_type => code,
+                                                    :participant_consent => pc)
   @child_participant.save!
 end
 

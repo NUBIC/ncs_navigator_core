@@ -82,29 +82,29 @@ module ResponseSetPrepopulation
                   when "ADDRESS_1"
                     response_type = "string_value"
                     value = person.primary_address.try(:address_one)
-                    answer_for(question, 'string')
+                    question.answers.find { |a| a.response_class == "string" }
                   when "ADDRESS_2"
                     response_type = "string_value"
                     value = person.primary_address.try(:address_two)
-                    answer_for(question, 'string')
+                    question.answers.find { |a| a.response_class == "string" }
                   when "UNIT"
                     response_type = "string_value"
                     value = person.primary_address.try(:unit)
-                    answer_for(question, 'string')
+                    question.answers.find { |a| a.response_class == "string" }
                   when "CITY"
                     response_type = "string_value"
                     value = person.primary_address.try(:city)
-                    answer_for(question, 'string')
+                    question.answers.find { |a| a.response_class == "string" }
                   when "STATE"
                     answer_for(question, person.primary_address.try(:state_code))
                   when "ZIP"
                     response_type = "string_value"
                     value = person.primary_address.try(:zip)
-                    answer_for(question, 'string')
+                    question.answers.find { |a| a.response_class == "string" }
                   when "ZIP4"
                     response_type = "string_value"
                     value = person.primary_address.try(:zip4)
-                    answer_for(question, 'string')
+                    question.answers.find { |a| a.response_class == "string" }
                   else
                     nil
                   end

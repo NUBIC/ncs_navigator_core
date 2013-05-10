@@ -13,14 +13,15 @@ class AppointmentSheet
 
   attr_reader :person
 
-  def initialize(person)
-    @person = Person.find(person)
+  def initialize(person, date)
+    @person = person
     @event = @person.participant.pending_events.first if @person.participant && @person.participant.pending_events
+    @date = date
   end
 
   def event_type
-    return "Unknown Event" if @event.nil?
-    NcsCode.for_list_name_and_local_code('EVENT_TYPE_CL1', @event.event_type_code).display_text
+    return "Unknown Event" if @event.blank?
+    @event.event_type.display_text
   end
 
   def address
@@ -66,46 +67,26 @@ class AppointmentSheet
   def participant_consents(person)
     return [] if person.participant.nil?
 
-    general_consents = ParticipantConsent.where(:participant_id => person.participant.id).all
-    return [] if general_consents.first.nil?
-    if general_consents.first.phase_one?
-      general_conserts.collect { |consent| participant_consents_phase_one(consent.consent_type_code) }
+    consents = ParticipantConsent.where(:participant_id => person.participant.id)
+                                 .includes(:participant_consent_samples).all
+    return [] if consents.first.nil?
+    if consents.first.phase_one?
+      consents.collect { |consent| consent_print(consent.consent_type.display_text) }
     else
-      sample_consents = ParticipantConsentSample.where(:participant_id => person.participant.id).all
-      sample_consents.collect  { |consent| participant_consents_phase_two(consent.sample_consent_type_code) }
+      general_consent = ["General"]
+      general_consent + consents.first.participant_consent_samples.collect { |consent| consent_print(consent.sample_consent_type.display_text) }
     end
   end
   private :participant_consents
 
-  def participant_consents_phase_one(type_code)
-    case type_code
-    when 2
-      "Biological"
-    when 3
-      "Environmental"
-    when 4
-      "Genetic"
-    when 5
-      "Birth Samples"
-    when 6
-      "Child Participation"
-    when 7
-      "Low Intensity"
+  def consent_print(text)
+    if text =~ /^Consent to collect (.*)$/
+      /^Consent to collect (.*)$/.match(text).captures.first.titleize
+    else
+      text.sub(" consent","").titleize
     end
   end
-  private :participant_consents_phase_one
-
-  def participant_consents_phase_two(type_code)
-    case type_code
-    when 1
-      "Environmental"
-    when 2
-      "Biological"
-    when 3
-      "Genetic"
-    end
-  end
-  private :participant_consents_phase_two
+  private :consent_print
 
   def child_names
     @person.participant.children.collect(&:full_name)
@@ -150,8 +131,7 @@ class AppointmentSheet
   end
 
   def age(birth_date)
-    today = Time.zone.today
-    total_months = (today.year*12 + today.month) - (birth_date.year*12 + birth_date.month)
+    total_months = (@date.year * 12 + @date.month) - (birth_date.year * 12 + birth_date.month)
     years, months = total_months.divmod(12)
     strings = [[years, "year"], [months, "month"]].map do |value, unit|
       value > 0 ? [pluralize(value, unit)] : nil

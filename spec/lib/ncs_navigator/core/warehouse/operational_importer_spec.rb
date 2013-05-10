@@ -833,7 +833,7 @@ module NcsNavigator::Core::Warehouse
           :participant => fred_p,
           :event_disp => 4,
           :event_type => code_for_event_type('Low Intensity Data Collection'),
-          :event_start_date => '9666-96-96')
+          :event_start_date => '9666-96-96', :event_end_date => '2010-11-02')
       }
       let(:f_c1) {
         create_warehouse_record_with_defaults(wh_config.model(:Contact),

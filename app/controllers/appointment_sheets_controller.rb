@@ -1,7 +1,7 @@
 class AppointmentSheetsController < ApplicationController
 
   def show
-    @sheet = AppointmentSheet.new(params[:person])
+    @sheet = AppointmentSheet.new(Person.find(params[:person]), Date.parse(params[:date]))
     @person = @sheet.person
     @participant = @person.participant
     @participant_activity_plan = psc.build_activity_plan(@participant)
@@ -17,7 +17,9 @@ class AppointmentSheetsController < ApplicationController
       sa.event == @sheet.event_type.downcase.tr(' ','_') &&
       sa.person_id == @person.public_id
     end
-    Time.parse(event_activity.activity_time).strftime("%l:%M %p") unless event_activity.blank?
+    unless event_activity.blank? || event_activity.activity_time.blank?
+      Time.parse(event_activity.activity_time).strftime("%l:%M %p")
+    end
   end
 
 

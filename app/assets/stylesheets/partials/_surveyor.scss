@@ -76,6 +76,12 @@
     margin: 0.5em 0.5em 0.5em -1em;
     padding: 0.5em 0 0 0;
 
+    fieldset.mandatory legend span:after {
+      content: " * ";
+      color: maroon;
+      font-weight: bold;
+    }
+
     fieldset {
 
       border: none !important;
