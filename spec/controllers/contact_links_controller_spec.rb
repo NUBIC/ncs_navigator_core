@@ -157,6 +157,16 @@ describe ContactLinksController do
 
     end
 
+    describe "GET edit_instrument" do
+
+      it "redirects to the decision page if the instrument is nil" do
+        cl = Factory(:contact_link, :instrument => nil)
+        get :edit_instrument, :id => cl.id
+        response.should redirect_to(decision_page_contact_link_path(cl))
+      end
+
+    end
+
     describe "GET saq_instrument" do
 
     	before do
