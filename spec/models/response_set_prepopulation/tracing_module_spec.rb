@@ -87,13 +87,13 @@ module ResponseSetPrepopulation
           init_instrument_and_response_set(nil,
                :create_tracing_module_survey_with_address_operational_data)
           take_survey(@survey, @response_set) do |r|
-            r.a "TRACING_INT.ADDRESS_1", 'string', :value => 'Address One'
-            r.a "TRACING_INT.ADDRESS_2", 'string', :value => '123'
-            r.a "TRACING_INT.UNIT", 'string', :value => '321'
-            r.a "TRACING_INT.CITY", 'string', :value => 'Chicago'
+            r.a "TRACING_INT.ADDRESS_1", 'Address One'
+            r.a "TRACING_INT.ADDRESS_2", '123'
+            r.a "TRACING_INT.UNIT", '321'
+            r.a "TRACING_INT.CITY", 'Chicago'
             r.a "TRACING_INT.STATE", { :reference_identifier => '14' }
-            r.a "TRACING_INT.ZIP", 'string', :value => '60606'
-            r.a "TRACING_INT.ZIP4", 'string', :value => '4444'
+            r.a "TRACING_INT.ZIP", '60606'
+            r.a "TRACING_INT.ZIP4", '4444'
           end
           @response_set.save!
           OperationalDataExtractor::Base.process(@response_set)
