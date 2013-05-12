@@ -286,6 +286,27 @@ class Event < ActiveRecord::Base
     order(:event_start_date)
   end
 
+  ##
+  # Loads PSC data for an ActiveRecord::Relation of events.
+  #
+  # This method forces evaluation of a relation, so you can only use it at the
+  # end of a scope chain.
+  #
+  # This method does not implement any special error handling for PSC queries.
+  #
+  # @param [PatientStudyCalendar] psc a PatientStudyCalendar object
+  # @return Array<Event>
+  def self.with_psc_data(psc)
+    result_set = includes(:participant).to_a
+
+    result_set.tap do |s|
+      s.group_by(&:participant).each do |p, events|
+        pscp = PscParticipant.new(psc, p)
+        events.each { |e| e.scheduled_activities(pscp) }
+      end
+    end
+  end
+
   def self.by_type_order
     joins(%q{
       LEFT OUTER JOIN event_type_order
@@ -642,23 +663,39 @@ class Event < ActiveRecord::Base
 
   ##
   # Given a {PscParticipant}, returns the participant's scheduled activities
-  # that match this event.  If no activities match, returns [].
+  # that match this event.  The {PscParticipant} MUST reference the same
+  # participant as this event; if it does not, an error will be raised.
   #
-  # A PscParticipant, just like an Event, is associated with a {Participant}.
-  # The PscParticipant passed here MUST reference the same participant as this
-  # event.
+  # Without a {PscParticipant}, returns previously cached activities.  If no
+  # activities have been loaded yet, raises an error.
   #
   # This method will load the {#participant} association.  If you're planning
   # on calling this method across multiple Events, you SHOULD eager-load
   # participants.
-  def scheduled_activities(psc_participant)
+  #
+  # On successful load, the scheduled activity list is cached.  To clear the
+  # cache, invoke {#reload}.
+  #
+  # @return Array<Psc::ScheduledActivity>
+  def scheduled_activities(psc_participant = nil)
+    if !psc_participant && !@scheduled_activities
+      raise 'Scheduled activities have not yet been loaded'
+    end
+
     if psc_participant.participant.id != participant.id
       raise "Participant mismatch (psc_participant: #{psc_participant.participant.id}, self: #{participant.id})"
     end
 
+    return @scheduled_activities if @scheduled_activities
+
     all_activities = psc_participant.scheduled_activities
 
-    all_activities.select { |_, sa| implied_by?(sa.event_label.try(:content), sa.ideal_date) }.values
+    @scheduled_activities = all_activities.select { |_, sa| implied_by?(sa) }.values
+  end
+
+  def reload
+    remove_instance_variable(:@scheduled_activities)
+    super
   end
 
   ##
