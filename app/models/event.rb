@@ -715,8 +715,15 @@ class Event < ActiveRecord::Base
     implied_by?(label, scheduled_activity.ideal_date)
   end
 
-  def implied_by?(label, date)
-    self.label == label && psc_ideal_date.to_s == date
+  def implied_by?(*args)
+    if args.length == 1
+      activity = args.first
+      self.label == activity.event_label.try(:content) && psc_ideal_date.to_s == activity.ideal_date
+    elsif args.length == 2
+      self.label == args.first && psc_ideal_date.to_s == args.second
+    else
+      raise ArgumentError, "wrong number of arguments (#{args.length} for 1 or 2)"
+    end
   end
 
   def set_event_disposition_category(contact)

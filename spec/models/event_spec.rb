@@ -761,6 +761,49 @@ describe Event do
     end
   end
 
+  describe '#implied_by?' do
+    let(:event) { Event.new }
+
+    before do
+      event.psc_ideal_date = '2000-01-01'
+      event.stub!(:label => 'foo_bar')
+    end
+
+    describe 'given an event label and ideal date' do
+      it "returns true if its label and ideal date match what's given" do
+        event.implied_by?('foo_bar', '2000-01-01').should be_true
+      end
+
+      it "returns false if its label does not match" do
+        event.implied_by?('baz', '2000-01-01').should be_false
+      end
+
+      it "returns false if its ideal date does not match" do
+        event.implied_by?('foo_bar', '1999-12-31').should be_false
+      end
+    end
+
+    describe 'given a Psc::ScheduledActivity' do
+      let(:sa) { Psc::ScheduledActivity.new(:ideal_date => '2000-01-01', :labels => 'event:foo_bar') }
+
+      it "returns true if its label and ideal date match the activity" do
+        event.implied_by?(sa).should be_true
+      end
+
+      it "returns false if its label does not match the activity's event label" do
+        sa.labels = 'event:baz'
+
+        event.implied_by?(sa).should be_false
+      end
+
+      it "returns false if its ideal date does not match" do
+        sa.ideal_date = '1999-12-31'
+
+        event.implied_by?(sa).should be_false
+      end
+    end
+  end
+
   describe '#disposition_code' do
     let(:version) { NcsNavigator::Core::Mdes::Version.new('3.1') }
     let(:spec) { version.specification }
