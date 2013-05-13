@@ -580,11 +580,15 @@ module NcsNavigator::Core
     end
 
     context "importing contact attributes" do
+      before do
+        make_a_csv(create_csv_row_text(:contact_distance => '34.34'))
 
-      it "string can be converted to a decimal" do
-        contact = Factory(:contact)
-        contact.update_attribute(:contact_distance, "34.343")
-        contact.contact_distance = 34.343
+        importer.import_data
+      end
+
+      it "extracted CSV value is successfully converted to decimal type" do
+        Contact.first.contact_distance.class.should == BigDecimal
+        Contact.first.contact_distance.to_s('F').should == "34.34"
       end
     end
 

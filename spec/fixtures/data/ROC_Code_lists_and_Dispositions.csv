@@ -1,6 +1,6 @@
-PSU ID,Contact Disposition,Contact Type,Contact Type Other,Contact Date,Contact Start Time,Contact End Time,Contact Language,Contact Language Other,Contact Interpret,Contact Interpret Other,Contact Location,Contact Location Other,Contact Private,Who Contacted,Contact Comment,Participant ID,Event Type,Event Type Other,Event Disposition,Event Disposition Category,Event Start Date,Event Start Time,Event End Date,Event End Time,Event Breakoff,Event Comment,Staff ID,Person ID,Person Last Name,Person First Name,Relationship,HiLo Change
-2000058,40,3,,2012-04-10,15:00,15:02,1,,,,2,,1,1,,11111111,15,,40,3,2012-04-10,,,,,,96539006,11111111,,,
-2000058,50,2,,2012-04-10,15:05,15:05,1,,,,2,,1,1,,22222222,25,,50,4,2012-04-10,,,,2,,96539006,22222222,,,
-2000058,65,3,,2012-04-11,16:00,16:06,1,,,,2,,1,1,,22221111,26,,65,5,2012-04-11,,,,2,,96539006,22221111,,,
-2000058,60,1,,2012-04-11,17:00,17:40,1,,,,1,,1,1,,11112222,24,,60,3,2012-04-11,17:40,,,2,,96539006,11112222,,,
-2000058,50,3,,2012-04-11,15:35,15:55,1,,,,2,,1,1,,33333333,24,,40,3,2012-04-12,15:55,,,2,,96539006,33333333,,,1
+PSU ID,Contact Disposition,Contact Type,Contact Type Other,Contact Date,Contact Start Time,Contact End Time,Contact Distance,Contact Language,Contact Language Other,Contact Interpret,Contact Interpret Other,Contact Location,Contact Location Other,Contact Private,Who Contacted,Contact Comment,Participant ID,Event Type,Event Type Other,Event Disposition,Event Disposition Category,Event Start Date,Event Start Time,Event End Date,Event End Time,Event Breakoff,Event Comment,Staff ID,Person ID,Person Last Name,Person First Name,Relationship,HiLo Change
+2000058,40,3,,2012-04-10,15:00,15:02,34.43,1,,,,2,,1,1,,11111111,15,,40,3,2012-04-10,,,,,,96539006,11111111,,,
+2000058,50,2,,2012-04-10,15:05,15:05,,1,,,,2,,1,1,,22222222,25,,50,4,2012-04-10,,,,2,,96539006,22222222,,,
+2000058,65,3,,2012-04-11,16:00,16:06,,1,,,,2,,1,1,,22221111,26,,65,5,2012-04-11,,,,2,,96539006,22221111,,,
+2000058,60,1,,2012-04-11,17:00,17:40,,1,,,,1,,1,1,,11112222,24,,60,3,2012-04-11,17:40,,,2,,96539006,11112222,,,
+2000058,50,3,,2012-04-11,15:35,15:55,,1,,,,2,,1,1,,33333333,24,,40,3,2012-04-12,15:55,,,2,,96539006,33333333,,,1
