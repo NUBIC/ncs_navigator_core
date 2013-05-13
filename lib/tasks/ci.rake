@@ -40,8 +40,11 @@ begin
     # the archived CI builds — it makes it true that archived logs for a build
     # are only the logs produced when running that specific build.
     task :clear_log do
-      (Rails.root + 'log').each_child do |sub|
-        rm_rf sub.to_s
+      log_dir = Rails.root + 'log'
+      if log_dir.exist?
+        log_dir.each_child do |sub|
+          rm_rf sub.to_s
+        end
       end
     end
 
