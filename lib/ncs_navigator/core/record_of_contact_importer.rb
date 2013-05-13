@@ -244,7 +244,7 @@ class NcsNavigator::Core::RecordOfContactImporter
 
     contact.contact_disposition     = row[:contact_disposition] unless row[:contact_disposition].blank?
     apply_coded_value(contact, :contact_type, row, row_index)
-    contact.contact_type_other      = row[:contact_type_pther] unless row[:contact_type_pther].blank?
+    contact.contact_type_other      = row[:contact_type_other] unless row[:contact_type_other].blank?
     contact.contact_date            = row[:contact_date] unless row[:contact_date].blank?
     contact.contact_start_time      = row[:contact_start_time] unless row[:contact_start_time].blank?
     contact.contact_end_time        = row[:contact_end_time] unless row[:contact_end_time].blank?
