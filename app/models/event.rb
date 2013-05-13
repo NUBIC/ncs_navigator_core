@@ -65,6 +65,13 @@ class Event < ActiveRecord::Base
   before_save :set_start_time
   before_save :set_psc_ideal_date
 
+  ##
+  # Scheduled activities for this event.  These are not persisted in Cases and
+  # SHOULD be loaded from PSC.
+  #
+  # @see #load_scheduled_activities
+  attr_reader :scheduled_activities
+
   POSTNATAL_EVENTS = [
     18, # Birth
     23, # 3 Month
@@ -302,7 +309,7 @@ class Event < ActiveRecord::Base
     result_set.tap do |s|
       s.group_by(&:participant).each do |p, events|
         pscp = PscParticipant.new(psc, p)
-        events.each { |e| e.scheduled_activities(pscp) }
+        events.each { |e| e.load_scheduled_activities(pscp) }
       end
     end
   end
@@ -662,26 +669,19 @@ class Event < ActiveRecord::Base
   end
 
   ##
-  # Given a {PscParticipant}, returns the participant's scheduled activities
-  # that match this event.  The {PscParticipant} MUST reference the same
-  # participant as this event; if it does not, an error will be raised.
-  #
-  # Without a {PscParticipant}, returns previously cached activities.  If no
-  # activities have been loaded yet, raises an error.
+  # Given a {PscParticipant}, loads the participant's scheduled activities that
+  # match this event.  The {PscParticipant} MUST reference the same participant
+  # as this event; if it does not, an error will be raised.
   #
   # This method will load the {#participant} association.  If you're planning
   # on calling this method across multiple Events, you SHOULD eager-load
   # participants.
   #
-  # On successful load, the scheduled activity list is cached.  To clear the
-  # cache, invoke {#reload}.
+  # When this method returns, the scheduled activities for this event will be
+  # available in the {#scheduled_activities} reader.
   #
-  # @return Array<Psc::ScheduledActivity>
-  def scheduled_activities(psc_participant = nil)
-    if !psc_participant && !@scheduled_activities
-      raise 'Scheduled activities have not yet been loaded'
-    end
-
+  # @return void
+  def load_scheduled_activities(psc_participant)
     if psc_participant.participant.id != participant.id
       raise "Participant mismatch (psc_participant: #{psc_participant.participant.id}, self: #{participant.id})"
     end
@@ -690,11 +690,14 @@ class Event < ActiveRecord::Base
 
     all_activities = psc_participant.scheduled_activities
 
-    @scheduled_activities = all_activities.select { |_, sa| implied_by?(sa) }.values
+    @scheduled_activities = all_activities.select { |_, sa| implied_by?(sa) }.values.freeze
   end
 
   def reload
-    remove_instance_variable(:@scheduled_activities)
+    if instance_variable_defined?(:@scheduled_activities)
+      remove_instance_variable(:@scheduled_activities)
+    end
+
     super
   end
 
