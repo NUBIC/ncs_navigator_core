@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # == Schema Information
-# Schema version: 20120629204215
+# Schema version: 20130514215040
 #
 # Table name: participant_consent_samples
 #
@@ -8,7 +8,6 @@
 #  id                            :integer          not null, primary key
 #  participant_consent_id        :integer
 #  participant_consent_sample_id :string(36)       not null
-#  participant_id                :integer
 #  psu_code                      :integer          not null
 #  sample_consent_given_code     :integer          not null
 #  sample_consent_type_code      :integer          not null
@@ -23,7 +22,6 @@ class ParticipantConsentSample < ActiveRecord::Base
   include NcsNavigator::Core::Mdes::MdesRecord
   acts_as_mdes_record :public_id_field => :participant_consent_sample_id
 
-  belongs_to :participant
   belongs_to :participant_consent
 
   ncs_coded_attribute :psu,                  'PSU_CL1'
@@ -59,4 +57,3 @@ class ParticipantConsentSample < ActiveRecord::Base
   end
 
 end
-

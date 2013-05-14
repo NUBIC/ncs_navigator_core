@@ -62,7 +62,6 @@ describe Participant do
   it { should have_many(:high_intensity_state_transition_audits) }
 
   it { should have_many(:participant_consents) }
-  it { should have_many(:participant_consent_samples) }
 
   # it { should validate_presence_of(:person) }
 
@@ -2606,7 +2605,6 @@ describe Participant do
             describe "and an enivronmental participant_consent_sample record" do
               let!(:participant_consent_sample) {
                 Factory(:participant_consent_sample,
-                  :participant => participant,
                   :participant_consent => participant_consent,
                   :sample_consent_type_code => ParticipantConsentSample::ENVIRONMENTAL,
                   :sample_consent_given_code => sample_consent_given_code)
