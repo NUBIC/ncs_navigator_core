@@ -311,12 +311,12 @@ namespace :import do
         if pt.date_available_for_informed_consent_event?(date)
           resp = Event.schedule_reconsent(psc, pt, date)
           unless resp.success?
-            msg = "!!! Could not schedule informed consent for #{p.p_id} !!!"
-            participants_unable_to_be_scheduled << p
+            msg = "!!! Could not schedule informed consent for #{pt.p_id} !!!"
+            participants_unable_to_be_scheduled << pt
           end
         else
           msg = "!!! Date [#{date_str}] unavailable for participant #{pt.p_id} !!!"
-          participants_unable_to_be_scheduled << p
+          participants_unable_to_be_scheduled << pt
         end
         $stderr.puts(msg)
         Rails.logger.info(msg)
