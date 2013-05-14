@@ -4,9 +4,10 @@
 class WelcomeController < ApplicationController
 
   def index
-    if scheduled_activities = get_scheduled_activities_report(:current_user => current_user.username)
-      @events = join_scheduled_events_by_date(parse_scheduled_activities(scheduled_activities))
+    if @scheduled_activities = get_scheduled_activities_report(:current_user => current_user.username)
+      @events = join_scheduled_events_by_date(parse_scheduled_activities(@scheduled_activities))
     end
+    @fieldwork_present = Fieldwork.count > 0
   end
 
   def upcoming_activities
@@ -122,8 +123,10 @@ class WelcomeController < ApplicationController
     end
 
     def get_scheduled_activities_report(options = {})
-      @start_date = 1.day.ago.to_date.to_s
-      @end_date   = params[:end_date] || 6.weeks.from_now.to_date.to_s
+      @start_date = Date.parse(params[:start_date]) unless params[:start_date].nil?
+      @end_date = Date.parse(params[:end_date]) unless params[:end_date].nil?
+      @start_date = 1.day.ago.to_date if @start_date.nil?
+      @end_date   = 6.weeks.from_now.to_date if @end_date.nil?
       criteria = { :start_date => @start_date, :end_date => @end_date, :current_user => nil }
       criteria.merge!(options) if options
 

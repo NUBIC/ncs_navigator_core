@@ -1,13 +1,15 @@
 - page_title "Edit Contact"
 
 %h3
-  = @person
-  = "::"
-  = @event.event_type.display_text
+  = link_to @person.to_s, person_path(@person), :class => "header_link"
+  - if @event
+    = "::"
+    = @event.event_type.display_text
 
 .page_section
   = form_for([@person, @contact], :html => {:autocomplete => "off"}) do |f|
-    = hidden_field_tag :event_id, @event.id
+    - if @event
+      = hidden_field_tag :event_id, @event.id
 
     = render "shared/custom_error_messages", :object => f.object
 

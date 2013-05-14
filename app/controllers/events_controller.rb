@@ -47,31 +47,17 @@ class EventsController < ApplicationController
 
     respond_to do |format|
       if @event.update_attributes(params[:event])
-        mark_activity_occurred
-        @event.update_associated_informed_consent_event
 
-        notice = 'Event was successfully updated.'
-
-        if @event.provider_recruitment_event?
-          # do not set participant
-        elsif participant = @event.participant
-          if participant.ineligible?
-            if @event.screener_event? && person = @event.participant.try(:person)
-              EligibilityAdjudicator.adjudicate_eligibility(person)
-            end
-          elsif @event.informed_consent? && participant.withdrawn?
-            participant.unenroll!(psc, "Participant has withdrawn from the study.")
-          else
-            resp = participant.advance(psc)
-            notice += " Scheduled next event [#{participant.next_study_segment}]" if resp
-          end
-        end
+        # TODO: remove some of the coupling between post_update_event_actions
+        #       and redirect_path as the event type and participant eligibility
+        #       are affecting the latter of the two methods.
+        participant = post_update_event_actions(@event, @event.participant)
 
         format.html do
           if params[:commit] == "Continue" && @contact_link
             redirect_to(edit_contact_link_contact_path(@contact_link, @contact_link.contact, :next_event => true), :notice => notice)
           else
-            redirect_to(redirect_path, :notice => notice)
+            redirect_to(redirect_path(@event, participant), :notice => notice)
           end
         end
         format.json { head :ok }
@@ -107,79 +93,165 @@ class EventsController < ApplicationController
     end
   end
 
-  private
+  def set_suggested_values_for_event
+    @event.set_suggested_event_disposition(@contact_link)
+    @event.set_suggested_event_disposition_category(@contact_link)
+    @event.set_suggested_event_repeat_key
+    @event.set_suggested_event_breakoff(@contact_link)
+  end
+  private :set_suggested_values_for_event
 
-    def set_suggested_values_for_event
-      @event.set_suggested_event_disposition(@contact_link)
+  def redirect_path(event, participant)
+    if event.provider_recruitment_event?
+      provider_recruitment_event_redirect_path
+    else
+      participant.nil? ? events_path : participant_path(participant)
+    end
+  end
+  private :redirect_path
 
-      @event.set_suggested_event_disposition_category(@contact_link)
+  def provider_recruitment_event_redirect_path
+    provider = @event.contact_links.find { |cl| !cl.provider.nil? }.try(:provider)
+    provider.nil? ? pbs_lists_path : pbs_list_path(provider.pbs_list)
+  end
+  private :provider_recruitment_event_redirect_path
 
-      @event.set_suggested_event_repeat_key
+  ##
+  # After an event has been updated do the following:
+  # 1) Mark Activity Occurred
+  # 2) Cancel previously scheduled consent activities
+  #    if the participant consented during this event
+  # 3) Update associated events with data from this event
+  # 4) Update the state of the Participant
+  #
+  # #update_participant_state alters the participant record
+  # and therefore is returned from this method
+  # Provider Recruitment Events also return nil
+  #
+  # @see #update_participant_state
+  # @return [Participant]
+  def post_update_event_actions(event, participant)
+    # Update PSC activities
+    mark_activity_occurred(event, participant)
 
-      @event.set_suggested_event_breakoff(@contact_link)
+    # For a consent event if the participant has consented, cancel all upcoming consent activities in PSC.
+    if event.consent_event? && participant.try(:consented?)
+      cancel_scheduled_consents_for_consented_participant(participant)
     end
 
-    def redirect_path
-      path = events_path
-      if @event.provider_recruitment_event?
-        path = provider_recruitment_event_redirect_path
-      elsif !@event.participant.nil?
-        path = participant_path(@event.participant)
-      end
-      path
-    end
+    # If necessary, update associated event information
+    event.update_associated_informed_consent_event
 
-    def provider_recruitment_event_redirect_path
-      provider = @event.contact_links.find { |cl| !cl.provider.nil? }.try(:provider)
-      provider.nil? ? pbs_lists_path : pbs_list_path(provider.pbs_list)
+    # Update Participant state
+    if event.provider_recruitment_event?
+      nil
+    else
+      update_participant_state(event, participant)
     end
-    private :provider_recruitment_event_redirect_path
+  end
+  private :post_update_event_actions
 
-    ##
-    # Updates activities associated with this event
-    # in PSC as 'occurred'
-    def mark_activity_occurred
-      if !@event.event_end_date.blank? && !@event.provider_recruitment_event?
-  	    psc.activities_for_event(@event).each do |a|
-  	      if @event.matches_activity(a)
-            psc.update_activity_state(a.activity_id,
-                                      @event.participant,
-                                      Psc::ScheduledActivity::OCCURRED)
-          end
+  ##
+  # Upon completion of an Event we advance the Participant to the
+  # next state. However in the case of a screened Participant found to
+  # be ineligible we adjudicate the Participant and act accordingly or if
+  # the Participant has withdrawn from the study we unenroll the Participant.
+  #
+  # If the participant is determined ineligible during a screener event
+  # this method will return nil
+  #
+  # @see Participant#advance
+  # @see Participant#adjudicate_eligibility_and_disqualify_ineligible
+  # @see Participant#unenroll
+  # @param [Event]
+  # @param [Participant]
+  # @return [Participant]
+  def update_participant_state(event, participant)
+    if participant
+      if participant.ineligible?
+        if event.screener_event?
+          Participant.adjudicate_eligibility_and_disqualify_ineligible(participant)
+          return nil
         end
+      elsif event.informed_consent? && participant.withdrawn?
+        participant.unenroll!(psc, "Participant has withdrawn from the study.")
+      else
+        participant.advance(psc)
       end
     end
+    participant
+  end
+  private :update_participant_state
 
-    ##
-	  # Determine the disposition group to be used from the contact type or instrument taken
-	  def set_disposition_group
-	    @disposition_group = nil
-	    if @event.event_disposition_category_code.to_i > 0
-	      @disposition_group =
-	        DispositionMapper.for_event_disposition_category_code(@event.event_disposition_category_code)
-	    else
-  	    case @event.event_type.to_s
-  	    when "Pregnancy Screener"
-          @disposition_group = DispositionMapper::PREGNANCY_SCREENER_EVENT
-        when "Provider-Based Recruitment"
-          @disposition_group = DispositionMapper::PROVIDER_RECRUITMENT_EVENT
-        when "PBS Participant Eligibility Screening"
-          @disposition_group = DispositionMapper::PBS_ELIGIBILITY_EVENT
-        when "Informed Consent"
-          if @event.try(:participant).low_intensity?
-            @disposition_group = DispositionMapper::TELEPHONE_INTERVIEW_EVENT
-          else
-            @disposition_group = DispositionMapper::GENERAL_STUDY_VISIT_EVENT
-          end
+  ##
+  # Updates activities associated with this event
+  # in PSC as 'occurred'
+  def mark_activity_occurred(event, participant)
+    if participant && event.closed? && !event.provider_recruitment_event?
+      mark_event_activities_occurred(event, participant)
+    end
+  end
+  private :mark_activity_occurred
+
+  ##
+  # For the given event, find the scheduled activities that match this event
+  # and mark those activities as occurred.
+  # @param [Event]
+  # @param [Participant]
+  def mark_event_activities_occurred(event, participant)
+    psc.activities_for_event(event).each do |a|
+      if event.matches_activity(a)
+        psc.update_activity_state(a.activity_id, participant, Psc::ScheduledActivity::OCCURRED)
+      end
+    end
+  end
+  private :mark_event_activities_occurred
+
+  ##
+  # For all scheduled activities for the given participant,
+  # cancel those that are consent activities
+  # @param [Participant]
+  def cancel_scheduled_consents_for_consented_participant(participant)
+    psc.scheduled_activities(participant).each do |a|
+      if a.cancelable_consent_activity?
+        psc.update_activity_state(a.activity_id, participant, Psc::ScheduledActivity::CANCELED, Date.parse(a.ideal_date),
+          "Consent activity cancelled as the Participant [#{participant.p_id}] has already consented.")
+      end
+    end
+  end
+  private :cancel_scheduled_consents_for_consented_participant
+
+  ##
+  # Determine the disposition group to be used from the contact type or instrument taken
+  def set_disposition_group
+    @disposition_group = nil
+    if @event.event_disposition_category_code.to_i > 0
+      @disposition_group =
+        DispositionMapper.for_event_disposition_category_code(@event.event_disposition_category_code)
+    else
+	    case @event.event_type.to_s
+	    when "Pregnancy Screener"
+        @disposition_group = DispositionMapper::PREGNANCY_SCREENER_EVENT
+      when "Provider-Based Recruitment"
+        @disposition_group = DispositionMapper::PROVIDER_RECRUITMENT_EVENT
+      when "PBS Participant Eligibility Screening"
+        @disposition_group = DispositionMapper::PBS_ELIGIBILITY_EVENT
+      when "Informed Consent"
+        if @event.try(:participant).low_intensity?
+          @disposition_group = DispositionMapper::TELEPHONE_INTERVIEW_EVENT
         else
-          contact = @event.contact_links.last.contact unless @event.contact_links.blank?
-          if contact && contact.contact_type
-    	      @disposition_group = contact.contact_type.to_s
-    	    else
-    	      @disposition_group = DispositionMapper::GENERAL_STUDY_VISIT_EVENT
-          end
+          @disposition_group = DispositionMapper::GENERAL_STUDY_VISIT_EVENT
+        end
+      else
+        contact = @event.contact_links.last.contact unless @event.contact_links.blank?
+        if contact && contact.contact_type
+  	      @disposition_group = contact.contact_type.to_s
+  	    else
+  	      @disposition_group = DispositionMapper::GENERAL_STUDY_VISIT_EVENT
         end
       end
-	  end
+    end
+  end
+  private :set_disposition_group
 
 end

@@ -12,6 +12,7 @@ module Tracing
     # Address Two
     q = Factory(:question, :reference_identifier => "ADDRESS_2", :data_export_identifier => "TRACING_INT.ADDRESS_2", :survey_section_id => survey_section.id)
     a = Factory(:answer, :question_id => q.id, :text => "Address 2", :response_class => "string")
+
     # Unit
     q = Factory(:question, :reference_identifier => "UNIT", :data_export_identifier => "TRACING_INT.UNIT", :survey_section_id => survey_section.id)
     a = Factory(:answer, :question_id => q.id, :text => "Unit", :response_class => "string")

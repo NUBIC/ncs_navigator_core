@@ -79,4 +79,27 @@ class Response < ActiveRecord::Base
       self.string_value
     end
   end
+
+  # Ported from NUBIC/surveyor#450. Can be removed when we are using a version
+  # of Surveyor which includes that PR.
+  def date_value=(val)
+    self.datetime_value =
+      if val && time = Time.zone.parse(val)
+        time.to_datetime
+      else
+        nil
+      end
+  end
+
+  # Ported from NUBIC/surveyor#450. Can be removed when we are using a version
+  # of Surveyor which includes that PR.
+  def time_value=(val)
+    self.datetime_value =
+      if val && time = Time.zone.parse("#{Date.today.to_s} #{val}")
+        time.to_datetime
+      else
+        nil
+      end
+  end
+
 end

@@ -1,6 +1,6 @@
 source 'http://rubygems.org'
 
-gem 'rails', '3.1.12'
+gem 'rails', '3.2.13'
 
 gem 'active_model_serializers'
 gem 'bcdatabase', '~> 1.0'
@@ -31,20 +31,21 @@ group :assets do
   # assets:precompile under capistrano.
   # Related (but not exactly the same problem we saw):
   #  https://github.com/rails/sass-rails/commit/0b435834bc37e26c016f2d29885ca3bfe08ae827
-  gem 'sass-rails', "~> 3.1.0", "!= 3.1.6"
+  gem 'sass-rails', "~> 3.2.0", "!= 3.1.6"
   gem 'compass-rails'
-  gem 'coffee-rails', "~> 3.1.0"
+  gem 'coffee-rails', "~> 3.2.0"
   gem 'uglifier'
 end
 
-gem 'jquery-rails'
+# jQuery and jQuery UI should be synced with surveyor
+# jQuery 1.9.0
+gem 'jquery-rails', '2.2.0'
+# jQuery UI 1.10.0
+gem 'jquery-ui-rails', '4.0.2'
 
 gem 'ncs_mdes', '>= 0.11.0'
 # If you change surveyor, change the instruments project also
-# gem 'surveyor', '~> 1.2.0'
-gem 'surveyor',
-  :git => 'git://github.com/NUBIC/surveyor.git',
-  :branch => 'ncs'
+gem 'surveyor', '1.4.0'
 
 gem 'psc'
 gem 'ncs_navigator_configuration', '~> 0.4'

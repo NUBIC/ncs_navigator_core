@@ -24,5 +24,5 @@ Feature: Creating a dwelling unit
     Then I should see "Dwelling was successfully created."
     And I should be on the dwelling units page
     And I should see "1 State Str."
-    And I should see "Chicago, ILLINOIS"
+    And I should see "Chicago, Illinois"
     And I should see "60611"

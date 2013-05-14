@@ -626,4 +626,52 @@ describe Person do
     end
   end
 
+  describe ".relationship_to_person_via_participant" do
+    let(:mother) { Factory(:person) }
+    let(:child) { Factory(:person) }
+    let(:participant) { Factory(:participant) }
+    let(:participant2) { Factory(:participant) }
+    let(:stranger1) { Factory(:person) }
+    let(:stranger2) { Factory(:person) }
+
+    before(:each) do
+      Factory(:participant_person_link,
+              :participant => participant,
+              :person => mother,
+              :relationship_code => 2
+             )
+      participant.person = child
+      participant.save!
+
+      Factory(:participant_person_link,
+              :participant => participant2,
+              :person => stranger1,
+              :relationship_code => 1)
+      participant2.person = stranger1
+      participant2.save!
+    end
+
+    it "finds that child's mother is Biological Mother" do
+      rel = child.relationship_to_person_via_participant(mother)
+      rel.should == 'Biological Mother'
+    end
+
+    it "finds that child has no relation to stranger1" do
+      rel = child.relationship_to_person_via_participant(stranger1)
+      rel.should == 'None'
+    end
+
+    it "finds that child has no relation to stranger2 who is not a participant" do
+      rel = child.relationship_to_person_via_participant(stranger2)
+      rel.should == 'None'
+    end
+
+    it "returns 'N/A' if given nil" do
+      rel = child.relationship_to_person_via_participant(nil)
+      rel.should == 'N/A'
+    end
+
+  end
+
+
 end

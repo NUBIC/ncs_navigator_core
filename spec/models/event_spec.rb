@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # == Schema Information
-# Schema version: 20130226172617
+# Schema version: 20130415192041
 #
 # Table name: events
 #
@@ -21,6 +21,7 @@
 #  event_type_code                    :integer          not null
 #  event_type_other                   :string(255)
 #  id                                 :integer          not null, primary key
+#  imported_invalid                   :boolean          default(FALSE), not null
 #  lock_version                       :integer          default(0)
 #  participant_id                     :integer
 #  psc_ideal_date                     :date
@@ -978,6 +979,11 @@ describe Event do
         "Validation failed: Event disposition does not exist in the disposition category.")
     end
 
+    it "skips the validation for invalid event_disposition combination if imported_invalid is set to 'true'" do
+      invalid.imported_invalid = true
+      invalid.should be_valid
+    end
+
   end
 
   describe '#match_consents_by_date' do
@@ -1127,6 +1133,8 @@ describe Event do
       let(:rs) { Factory(:response_set, :survey => survey, :user_id => @person.id) }
 
       before do
+        @event.event_breakoff_code = -4
+        @event.save!
         @instrument.response_sets << rs
       end
 
@@ -1151,6 +1159,226 @@ describe Event do
 
         @event.set_suggested_event_breakoff(@contact_link)
         @event.event_breakoff.local_code.should == NcsCode::YES
+      end
+
+      it "does nothing if the event has been closed" do
+        previous = @event.event_breakoff_code
+        @event.event_end_date = Date.parse('2525-12-25')
+        @event.set_suggested_event_breakoff(@contact_link)
+        @event.event_breakoff_code.should == previous
+      end
+
+      it "does nothing if the event_breakoff_code has already been set" do
+        respond(rs) do |r|
+          r.answer 'foo', :value => 'abc'
+          r.answer 'bar', :value => 'def'
+        end
+
+        rs.save!
+
+        @event.event_breakoff_code = NcsCode::YES
+        @event.set_suggested_event_breakoff(@contact_link)
+        # see above that the rs should make this a NO
+        @event.event_breakoff_code.should == NcsCode::YES
+      end
+    end
+
+    describe "#stand_alone_event?" do
+      let(:event) { Factory(:event) }
+      let(:contact) { Factory(:contact) }
+      let!(:contact_link) { Factory(:contact_link, :event => event, :contact => contact) }
+
+      describe "when associated with another event in same contact" do
+
+        it "is false" do
+          other_event = Factory(:event)
+          other_contact_link = Factory(:contact_link, :event => other_event, :contact => contact)
+          event.stand_alone_event?(contact).should be_false
+        end
+
+      end
+
+      describe "when NOT associated with another event in same contact" do
+
+        it "is true" do
+          event.stand_alone_event?(contact).should be_true
+        end
+
+      end
+
+    end
+  end
+
+  describe "#window" do
+    let(:birth_date) { Date.parse('2013-02-10') }
+
+    describe "#window(:start,date,intensity)" do
+      it "returns the date the child turns the age of the start month" do
+        [
+          [Event.birth_code,             '2013-02-10'],
+          [Event.three_month_visit_code, '2013-04-10'],
+          [Event.six_month_visit_code,   '2013-07-10'],
+          [Event.nine_month_visit_code,  '2013-10-10'],
+          [Event.pv1_code,                        nil]
+        ].each do |event_type_code, expected|
+          event = Factory(:event, :event_type_code => event_type_code)
+          event.window(:start,birth_date,:high).should == (expected.nil? ? nil : Date.parse(expected))
+        end
+
+        [
+          [Event.birth_code,             '2013-02-10'],
+          [Event.three_month_visit_code, '2013-04-10'],
+          [Event.six_month_visit_code,            nil],
+          [Event.nine_month_visit_code,  '2013-09-10'],
+          [Event.pv1_code,                        nil]
+        ].each do |event_type_code, expected|
+          event = Factory(:event, :event_type_code => event_type_code)
+          event.window(:start,birth_date,:low).should == (expected.nil? ? nil : Date.parse(expected))
+        end
+
+      end
+    end
+
+    describe "#window(:end,date,intensity)" do
+      it "returns the last day of the end month of the PO designed visit windows
+          i.e. the day before the child turns the next month of age." do
+        [
+          [Event.birth_code,             '2013-02-20'],
+          [Event.three_month_visit_code, '2013-07-09'],
+          [Event.six_month_visit_code,   '2013-10-09'],
+          [Event.nine_month_visit_code,  '2014-01-09'],
+          [Event.pv1_code,                        nil]
+        ].each do |event_type_code, expected|
+          event = Factory(:event, :event_type_code => event_type_code)
+          event.window(:end,birth_date,:high).should == (expected.nil? ? nil : Date.parse(expected))
+        end
+        [
+          [Event.birth_code,             '2013-04-9'],
+          [Event.three_month_visit_code, '2013-09-09'],
+          [Event.six_month_visit_code,            nil],
+          [Event.nine_month_visit_code,  '2014-04-09'],
+          [Event.pv1_code,                        nil]
+        ].each do |event_type_code, expected|
+          event = Factory(:event, :event_type_code => event_type_code)
+          event.window(:end,birth_date,:low).should == (expected.nil? ? nil : Date.parse(expected))
+        end
+      end
+    end
+
+    context "with a participant" do
+      let(:grandmother) do
+        mother  = Factory(:participant_person_link,
+                          :person => Factory(:person, :person_dob => '1967-12-12'),
+                          :participant => Factory(:participant, :high_intensity => true))
+      end
+      let(:mother) do
+        mother  = Factory(:participant_person_link,
+                          :person => Factory(:person, :person_dob => '1988-01-01'),
+                          :participant => Factory(:participant, :high_intensity => true))
+      end
+
+      let(:child1) do
+        Factory(:participant_person_link,
+                :person => Factory(:person, :person_dob => '2013-02-10'),
+                :participant => Factory(:participant, :p_type_code => 6, :high_intensity => true))
+      end
+
+      let(:child2) do
+        Factory(:participant_person_link,
+                :person => Factory(:person, :person_dob => '2013-02-10'),
+                :participant => Factory(:participant, :p_type_code => 6, :high_intensity => true))
+      end
+
+      it "returns a date when the event is associated with the child" do
+        link = Factory(:participant_person_link,
+                       :participant => child1.participant,
+                       :person => mother.person,
+                       :relationship_code => 2) # mother
+        event = Factory(:event, :event_type_code => Event.birth_code, :participant => child1.participant)
+
+        event.window(:start).should == Date.parse('2013-02-10')
+        event.window(:end).should == Date.parse('2013-02-20')
+      end
+
+      it "returns a date when the event is associated with the mother and there is one child" do
+        Factory(:participant_person_link,
+                :participant => mother.participant,
+                :person => child1.person,
+                :relationship_code => 8) # child
+        event = Factory(:event, :event_type_code => Event.birth_code, :participant => mother.participant)
+
+        event.window(:start).should == Date.parse('2013-02-10')
+        event.window(:end).should == Date.parse('2013-02-20')
+      end
+
+      it "returns the correct date when there is a grandmother" do
+        Factory(:participant_person_link,
+                :participant => mother.participant,
+                :person => child1.person,
+                :relationship_code => 8)
+
+        Factory(:participant_person_link,
+                :participant => mother.participant,
+                :person => grandmother.person,
+                :relationship_code => 2)
+
+        Factory(:participant_person_link,
+                :participant => grandmother.participant,
+                :person => mother.person,
+                :relationship_code => 8)
+        event = Factory(:event, :event_type_code => Event.birth_code, :participant => mother.participant)
+        event2 = Factory(:event, :event_type_code => Event.birth_code, :participant => child1.participant)
+
+        event.window(:start).should == Date.parse('2013-02-10')
+        event.window(:end).should == Date.parse('2013-02-20')
+        event2.window(:start).should == Date.parse('2013-02-10')
+        event2.window(:end).should == Date.parse('2013-02-20')
+      end
+
+      it "returns a date when the event is associated with the mother and there are multiple children with the same birthday" do
+        Factory(:participant_person_link,
+                :participant => mother.participant,
+                :person => child1.person,
+                :relationship_code => 8) # child
+        Factory(:participant_person_link,
+                :participant => mother.participant,
+                :person => child2.person,
+                :relationship_code => 8) # child
+        event = Factory(:event, :event_type_code => Event.birth_code, :participant => mother.participant)
+
+        event.window(:start).should == Date.parse('2013-02-10')
+        event.window(:end).should == Date.parse('2013-02-20')
+      end
+
+      # this is a bug, when the child participant is associated with the event it can be removed
+      it "returns the correct date when the event is associated with the mother and there are multiple children with different birthdays"
+
+      it "returns nil when there is no child" do
+        event = Factory(:event, :event_type_code => Event.birth_code, :participant => mother.participant)
+
+        event.window(:start).should == nil
+        event.window(:end).should == nil
+      end
+
+      it "returns nil when there is a child but the event has no window" do
+        Factory(:participant_person_link,
+                :participant => mother.participant,
+                :person => child1.person,
+                :relationship_code => 8) # child
+        event = Factory(:event,
+                        :event_type_code => Event.twelve_month_mother_interview_saq_visit_code,
+                        :participant => mother.participant)
+
+        event.window(:start).should == nil
+        event.window(:end).should == nil
+      end
+      it "returns nil when there is no child" do
+        event = Factory(:event,
+                        :event_type_code => Event.pv1_code,
+                        :participant => mother.participant)
+
+        event.window(:start).should == nil
+        event.window(:end).should == nil
       end
     end
   end

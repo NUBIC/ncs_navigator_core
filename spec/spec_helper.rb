@@ -91,6 +91,8 @@ Spork.prefork do
     end
   end
 
+  LOOKUP_TABLES = %w(ncs_codes event_type_order)
+
   RSpec.configure do |config|
     config.treat_symbols_as_metadata_keys_with_true_values = true
 
@@ -123,7 +125,7 @@ Spork.prefork do
     end
 
     config.before(:each, :clean_with_truncation) do
-      DatabaseCleaner.strategy = [:truncation, { :except => %w(ncs_codes event_type_order) }]
+      DatabaseCleaner.strategy = [:truncation, { :except => LOOKUP_TABLES }]
     end
 
     config.after(:each, :clean_with_truncation) do
@@ -136,6 +138,10 @@ Spork.prefork do
 
     config.after(:each) do
       DatabaseCleaner.clean
+    end
+
+    config.after(:all, :shared_test_data) do
+      DatabaseCleaner.clean_with(:truncation, :except => LOOKUP_TABLES)
     end
 
     config.include ScheduledActivities

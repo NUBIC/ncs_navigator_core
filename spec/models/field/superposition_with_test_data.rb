@@ -34,7 +34,7 @@ end
 
 shared_context 'current data for superposition', :needs_superposition_current_data do
   let!(:contact) { Factory(:contact, :contact_id => contact_id) }
-  let!(:event) { Factory(:event, :event_id => event_id, :event_type_code => 13) }
+  let!(:event) { Factory(:event, :event_id => event_id, :event_type_code => 13, :event_start_date => '2000-01-01') }
   let!(:instrument) { Factory(:instrument, :instrument_id => instrument_id) }
   let!(:participant) { Factory(:participant, :p_id => participant_id) }
   let!(:person) { Factory(:person, :person_id => person_id) }

@@ -22,7 +22,6 @@ require 'spec_helper'
 require File.expand_path('../../shared/models/a_publicly_identified_record', __FILE__)
 
 describe ResponseSet do
-
   it { should belong_to(:person) }
   it { should belong_to(:instrument) }
   it { should belong_to(:participant) }
@@ -66,6 +65,48 @@ describe ResponseSet do
     describe 'without a participant' do
       it "returns null for the participant's public ID" do
         json['p_id'].should be_nil
+      end
+    end
+  end
+
+  describe '#to_mustache' do
+    let(:rs) { ResponseSet.new }
+
+    describe 'with a Survey' do
+      include NcsNavigator::Core::Surveyor::SurveyTaker
+
+      let(:survey) do
+        Surveyor::Parser.new.parse <<-END
+          survey "test" do
+            section "one" do
+              q_helper_c_fname "q_helper_c_fname", :display_type => :hidden, :custom_class => 'helper'
+              a 'value', :string
+
+              q_weight "How much does {{c_fname}} weigh?"
+              a :integer
+            end
+          end
+        END
+      end
+
+      before do
+        rs.survey = survey
+      end
+
+      it 'fills in Mustache helpers' do
+        respond(rs) do |r|
+          r.answer 'helper_c_fname', :value => 'First'
+        end
+
+        rs.save!
+
+        rs.to_mustache.render('{{c_fname}}').should == 'First'
+      end
+
+      describe 'and an unanswered helper question' do
+        it 'maintains the substitution template' do
+          rs.to_mustache.render('{{c_fname}}').should == '{{c_fname}}'
+        end
       end
     end
   end
@@ -310,4 +351,27 @@ describe ResponseSet do
 
   end
 
+  describe 'operational data extraction' do
+    # RMS20130415: I'm adding a spec for the existing behavior.
+    # Not an endorsement of using callbacks for complex logic.
+    it 'happens on save when complete' do
+      rs = FactoryGirl.build(:response_set, :completed_at => Date.new(2012, 1, 8))
+      OperationalDataExtractor::Base.should_receive(:process).with(rs)
+      rs.save!
+    end
+
+    it 'does not happen on save when not complete' do
+      rs = FactoryGirl.build(:response_set, :completed_at => nil)
+      OperationalDataExtractor::Base.should_not_receive(:process)
+      rs.save!
+    end
+
+    it 'does not happen when complete but in importer mode' do
+      ResponseSet.importer_mode do
+        rs = FactoryGirl.build(:response_set, :completed_at => Date.new(2012, 1, 8))
+        OperationalDataExtractor::Base.should_not_receive(:process).with(rs)
+        rs.save!
+      end
+    end
+  end
 end

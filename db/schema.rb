@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130403145616) do
+ActiveRecord::Schema.define(:version => 20130502152819) do
 
   create_table "addresses", :force => true do |t|
     t.integer  "psu_code",                                                :null => false
@@ -72,6 +72,8 @@ ActiveRecord::Schema.define(:version => 20130403145616) do
     t.string   "default_value"
     t.string   "api_id"
     t.string   "display_type"
+    t.string   "input_mask"
+    t.string   "input_mask_placeholder"
   end
 
   add_index "answers", ["api_id"], :name => "uq_answers_api_id", :unique => true
@@ -248,20 +250,20 @@ ActiveRecord::Schema.define(:version => 20130403145616) do
   add_index "event_type_order", ["event_type_code"], :name => "index_event_type_order_on_event_type_code", :unique => true
 
   create_table "events", :force => true do |t|
-    t.integer  "psu_code",                                                                                       :null => false
-    t.string   "event_id",                           :limit => 36,                                               :null => false
+    t.integer  "psu_code",                                                                                           :null => false
+    t.string   "event_id",                           :limit => 36,                                                   :null => false
     t.integer  "participant_id"
-    t.integer  "event_type_code",                                                                                :null => false
+    t.integer  "event_type_code",                                                                                    :null => false
     t.string   "event_type_other"
     t.integer  "event_repeat_key"
     t.integer  "event_disposition"
-    t.integer  "event_disposition_category_code",                                                                :null => false
+    t.integer  "event_disposition_category_code",                                                                    :null => false
     t.date     "event_start_date"
     t.string   "event_start_time"
     t.date     "event_end_date"
     t.string   "event_end_time"
-    t.integer  "event_breakoff_code",                                                                            :null => false
-    t.integer  "event_incentive_type_code",                                                                      :null => false
+    t.integer  "event_breakoff_code",                                                                                :null => false
+    t.integer  "event_incentive_type_code",                                                                          :null => false
     t.decimal  "event_incentive_cash",                             :precision => 12, :scale => 2
     t.string   "event_incentive_noncash"
     t.text     "event_comment"
@@ -271,6 +273,7 @@ ActiveRecord::Schema.define(:version => 20130403145616) do
     t.string   "scheduled_study_segment_identifier"
     t.integer  "lock_version",                                                                    :default => 0
     t.date     "psc_ideal_date"
+    t.boolean  "imported_invalid",                                                                :default => false, :null => false
   end
 
   create_table "fieldworks", :force => true do |t|
@@ -328,6 +331,26 @@ ActiveRecord::Schema.define(:version => 20130403145616) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean  "being_processed",                            :default => false
+  end
+
+  create_table "ineligible_batches", :force => true do |t|
+    t.integer  "age_eligible_code"
+    t.string   "batch_id",                     :limit => 36, :null => false
+    t.integer  "county_of_residence_code"
+    t.date     "created_at"
+    t.string   "date_first_visit",                           :null => false
+    t.date     "date_first_visit_date",                      :null => false
+    t.integer  "first_prenatal_visit_code"
+    t.integer  "ineligible_by_code"
+    t.integer  "people_count",                               :null => false
+    t.integer  "pre_screening_status_code",                  :null => false
+    t.integer  "pregnancy_eligible_code"
+    t.integer  "provider_id",                                :null => false
+    t.integer  "provider_intro_outcome_code",                :null => false
+    t.string   "provider_intro_outcome_other"
+    t.integer  "psu_code",                                   :null => false
+    t.integer  "sampled_person_code",                        :null => false
+    t.datetime "updated_at"
   end
 
   create_table "institution_person_links", :force => true do |t|
@@ -652,6 +675,7 @@ ActiveRecord::Schema.define(:version => 20130403145616) do
     t.datetime "updated_at"
     t.integer  "response_set_id"
     t.integer  "primary_caregiver_flag_code",               :default => -4, :null => false
+    t.string   "multi_birth_id",              :limit => 36
   end
 
   create_table "participant_staff_relationships", :force => true do |t|
@@ -729,7 +753,7 @@ ActiveRecord::Schema.define(:version => 20130403145616) do
     t.string   "low_intensity_state"
     t.string   "high_intensity_state"
     t.text     "enrollment_status_comment"
-    t.boolean  "being_followed",                          :default => false
+    t.boolean  "being_followed",                          :default => true
     t.integer  "lock_version",                            :default => 0
   end
 
@@ -1319,6 +1343,14 @@ ActiveRecord::Schema.define(:version => 20130403145616) do
   end
 
   add_index "survey_sections", ["display_order"], :name => "idx_survey_sections_display_order"
+
+  create_table "survey_translations", :force => true do |t|
+    t.integer  "survey_id"
+    t.string   "locale"
+    t.text     "translation"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "surveys", :force => true do |t|
     t.string   "title"

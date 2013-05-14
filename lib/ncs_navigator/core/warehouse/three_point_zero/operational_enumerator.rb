@@ -93,7 +93,7 @@ module NcsNavigator::Core::Warehouse::ThreePointZero
         :relationship_code => :relation,
         :relationship_other => :relation_oth,
       },
-      :ignored_columns => %w(response_set_id primary_caregiver_flag_code)
+      :ignored_columns => %w(response_set_id primary_caregiver_flag_code multi_birth_id)
     )
 
     produce_one_for_one(:ppg_details, :PpgDetails,
@@ -131,8 +131,9 @@ module NcsNavigator::Core::Warehouse::ThreePointZero
             END) normalized_event_disposition}
       ],
       :where => %q{
-        t.event_disposition IS NOT NULL AND
-        EXISTS(SELECT 'x' FROM contact_links cl WHERE cl.event_id=t.id)
+        t.event_disposition IS NOT NULL OR
+        EXISTS(SELECT 'x' FROM contact_links cl WHERE cl.event_id=t.id) OR
+        EXISTS(SELECT 'x' FROM instruments ins WHERE ins.event_id=t.id)
       },
       :column_map => {
         :normalized_event_disposition => :event_disp,
@@ -141,14 +142,11 @@ module NcsNavigator::Core::Warehouse::ThreePointZero
         :event_incentive_noncash => :event_incent_noncash
       },
       :ignored_columns => %w(event_disposition scheduled_study_segment_identifier
-        psc_ideal_date lock_version)
+        psc_ideal_date lock_version imported_invalid)
     )
 
     produce_one_for_one(:instruments, :Instrument,
       :public_ids => %w(events),
-      :where => %q{
-        EXISTS(SELECT 'x' FROM events e WHERE e.id=t.event_id AND e.event_disposition IS NOT NULL)
-      },
       :column_map => {
         :instrument_start_date => :ins_date_start,
         :instrument_start_time => :ins_start_time,
@@ -220,10 +218,7 @@ module NcsNavigator::Core::Warehouse::ThreePointZero
         :events,
         :contacts,
         :instruments
-      ],
-      :where => %q{
-        EXISTS(SELECT 'x' FROM events e WHERE e.id=t.event_id AND e.event_disposition IS NOT NULL)
-      }
+      ]
     )
 
     produce_one_for_one(:addresses, :Address,

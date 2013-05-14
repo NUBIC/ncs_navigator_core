@@ -94,7 +94,7 @@ module ApplicationHelper
 
   def sample_type(value)
     value = sample_extenstion(value).downcase
-    if value.include? "ur"
+    if ( (value.include? "ur") || (value.include? "bu"))
       "URINE"
     elsif ( (value.include? "rb") || (value.include? "ad") || (value.include? "lv") || (value.include? "px"))
       "WHOLE BLOOD"
@@ -108,6 +108,8 @@ module ApplicationHelper
       "WATER"
     elsif value.include? "cb"
       "CORD BLOOD"
+    elsif value.include? "sc"
+      "SALIVA"
     else
       "TYPE UNKNOWN"
     end
@@ -123,10 +125,6 @@ module ApplicationHelper
     dash.blank? ? "UNKNOWN" : value[dash + 1, value.length]
   end
 
-  def continuable?(event)
-    event.continuable?
-  end
-
   ## Displaying the Staff name that is associated with the Participant(Initiated the Contact)
   #  Used in the Participants,Contact_Links excel reports to display the Originating Staff and Current Staff.
   def staff_name(staff_id)
@@ -139,8 +137,11 @@ module ApplicationHelper
   end
 
   def build_staff_list
-    users = Aker.authority.find_users
-    Hash[users.map{|key| [key.identifiers[:staff_id], key.full_name]}]
+    # Selecting out the Core authority is a workaround for NUBIC/ncs_navigator_authority#7
+    # If an authority of that type is not present, it's safe to use Aker.authority.
+    authority =
+      Aker.configuration.authorities.find { |auth| NcsNavigator::Authorization::Core::Authority === auth } || Aker.authority
+    Hash[authority.find_users.map{|key| [key.identifiers[:staff_id], key.full_name]}]
   end
 
 end

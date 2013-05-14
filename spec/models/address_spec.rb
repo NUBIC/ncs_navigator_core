@@ -52,20 +52,6 @@ describe Address do
     addr.should_not be_nil
   end
 
-  it "should describe itself" do
-    addr.to_s.should == "#{addr.state}"
-
-    addr.address_one = "1 Main"
-    addr.city = "Detroit"
-    addr.to_s.should == "1 Main Detroit, #{addr.state}"
-
-    addr.zip = "48220"
-    addr.to_s.should == "1 Main Detroit, #{addr.state} 48220"
-
-    addr.zip4 = "1111"
-    addr.to_s.should == "1 Main Detroit, #{addr.state} 48220-1111"
-  end
-
   it { should belong_to(:person) }
   it { should belong_to(:provider) }
   it { should belong_to(:institute) }
@@ -241,6 +227,22 @@ describe Address do
 
     end
 
+  end
+
+  describe "to_s" do
+    before do
+      @address = Factory(:address,
+                         :address_rank_code => 1,
+                         :address_one => "123 73rd Ave.",
+                         :address_two => "Apt. 1C",
+                         :city => "Rockville",
+                         :state_code => 30,
+                         :zip => "20850")
+    end
+
+    it "prints out correctly" do
+      @address.to_s.should == "123 73rd Ave. Apt. 1C Rockville, New Hampshire 20850"
+    end
   end
 
 end

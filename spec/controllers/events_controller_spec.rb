@@ -141,6 +141,7 @@ describe EventsController do
             {'event_end_date' => '2001-01-01', 'event_end_time' => '12:00', 'event_repeat_key' => '99'}
           updated_event = Event.find(@event.id)
           updated_event.participant.should be_nil
+          response.should redirect_to(events_path)
         end
       end
 

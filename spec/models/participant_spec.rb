@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 # == Schema Information
+# Schema version: 20130408184301
 #
 # Table name: participants
 #
-#  being_followed            :boolean          default(FALSE)
+#  being_followed            :boolean          default(TRUE)
 #  being_processed           :boolean          default(FALSE)
 #  created_at                :datetime
 #  enroll_date               :date
@@ -463,26 +464,6 @@ describe Participant do
 
     end
 
-    describe "#last_contact" do
-
-      before(:each) do
-        person = Factory(:person)
-        @participant = Factory(:participant, :high_intensity => true)
-        @participant.person = person
-      end
-
-      it "returns nil if no previous contacts" do
-        @participant.last_contact.should be_nil
-      end
-
-      it "returns the most recent contact" do
-        event = Factory(:event, :participant => @participant)
-        contact = Factory(:contact, :contact_date_date => 1.day.ago)
-        contact_link = Factory(:contact_link, :person => @participant.person, :event => event, :contact => contact)
-
-        @participant.last_contact.should == contact
-      end
-    end
   end
 
   describe "#upcoming_births" do
@@ -756,20 +737,11 @@ describe Participant do
           @participant.next_scheduled_event.event.should == PatientStudyCalendar::CHILD_CHILD
         end
 
+        # More tests below
         context "next event date" do
           it "should be date of the participant last contact date" do
             Factory(:contact_link, :person => @participant.person, :event => @event, :contact => Factory(:contact, :contact_date => '2012-01-02'))
             @participant.next_scheduled_event.date.should == Date.new(2012, 01, 02)
-          end
-
-          it 'fails if no contacts' do
-            Participant.any_instance.stub(:last_contact).and_return(nil)
-            expect { @participant.next_scheduled_event.date }.to raise_error(/Could not decide the next scheduled event date without the contact date/)
-          end
-
-          it 'fails if last_contact without contact_date' do
-            Factory(:contact_link, :person => @participant.person, :event => @event, :contact => Factory(:contact))
-            expect { @participant.next_scheduled_event.date }.to raise_error(/Could not decide the next scheduled event date without the contact date/)
           end
 
           context "with due_date" do
@@ -783,6 +755,103 @@ describe Participant do
               @participant.next_scheduled_event.date.should == Date.new(2012, 10, 02)
             end
           end
+        end
+      end
+    end
+
+    describe 'the next event date' do
+      let(:participant) { Factory(:participant) }
+      let(:event1) {
+        Factory(:event, :participant => participant,
+          :event_start_date => Date.new(2011, 3, 1), :event_end_date => Date.new(2011, 3, 7))
+      }
+      let(:event2) {
+        Factory(:event, :participant => participant,
+          :event_start_date => Date.new(2011, 2, 15), :event_end_date => Date.new(2011, 3, 9))
+      }
+
+      let(:contactA) { Factory(:contact, :contact_date => '2011-02-01') }
+      let(:contactB) { Factory(:contact, :contact_date => '2011-02-04') }
+
+      let!(:linkA1) { Factory(:contact_link, :contact => contactA, :event => event1) }
+      let!(:linkA2) { Factory(:contact_link, :contact => contactA, :event => event2) }
+      let!(:linkB2) { Factory(:contact_link, :contact => contactB, :event => event2) }
+
+      let(:actual) { participant.next_scheduled_event.date }
+
+      describe 'when all contacts have dates' do
+        it 'uses the most recent date' do
+          actual.should == Date.new(2011, 2, 4)
+        end
+      end
+
+      describe 'when a contact does not have a date' do
+        before do
+          contactB.contact_date = '9777-97-97'
+          contactB.contact_date_date = nil
+          contactB.save!
+        end
+
+        it 'uses the most recent non-blank contact date' do
+          actual.should == Date.new(2011, 2, 1)
+        end
+      end
+
+      describe 'when no contacts have dates' do
+        before do
+          contactA.contact_date = '9444-94-94'
+          contactA.contact_date_date = nil
+          contactA.save!
+          contactB.contact_date = '9777-97-97'
+          contactB.contact_date_date = nil
+          contactB.save!
+        end
+
+        it 'uses the most recent event end date' do
+          actual.should == event2.event_end_date
+        end
+      end
+
+      describe 'when no contacts have dates and no events have end dates' do
+        before do
+          contactA.contact_date = '9444-94-94'
+          contactA.contact_date_date = nil
+          contactA.save!
+          contactB.contact_date = '9777-97-97'
+          contactB.contact_date_date = nil
+          contactB.save!
+
+          event1.event_end_date = nil
+          event1.save!
+          event2.event_end_date = nil
+          event2.save!
+        end
+
+        it 'uses the most recent event start date' do
+          actual.should == event1.event_start_date
+        end
+      end
+
+      describe 'when no contacts have dates and no events have any dates' do
+        before do
+          contactA.contact_date = '9444-94-94'
+          contactA.contact_date_date = nil
+          contactA.save!
+          contactB.contact_date = '9777-97-97'
+          contactB.contact_date_date = nil
+          contactB.save!
+
+          event1.event_start_date = nil
+          event1.event_end_date = nil
+          event1.save!
+          event2.event_start_date = nil
+          event2.event_end_date = nil
+          event2.save!
+        end
+
+        it 'fails' do
+          expect { actual }.
+            to raise_error('Cannot decide the next scheduled event date without some contact or event date')
         end
       end
     end
@@ -2143,48 +2212,50 @@ describe Participant do
     end
   end
 
-  describe '#set_state_for_event_type' do
-    describe 'for informed consent' do
+  describe '#set_state_for_imported_event' do
+    describe 'for consent-based hi-lo conversion' do
       let(:participant) { Factory(:participant) }
 
       let(:event) {
-        Factory(:event, :event_type_code => 10, :event_start_date => Date.new(2010, 4, 1), :participant => participant)
+        Factory(:event, :event_type_code => 13, :participant => participant,
+          :event_start_date => event_start_date, :event_end_date => event_end_date)
       }
 
-      let(:out_of_event_date) { event.event_start_date - 7 }
-      let(:in_event_date) { event.event_start_date + 7 }
+      let(:event_start_date) { Date.new(2010, 4, 8) }
+      let(:event_end_date) { Date.new(2010, 4, 15) }
 
       let(:consent_type) { -4 }
       let(:consent_form_type) { -4 }
-      let(:consent_date) { in_event_date }
+      let(:consent_date) { event_end_date }
+      let(:consent_given_code) { 1 }
 
       let(:a_consent) {
         Factory(:participant_consent, :participant => participant,
-          :consent_given_code => 1, :consent_type_code => consent_type, :consent_form_type_code => consent_form_type,
-          :consent_date => consent_date)
+          :consent_given_code => consent_given_code, :consent_date => consent_date,
+          :consent_type_code => consent_type, :consent_form_type_code => consent_form_type)
       }
 
       before do
         participant.participant_consents = [a_consent]
       end
 
-      shared_context 'set_state_for_event_type leaving hi' do
+      shared_context 'set_state_for_imported_event leaving hi' do
         it 'leaves the participant on hi' do
-          participant.set_state_for_event_type(event)
+          participant.set_state_for_imported_event(event)
           participant.should be_high_intensity
         end
       end
 
-      shared_context 'set_state_for_event_type leaving lo' do
+      shared_context 'set_state_for_imported_event leaving lo' do
         it 'leaves the participant on lo' do
-          participant.set_state_for_event_type(event)
+          participant.set_state_for_imported_event(event)
           participant.should_not be_high_intensity
         end
       end
 
-      shared_context 'set_state_for_event_type converting hi' do
+      shared_context 'set_state_for_imported_event converting hi' do
         it 'converts the participant to hi' do
-          participant.set_state_for_event_type(event)
+          participant.set_state_for_imported_event(event)
           participant.should be_high_intensity
         end
       end
@@ -2194,36 +2265,41 @@ describe Participant do
           participant.high_intensity = true
         end
 
-        describe 'and the event has no consents' do
-          let(:consent_date) { out_of_event_date }
-
-          include_context 'set_state_for_event_type leaving hi'
+        describe 'and the participant has no high consent' do
+          include_context 'set_state_for_imported_event leaving hi'
         end
 
-        describe 'and the event has an old lo consent (7)' do
-          let(:consent_type) { 7 }
-
-          include_examples 'set_state_for_event_type leaving hi'
-        end
-
-        describe 'and the event has a new lo consent (7)' do
-          let(:consent_form_type) { 7 }
-
-          include_context 'set_state_for_event_type leaving hi'
-        end
-
-        describe 'and the event has an old hi consent (1)' do
-          let(:consent_type) { 1 }
-
-          include_context 'set_state_for_event_type leaving hi'
-        end
-
-        [1, 2, 6].each do |form_type|
-          describe "and the event has a new hi consent (#{form_type})" do
-            let(:consent_form_type) { form_type }
-
-            include_context 'set_state_for_event_type leaving hi'
+        shared_context 'set_state_for_imported_event stay hi for all consent types' do
+          describe '(old hi consent)' do
+            let(:consent_type) { 1 }
+            include_context 'set_state_for_imported_event leaving hi'
           end
+
+          [1, 2, 6].each do |form_type|
+            describe "(new hi consent #{form_type})" do
+              let(:consent_form_type) { form_type }
+
+              include_context 'set_state_for_imported_event leaving hi'
+            end
+          end
+        end
+
+        describe 'and the participant has hi consent in the future' do
+          let(:consent_date) { event_end_date + 4 }
+
+          include_context 'set_state_for_imported_event stay hi for all consent types'
+        end
+
+        describe 'and the participant has hi consent on the same date as the event' do
+          let(:consent_date) { event_end_date }
+
+          include_context 'set_state_for_imported_event stay hi for all consent types'
+        end
+
+        describe 'and the participant has hi consent in the past' do
+          let(:consent_date) { event_start_date - 4 }
+
+          include_context 'set_state_for_imported_event stay hi for all consent types'
         end
       end
 
@@ -2232,61 +2308,109 @@ describe Participant do
           participant.high_intensity = false
         end
 
-        describe 'and the event has no consents' do
-          let(:consent_date) { out_of_event_date }
+        shared_context 'set_state_for_imported_event convert to hi for all hi consent types' do
+          describe '(old hi consent)' do
+            let(:consent_type) { 1 }
+            include_context 'set_state_for_imported_event converting hi'
+          end
 
-          include_context 'set_state_for_event_type leaving lo'
-        end
+          [1, 2, 6].each do |form_type|
+            describe "(new hi consent #{form_type})" do
+              let(:consent_form_type) { form_type }
 
-        describe 'and the event has an old lo consent (7)' do
-          let(:consent_type) { 7 }
-
-          include_context 'set_state_for_event_type leaving lo'
-        end
-
-        describe 'and the event has a new lo consent (7)' do
-          let(:consent_form_type) { 7 }
-
-          include_context 'set_state_for_event_type leaving lo'
-        end
-
-        describe 'and the event has an old hi consent (1)' do
-          let(:consent_type) { 1 }
-
-          include_context 'set_state_for_event_type converting hi'
-        end
-
-        [1, 2, 6].each do |form_type|
-          describe "and the event has a new hi consent (#{form_type})" do
-            let(:consent_form_type) { form_type }
-
-            include_context 'set_state_for_event_type converting hi'
+              include_context 'set_state_for_imported_event converting hi'
+            end
           end
         end
 
-        describe 'when the event has both a hi and a lo consent' do
-          let(:another_consent) {
-            Factory(:participant_consent, :participant => participant,
-              :consent_given_code => 1, :consent_type_code => 1, :consent_form_type_code => -7,
-              :consent_date => in_event_date)
-          }
-
-          let(:consent_type) { 7 }
-
-          before do
-            participant.participant_consents << another_consent
+        shared_context 'set_state_for_imported_event leave lo for all hi consent types' do
+          describe '(old hi consent)' do
+            let(:consent_type) { 1 }
+            include_context 'set_state_for_imported_event leaving lo'
           end
 
-          include_context 'set_state_for_event_type converting hi'
+          [1, 2, 6].each do |form_type|
+            describe "(new hi consent #{form_type})" do
+              let(:consent_form_type) { form_type }
+
+              include_context 'set_state_for_imported_event leaving lo'
+            end
+          end
+        end
+
+        describe 'and the participant has hi consent in the future' do
+          let(:consent_date) { event_end_date + 4 }
+
+          include_context 'set_state_for_imported_event leave lo for all hi consent types'
+        end
+
+        describe 'and the participant has hi consent on the same date as the event' do
+          let(:consent_date) { event_end_date }
+
+          include_context 'set_state_for_imported_event convert to hi for all hi consent types'
+        end
+
+        describe 'and the participant has hi consent in the past' do
+          let(:consent_date) { event_start_date - 4 }
+
+          include_context 'set_state_for_imported_event convert to hi for all hi consent types'
         end
 
         describe 'when consent is not given' do
-          before do
-            a_consent.consent_form_type_code = 1
-            a_consent.consent_given_code = 2
+          let(:consent_given_code) { 2 }
+
+          describe 'and the participant has hi consent in the future' do
+            let(:consent_date) { event_end_date + 4 }
+
+            include_context 'set_state_for_imported_event leave lo for all hi consent types'
           end
 
-          include_context 'set_state_for_event_type leaving lo'
+          describe 'and the participant has hi consent on the same date as the event' do
+            let(:consent_date) { event_end_date }
+
+            include_context 'set_state_for_imported_event leave lo for all hi consent types'
+          end
+
+          describe 'and the participant has hi consent in the past' do
+            let(:consent_date) { event_start_date - 4 }
+
+            include_context 'set_state_for_imported_event leave lo for all hi consent types'
+          end
+        end
+
+        describe 'when the event has no end date' do
+          let(:event_end_date) { nil }
+
+          describe 'and the participant has hi consent in the future from the start date' do
+            let(:consent_date) { event_start_date + 4 }
+
+            include_context 'set_state_for_imported_event leave lo for all hi consent types'
+          end
+
+          describe 'and the participant has hi consent on the start date of the event' do
+            let(:consent_date) { event_start_date }
+
+            include_context 'set_state_for_imported_event convert to hi for all hi consent types'
+          end
+
+          describe 'and the participant has hi consent in the past' do
+            let(:consent_date) { event_start_date - 4 }
+
+            include_context 'set_state_for_imported_event convert to hi for all hi consent types'
+          end
+        end
+
+        describe 'when the event has no dates at all' do
+          let(:event_start_date) { nil }
+          let(:event_end_date) { nil }
+
+          include_context 'set_state_for_imported_event leave lo for all hi consent types'
+        end
+
+        describe 'when a hi consent has no date' do
+          let(:consent_date) { nil }
+
+          include_context 'set_state_for_imported_event leave lo for all hi consent types'
         end
       end
     end
@@ -2610,5 +2734,39 @@ describe Participant do
         end
       end
     end
+  end
+
+  describe "#date_available_for_informed_consent_event?" do
+    let(:participant) { Factory(:participant) }
+    let(:dt) { Date.new(2525,12,25) }
+
+    context "without any events" do
+      it "returns true" do
+        participant.date_available_for_informed_consent_event?(dt).should be_true
+      end
+    end
+
+    context "with an event" do
+      let!(:event) do
+        Factory(:event, :event_type_code => Event.informed_consent_code,
+                :psc_ideal_date => event_date, :participant => participant)
+      end
+
+      context "on the given date" do
+        let(:event_date) { dt }
+        it "returns false" do
+          participant.date_available_for_informed_consent_event?(dt).should be_false
+        end
+
+      end
+
+      context "without an Informed Consent event on that date" do
+        let(:event_date) { Date.new(2020,1,1) }
+        it "returns true" do
+          participant.date_available_for_informed_consent_event?(dt).should be_true
+        end
+      end
+    end
+
   end
 end

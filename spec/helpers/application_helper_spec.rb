@@ -46,22 +46,6 @@ describe ApplicationHelper do
     end
   end
 
-  context "limiting continue" do
-    describe ".continuable?" do
-
-      let(:continuable_event) { Factory(:event, :event_type_code => 10) } # Informed Consent
-      let(:noncontinuable_event) { Factory(:event, :event_type_code => 23) } # 3 Month
-
-      it "returns true if event type is a continuable event" do
-        helper.continuable?(continuable_event).should be_true
-      end
-
-      it "returns false if event type is NOT a continuable event" do
-        helper.continuable?(noncontinuable_event).should be_false
-      end
-    end
-  end
-
   describe "staff_name" do
 
     before do

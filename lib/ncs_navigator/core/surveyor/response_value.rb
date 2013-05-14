@@ -27,7 +27,6 @@ module NcsNavigator::Core::Surveyor
 
     def self.included(model)
       model.before_save :write_value_to_record
-      model.define_attribute_method :value
     end
 
     ##
@@ -70,18 +69,19 @@ module NcsNavigator::Core::Surveyor
     #
     # Some response classes don't have values.  (Answer, for example.)
     #
-    # In non-production environments, attempting to set a value for such a
-    # response will cause a ResponseValue::CannotSetValue exception to be
-    # raised.
+    # In non-production environments, attempting to set a concrete value for
+    # such a response will cause a ResponseValue::CannotSetValue exception to be
+    # raised. (Setting to nil does nothing as that is conceptually the value for
+    # a non-value response class.)
     #
     # In production, however, no exception is raised and the attempted setting
     # is logged at WARN level.  Rationale: it's possible that this may result
     # from malicious intent, and the error is entirely recoverable (i.e. by not
     # doing anything).
     def value=(v)
-      value_will_change! unless @value == v
-
       @value = v
+      @value_set = true
+      @value
     end
 
     ##
@@ -97,11 +97,17 @@ module NcsNavigator::Core::Surveyor
     # 3. If the response's value is not dirty, then this returns the persisted
     #    value of the response's corresponding value column.
     def value
-      if value_changed?
+      if @value_set
         @value
       else
         value_from_response
       end
+    end
+
+    def reload(*)
+      remove_instance_variable(:@value) if instance_variable_defined?(:@value)
+      remove_instance_variable(:@value_set) if instance_variable_defined?(:@value_set)
+      super
     end
 
     private
@@ -113,7 +119,7 @@ module NcsNavigator::Core::Surveyor
     end
 
     def write_value_to_record
-      return unless value_changed?
+      return unless @value_set
 
       # before_save callbacks run after before_validation callbacks, and
       # Surveyor installs a presence check on answer_id, so we know that we
@@ -125,8 +131,9 @@ module NcsNavigator::Core::Surveyor
       if field
         reset_values
         send("#{field}=", value)
-      else
-        msg = "A value was set for response #{id}, but the response has non-value response class #{k.inspect}.  The value will not be set."
+      elsif !value.nil?
+        response_name = id ? "response #{id}" : "a response to question #{question.try(:reference_identifier) || question_id.inspect}"
+        msg = "A value was set for #{response_name}, but the response has non-value response class #{k.inspect}.  The value will not be set."
 
         if Rails.env.production?
           Rails.logger.warn msg

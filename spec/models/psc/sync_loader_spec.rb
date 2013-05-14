@@ -128,6 +128,29 @@ module Psc
 
         cached_event.should be_empty
       end
+
+      describe 'when there is no start date, but there is an end date' do
+        before do
+          e.event_start_date = nil
+        end
+
+        it 'uses the end date as the start date' do
+          cached_event['start_date'].should == '2000-02-01'
+        end
+
+        it 'uses the end date in the sort key' do
+          cached_event['sort_key'].should == '2000-02-01:013'
+        end
+      end
+
+      describe 'when there is no start date or end date' do
+        let(:bad_e) { Event.new(:event_id => 'e_foo', :event_type_code => 15) }
+
+        it 'cannot be cached' do
+          expect { loader.cache_event(bad_e, p) }.
+            to raise_error("Event \"e_foo\" has no start or end dates. It cannot be sync'd to PSC.")
+        end
+      end
     end
 
     describe '#cache_contact_link' do

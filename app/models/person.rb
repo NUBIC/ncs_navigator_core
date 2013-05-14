@@ -123,6 +123,11 @@ class Person < ActiveRecord::Base
     self.age = self.computed_age if self.age.blank?
   end
 
+  def self.associated_with_provider_by_provider_id(provider_id)
+    joins(:person_provider_links).
+      where("person_provider_links.provider_id = ?", provider_id)
+  end
+
   ##
   # How to format the date_move attribute
   # cf. MdesRecord
@@ -151,13 +156,21 @@ class Person < ActiveRecord::Base
 
   ##
   # Override to_s to return the full name of the Person
-  # aliased as :name and :full_name
   # @return [String]
   def to_s
+    full_name
+  end
+
+  ##
+  # Return the full name (first_name + last_name) of the Person
+  # aliased also as :name
+  # @see #first_name
+  # @see #last_name
+  # @return [String]
+  def full_name
     "#{first_name} #{last_name}".strip
   end
-  alias :name :to_s
-  alias :full_name :to_s
+  alias :name :full_name
 
   ##
   # Helper method to set first and last name from full name
@@ -467,6 +480,26 @@ class Person < ActiveRecord::Base
     false
   end
   alias :is_first_child? :first_child?
+
+  ##
+  # Determine relationship to another person and return
+  # the display_text of that NcsCode value for the
+  # relationship in the ParticipantPersonLink record.
+  # Returns 'N/A' if person param nil
+  # Returns 'None' if relationship cannot be found
+  # @see ParticipantPersonLink#relationship
+  # @see NcsCode#display_text
+  # @param [Person]
+  # @return [String]
+  def relationship_to_person_via_participant(person)
+    return 'N/A' if person.nil?
+
+    rel = person.participant_person_links.find { |ppl|
+      ppl.participant == participant
+    }.try(:relationship)
+
+    rel.try(:display_text) || 'None'
+  end
 
   ##
   # From INFORMATION_SOURCE_CL4, the code for Person/Self

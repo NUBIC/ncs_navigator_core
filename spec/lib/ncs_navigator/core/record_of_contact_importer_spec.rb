@@ -576,8 +576,22 @@ module NcsNavigator::Core
           person = importer.get_person_record(@row)
           person.class.should == Person
         end
-
       end
     end
+
+    context "importing contact attributes" do
+      before do
+        make_a_csv(create_csv_row_text(:contact_distance => '34.34'))
+
+        importer.import_data
+      end
+
+      it "extracted CSV value is successfully converted to decimal type" do
+        Contact.first.contact_distance.class.should == BigDecimal
+        Contact.first.contact_distance.to_s('F').should == "34.34"
+      end
+    end
+
   end
+
 end

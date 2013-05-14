@@ -12,8 +12,9 @@ module ResponseSetPrepopulation
       it_should_behave_like 'a survey title acceptor', '_Tracing_'
     end
 
-    def init_instrument_and_response_set(event = nil)
-      @survey = create_tracing_survey_with_prepopulated_fields
+    def init_instrument_and_response_set(event = nil,
+                to_call = :create_tracing_survey_with_prepopulated_fields)
+      @survey = method(to_call).call
       # method can be invoked multiple times and survey access code must be unique
       @survey.access_code = SecureRandom.base64
       @survey.save!
@@ -81,38 +82,105 @@ module ResponseSetPrepopulation
         end
       end
 
+      describe "prepopulate address information" do
+        before(:each) do
+          init_instrument_and_response_set(nil,
+               :create_tracing_module_survey_with_address_operational_data)
+          take_survey(@survey, @response_set) do |r|
+            r.a "TRACING_INT.ADDRESS_1", 'Address One'
+            r.a "TRACING_INT.ADDRESS_2", '123'
+            r.a "TRACING_INT.UNIT", '321'
+            r.a "TRACING_INT.CITY", 'Chicago'
+            r.a "TRACING_INT.STATE", { :reference_identifier => '14' }
+            r.a "TRACING_INT.ZIP", '60606'
+            r.a "TRACING_INT.ZIP4", '4444'
+          end
+          @response_set.save!
+          OperationalDataExtractor::Base.process(@response_set)
+        end
+
+        it "should prepopulate ADDRESS_1 if it exists" do
+          init_instrument_and_response_set(nil,
+               :create_tracing_module_survey_with_address_operational_data)
+          TracingModule.new(@response_set).run
+          assert_response_value(@response_set, 'ADDRESS_1', 'Address One')
+        end
+
+        it "should show prepopulate ADDRESS_2 if it exists" do
+          init_instrument_and_response_set(nil,
+               :create_tracing_module_survey_with_address_operational_data)
+          TracingModule.new(@response_set).run
+          assert_response_value(@response_set, 'ADDRESS_2', '123')
+        end
+
+        it "should show prepopulate UNIT if it exists" do
+          init_instrument_and_response_set(nil,
+               :create_tracing_module_survey_with_address_operational_data)
+          TracingModule.new(@response_set).run
+          assert_response_value(@response_set, 'UNIT', '321')
+        end
+
+        it "should show prepopulate CITY if it exists" do
+          init_instrument_and_response_set(nil,
+               :create_tracing_module_survey_with_address_operational_data)
+          TracingModule.new(@response_set).run
+          assert_response_value(@response_set, 'CITY', 'Chicago')
+        end
+
+        it "should show prepopulate STATE if it exists" do
+          init_instrument_and_response_set(nil,
+               :create_tracing_module_survey_with_address_operational_data)
+          TracingModule.new(@response_set).run
+          assert_response_value(@response_set, 'STATE', 'IL')
+        end
+
+        it "should show prepopulate ZIP if it exists" do
+          init_instrument_and_response_set(nil,
+               :create_tracing_module_survey_with_address_operational_data)
+          TracingModule.new(@response_set).run
+          assert_response_value(@response_set, 'ZIP', '60606')
+        end
+
+        it "should show prepopulate ZIP4 if it exists" do
+          init_instrument_and_response_set(nil,
+               :create_tracing_module_survey_with_address_operational_data)
+          TracingModule.new(@response_set).run
+          assert_response_value(@response_set, 'ZIP4', '4444')
+        end
+      end
+
       describe "asking address information" do
 
-        it "should show if the contact is CATI and the event is post-natal" do
-          event = Factory(:event, :event_type_code => 18) # Birth is also post-natal
+        it "should show if the event is birth" do
+          event = Factory(:event, :event_type_code => Event.birth_code)
           run_populator(event, Instrument.cati)
-          assert_response_value(@response_set, "prepopulated_should_show_address_for_tracing", "TRUE")
+          assert_response_value(@response_set,
+                                "prepopulated_should_show_address_for_tracing",
+                                "TRUE")
         end
 
-        it "should NOT show if the contact is not CATI" do
-          event = Factory(:event, :event_type_code => 18) # Birth is also post-natal
-          run_populator(event, Instrument.capi)
-          assert_response_value(@response_set, "prepopulated_should_show_address_for_tracing", "FALSE")
-        end
-
-        it "should NOT show if the event is pre-natal" do
-          event = Factory(:event, :event_type_code => 34) # Eligibility Screener is pre-natal
+        it "should NOT show if the event is six_month_visit" do
+          event = Factory(:event, :event_type_code => Event.six_month_visit_code)
           run_populator(event, Instrument.cati)
-          assert_response_value(@response_set, "prepopulated_should_show_address_for_tracing", "FALSE")
+          assert_response_value(@response_set,
+                                "prepopulated_should_show_address_for_tracing",
+                                "FALSE")
         end
 
         describe "with a known address" do
           it "knows that the person has a primary address" do
             Factory(:address, :person => @person, :address_rank_code => 1)
             run_populator
-            assert_response_value(@response_set, "prepopulated_is_address_provided", "TRUE")
+            assert_response_value(@response_set,
+                                  "prepopulated_is_address_provided", "TRUE")
           end
         end
 
         describe "without an address" do
           it "knows that the person does not have an address" do
             run_populator
-            assert_response_value(@response_set, "prepopulated_is_address_provided", "FALSE")
+            assert_response_value(@response_set,
+                                  "prepopulated_is_address_provided", "FALSE")
           end
         end
 

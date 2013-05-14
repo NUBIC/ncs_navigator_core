@@ -2,6 +2,7 @@
 
 
 class ParticipantsController < ApplicationController
+  include ListHelper
   layout proc { |controller| controller.request.xhr? ? nil : 'application'  }
 
   permit Role::SYSTEM_ADMINISTRATOR, Role::USER_ADMINISTRATOR, Role::ADMINISTRATIVE_STAFF, Role::STAFF_SUPERVISOR ,
@@ -39,20 +40,27 @@ class ParticipantsController < ApplicationController
     @participants = Participant.in_ppg_group(params[:ppg_group].to_i)
   end
 
+  def events_and_contact_links
+    rows = @participant.events +
+           @participant.person.contact_links.collect(&:event) +
+           @participant.person.contact_links.select {|cl| cl.event.nil?}
+    rows.compact.uniq.flatten
+  end
+  private :events_and_contact_links
+
   ##
   # GET /participants/:id
   def show
     @person = @participant.person
+    @participant = @person.participant
+    @events_and_contacts = events_and_contact_links
+
     @participant_activity_plan = psc.build_activity_plan(@participant)
 
-    @scheduled_activities_grouped_by_date = {}
-    @participant_activity_plan.scheduled_activities.each do |a|
-      date = a.date
-      if @scheduled_activities_grouped_by_date.has_key?(date)
-        @scheduled_activities_grouped_by_date[date] << a
-      else
-        @scheduled_activities_grouped_by_date[date] = [a]
-      end
+    # @todo this does not handle events associated with the child
+    @scheduled_activities_grouped_by_date =
+      @participant_activity_plan.scheduled_activities.group_by{|a| a.date}.reduce({}) do |m,(date,activities)|
+      m.merge({date => activities.group_by{|a| @participant.events.find{|e| e.matches_activity(a)}}})
     end
   end
 
@@ -142,63 +150,76 @@ class ParticipantsController < ApplicationController
 
   ##
   # Schedule an Informed Consent segment in PSC
+  # @see #schedule_consent_event
   def schedule_informed_consent_event
     schedule_consent_event('Informed Consent', :schedule_general_informed_consent, params[:date])
   end
 
   ##
   # Schedule a Reconsent segment in PSC
+  # @see #schedule_consent_event
   def schedule_reconsent_event
     schedule_consent_event('Re-Consent', :schedule_reconsent, params[:date])
   end
 
   ##
   # Schedule a Withdrawal segment in PSC
+  # @see #schedule_consent_event
   def schedule_withdrawal_event
     schedule_consent_event('Withdrawal', :schedule_withdrawal, params[:date])
   end
 
   ##
   # Schedule a Child Consent Birth to 6 month segment in PSC
+  # @see #schedule_consent_event
   def schedule_child_consent_birth_to_six_months_event
     schedule_consent_event('Child Consent', :schedule_child_consent_birth_to_six_months, params[:date])
   end
 
   ##
   # Schedule a Child Consent 6 month to Age of Majority segment in PSC
+  # @see #schedule_consent_event
   def schedule_child_consent_six_month_to_age_of_majority_event
     schedule_consent_event('Child Consent', :schedule_child_consent_six_month_to_age_of_majority, params[:date])
   end
 
-  def schedule_consent_event(typ, method, date)
-    if date_available_for_informed_consent_event?(date)
-      resp = Event.send(method, psc, @participant, date)
-      msg = resp.success? ? "#{typ} event scheduled for Participant." : 'Could not schedule informed consent'
-      redirect_to(participant_path(@participant), :notice => msg)
-    else
-      msg = "Informed Consent Event already scheduled for that date. Please choose another date."
-      redirect_to(participant_path(@participant), :flash => { :warning => msg } )
-    end
-  end
-  private :schedule_consent_event
-
   ##
-  # Check if an informed consent event exists on the given date.
-  # Return false if an event is already scheduled on that date.
-  # @param date [String]
-  # @return [Boolean]
-  def date_available_for_informed_consent_event?(date)
+  # Private method to help the scheduling of the different types of
+  # standalone consent events. This will schedule the event for the
+  # provided date if it is able to. If not, let the user know the
+  # reason why the scheduling was unable to be completed.
+  #
+  # @param typ [String] the type of the consent
+  # @param method [Symbol] the message to send on Event
+  # @param date_string [String] the date parameter sent by the user
+  def schedule_consent_event(typ, method, date_string)
+
+    msg = 'Could not schedule informed consent.'
+    flash_type = :warning
+
     begin
-      dt = Date.parse(date)
-      ics = @participant.events.where(:event_type_code => Event.informed_consent_code)
-      ics_dates = ics.map(&:psc_ideal_date)
-      !ics_dates.include?(dt)
+      date = Date.parse(date_string)
+
+      if @participant.date_available_for_informed_consent_event?(date)
+        # send method to Event and update msg and flash_type if successful
+        resp = Event.send(method, psc, @participant, date)
+        if resp.success?
+          msg =  "#{typ} event scheduled for Participant."
+          flash_type = :notice
+        end
+      else
+        msg += " Informed Consent Event already scheduled for that date. Please choose another date."
+      end
+
     rescue ArgumentError
       # if date cannot be parsed do not allow user to schedule the informed consent event
-      false
+      # simply let the user know
+      msg += " Date provided [#{date_string}] was invalid. Please choose another date."
     end
+
+    redirect_to(participant_path(@participant), :flash => { flash_type => msg } )
   end
-  private :date_available_for_informed_consent_event?
+  private :schedule_consent_event
 
   # GET /participants/new
   # GET /participants/new.json

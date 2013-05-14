@@ -15,7 +15,7 @@ class ParticipantConsentsController < ApplicationController
       response_set = @participant_consent.associate_response_set
     end
 
-    redirect_to edit_my_survey_path(
+    redirect_to surveyor.edit_my_survey_path(
       :survey_code => response_set.survey.access_code,
       :response_set_code => response_set.access_code)
   end

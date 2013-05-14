@@ -62,5 +62,27 @@ describe ContactLinksHelper do
       end
     end
 
+    context "with an Informed Consent event" do
+      let(:et) { NcsCode.for_list_name_and_local_code('EVENT_TYPE_CL1', Event.informed_consent_code) }
+
+      before do
+        participant.stub!(:in_study? => true)
+      end
+
+      it "is true" do
+        helper.show_continue_action(person, contact_link, event, participant).should be_true
+      end
+
+      context "associated with another event during the same contact" do
+        it "is false" do
+          other_event = Factory(:event)
+          other_contact_link = Factory(:contact_link, :event => other_event, :contact => contact)
+          helper.show_continue_action(person, contact_link, event, participant).should be_false
+        end
+
+      end
+
+    end
+
   end
 end

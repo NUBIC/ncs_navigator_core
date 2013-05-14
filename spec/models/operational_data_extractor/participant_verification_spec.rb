@@ -88,7 +88,7 @@ describe OperationalDataExtractor::ParticipantVerification do
       child = participant.children.first
 
       child.addresses.should_not be_empty
-      child.primary_address.to_s.should == "123 Easy St. Chicago, ILLINOIS 65432-1234"
+      child.primary_address.to_s.should == "123 Easy St. Chicago, Illinois 65432-1234"
     end
 
     it "creates a 2ndary address record and associates it with the child" do
@@ -117,7 +117,7 @@ describe OperationalDataExtractor::ParticipantVerification do
 
       child.addresses.should_not be_empty
       child.primary_address.to_s.should be_blank
-      child.addresses.first.to_s.should == "444 Easy St. Apt 2D Chicago, ILLINOIS 65432-6789"
+      child.addresses.first.to_s.should == "444 Easy St. Apt 2D Chicago, Illinois 65432-6789"
     end
 
     it "creates a telephone record and associates it with the child" do

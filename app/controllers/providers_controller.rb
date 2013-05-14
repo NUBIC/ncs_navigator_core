@@ -17,8 +17,24 @@ class ProvidersController < ApplicationController
     end
   end
 
+  def patients_paginate(people, page_type)
+    page_num = params[page_type] || 1
+    page = WillPaginate::Collection.create(page_num, 10) do |pager|
+      pager.replace(people[pager.offset, pager.per_page])
+      pager.total_entries = people.length
+    end
+    page
+  end
+  private :patients_paginate
+
   def show
     @provider = Provider.find(params[:id])
+    non_batch = Person.associated_with_provider_by_provider_id(@provider.id)
+    @patients = patients_paginate(non_batch, :patients_page)
+    @batch = patients_paginate(IneligibleBatch.
+                         where(:provider_id => @provider.id).
+                         order("date_first_visit_date DESC, people_count"),
+                                                          :inpatients_page)
   end
 
   def new
@@ -323,4 +339,11 @@ class ProvidersController < ApplicationController
   end
   private :mark_pbs_list_refused
 
+  def batch_ineligible
+    @provider = Provider.find(params[:id])
+    @ineligible_batch = IneligibleBatch.new
+    respond_to do |format|
+      format.html
+    end
+  end
 end

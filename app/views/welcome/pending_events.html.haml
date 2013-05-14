@@ -10,6 +10,7 @@
         %th Participant
         %th Event
         %th Date
+        %th Event Window
       - @pending_events.each do |event|
         %tr{ :class => cycle('even_record', 'odd_record') }
           %td
@@ -23,6 +24,8 @@
             = event
           %td
             = blank_safe(event.event_start_date)
+          %td
+            = render :partial => "events/event_window", :locals => {:event => event}
   - else
     .no_records
       As unlikely as it may seem, there are no pending events currently in the database.

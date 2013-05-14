@@ -124,7 +124,7 @@ describe OperationalDataExtractor::Birth do
         person  = Person.find(@person.id)
         person.addresses.size.should == 1
         address = person.addresses.first
-        address.to_s.should == "123 Easy St. Chicago, ILLINOIS 65432-1234"
+        address.to_s.should == "123 Easy St. Chicago, Illinois 65432-1234"
         address.address_rank_code.should == 1
       end
 
@@ -152,7 +152,7 @@ describe OperationalDataExtractor::Birth do
         person  = Person.find(@person.id)
         person.addresses.size.should == 1
         address = person.addresses.first
-        address.to_s.should == "123 Easy St. Chicago, ILLINOIS 65432-1234"
+        address.to_s.should == "123 Easy St. Chicago, Illinois 65432-1234"
         address.address_rank_code.should == 1
       end
 
@@ -188,8 +188,8 @@ describe OperationalDataExtractor::Birth do
         person  = Person.find(@person.id)
         person.addresses.size.should == 2
 
-        person.primary_mailing_address.to_s.should == "123 Easy St. Chicago, ILLINOIS 65432-1234"
-        person.primary_work_address.to_s.should == "312 Hard St. Chicago, ILLINOIS 65432-1234"
+        person.primary_mailing_address.to_s.should == "123 Easy St. Chicago, Illinois 65432-1234"
+        person.primary_work_address.to_s.should == "312 Hard St. Chicago, Illinois 65432-1234"
       end
 
     end

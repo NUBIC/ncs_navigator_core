@@ -800,7 +800,7 @@ module NcsNavigator::Core::Mustache
           "ProviderBasedSubsample" => "45 minutes",
           "LowIntensity"  => "45 minutes"
         },
-        Event::thirty_six_month_visit_code => {
+        Event::thirty_month_visit_code => {
           "EnhancedHousehold"  => "1.75 hours",
           "ProviderBased"  => "1.75 hours",
           "HighIntensity"  => "1.75 hours",

@@ -62,7 +62,7 @@ class NcsNavigator::Core::RecordOfContactImporter
 
       if !@last_event || event.id != @last_event.id
         # n.b.: implicit assumption is that events are in order
-        participant.set_state_for_event_type(event)
+        participant.set_state_for_imported_event(event)
         @last_event = event
       end
 
@@ -244,7 +244,7 @@ class NcsNavigator::Core::RecordOfContactImporter
 
     contact.contact_disposition     = row[:contact_disposition] unless row[:contact_disposition].blank?
     apply_coded_value(contact, :contact_type, row, row_index)
-    contact.contact_type_other      = row[:contact_type_pther] unless row[:contact_type_pther].blank?
+    contact.contact_type_other      = row[:contact_type_other] unless row[:contact_type_other].blank?
     contact.contact_date            = row[:contact_date] unless row[:contact_date].blank?
     contact.contact_start_time      = row[:contact_start_time] unless row[:contact_start_time].blank?
     contact.contact_end_time        = row[:contact_end_time] unless row[:contact_end_time].blank?
@@ -256,7 +256,10 @@ class NcsNavigator::Core::RecordOfContactImporter
     contact.contact_location_other  = row[:contact_location_other] unless row[:contact_location_other].blank?
     apply_coded_value(contact, :contact_private, row, row_index)
     apply_coded_value(contact, :who_contacted, row, row_index)
+    contact.who_contacted_other     = row[:who_contacted_other] unless row[:who_contacted_other].blank?
     contact.contact_comment         = row[:contact_comment] unless row[:contact_comment].blank?
+    contact.contact_private_detail  = row[:contact_private_detail] unless row[:contact_private_detail].blank?
+    contact.contact_distance        = row[:contact_distance] unless row[:contact_distance].blank?
     contact
   end
 

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # == Schema Information
-# Schema version: 20130226172617
+# Schema version: 20130415192041
 #
 # Table name: events
 #
@@ -21,6 +21,7 @@
 #  event_type_code                    :integer          not null
 #  event_type_other                   :string(255)
 #  id                                 :integer          not null, primary key
+#  imported_invalid                   :boolean          default(FALSE), not null
 #  lock_version                       :integer          default(0)
 #  participant_id                     :integer
 #  psc_ideal_date                     :date
@@ -58,10 +59,10 @@ class Event < ActiveRecord::Base
   validates_format_of :event_start_time, :with => mdes_time_pattern, :allow_blank => true
   validates_format_of :event_end_time,   :with => mdes_time_pattern, :allow_blank => true
 
-  validate :disposition_code_is_in_disposition_category
+  validate :disposition_code_is_in_disposition_category, :unless => :imported_invalid
 
   before_validation :strip_time_whitespace
-  before_create :set_start_time
+  before_save :set_start_time
   before_save :set_psc_ideal_date
 
   POSTNATAL_EVENTS = [
@@ -239,19 +240,19 @@ class Event < ActiveRecord::Base
   }
 
   def self.method_missing(method_name, *args)
-    method_name = method_name.to_s
-    if method_name =~ /_code/
-      return NAMED_EVENT_CODES[method_name.sub("_code", "")]
+    m = method_name.to_s
+    if m =~ /_code/
+      return NAMED_EVENT_CODES[m.sub("_code", "")]
     end
 
     super
   end
 
   def method_missing(method_name, *args)
-    method_name = method_name.to_s
-    if method_name =~ /\?/
-      super unless NAMED_EVENT_CODES[method_name.sub("\?", "")]
-      return NAMED_EVENT_CODES[method_name.sub("\?", "")] == self.event_type_code
+    m = method_name.to_s
+    if m =~ /\?/
+      super unless NAMED_EVENT_CODES[m.sub("\?", "")]
+      return NAMED_EVENT_CODES[m.sub("\?", "")] == self.event_type_code
     end
 
     super
@@ -311,6 +312,67 @@ class Event < ActiveRecord::Base
     result = "#{event_end_date} #{event_end_time}"
     result = "N/A" if result.blank?
     result
+  end
+
+  # Tables 1,2 from FSM 2013-09
+  EVENT_WINDOW = {
+    :high =>{
+      Event.birth_code                    => { :start => 0.days,    :end => 10.days},
+      Event.three_month_visit_code        => { :start => 2.months,  :end => 5.months - 1.day},
+      Event.six_month_visit_code          => { :start => 5.months,  :end => 8.months - 1.day},
+      Event.nine_month_visit_code         => { :start => 8.months,  :end => 11.months - 1.day},
+      Event.twelve_month_visit_code       => { :start => 11.months, :end => 16.months - 1.day},
+      Event.eighteen_month_visit_code     => { :start => 16.months, :end => 23.months - 1.day},
+      Event.twenty_four_month_visit_code  => { :start => 23.months, :end => 30.months - 1.day},
+      Event.thirty_month_visit_code       => { :start => 30.months, :end => 36.months - 1.day},
+      Event.thirty_six_month_visit_code   => { :start => 36.months, :end => 42.months - 1.day},
+      Event.forty_two_month_visit_code    => { :start => 42.months, :end => 48.months - 1.day}},
+    :low =>{
+      Event.birth_code                    => { :start => 0.days,    :end => 2.months - 1.day},
+      Event.three_month_visit_code        => { :start => 2.months,  :end => 7.months - 1.day},
+      Event.nine_month_visit_code         => { :start => 7.months,  :end => 14.months - 1.day},
+      Event.eighteen_month_visit_code     => { :start => 14.months, :end => 23.months - 1.day},
+      Event.twenty_four_month_visit_code  => { :start => 23.months, :end => 30.months - 1.day},
+      Event.thirty_month_visit_code       => { :start => 30.months, :end => 36.months - 1.day},
+      Event.thirty_six_month_visit_code   => { :start => 36.months, :end => 42.months - 1.day},
+      Event.forty_two_month_visit_code    => { :start => 42.months, :end => 48.months - 1.day}}
+  }
+
+  # @param at - :start || :end
+  # @param birth_date [Date] - DOB of child participant
+  # @param intensity [Date]  - :high or :low
+  # @return nil or Date
+  def window(at, birth_date = self.child_dob, intensity = self.try(:participant).try(:intensity))
+    return nil if ![:start,:end].include?(at) || birth_date.nil? || ![:high,:low].include?(intensity)
+    return nil if EVENT_WINDOW[intensity][self.event_type_code].nil?
+    birth_date + EVENT_WINDOW[intensity][self.event_type_code][at]
+  end
+
+
+  # @return nil or Person
+  def child_dob
+    child_participant.try(:person).try(:person_dob_date)
+  end
+
+  # @todo this is a workaround since child events are being associated
+  #        with the mother self.participant should be the child for
+  #        child events. This method should be removed when the
+  #        association is changed
+  #
+  #
+  # @note when the participant is the mother and there are multiple
+  #        children this will pick one
+  #
+  # The participant child this event relates to
+  def child_participant
+    case
+    when participant.try(:child_participant?)
+      participant
+    when (c = participant.try(:children))
+      c.find{|child| child.participant.try(:child_participant?)}.try(:participant)
+    else
+      nil
+    end
   end
 
   def label
@@ -436,10 +498,38 @@ class Event < ActiveRecord::Base
   end
 
   ##
+  # True if this is a consent event and a standalone event
+  # @see Event#consent_event?
+  # @see Event#standalone_event?
+  # @param[Contact]
+  # @return[Boolean]
+  def standalone_consent_event?(contact)
+    consent_event? && stand_alone_event?(contact)
+  end
+
+  ##
+  # A stand-alone Event is an event
+  # that is not associated with another event during same contact
+  # @param[Contact]
+  # @return[Boolean]
+  def stand_alone_event?(contact)
+    ContactLink.select("distinct event_id").where("contact_id in (?)",
+      ContactLink.select(:contact_id).where(:event_id => self.id).all.map(&:contact_id)
+    ).count == 1
+  end
+
+  ##
   # Returns true for all post-natal events (includes Birth)
   # @return [Boolean]
   def postnatal?
     POSTNATAL_EVENTS.include? event_type_code
+  end
+
+  ##
+  # Date and time of when the event was started
+  # @return [Array<Date,String>]
+  def started_at
+    [event_start_date, event_start_time]
   end
 
   ##
@@ -672,10 +762,12 @@ class Event < ActiveRecord::Base
      responded = SurveySection.scoped.joins('INNER JOIN response_sets ON response_sets.survey_id = survey_sections.survey_id
                                                    INNER JOIN responses ON responses.response_set_id = response_sets.id
                                                    INNER JOIN questions ON responses.question_id = questions.id
-                                                   AND questions.survey_section_id = survey_sections.id').select('survey_sections.id').merge(target).uniq
+                                                   AND questions.survey_section_id = survey_sections.id')
+                              .select("survey_sections.id, survey_sections.display_order")
+                              .merge(target).uniq
 
      referenced = SurveySection.scoped.joins(:questions, :survey => :response_sets)
-                              .select('survey_sections.id')
+                              .select("survey_sections.id, survey_sections.display_order")
                               .merge(target).where("questions.display_type IS NULL OR questions.display_type != 'label'").uniq
 
     self.event_breakoff_code = (referenced - responded).empty? ? NcsCode::NO : NcsCode::YES
@@ -900,10 +992,17 @@ class Event < ActiveRecord::Base
   end
 
   def set_suggested_event_repeat_key
-    self.participant.events.where(:event_type_code => self.event_type_code).count - 1
+    if self.participant.nil?
+      0
+    else
+      self.participant.events.where(:event_type_code => self.event_type_code).count - 1
+    end
   end
 
+  ##
+  #
   def set_suggested_event_breakoff(contact_link)
+    return if closed? || event_breakoff_code.to_i > 0
     if contact_link.instrument && contact_link.instrument.response_sets.exists?
       set_event_breakoff(contact_link.instrument.response_sets)
     end

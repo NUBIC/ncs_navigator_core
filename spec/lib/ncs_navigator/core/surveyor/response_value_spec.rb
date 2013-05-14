@@ -134,6 +134,30 @@ module NcsNavigator::Core::Surveyor
       end
     end
 
+    describe '#value=' do
+      it 'sets non-nil response values to nil' do
+        a.update_attribute(:response_class, 'integer')
+
+        r.value = 42
+        r.save!
+        r.reload
+
+        r.value = nil
+        r.save!
+        r.reload
+
+        r.value.should be_nil
+      end
+    end
+
+    describe '#reload' do
+      describe 'if a value was never set' do
+        it 'returns the object' do
+          r.reload.should == r
+        end
+      end
+    end
+
     describe 'with response class answer' do
       before do
         a.update_attribute(:response_class, 'answer')
@@ -162,6 +186,12 @@ module NcsNavigator::Core::Surveyor
             r.value = 'foo'
 
             expect { r.save }.to raise_error(ResponseValue::CannotSetValue)
+          end
+
+          it 'does not raise when set to nil' do
+            r.value = nil
+
+            expect { r.save }.to_not raise_error
           end
         end
       end

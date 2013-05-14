@@ -45,7 +45,13 @@ module Psc
       ekey = sync_key['event', event.public_id]
       lkey = sync_key['p', participant.public_id, 'events']
 
-      sort_key = "#{event.event_start_date}:#{'%03d' % event.event_type_code.to_s}"
+      start_date = event.event_start_date || event.event_end_date
+
+      unless start_date
+        fail "Event #{event.event_id.inspect} has no start or end dates. It cannot be sync'd to PSC."
+      end
+
+      sort_key = "#{start_date}:#{'%03d' % event.event_type_code.to_s}"
 
       redis.hmset(ekey,
                   'completed', event.completed?,
@@ -55,7 +61,7 @@ module Psc
                   'event_type_label', event.label,
                   'recruitment_arm', study_arm_for(participant),
                   'sort_key', sort_key,
-                  'start_date', event.event_start_date,
+                  'start_date', start_date,
                   'status', status_for(event))
 
       redis.sadd(lkey, event.public_id)

@@ -8,8 +8,7 @@ module ResponseSetPrepopulation
         /_BIO_Child/,
         /_CON_Reconsideration/,
         /_Father.*M2.1/,
-        /_InternetUseContact/,
-        /_MultiModeVisitInfo/
+        /_InternetUseContact/
       ].any?{ |regex| rs.survey.title =~ regex }
     end
 
@@ -50,8 +49,6 @@ module ResponseSetPrepopulation
             when "prepopulated_is_9_months_completed"
               answer_for(question,
                          is_event_completed?(Event::nine_month_visit_code))
-            when "prepopulate_is_birth_or_subsequent_event"
-              answer_for(question, Event::birth_code == event.event_type_code)
             else
               nil
             end

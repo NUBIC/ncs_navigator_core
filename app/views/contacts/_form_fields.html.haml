@@ -1,7 +1,8 @@
 .column-container
   = f.hidden_field :psu_code
-  = hidden_field_tag :event_type_id, @event.event_type.id
-  = hidden_field_tag :event_id, @event_id if @event_id
+  - if @event
+    = hidden_field_tag :event_type_id, @event.event_type.id
+    = hidden_field_tag :event_id, @event_id if @event_id
   = hidden_field_tag :contact_link_id, @contact_link.id if @contact_link
   = hidden_field_tag :next_event, params[:next_event]
 

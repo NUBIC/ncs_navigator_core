@@ -27,7 +27,7 @@
   %br
   %b
     = "Shipment Receipt Confirmed Code:"
-  = NcsCode.for_attribute_name_and_local_code(:shipment_receipt_confirmed_code, @sample_receipt_confirmation.shipment_receipt_confirmed_code)
+  = NcsCode.for_attribute_name_and_local_code(:shipment_receipt_confirmed_code, @sample_receipt_confirmation.shipment_receipt_confirmed_code, :model_class => f.object.class)
   %br
   %b
     = "Shipment Condition Code:"

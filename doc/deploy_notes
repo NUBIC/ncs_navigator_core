@@ -102,6 +102,12 @@
 
 https://code.bioinformatics.northwestern.edu/redmine/wiki/ncsnavtransition/NavigatorComponentDeployments
 
+=====
+1.5.1
+=====
+
+9. Update PSC site identifier to match the NcsNavigatorCore.psu value
+
 
 =====
 NOTES

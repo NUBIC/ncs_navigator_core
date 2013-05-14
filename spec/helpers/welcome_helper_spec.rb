@@ -5,11 +5,11 @@ require 'spec_helper'
 
 describe ApplicationHelper do
 
-  describe "#place_activities_with_blank_times_at_the_bottom_of_list" do
+  describe "#sort_activities_chronologically_with_blank_times_at_the_bottom_of_list" do
     ScheduledEventSpecStruct = Struct.new(:date, :activity_time, :person, :event_type)
 
     before do
-      @early_activity  = ScheduledEventSpecStruct.new(nil, '09:33', nil, nil)
+      @early_activity  = ScheduledEventSpecStruct.new(nil, '9:33', nil, nil)
       @middle_activity = ScheduledEventSpecStruct.new(nil, '14:33', nil, nil)
       @later_activity  = ScheduledEventSpecStruct.new(nil, '21:33', nil, nil)
       @blank_time_activity1   = ScheduledEventSpecStruct.new(nil, nil, nil, nil)
@@ -18,13 +18,13 @@ describe ApplicationHelper do
     end
 
     it "places blank time events to the end of the list" do
-      sorted = helper.place_activities_with_blank_times_at_the_bottom_of_list(@unsorted_activities)
+      sorted = helper.sort_activities_chronologically_with_blank_times_at_the_bottom_of_list(@unsorted_activities)
       sorted.index(@blank_time_activity2).should be > 2
       sorted.index(@blank_time_activity1).should be > 2
     end
 
     it "places events with times in ascending chronological order" do
-      sorted = helper.place_activities_with_blank_times_at_the_bottom_of_list(@unsorted_activities)
+      sorted = helper.sort_activities_chronologically_with_blank_times_at_the_bottom_of_list(@unsorted_activities)
       sorted.index(@early_activity).should  == 0
       sorted.index(@middle_activity).should == 1
       sorted.index(@later_activity).should  == 2

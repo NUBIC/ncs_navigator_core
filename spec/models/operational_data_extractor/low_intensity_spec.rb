@@ -188,7 +188,7 @@ describe OperationalDataExtractor::LowIntensityPregnancyVisit do
     it "extracts institution and birth address operational data" do
       @participant.person.institutions.first.addresses.size.should == 1
       address = @participant.person.institutions.first.addresses.first
-      address.to_s.should == "123 Hospital Way Chicago, ILLINOIS 65432"
+      address.to_s.should == "123 Hospital Way Chicago, Illinois 65432"
     end
 
     it "extracts institutional data" do

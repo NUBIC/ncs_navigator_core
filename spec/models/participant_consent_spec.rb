@@ -229,6 +229,26 @@ describe ParticipantConsent do
     end
   end
 
+  describe '#high_intensity?' do
+    it 'is true when the consent is for a phase one high consent' do
+      ParticipantConsent.new(:consent_type_code => 1).should be_high_intensity
+    end
+
+    it 'is not true for phase one low intensity consents' do
+      ParticipantConsent.new(:consent_type_code => 7).should_not be_high_intensity
+    end
+
+    [1, 2, 6].each do |cft|
+      it "is true when the consent is for a phase two high consent form type #{cft}" do
+        ParticipantConsent.new(:consent_form_type_code => cft).should be_high_intensity
+      end
+    end
+
+    it "is not true when the consent is for a phase two low consent form type" do
+      ParticipantConsent.new(:consent_form_type_code => 7).should_not be_high_intensity
+    end
+  end
+
   context "phase 1 versus phase 2 consents" do
 
     describe ".phase_one?" do
@@ -371,14 +391,6 @@ describe ParticipantConsent do
         ParticipantConsent.first.response_set.should_not be_nil
       end
 
-      it "creates a ParticipantConsentSample record for each type of sample consent" do
-        pc = ParticipantConsent.first
-        ParticipantConsentSample::SAMPLE_CONSENT_TYPE_CODES.each do |code|
-          samples = pc.participant_consent_samples.where(:sample_consent_type_code => code).all
-          samples.should_not be_empty
-          samples.size.should == 1
-        end
-      end
     end
 
     describe "for a existing ParticipantConsent record" do

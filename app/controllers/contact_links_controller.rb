@@ -3,6 +3,12 @@
 
 class ContactLinksController < ApplicationController
 
+  before_filter :load_contact_link, :except => [:index, :update_psc_for_activity]
+
+  def load_contact_link
+    @contact_link  = ContactLink.find(params[:id])
+  end
+
   # GET /contact_links
   # GET /contact_links.json
   def index
@@ -19,7 +25,7 @@ class ContactLinksController < ApplicationController
 
   # GET /contact_links/1/edit
   def edit
-    @contact_link  = ContactLink.find(params[:id])
+
     @event         = @contact_link.event
     @instrument    = @contact_link.instrument
     @response_sets = @instrument.response_sets if @instrument
@@ -42,7 +48,6 @@ class ContactLinksController < ApplicationController
   # PUT /contact_links/1
   # PUT /contact_links/1.json
   def update
-    @contact_link = ContactLink.find(params[:id])
 
     respond_to do |format|
 
@@ -77,7 +82,6 @@ class ContactLinksController < ApplicationController
   end
 
   def select_instrument
-    @contact_link = ContactLink.find(params[:id])
     @contact      = @contact_link.contact
     @person       = @contact_link.person
     @participant  = @person.participant if @person
@@ -92,7 +96,6 @@ class ContactLinksController < ApplicationController
   end
 
   def decision_page
-    @contact_link  = ContactLink.find(params[:id])
     @person        = @contact_link.person
     @instrument    = @contact_link.instrument
     @event         = @contact_link.event
@@ -113,7 +116,12 @@ class ContactLinksController < ApplicationController
   # Displays the form for the Instrument record associated with the given ContactLink
   # Posts the form to the finalize_instrument path
   def edit_instrument
-    setup_instrument_variables
+    if @contact_link.instrument
+      setup_instrument_variables
+    else
+      flash[:notice] = "No Instrument associated with given Contact Link record"
+      redirect_to decision_page_contact_link_path(@contact_link)
+    end
   end
 
   ##
@@ -122,7 +130,7 @@ class ContactLinksController < ApplicationController
   def finalize_instrument
     setup_instrument_variables
     respond_to do |format|
-      if @contact_link.instrument.update_attributes(params[:instrument])
+      if @contact_link.instrument && @contact_link.instrument.update_attributes(params[:instrument])
 
         mark_activity_occurred if @contact_link.instrument.complete?
 
@@ -137,7 +145,6 @@ class ContactLinksController < ApplicationController
   end
 
   def setup_instrument_variables
-    @contact_link  = ContactLink.find(params[:id])
     @person        = @contact_link.person
     @instrument    = @contact_link.instrument
     @response_sets = @instrument.response_sets.includes(:survey)
@@ -150,7 +157,6 @@ class ContactLinksController < ApplicationController
   end
 
   def saq_instrument
-    @contact_link = ContactLink.find(params[:id])
     person       = @contact_link.person
     participant  = person.participant if person
     event        = @contact_link.event

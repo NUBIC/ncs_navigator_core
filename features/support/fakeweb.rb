@@ -8,7 +8,18 @@ FakeWeb.register_uri(:get, /\/api\/v1\/subjects\/registered_with_psc$/,
 FakeWeb.register_uri(:get, /\/api\/v1\/subjects\/registered_with_psc\/schedules.json$/,
                     :body => "#{Rails.root}/features/fixtures/fakeweb/registered_with_psc_schedule.json", :status => ["200", "OK"], :content_type => "application/json")
 
-FakeWeb.register_uri(:get, /\/api\/v1\/subjects\/((?!registered_with_psc))/, :body => "Unknown", :status => ["401", "Unknown"])
+FakeWeb.register_uri(:get, /\/api\/v1\/subjects\/xfda-a78s-h83b\/schedules.json$/,
+                    :body => "#{Rails.root}/features/fixtures/fakeweb/build_activity_plan_response_for_appointment_sheet.json", :status => ["200", "OK"], :content_type => "application/json")
+
+
+FakeWeb.register_uri(:get, /\/api\/v1\/subjects\/w324-rteb-2c7z$/,
+                     :body => "#{Rails.root}/features/fixtures/fakeweb/registered_with_psc.json", :status => ["200", "OK"], :content_type => "application/json")
+
+FakeWeb.register_uri(:get, /\/api\/v1\/subjects\/w324-rteb-2c7z\/schedules.json$/,
+                    :body => "#{Rails.root}/features/fixtures/fakeweb/event_windows_participant_schedule.json", :status => ["200", "OK"], :content_type => "application/json")
+
+FakeWeb.register_uri(:get, /\/api\/v1\/subjects\/((?!(registered_with_psc|xfda-a78s-h83b|w324-rteb-2c7z)))/, :body => "Unknown", :status => ["401", "Unknown"])
+
 
 FakeWeb.register_uri(:get, /\/api\/v1\/studies.json$/,
                      :body => "#{Rails.root}/features/fixtures/fakeweb/studies.json", :content_type => "application/json")
@@ -26,7 +37,8 @@ FakeWeb.register_uri(:post, /\/api\/v1\/studies\/(.*)\/sites\/(.*)\/subject-assi
 [
   %w(end-date=2005-07-30&responsible-user=test_user&start-date=2005-07-01&state=scheduled scheduled_activities_for_july_2005.json),
   %w(end-date=2012-03-01&responsible-user=test_user&start-date=2012-02-01&state=scheduled scheduled_activities_for_february.json),
-  %w(end-date=2013-01-07&responsible-user=test_user&start-date=2013-01-01&state=scheduled scheduled_activities_2013-01-01.json)
+  %w(end-date=2013-01-07&responsible-user=test_user&start-date=2013-01-01&state=scheduled scheduled_activities_2013-01-01.json),
+  %w(end-date=2013-04-13&responsible-user=test_user&start-date=2013-04-08&state=scheduled scheduled_activities_for_appointment_sheet.json)
 ].each do |qs, fn|
   FakeWeb.register_uri(:get, %r[/api/v1/reports/scheduled-activities\.json\?#{qs}$],
                        :body => File.expand_path("../../fixtures/fakeweb/#{fn}", __FILE__),

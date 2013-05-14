@@ -124,7 +124,39 @@ describe OperationalDataExtractor::PbsEligibilityScreener do
       person = Person.find(person.id)
       person.addresses.size.should == 1
       address = person.addresses.first
-      address.to_s.should == "123 Easy St. Chicago, ILLINOIS 65432-1234"
+      address.to_s.should == "123 Easy St. Chicago, Illinois 65432-1234"
+      address.address_rank_code.should == 1
+    end
+
+    it "extracts operational data from the hospital survey responses" do
+      state = NcsCode.for_list_name_and_local_code("STATE_CL1", 14)
+      person = Factory(:person)
+      participant = Factory(:participant)
+      survey = create_hospital_eligibility_screener_survey_with_address_operational_data
+
+      person.addresses.size.should == 0
+      response_set, instrument = prepare_instrument(person, participant, survey)
+      response_set.save!
+
+      take_survey(survey, response_set) do |r|
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::HOSPITAL_INTERVIEW_PREFIX}.ADDRESS_1", '123 Easy St.'
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::HOSPITAL_INTERVIEW_PREFIX}.ADDRESS_2", ''
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::HOSPITAL_INTERVIEW_PREFIX}.UNIT", ''
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::HOSPITAL_INTERVIEW_PREFIX}.CITY", 'Chicago'
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::HOSPITAL_INTERVIEW_PREFIX}.STATE", state
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::HOSPITAL_INTERVIEW_PREFIX}.ZIP", '65432'
+        r.a "#{OperationalDataExtractor::PbsEligibilityScreener::HOSPITAL_INTERVIEW_PREFIX}.ZIP4", '1234'
+      end
+
+      response_set.responses.reload
+      response_set.responses.size.should == 7
+
+      OperationalDataExtractor::PbsEligibilityScreener.new(response_set).extract_data
+
+      person = Person.find(person.id)
+      person.addresses.size.should == 1
+      address = person.addresses.first
+      address.to_s.should == "123 Easy St. Chicago, Illinois 65432-1234"
       address.address_rank_code.should == 1
     end
 
@@ -155,7 +187,7 @@ describe OperationalDataExtractor::PbsEligibilityScreener do
       person = Person.find(person.id)
       person.addresses.size.should == 1
       address = person.addresses.first
-      address.to_s.should == "123 Easy St. Chicago, ILLINOIS"
+      address.to_s.should == "123 Easy St. Chicago, Illinois"
       address.address_rank_code.should == 1
     end
 
@@ -186,7 +218,7 @@ describe OperationalDataExtractor::PbsEligibilityScreener do
       person = Person.find(person.id)
       person.addresses.size.should == 1
       address = person.addresses.first
-      address.to_s.should == "123 Easy St. Chicago, ILLINOIS"
+      address.to_s.should == "123 Easy St. Chicago, Illinois"
       address.address_rank_code.should == 1
     end
 
@@ -742,7 +774,7 @@ describe OperationalDataExtractor::PbsEligibilityScreener do
     describe "#known_keys" do
       it "collects all the keys for the ODE maps" do
         ode = OperationalDataExtractor::PbsEligibilityScreener.new(@response_set)
-        ode.known_keys.size.should == 46
+        ode.known_keys.size.should == 53
       end
     end
 

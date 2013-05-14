@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 # == Schema Information
+# Schema version: 20130408184301
 #
 # Table name: participants
 #
-#  being_followed            :boolean          default(FALSE)
+#  being_followed            :boolean          default(TRUE)
 #  being_processed           :boolean          default(FALSE)
 #  created_at                :datetime
 #  enroll_date               :date
@@ -38,9 +39,9 @@
 # pregnancy screener, pregnancy questionnaire, etc. Once born, NCS-eligible babies are assigned Participant IDs.
 # Every Participant is also a Person. People do not become Participants until they are determined eligible for a pregnancy screener.
 class Participant < ActiveRecord::Base
-  class << self; attr_accessor :importer_mode_on; end
-
+  include EligibilityAdjudicator
   include NcsNavigator::Core::Mdes::MdesRecord
+  include NcsNavigator::Core::ImportAware
 
   acts_as_mdes_record :public_id_field => :p_id,
     :public_id_generator => NcsNavigator::Core::Mdes::HumanReadablePublicIdGenerator.new
@@ -101,10 +102,6 @@ class Participant < ActiveRecord::Base
   delegate :age, :first_name, :last_name, :person_dob, :gender, :upcoming_events, :contact_links, :instruments, :start_instrument, :started_survey, :instrument_for, :to => :person
 
   after_create :set_initial_state_for_recruitment_strategy
-
-  def after_initialize
-    self.class.importer_mode_on = false;
-  end
 
   ##
   # Only Hi/Lo strategy uses the low_intensity_state machine.
@@ -659,7 +656,7 @@ class Participant < ActiveRecord::Base
   end
 
    def child_participant?
-     self.p_type_code == 6
+     self.p_type_code == 6 || self.p_type_code == 12
    end
 
   ##
@@ -968,6 +965,17 @@ class Participant < ActiveRecord::Base
   end
 
   ##
+  # Check if an informed consent event exists on the given date.
+  # Return false if an event is already scheduled on that date.
+  # @param date [Date]
+  # @return [Boolean]
+  def date_available_for_informed_consent_event?(date)
+    ics = events.where(:event_type_code => Event.informed_consent_code)
+    ics_dates = ics.map(&:psc_ideal_date)
+    !ics_dates.include?(date)
+  end
+
+  ##
   # True if the participant state is in one of the initial states
   # i.e. not updated from an action in the study
   def new_participant_in_study?
@@ -993,19 +1001,14 @@ class Participant < ActiveRecord::Base
   ##
   # Change the Participant status from Pregnant to Other Probability after having given birth
   def update_ppg_status_after_birth
-    post_transition_ppg_status_update(4) unless self.class.importer_mode_on
+    post_transition_ppg_status_update(4) unless in_importer_mode?
   end
 
   ##
   # Change the Participant status to PPG 3 after child loss
   def update_ppg_status_after_child_loss
-    post_transition_ppg_status_update(3) unless self.class.importer_mode_on
+    post_transition_ppg_status_update(3) unless in_importer_mode?
   end
-
-  def last_contact
-    contacts.order("contact_date desc").first
-  end
-  alias :most_recent_contact :last_contact
 
   ##
   # Returns the contacts for this participant
@@ -1157,33 +1160,17 @@ class Participant < ActiveRecord::Base
   # so it simply will set the state to the most probable given the
   # event type and the current state
   # @param [Event]
-  def set_state_for_event_type(event)
+  def set_state_for_imported_event(event)
     register! if can_register?  # assume known to PSC
 
+    update_consent_and_protocol_status_as_of(event.event_end_date || event.event_start_date)
+
     case event.event_type.local_code
-    when 4, 5, 6, 29, 34
+    when 4, 5, 6, 9, 29, 34
       # Pregnancy Screener Events or PBS Eligibility Screener
       assign_to_pregnancy_probability_group! if can_assign_to_pregnancy_probability_group?
     when 10
-      # Informed Consent
-      if low_intensity?
-        granting_consents = event.match_consents_by_date(participant_consents).select { |c| c.consent_given_code == NcsCode::YES }
-        has_any_consent = !granting_consents.empty?
-        has_hi_consent = granting_consents.any? { |c| [1].include?(c.consent_type_code) || [1, 2, 6].include?(c.consent_form_type_code) }
-
-        Rails.logger.debug("Applying informed consent event #{event.event_id} to lo participant #{p_id}'s state.")
-        Rails.logger.debug("  has_any_consent=#{has_any_consent.inspect} has_hi_consent=#{has_hi_consent.inspect} granting_consents=#{granting_consents.collect(&:public_id).inspect}")
-
-        # Have to have consented to low first
-        if has_any_consent
-          low_intensity_consent! if can_low_intensity_consent?
-        end
-
-        if has_hi_consent
-          move_to_high_intensity_if_required
-        end
-      end
-      # if already hi, do nothing
+      # Informed Consent -- consent status handled in update_consent_and_protocol_status_as_of
     when 7, 8
       # Pregnancy Probability
       follow_low_intensity! if can_follow_low_intensity?
@@ -1195,21 +1182,30 @@ class Participant < ActiveRecord::Base
       impregnate_low! if can_impregnate_low? && known_to_be_pregnant?(event.import_sort_date)
     when 11, 12
       # Pre-Pregnancy
-      move_to_high_intensity_if_required
-      non_pregnant_informed_consent! if can_non_pregnant_informed_consent?
-      lose_pregnancy! if can_lose_pregnancy?
-      follow!
+      if high_intensity?
+        non_pregnant_informed_consent! if can_non_pregnant_informed_consent?
+        lose_pregnancy! if can_lose_pregnancy?
+        follow!
+      else
+        Rails.logger.warn("Received a high intensity event (#{event.event_type_code} / #{event.event_start_date} / #{event.public_id}) for low intensity participant #{p_id}. Ignoring.")
+      end
     when 13, 14
       # Pregnancy Visit 1
-      move_to_high_intensity_if_required
-      pregnant_informed_consent! if can_pregnant_informed_consent?
-      impregnate! if can_impregnate?
-      # pregnancy_one_visit!
+      if high_intensity?
+        pregnant_informed_consent! if can_pregnant_informed_consent?
+        impregnate! if can_impregnate?
+        # pregnancy_one_visit!
+      else
+        Rails.logger.warn("Received a high intensity event (#{event.event_type_code} / #{event.event_start_date} / #{event.public_id}) for low intensity participant #{p_id}. Ignoring.")
+      end
     when 15, 16
       # Pregnancy Visit 2
-      move_to_high_intensity_if_required
-      late_pregnant_informed_consent! if can_late_pregnant_informed_consent?
-      pregnancy_one_visit! if can_pregnancy_one_visit?
+      if high_intensity?
+        late_pregnant_informed_consent! if can_late_pregnant_informed_consent?
+        pregnancy_one_visit! if can_pregnancy_one_visit?
+      else
+        Rails.logger.warn("Received a high intensity event (#{event.event_type_code} / #{event.event_start_date.inspect} / #{event.public_id}) for low intensity participant #{p_id}. Ignoring.")
+      end
     when 18, 23, 24, 25, 26, 27, 28, 30, 31, 36, 37, 38
       # Birth and Post-natal
       if low_intensity?
@@ -1220,18 +1216,36 @@ class Participant < ActiveRecord::Base
     when 32
       # The Low-High conversion event itself does not indicate that the person
       # was converted. Conversion is handled in 10 "Informed Consent".
-    when 17, 19, 21, 1, -5
+    when 1, 2, 3, 17, 19, 20, 21, -5
       # Do not correspond to states in state machine
     else
       fail "Unhandled event type for participant state #{event.event_type.local_code.inspect}"
     end
   end
 
-  def self.importer_mode
-    self.importer_mode_on = true
-    yield
-    self.importer_mode_on = false
+  ##
+  # Looks to see if the participant has a hi-intensity consent that is valid as
+  # of the given date. Checking is done in memory because the consents will be
+  # pre-loaded by the import process.
+  def update_consent_and_protocol_status_as_of(date)
+    return if high_intensity?
+    return unless date
+
+    granted_consents = participant_consents.
+      find_all { |pc| pc.consent_date && pc.consent_date <= date && pc.consented? }
+
+    low_intensity_consent! if can_low_intensity_consent? && !granted_consents.empty?
+
+    any_appropriate_high_consents = granted_consents.detect { |pc| pc.high_intensity? }
+
+    if any_appropriate_high_consents
+      enroll_in_high_intensity_arm! if can_enroll_in_high_intensity_arm?
+      # Assume the high intensity conversion event was performed since the
+      # person consented to high intensity.
+      high_intensity_conversion! if can_high_intensity_conversion?
+    end
   end
+  private :update_consent_and_protocol_status_as_of
 
   comma do
 
@@ -1362,7 +1376,7 @@ class Participant < ActiveRecord::Base
       elsif postnatal?
         PatientStudyCalendar::LOW_INTENSITY_POSTNATAL
       elsif pregnant?
-        if due_date && !due_date_is_greater_than_follow_up_interval(most_recent_contact.contact_date_date)
+        if due_date && !due_date_is_greater_than_follow_up_interval(most_recent_contact_date)
           PatientStudyCalendar::LOW_INTENSITY_BIRTH_VISIT_INTERVIEW
         else
           lo_intensity_follow_up
@@ -1470,7 +1484,7 @@ class Participant < ActiveRecord::Base
     #
     # @return[Date]
     def next_scheduled_event_date
-      (interval == 0) ? get_date_to_schedule_next_event_from_contact_link : (date_used_to_schedule_next_event.to_date + interval)
+      (interval == 0) ? get_date_to_schedule_next_event_from_contacts_and_events : (date_used_to_schedule_next_event.to_date + interval)
     end
 
     ##
@@ -1483,19 +1497,35 @@ class Participant < ActiveRecord::Base
       elsif contact_links.blank?
         self.created_at.to_date
       else
-        get_date_to_schedule_next_event_from_contact_link
+        get_date_to_schedule_next_event_from_contacts_and_events
       end
     end
 
     ##
-    # The date from the most_recent_contact/last_contact.
+    # The most recent contact, event end, or event start date (as available)
+    #
     # @return[Date]
-    def get_date_to_schedule_next_event_from_contact_link
-      if last_contact && last_contact.contact_date_date
-        last_contact.contact_date_date
-      else
-        fail 'Could not decide the next scheduled event date without the contact date'
+    def get_date_to_schedule_next_event_from_contacts_and_events
+      date = most_recent_contact_date || most_recent_event_end_date || most_recent_event_start_date
+      unless date
+        fail 'Cannot decide the next scheduled event date without some contact or event date'
       end
+      date
+    end
+
+    def most_recent_contact_date
+      contacts.where('contact_date_date IS NOT NULL').
+        order('contact_date_date DESC').select(:contact_date_date).first.try(:contact_date_date)
+    end
+
+    def most_recent_event_end_date
+      events.where('event_end_date IS NOT NULL').
+        order('event_end_date DESC').select(:event_end_date).first.try(:event_end_date)
+    end
+
+    def most_recent_event_start_date
+      events.where('event_start_date IS NOT NULL').
+        order('event_start_date DESC').select(:event_start_date).first.try(:event_start_date)
     end
 
     def next_event_is_birth?
@@ -1511,11 +1541,6 @@ class Participant < ActiveRecord::Base
       ppg_info_source = NcsCode.for_list_name_and_local_code("INFORMATION_SOURCE_CL3", -5)
       ppg_info_mode   = NcsCode.for_list_name_and_local_code("CONTACT_TYPE_CL1", -5)
       PpgStatusHistory.create(:psu => self.psu, :ppg_status => new_ppg_status, :ppg_info_source => ppg_info_source, :ppg_info_mode => ppg_info_mode, :participant_id => self.id)
-    end
-
-    def move_to_high_intensity_if_required
-      enroll_in_high_intensity_arm! if can_enroll_in_high_intensity_arm?
-      high_intensity_conversion! if can_high_intensity_conversion?
     end
 
     ##

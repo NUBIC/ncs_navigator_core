@@ -62,5 +62,5 @@ When /^I edit "([^"]*)"'s responses for "([^"]*)"$/ do |respondent, title|
   survey = Survey.where(:title => title).first
   rs_access_code = ResponseSet.where(:user_id => person.id).first.access_code
 
-  visit edit_my_survey_path(survey.access_code, rs_access_code)
+  visit Surveyor::Engine.routes.url_helpers.edit_my_survey_path(survey.access_code, rs_access_code)
 end

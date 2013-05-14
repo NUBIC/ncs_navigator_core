@@ -149,6 +149,9 @@ event:pre-pregnancy_visit order:95_02
 Pregnancy Visit 1 - 13
 ----------------------
 
+# Multi Mode Visit Info 
+event:pregnancy_visit_1 instrument:3.0:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0 instrument:3.1:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0 instrument:3.2:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0 order:00_00 participant_type:mother
+
 # Biospecimen Adult Blood Instrument
 collection:biological event:pregnancy_visit_1 instrument:2.0:ins_bio_adultblood_dci_ehpbhi_p2_v1.0 instrument:2.1:ins_bio_adultblood_dci_ehpbhi_p2_v1.0 instrument:2.2:ins_bio_adultblood_dci_ehpbhi_m2.2_v2.0 instrument:3.0:ins_bio_adultblood_dci_ehpbhi_m2.2_v2.0 instrument:3.1:ins_bio_adultblood_dci_ehpbhi_m2.2_v2.0 instrument:3.2:ins_bio_adultblood_dci_ehpbhi_m2.2_v2.0 order:10_01 participant_type:mother
 
@@ -209,6 +212,9 @@ event:pregnancy_visit_1 order:95_03
 Pregnancy Visit 2 - 15
 ----------------------
 
+# Multi Mode Visit Info
+event:pregnancy_visit_2 instrument:3.0:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0 instrument:3.1:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0 instrument:3.2:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0 order:00_00 participant_type:mother
+
 # Biospecimen Adult Blood Instrument
 collection:biological event:pregnancy_visit_2 instrument:2.0:ins_bio_adultblood_dci_ehpbhi_p2_v1.0 instrument:2.1:ins_bio_adultblood_dci_ehpbhi_p2_v1.0 instrument:2.2:ins_bio_adultblood_dci_ehpbhi_m2.2_v2.0 instrument:3.0:ins_bio_adultblood_dci_ehpbhi_m2.2_v2.0 instrument:3.1:ins_bio_adultblood_dci_ehpbhi_m2.2_v2.0 instrument:3.2:ins_bio_adultblood_dci_ehpbhi_m2.2_v2.0 order:10_01 participant_type:mother
 
@@ -257,6 +263,9 @@ event:low_intensity_data_collection instrument:2.0:ins_que_lipregnotpreg_int_li_
 Father - 19
 -----------
 
+# Multi Mode Visit Info
+event:father instrument:3.0:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0 instrument:3.1:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0 instrument:3.2:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0 order:00_00 participant_type:mother
+
 # Father Informed Consent
 event:father event_type:informed_consent participant_type:father order:95_01
 
@@ -271,6 +280,9 @@ event:father order:95_02
 
 Birth LI - 18
 -------------
+
+# Multi Mode Visit Info 
+event:birth instrument:3.0:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0 instrument:3.1:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0 instrument:3.2:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0 order:00_00 participant_type:mother
 
 # Birth Interview (LI) Part 1
 event:birth instrument:2.0:ins_que_birth_int_li_p2_v1.0_part_one instrument:2.1:ins_que_birth_int_li_p2_v1.0_part_one instrument:2.2:ins_que_birth_int_li_p2_v1.0_part_one instrument:3.0:ins_que_birth_int_li_p2_v1.0_part_one instrument:3.1:ins_que_birth_int_li_m3.1_v2.0_part_one instrument:3.2:ins_que_birth_int_li_m3.1_v2.0_part_one mode:low_intensity_birth order:01_01 participant_type:mother
@@ -289,11 +301,15 @@ event:birth order:00_99 form:2.0:irb_con_informed_consent form:2.1:irb_con_infor
 Birth - 18
 ----------
 
+# Multi Mode Visit Info 
+event:birth instrument:3.0:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0 instrument:3.1:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0 instrument:3.2:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0 order:00_00 participant_type:mother
+
 # Biospecimen Cord Blood Instrument
 collection:biological event:birth instrument:2.0:ins_bio_cordblood_dci_ehpbhi_p2_v1.0 instrument:2.1:ins_bio_cordblood_dci_ehpbhi_m2.1_v2.0 instrument:2.2:ins_bio_cordblood_dci_ehpbhi_m2.2_v3.0 instrument:3.0:ins_bio_cordblood_dci_ehpbhi_m2.2_v3.0 instrument:3.1:ins_bio_cordblood_dci_ehpbhi_m2.2_v3.0 instrument:3.2:ins_bio_cordblood_dci_ehpbhi_m2.2_v3.0 order:10_01 participant_type:child
 
+
 # Child Participation Informed Consent
-event:birth order:00_00 form:2.0:irb_con_informed_consent form:2.1:irb_con_informed_consent form:2.2:irb_con_informed_consent form:3.0:irb_con_informed_consent form:3.1:irb_con_informed_consent form:3.2:irb_con_informed_consent participant_type:child
+event:birth order:00_01 form:2.0:irb_con_informed_consent form:2.1:irb_con_informed_consent form:2.2:irb_con_informed_consent form:3.0:irb_con_informed_consent form:3.1:irb_con_informed_consent form:3.2:irb_con_informed_consent participant_type:child
 
 # Birth Interview Part 1
 event:birth instrument:2.0:ins_que_birth_int_ehpbhi_p2_v2.0_part_one instrument:2.1:ins_que_birth_int_ehpbhi_p2_v2.0_part_one instrument:2.2:ins_que_birth_int_ehpbhi_p2_v2.0_part_one instrument:3.0:ins_que_birth_int_ehpbhipbs_m3.0_v3.0_part_one instrument:3.1:ins_que_birth_int_ehpbhipbs_m3.0_v3.0_part_one instrument:3.2:ins_que_birth_int_m3.2_v3.1_part_one order:01_01 participant_type:mother
@@ -305,10 +321,10 @@ event:birth instrument:2.0:ins_que_birth_int_ehpbhi_p2_v2.0_birth_visit_baby_nam
 event:birth instrument:2.0:ins_que_birth_int_ehpbhi_p2_v2.0_part_two instrument:2.1:ins_que_birth_int_ehpbhi_p2_v2.0_part_two instrument:2.2:ins_que_birth_int_ehpbhi_p2_v2.0_part_two instrument:3.0:ins_que_birth_int_ehpbhipbs_m3.0_v3.0_part_two instrument:3.1:ins_que_birth_int_ehpbhipbs_m3.0_v3.0_part_two instrument:3.2:ins_que_birth_int_m3.2_v3.1_part_two order:01_03 participant_type:mother references:2.0:ins_que_birth_int_ehpbhi_p2_v2.0_part_one references:2.1:ins_que_birth_int_ehpbhi_p2_v2.0_part_one references:2.2:ins_que_birth_int_ehpbhi_p2_v2.0_part_one references:3.0:ins_que_birth_int_ehpbhipbs_m3.0_v3.0_part_one references:3.1:ins_que_birth_int_ehpbhipbs_m3.0_v3.0_part_one references:3.2:ins_que_birth_int_m3.2_v3.1_part_one
 
 # Participant Verification Questionnaire Part 1
-event:birth instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one instrument:3.1:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one instrument:3.2:ins_que_pbspartverbirth_int_m3.2_v1.0_part_one order:00_01 participant_type:mother
+event:birth instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one instrument:3.1:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one instrument:3.2:ins_que_pbspartverbirth_int_m3.2_v1.0_part_one order:00_02 participant_type:mother
 
 # Participant Verification Questionnaire Part 2
-event:birth instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_two instrument:3.1:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_two instrument:3.2:ins_que_pbspartverbirth_int_m3.2_v1.0_part_two order:00_02 participant_type:child references:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one references:3.1:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one references:3.2:ins_que_pbspartverbirth_int_m3.2_v1.0_part_one
+event:birth instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_two instrument:3.1:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_two instrument:3.2:ins_que_pbspartverbirth_int_m3.2_v1.0_part_two order:00_03 participant_type:child references:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one references:3.1:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one references:3.2:ins_que_pbspartverbirth_int_m3.2_v1.0_part_one
 
 # Tracing Instrument
 event:birth instrument:3.0:ins_que_tracing_int_ehpbhilipbs_m3.0_v1.0 instrument:3.1:ins_que_tracing_int_ehpbhilipbs_m3.0_v1.0 instrument:3.2:ins_que_tracing_int_ehpbhilipbs_m3.0_v1.0 order:90_01 participant_type:mother
@@ -324,6 +340,9 @@ event:birth order:95_04
 
 3 Month - 23
 ------------
+
+# Multi Mode Visit Info 
+event:3_month instrument:3.0:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0 instrument:3.1:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0 instrument:3.2:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0 order:00_00 participant_type:mother
 
 # 3-Month Mother Interview Part 1 - 01_01
 event:3_month instrument:2.0:ins_que_3mmother_int_ehpbhi_p2_v1.1_part_one instrument:2.1:ins_que_3mmother_int_ehpbhi_p2_v1.1_part_one instrument:2.2:ins_que_3mmother_int_ehpbhi_p2_v1.1_part_one instrument:3.0:ins_que_3mmother_int_ehpbhi_p2_v1.1_part_one instrument:3.1:ins_que_3month_int_ehpbhilipbs_m3.1_v2.0_part_one instrument:3.2:ins_que_3month_int_ehpbhilipbs_m3.1_v2.0_part_one order:01_01 participant_type:mother
@@ -352,6 +371,9 @@ collection:biological event:3_month instrument:3.1:ins_bio_breastmilkcoll_saqspe
 
 6 Month - 24
 ------------
+
+# Multi Mode Visit Info 
+event:6_month instrument:3.0:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0 instrument:3.1:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0 instrument:3.2:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0 order:00_00 participant_type:mother
 
 # Participant Verification Questionnaire Part 1
 event:6_month instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one instrument:3.1:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one instrument:3.2:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one order:00_01 participant_type:mother
@@ -389,6 +411,9 @@ event:6_month order:95_02
 9 Month - 26
 ------------
 
+# Multi Mode Visit Info 
+event:9_month instrument:3.0:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0 instrument:3.1:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0 instrument:3.2:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0 order:00_00 participant_type:mother
+
 # 9-Month Mother Phone Interview Part 1
 event:9_month instrument:2.0:ins_que_9mmother_int_ehpbhi_p2_v1.1_part_one instrument:2.1:ins_que_9mmother_int_ehpbhi_p2_v1.1_part_one instrument:2.2:ins_que_9mmother_int_ehpbhi_p2_v1.1_part_one instrument:3.0:ins_que_9mmother_int_ehpbhi_p2_v1.1_part_one instrument:3.1:ins_que_9month_int_ehpbhilipbs_m3.1_v2.0_part_one instrument:3.2:ins_que_9month_int_ehpbhilipbs_m3.1_v2.0_part_one order:01_01 participant_type:mother
 
@@ -407,6 +432,9 @@ event:9_month instrument:3.0:ins_que_tracing_int_ehpbhilipbs_m3.0_v1.0 instrumen
 
 12 Month - 27
 -------------
+
+# Multi Mode Visit Info 
+event:12_month instrument:3.0:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0 instrument:3.1:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0 instrument:3.2:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0 order:00_00 participant_type:mother
 
 # 12-Month Mother Interview Part 1
 event:12_month instrument:2.0:ins_que_12mmother_int_ehpbhi_p2_v1.1_part_one instrument:2.1:ins_que_12mmother_int_ehpbhi_p2_v1.1_part_one instrument:2.2:ins_que_12mmother_int_ehpbhi_p2_v1.1_part_one instrument:3.0:ins_que_12mmother_int_ehpbhi_p2_v1.1_part_one instrument:3.1:ins_que_12month_int_ehpbhipbs_m3.1_v2.0_part_one instrument:3.2:ins_que_12month_int_ehpbhipbs_m3.1_v2.0_part_one order:01_01 participant_type:mother
@@ -459,6 +487,9 @@ event:12_month order:96_01
 18 Month - 30
 -------------
 
+# Multi Mode Visit Info 
+event:18_month instrument:3.0:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0 instrument:3.1:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0 instrument:3.2:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0 order:00_00 participant_type:mother
+
 # 18-Month Mother Interview Part 1 - 01_01
 event:18_month instrument:2.0:ins_que_18mmother_int_ehpbhi_p2_v1.0_part_one instrument:2.1:ins_que_18mmother_int_ehpbhi_p2_v1.0_part_one instrument:2.2:ins_que_18mmother_int_ehpbhi_m2.2_v2.0_part_one instrument:3.0:ins_que_18mmother_int_ehpbhi_m2.2_v2.0_part_one instrument:3.1:ins_que_18month_int_ehpbhilipbs_m3.1_v3.0_part_one instrument:3.2:ins_que_18month_int_ehpbhilipbs_m3.1_v3.0_part_one order:01_01 participant_type:mother
 
@@ -507,6 +538,9 @@ event:18_month instrument:3.1:ins_neu_22monthasq_saqspec_ehpbhilipbs_m3.1_v1.0 i
 
 24 Month - 31
 -------------
+
+# Multi Mode Visit Info 
+event:24_month instrument:3.0:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0 instrument:3.1:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0 instrument:3.2:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0 order:00_00 participant_type:mother
 
 # 24-Month Mother Interview Part 1 - 01_01
 event:24_month instrument:2.0:ins_que_24mmother_int_ehpbhi_p2_v1.0_part_one instrument:2.1:ins_que_24mmother_int_ehpbhi_p2_v1.0_part_one instrument:2.2:ins_que_24mmother_int_ehpbhi_m2.2_v2.0_part_one instrument:3.0:ins_que_24mmother_int_ehpbhi_m2.2_v2.0_part_one
@@ -560,6 +594,9 @@ event:24_month instrument:3.1:ins_neu_mchat_saqspec_ehpbhilipbs_m3.1_v1.0 instru
 30 Month - 36
 --------------
 
+# Multi Mode Visit Info 
+event:30_month instrument:3.0:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0 instrument:3.1:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0 instrument:3.2:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0 order:00_00 participant_type:mother
+
 # 30-Month Interview Part 1
 event:30_month instrument:3.1:ins_que_30month_int_ehpbhilipbs_m3.1_v1.0_part_one instrument:3.2:ins_que_30month_int_ehpbhilipbs_m3.1_v1.0_part_one order:01_01 participant_type:mother
 
@@ -593,6 +630,3 @@ Validation Event - 21
 # Validation Instrument
 event:validation instrument:2.0:ins_que_validateallto12m_int_ehpbhili_p2_v1.0 instrument:2.1:ins_que_validateallto12m_int_ehpbhili_p2_v1.0 instrument:2.2:ins_que_validateallto12m_int_ehpbhili_p2_v1.0 instrument:3.0:ins_que_validateallto12m_int_ehpbhili_p2_v1.0
 instrument:3.1:ins_que_validateallevents_int_ehpbhilipbs_m3.1_v2.0 instrument:3.2:ins_que_validateallevents_int_ehpbhilipbs_m3.1_v2.0 order:01_01 participant_type:mother
-
-
-

@@ -540,18 +540,12 @@ module NcsNavigator::Core::Warehouse::ThreePointOne
       let(:warehouse_model) { wh_config.model(:Instrument) }
       let(:core_model) { Instrument }
 
-      let!(:instrument) { Factory(:instrument, :event => Factory(:mdes_min_event)) }
+      let!(:instrument) { Factory(:instrument) }
 
       include_examples 'one to one'
 
       it 'uses the public ID for event' do
         results.first.event_id.should == Event.first.event_id
-      end
-
-      it 'emits nothing when the associated event has no disposition' do
-        Event.first.tap { |e| e.event_disposition = nil }.save!
-
-        results.should == []
       end
 
       describe 'with manually mapped variables' do
@@ -582,14 +576,6 @@ module NcsNavigator::Core::Warehouse::ThreePointOne
 
       include_examples 'one to one'
 
-      before do
-        # This rigamarole is because you apparently can't stop
-        # FactoryGirl from initializing associations, even if you
-        # provide an override.
-        ContactLink.create!(
-          :psu_code => 20000030, :event => event, :contact => Factory(:contact), :staff_id => 'dc')
-      end
-
       describe 'with manually mapped variables' do
         include_context 'mapping test'
 
@@ -604,16 +590,74 @@ module NcsNavigator::Core::Warehouse::ThreePointOne
         results.first.participant_id.should == Participant.first.p_id
       end
 
-      it 'emits nothing when there are no associated contact links' do
-        ContactLink.destroy_all
-        results.should == []
+      describe 'with no disposition' do
+        before do
+          event.event_disposition = nil
+          event.save!
+        end
+
+        it 'emits event when there is associated contact link' do
+          # This rigamarole is because you apparently can't stop
+          # FactoryGirl from initializing associations, even if you
+          # provide an override.
+          ContactLink.create!(
+            :psu_code => 20000030, :event => event, :contact => Factory(:contact), :staff_id => 'dc')
+          results.size.should == 1
+        end
+
+        it 'emits event when there is associated instrument' do
+          Factory(:instrument, :event => event)
+          results.size.should == 1
+        end
+
+        it 'emits nothing when there is no associated contact link and no associated instrument' do
+          results.should == []
+        end
       end
 
-      it 'emits nothing when there is no disposition' do
-        event.event_disposition = nil
-        event.save!
+      describe 'with no associated contact link' do
+        it 'emits event when there is disposition' do
+          results.size.should == 1
+        end
 
-        results.should == []
+        describe 'and with no disposition' do
+          before do
+            event.event_disposition = nil
+            event.save!
+          end
+
+          it 'emits event when there is associated instrument' do
+            Factory(:instrument, :event => event)
+            results.size.should == 1
+          end
+
+          it 'emits nothing when there is no associated instrument' do
+            results.should == []
+          end
+        end
+      end
+
+      describe 'with no associated instrument' do
+        it 'emits event when there is disposition' do
+          results.size.should == 1
+        end
+
+        describe 'and with no disposition' do
+          before do
+            event.event_disposition = nil
+            event.save!
+          end
+
+          it 'emits event when there is associated contact link' do
+            ContactLink.create!(
+              :psu_code => 20000030, :event => event, :contact => Factory(:contact), :staff_id => 'dc')
+            results.size.should == 1
+          end
+
+          it 'emits nothing when there is no associated contact link' do
+            results.should == []
+          end
+        end
       end
 
       describe '#event_disp' do
@@ -686,7 +730,7 @@ module NcsNavigator::Core::Warehouse::ThreePointOne
       let(:warehouse_model) { wh_config.model(:LinkContact) }
       let(:core_model) { ContactLink }
 
-      let!(:contact_link) { Factory(:contact_link, :event => Factory(:mdes_min_event)) }
+      let!(:contact_link) { Factory(:contact_link) }
 
       include_examples 'one to one'
 
@@ -712,12 +756,6 @@ module NcsNavigator::Core::Warehouse::ThreePointOne
 
       it 'uses the public ID for provider' do
         results.first.provider_id.should == Provider.first.provider_id
-      end
-
-      it 'emits nothing if the associated event has no disposition' do
-        contact_link.event.tap { |e| e.event_disposition = nil }.save!
-
-        results.should == []
       end
     end
 

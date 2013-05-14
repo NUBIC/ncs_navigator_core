@@ -183,7 +183,7 @@ describe OperationalDataExtractor::PrePregnancy do
       friend.telephones.first.phone_nbr.should == "3125551212"
 
       friend.addresses.first.should_not be_nil
-      friend.addresses.first.to_s.should == "123 Easy St. Chicago, ILLINOIS 65432-1234"
+      friend.addresses.first.to_s.should == "123 Easy St. Chicago, Illinois 65432-1234"
       friend.addresses.first.address_rank_code.should == 1
     end
 
@@ -220,7 +220,7 @@ describe OperationalDataExtractor::PrePregnancy do
       neighbor.telephones.first.phone_nbr.should == "3125551212"
 
       neighbor.addresses.first.should_not be_nil
-      neighbor.addresses.first.to_s.should == "123 Tapestry St. Chicago, ILLINOIS 65432-1234"
+      neighbor.addresses.first.to_s.should == "123 Tapestry St. Chicago, Illinois 65432-1234"
     end
 
     it "creates an other relative person record and associates it with the particpant" do

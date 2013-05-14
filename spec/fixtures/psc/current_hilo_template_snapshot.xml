@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <study-snapshot xmlns="http://bioinformatics.northwestern.edu/ns/psc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" assigned-identifier="NCS Hi-Lo" xsi:schemaLocation="http://bioinformatics.northwestern.edu/ns/psc http://bioinformatics.northwestern.edu/ns/psc/psc.xsd">
   <planned-calendar id="80f00ffd-5454-4193-aca5-23f289a22e9a">
     <epoch id="73f6c858-4069-411a-8d82-c9d558c07d68" name="LO-Intensity">
@@ -131,6 +132,15 @@
             <label id="6a33d2d8-b9a9-4c70-ba94-9d048a02aec1" name="order:00_99"/>
             <label id="7baebd3b-c1cf-4b08-a807-fffa7629f6c7" name="participant_type:child"/>
             <activity-reference code="CC" source="NCS"/>
+          </planned-activity>
+          <planned-activity id="059af63f-3afb-4337-bc2b-2bb1038c5790" day="1">
+            <label id="38465280-e97a-4300-955d-b09bf8706e08" name="event:birth"/>
+            <label id="6659cb7e-e8c8-4dfc-ab3e-5d42fa9718d8" name="instrument:3.0:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0"/>
+            <label id="386b3d85-bec2-4d11-bdda-b4038d610840" name="instrument:3.1:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0"/>
+            <label id="853741bb-4a28-4e2c-9acb-ae2e4ba25506" name="instrument:3.2:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0"/>
+            <label id="6e22e58a-cdb4-4465-ab90-46df51512f11" name="order:00_00"/>
+            <label id="8331b823-3718-492e-8c11-fc2a9ff01714" name="participant_type:mother"/>
+            <activity-reference code="MMISI" source="NCS"/>
           </planned-activity>
         </period>
       </study-segment>
@@ -367,6 +377,15 @@
             <label id="2ba471bd-b9f3-42d1-87d1-554eda2d51af" name="participant_type:child"/>
             <activity-reference code="CCB6" source="NCS"/>
           </planned-activity>
+          <planned-activity id="651deb6d-18d8-4033-bbd8-e013703247d7" day="1">
+            <label id="4a0070d4-287c-41b8-a834-c1a09aa564a4" name="event:pregnancy_visit_1"/>
+            <label id="56045ae4-5b75-483e-8aa4-54a4fd5724ce" name="instrument:3.0:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0"/>
+            <label id="aba920ae-f7b8-4619-ac12-b6fc5165e0b6" name="instrument:3.1:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0"/>
+            <label id="cf2ab41d-835f-4024-b56a-c1aba0958a6e" name="instrument:3.2:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0"/>
+            <label id="7331b1bf-2caf-459b-8f21-2fefda9c70f7" name="order:00_00"/>
+            <label id="1d84fe4a-1c34-4fa4-a188-8e255075d741" name="participant_type:mother"/>
+            <activity-reference code="MMISI" source="NCS"/>
+          </planned-activity>
         </period>
       </study-segment>
       <study-segment id="b95c04d8-daa2-4a43-9a0c-cc42d4f8e624" name="Pre-Pregnancy Visit">
@@ -539,6 +558,15 @@
             <label id="6f8d630e-9dd3-41f3-ab8c-ba3dfa5d0880" name="participant_type:child"/>
             <activity-reference code="CCB6" source="NCS"/>
           </planned-activity>
+          <planned-activity id="454a366b-bc8c-47d6-9547-b704f01b4206" day="1">
+            <label id="80cc13c8-3c4f-448a-bb59-2c574711f7e2" name="event:pregnancy_visit_2"/>
+            <label id="b0310cfa-6531-448f-a159-605a66745abc" name="instrument:3.0:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0"/>
+            <label id="b21332a6-1b97-45aa-a6d4-5d6fa55bb2bf" name="instrument:3.1:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0"/>
+            <label id="dbba35da-8138-48b7-a2a1-47dc962e817f" name="instrument:3.2:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0"/>
+            <label id="ce3b8b46-78ab-4e76-929f-c2d427dae6c9" name="order:00_00"/>
+            <label id="ed6fa861-ae53-49d6-97c3-dfa150c80aaf" name="participant_type:mother"/>
+            <activity-reference code="MMISI" source="NCS"/>
+          </planned-activity>
         </period>
       </study-segment>
       <study-segment id="a6af42b4-6aec-4c63-a8d3-8b59474da940" name="Father Consent and Interview">
@@ -575,6 +603,15 @@
             <label id="93410a71-93f9-4d96-9469-e6d0b6db2fb2" name="order:00_01"/>
             <label id="0e289ac1-0c65-4f4c-8f13-f6e010b6b7e2" name="participant_type:father"/>
             <activity-reference code="PVI" source="NCS"/>
+          </planned-activity>
+          <planned-activity id="c787a510-ef3c-4768-8acd-f583b920e683" day="1">
+            <label id="5acb3f81-8e39-48d8-b861-7fb8bd40402b" name="event:father"/>
+            <label id="0abe1790-f403-48b4-b8d2-c93ebdd4ba09" name="instrument:3.0:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0"/>
+            <label id="255859c3-065c-49a0-b403-8c2dae9d0447" name="instrument:3.1:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0"/>
+            <label id="b219271f-39c4-4a18-9c1d-5fa7d88d06a1" name="instrument:3.2:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0"/>
+            <label id="a3c735fd-896a-4dfb-9990-fa61bd39935f" name="order:00_00"/>
+            <label id="934412c3-942c-44e2-9785-e7d9ef4edb7e" name="participant_type:mother"/>
+            <activity-reference code="MMISI" source="NCS"/>
           </planned-activity>
         </period>
       </study-segment>
@@ -1144,7 +1181,7 @@
             <label id="c55daeec-8823-4af6-bc66-2280cbe5c239" name="instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one"/>
             <label id="37149d6c-984c-4357-903f-69c43b0f3749" name="instrument:3.1:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one"/>
             <label id="0a09af3f-505c-4fbb-a3a2-9ffa3e972bce" name="instrument:3.2:ins_que_pbspartverbirth_int_m3.2_v1.0_part_one"/>
-            <label id="d42a7eaf-3137-4469-8bc6-7c5fd7193fd9" name="order:00_01"/>
+            <label id="fba5086c-fe98-4cbe-8265-02d5ecf7b3ab" name="order:00_02"/>
             <label id="5f3df1ab-390d-40eb-8cce-cf5b6fa13b3f" name="participant_type:mother"/>
             <activity-reference code="PVI" source="NCS"/>
           </planned-activity>
@@ -1162,7 +1199,7 @@
             <label id="4fb12ae4-a5d7-4c68-854d-a8d03628b6d6" name="instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_two"/>
             <label id="52c9fd6a-7583-4155-bac3-85f228e4fc88" name="instrument:3.1:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_two"/>
             <label id="47290f80-43a7-42d8-bec5-be13a978b23e" name="instrument:3.2:ins_que_pbspartverbirth_int_m3.2_v1.0_part_two"/>
-            <label id="ce5adabf-c781-46f9-8c9b-cdb9bd9a3b50" name="order:00_02"/>
+            <label id="d0e2f95e-84ec-4f28-b80f-8ebbcb80a2da" name="order:00_03"/>
             <label id="7997d28b-28b2-49a5-aa11-946616547d2c" name="participant_type:child"/>
             <label id="97c24245-0d63-4d19-9906-b8c89e2e40ae" name="references:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one"/>
             <label id="a8cf5e3d-e8e8-4bec-9870-8b2a4a360ae3" name="references:3.1:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one"/>
@@ -1532,7 +1569,7 @@
             <label id="b91454d5-6d05-4b55-b5bb-4f7209013f7e" name="form:3.0:irb_con_informed_consent"/>
             <label id="ad01362d-a050-441d-a9a4-c4f4f9244eff" name="form:3.1:irb_con_informed_consent"/>
             <label id="50f07073-1818-43ae-819d-33900dd861a4" name="form:3.2:irb_con_informed_consent"/>
-            <label id="0affde12-6d33-41df-b72d-50a2ed67989a" name="order:00_00"/>
+            <label id="871dfaf0-e9a2-43d8-a0bc-31801a5c5350" name="order:00_01"/>
             <label id="5c3aebe8-2fc0-4d28-b121-e450372934d3" name="participant_type:child"/>
             <activity-reference code="CCB6" source="NCS"/>
           </planned-activity>
@@ -1547,6 +1584,69 @@
             <label id="a6682bed-e014-4c29-8946-da715a4a866d" name="order:01_01"/>
             <label id="efff60c4-d51e-45d1-bc50-9c7d0d69b0c6" name="participant_type:child"/>
             <activity-reference code="CC6AM" source="NCS"/>
+          </planned-activity>
+          <planned-activity id="3e25286a-9ff7-4345-8dc5-cac850d877b7" day="1">
+            <label id="37754241-5e14-411c-8208-e61c08af7b7d" name="event:birth"/>
+            <label id="843efbec-006b-4c6d-a2cf-6503917594ba" name="instrument:3.0:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0"/>
+            <label id="a5db2a9a-9622-4afc-9ef6-e18d94fd3ad3" name="instrument:3.1:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0"/>
+            <label id="733ae397-74fd-4504-851d-1e49ce30a81d" name="instrument:3.2:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0"/>
+            <label id="474d175f-e572-451e-94d9-a3578f7ee854" name="order:00_00"/>
+            <label id="6798c8e3-68dc-4a3d-981b-4a2a9c310fab" name="participant_type:mother"/>
+            <activity-reference code="MMISI" source="NCS"/>
+          </planned-activity>
+          <planned-activity id="a13dacf8-a309-4ae5-837e-e559a06ee885" day="92">
+            <label id="e810d80c-3030-4ec1-a43b-bf19821cd408" name="event:3_month"/>
+            <label id="6648a3c7-d340-4027-82a6-6cd68e0049a9" name="instrument:3.0:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0"/>
+            <label id="57f670c0-0486-482e-90fe-ea09a9b75d3b" name="instrument:3.1:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0"/>
+            <label id="872c19c0-decd-4b97-a418-1670ee9a6a4f" name="instrument:3.2:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0"/>
+            <label id="7bbfba8d-a813-4014-8ba0-e2f953793518" name="order:00_00"/>
+            <label id="aadbf62a-376c-4d5d-928d-61a32682f222" name="participant_type:mother"/>
+            <activity-reference code="MMISI" source="NCS"/>
+          </planned-activity>
+          <planned-activity id="1c1ae319-36c2-4173-bad6-c95d5b7ddce2" day="183">
+            <label id="c870d6bd-2be8-46ff-99c8-7974f9abbec0" name="event:6_month"/>
+            <label id="99458ec0-077d-456e-8a9b-fafd6b7d33e5" name="instrument:3.0:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0"/>
+            <label id="d74da5f3-aa8e-4de0-bf46-a6ba1ac7c03e" name="instrument:3.1:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0"/>
+            <label id="9f71f1a7-9eef-47b8-86cd-c131ee77a1c0" name="instrument:3.2:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0"/>
+            <label id="1302101b-6f04-4c50-8ef7-8253303b869c" name="order:00_00"/>
+            <label id="6974ac29-51be-4e9b-bf9a-d273c87cd9f0" name="participant_type:mother"/>
+            <activity-reference code="MMISI" source="NCS"/>
+          </planned-activity>
+          <planned-activity id="0060ddf0-5295-47f4-b98c-38a536b502a8" day="274">
+            <label id="4b1d6dd3-1105-4060-9a0a-a976da994daf" name="event:9_month"/>
+            <label id="bc85fd26-8da1-4b7e-9c70-5c9f49861aa1" name="instrument:3.0:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0"/>
+            <label id="e6c86d80-aff1-43a1-9877-80bb58b78f69" name="instrument:3.1:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0"/>
+            <label id="3e363a72-29b6-4cd2-89d1-996b2885a5f9" name="instrument:3.2:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0"/>
+            <label id="78d04d4a-7391-47f7-b6b3-9c57eaffcee7" name="order:00_00"/>
+            <label id="e1127ac0-3917-42f9-afac-2dfa68728641" name="participant_type:mother"/>
+            <activity-reference code="MMISI" source="NCS"/>
+          </planned-activity>
+          <planned-activity id="67604b3d-c750-4544-b055-25c89df9eeea" day="366">
+            <label id="a62c3848-c99c-4434-9858-17bf28b426dc" name="event:12_month"/>
+            <label id="8e90bc10-56b7-42a1-8d56-d312a0639285" name="instrument:3.0:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0"/>
+            <label id="7f51ab3f-e40d-4ee9-8811-8cc366acd453" name="instrument:3.1:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0"/>
+            <label id="9ba1c80b-8090-4803-b383-4ab8d9b09173" name="instrument:3.2:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0"/>
+            <label id="4e5778cc-ebdb-4359-9db5-017c4671fe5a" name="order:00_00"/>
+            <label id="6cefbcf7-0437-448e-9ffb-4ee80d4afbbf" name="participant_type:mother"/>
+            <activity-reference code="MMISI" source="NCS"/>
+          </planned-activity>
+          <planned-activity id="01ed779e-cce9-4be1-860f-bcad501a5116" day="548">
+            <label id="1ef8249e-a206-4dcf-bc05-b701bacbfa46" name="event:18_month"/>
+            <label id="1751434c-42f4-40c4-b0c2-6200fd8aeb8b" name="instrument:3.0:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0"/>
+            <label id="379ff751-cffc-44f8-a3db-83268548390e" name="instrument:3.1:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0"/>
+            <label id="353dddbe-8301-440d-9b76-badffc4b4c5c" name="instrument:3.2:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0"/>
+            <label id="d32563f2-b144-4170-b096-298803ab110d" name="order:00_00"/>
+            <label id="2d75744f-2063-4b7a-8262-27c20a8bd95f" name="participant_type:mother"/>
+            <activity-reference code="MMISI" source="NCS"/>
+          </planned-activity>
+          <planned-activity id="a3c35aa4-80ab-4d93-8615-8479da066f27" day="730">
+            <label id="397b91fe-e74d-486d-8cad-359e9ffa9991" name="event:24_month"/>
+            <label id="01d43b78-29f8-42fc-86f7-32965d14ca3c" name="instrument:3.0:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0"/>
+            <label id="91acef55-2751-4a18-bc08-14353133965b" name="instrument:3.1:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0"/>
+            <label id="f9d1a88a-3644-4570-988d-dd7e94dd9787" name="instrument:3.2:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0"/>
+            <label id="609d2368-8d12-4cd6-b6ed-430268fa9cda" name="order:00_00"/>
+            <label id="a82ebcf8-4bcc-4362-a784-0e5200da0b87" name="participant_type:mother"/>
+            <activity-reference code="MMISI" source="NCS"/>
           </planned-activity>
         </period>
         <period id="5889ade0-19c3-4d28-9449-bdc669bd8b4d" name="30 Month" repetitions="1" start-day="913" duration-quantity="1" duration-unit="day">
@@ -1631,6 +1731,15 @@
             <label id="13937877-78f6-4bad-9a62-11784f0e5b93" name="order:95_03"/>
             <label id="ecb10aa7-d74f-4d0a-936f-ae919037ebad" name="participant_type:child"/>
             <activity-reference code="ISPSAQ" source="NCS"/>
+          </planned-activity>
+          <planned-activity id="31a064d9-2fd9-417c-8ecf-82a31df9c97f" day="1">
+            <label id="961338af-f789-41a1-b091-e837e5cd0746" name="event:30_month"/>
+            <label id="927643d5-9000-400f-8ef8-2878884fa2ff" name="instrument:3.0:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0"/>
+            <label id="09b567fa-2a86-493d-8e99-6ff1ef2746f6" name="instrument:3.1:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0"/>
+            <label id="994906a2-44c2-4dcc-8b93-ab327f8824c4" name="instrument:3.2:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0"/>
+            <label id="39855c44-e0c9-4c9d-a109-10261c03eb95" name="order:00_00"/>
+            <label id="370c01b5-7477-482c-baf7-49b842f87603" name="participant_type:mother"/>
+            <activity-reference code="MMISI" source="NCS"/>
           </planned-activity>
         </period>
       </study-segment>
@@ -1917,6 +2026,7 @@
       <activity name="Birth Interview Part One" code="BI1" description="Birth Interview Part One" type="Instrument"/>
       <activity name="Birth Interview Part Two" code="BI2" description="Birth Interview Part Two" type="Instrument"/>
       <activity name="Brief Symptom Inventory (BSI) SAQ" code="BSISAQ" description="Brief Symptom Inventory (BSI) SAQ" type="Instrument"/>
+      <activity name="Multi-Mode Information Script Instrument" code="MMISI" description="Multi-Mode Information Script Instrument" type="Instrument"/>
       <activity name="3-Month Mother Phone Interview Child Detail" code="3MMPI CD" description="3-Month Mother Phone Interview Child Detail - Child Loop" type="Instrument"/>
       <activity name="Biospecimen Adult Urine Instrument" code="BAUI" description="Biospecimen Adult Urine Instrument" type="Biospecimen"/>
       <activity name="3-Month Mother Phone Interview Child Habits" code="3MMPI CH" description="3-Month Mother Phone Interview Child Habits - Child Loop" type="Instrument"/>

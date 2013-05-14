@@ -1,0 +1,141 @@
+%h3#appointment-sheet-header APPOINTMENT SHEET
+
+#appointment-sheet
+  #visit-info
+    #event-info
+      .name
+        = @sheet.event_type
+      Data Collector:
+      - if current_user
+        = "#{current_user.first_name} #{current_user.last_name}"
+      - else
+        %span.not-found
+          Name unknown
+      #event-date-and-time
+        = @event_date + " "
+        - if @event_time
+          = @event_time
+        - else
+          %span.not-found
+            Event time unknown
+      #address
+        -if @sheet.address
+          = @sheet.address.address_one
+          - if @sheet.address.address_two
+            %br
+          = @sheet.address.address_two
+          %br
+          = "#{@sheet.address.city}, #{@sheet.address.state.to_s.titleize} #{@sheet.address.zip_code}"
+        -else
+          .not-found
+            No address information
+      #phone
+        - if @sheet.cell_phone
+          = "Cell: #{@sheet.cell_phone}"
+          - if @sheet.home_phone
+            %br
+            = "Home: #{@sheet.home_phone}"
+        - else
+          .not-found
+            No phone numbers
+
+    #participant-info
+      Participant:
+      %span.name
+        = @sheet.participant_full_name
+      %div
+        = @sheet.participant_public_id
+      - if @sheet.participant_language
+        #language
+          = "Speaks: #{@sheet.participant_language}"
+      - else
+        %div
+          Speaks:
+          .not-found
+            No language information
+      Consents:
+      - if @sheet.mothers_consents.empty?
+        .not-found
+          No mother consents found
+      - else
+        - @sheet.mothers_consents.each do |consent|
+          #consents
+            = consent
+      - if @sheet.children.empty?
+        .not-found
+          No children found
+      - else
+        #children
+        - @sheet.children.each_index do |child_index|
+          Child:
+          %span.name
+            #{@sheet.child_names[child_index]}
+          .child_attributes
+            - if @sheet.child_birth_dates[child_index]
+              = "Birth date: #{@sheet.child_birth_dates[child_index]}"
+            - else
+              .not-found
+                Unknown birth date
+          .child_attributes
+            - if @sheet.child_due_dates[child_index]
+              = "Due date: #{@sheet.child_due_dates[child_index]}"
+            - else
+              .not-found
+                Unknown due date
+          .child_attributes
+            - if @sheet.child_sexes[child_index]
+              = @sheet.child_sexes[child_index]
+            - else
+              .not-found
+                Unknown sex
+          .child_attributes
+            - if @sheet.child_ages[child_index]
+              = "#{@sheet.child_ages[child_index]} old"
+            - else
+              .not-found
+                Unknown age
+          Consents:
+          - if @sheet.child_consents.empty?
+            No consents found for children
+          - else
+            - if @sheet.child_consents[child_index].empty?
+              .not-found
+                No consents found for this child
+            - else
+              - @sheet.child_consents[child_index].each do |consent|
+                #consents
+                  = consent
+
+  - pending_event = @participant.pending_events.first
+  - activities_for_event = []
+  - activities_for_event = @participant_activity_plan.scheduled_activities_for_event(pending_event) if pending_event
+
+  #before-you-go-info
+    Before you go:
+    - if @sheet.last_contact_comment.blank?
+      .not-found
+        No comments from a former contact
+    - else
+      #contact_comments
+        = @sheet.last_contact_comment
+  #instrument-list
+    - if @participant_activity_plan && pending_event
+      %span#to-be-conducted
+        To be conducted:
+      .activities
+        - activities_for_event.each do |a|
+          .activity
+            %span{ :title => a.current_state}
+              &nbsp;
+            = a.activity_name
+    - else
+      %span.not-found
+        Subject does not have a schedule matching pending events
+  #next-event
+    Next Event:
+    - if @sheet.next_event
+      %span.name
+        #{@sheet.next_event}
+    - else
+      %span.not-found
+        Next event unknown

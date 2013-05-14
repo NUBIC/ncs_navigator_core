@@ -24,6 +24,7 @@ class ResponseSet < ActiveRecord::Base
   include NcsNavigator::Core::Surveyor::HasPublicId
   include ResponseSetPrepopulation
   include Surveyor::Models::ResponseSetMethods
+  include NcsNavigator::Core::ImportAware
 
   belongs_to :person, :foreign_key => :user_id, :class_name => 'Person', :primary_key => :id
   belongs_to :participant, :inverse_of => :response_sets
@@ -33,7 +34,7 @@ class ResponseSet < ActiveRecord::Base
   belongs_to :participant_consent, :inverse_of => :response_set
   belongs_to :non_interview_report, :inverse_of => :response_set
 
-  after_save :extract_operational_data
+  after_save :extract_operational_data, :unless => lambda { self.in_importer_mode? }
 
   attr_accessible :participant_id
 
@@ -59,12 +60,13 @@ class ResponseSet < ActiveRecord::Base
   end
 
   ##
-  # Responses in the response set that are targeted for Mustache context helper
-  # questions.
-  def mustache_helper_responses
-    # The reorder(nil) is a hack to work around overly-broad default orders in
-    # Surveyor.
-    responses.reorder(nil).merge(Question.for_mustache_helpers)
+  # Questions in this response set's survey whose answers will provide values
+  # for Mustache helpers.
+  #
+  # This ResponseSet MUST be associated with a persisted Survey before you
+  # invoke this method.
+  def helper_questions
+    survey.questions.for_mustache_helpers
   end
 
   ##
@@ -89,6 +91,43 @@ class ResponseSet < ActiveRecord::Base
     end
     result
   end
+
+  ##
+  # Borrowed from internal NUBIC project Registar {http://projects.nubic.northwestern.edu/}
+  # to assist with handling mandatary questions.
+  def first_incomplete_section
+    survey.sections.detect{ |section| !section_mandatory_questions_complete?(section) }
+  end
+
+  def complete!
+    result = true
+    if self.completed_at.blank?
+      clear_untriggered_responses!
+      if mandatory_questions_complete?
+        self.completed_at = Time.now
+        self.save!
+      else
+        result = false
+      end
+    end
+    result
+  end
+
+  def clear_untriggered_responses!
+     responses.includes(:question).each do |r|
+       r.destroy unless r.question.triggered?(self)
+     end
+  end
+
+  def section_mandatory_questions_complete?(sec)
+    qs = SurveySection.find(sec).questions.find(:all,:conditions=>["display_type != 'label' and display_type!='image'"])
+    triggered = qs.select{ |q| q.triggered?(self) and q.mandatory? }
+    return true if triggered.empty?
+    triggered.each{ |q| return false unless is_answered?(q) }
+    return true
+  end
+  # End theft
+  ##
 
   def as_json(options = nil)
     super.merge({
@@ -178,8 +217,11 @@ class ResponseSet < ActiveRecord::Base
   # @private
   class Mustache < ::Mustache
     def initialize(rs)
-      rs.mustache_helper_responses.each do |r|
-        self[r.question.reference_identifier.sub('helper_', '')] = r.value
+      rs.helper_questions.each do |q|
+        key = q.reference_identifier.sub('helper_', '')
+        val = rs.responses.detect { |r| r.question_id == q.id }.try(:value)
+
+        self[key] = val.blank? ? "{{#{key}}}" : val
       end
     end
   end

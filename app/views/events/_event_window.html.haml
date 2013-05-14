@@ -1,0 +1,9 @@
+%span.event_window
+  - if event.try(:window,:start) && event.window(:end)
+    = event.window(:start)
+    &ndash;
+    = event.window(:end)
+    %span.fuzzy_time
+      = "(#{event_window_fuzzy_time(event.window(:start), event.window(:end), Time.zone.today)})"
+  - else
+    N/A

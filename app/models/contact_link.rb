@@ -59,6 +59,12 @@ class ContactLink < ActiveRecord::Base
   alias completed? closed?
   alias complete? closed?
 
+  ##
+  # Date and time of when the contact was started
+  def started_at
+    contact.started_at
+  end
+
   def contact_disposition
     return "" if event.blank?
     disp = DispositionMapper.disposition_text(event.event_disposition_category, contact.contact_disposition)
@@ -96,8 +102,11 @@ class ContactLink < ActiveRecord::Base
   end
 
   def build_staff_list
-    users = Aker.authority.find_users
-    Hash[users.map{|key| [key.identifiers[:staff_id], key.full_name]}]
+    # Selecting out the Core authority is a workaround for NUBIC/ncs_navigator_authority#7
+    # If an authority of that type is not present, it's safe to use Aker.authority.
+    authority =
+      Aker.configuration.authorities.find { |auth| NcsNavigator::Authorization::Core::Authority === auth } || Aker.authority
+    Hash[authority.find_users.map{|key| [key.identifiers[:staff_id], key.full_name]}]
   end
 
 end

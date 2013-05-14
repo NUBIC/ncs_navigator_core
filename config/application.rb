@@ -4,6 +4,7 @@
 require File.expand_path('../boot', __FILE__)
 
 require 'rails/all'
+require "sass-rails" # add this here
 
 if defined?(Bundler)
   # If you precompile assets before deploying to production,
@@ -45,6 +46,11 @@ module NcsNavigatorCore
 
     # Enable asset pipeline
     config.assets.enabled = true
+
+    # add these three lines:
+    config.sass.load_paths ||= []
+    config.sass.load_paths << "#{Rails.root}/app/assets/stylesheets"
+    config.sass.load_paths << "#{Gem.loaded_specs['compass'].full_gem_path}/frameworks/compass/stylesheets"
 
     # Configure the default encoding used in templates for Ruby 1.9.
     config.encoding = "utf-8"

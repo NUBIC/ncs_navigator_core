@@ -110,6 +110,13 @@ class Contact < ActiveRecord::Base
   end
 
   ##
+  # Date and time of when the contact was started
+  # @return [Array<Date,String>]
+  def started_at
+    [contact_date_date, contact_start_time]
+  end
+
+  ##
   # Given an instrument, presumably after the instrument has been administered, set attributes on the
   # contact that can be inferred based on the instrument and type of contact
   # @param [Instrument]

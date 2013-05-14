@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
 NcsNavigatorCore::Application.routes.draw do
+  mount Surveyor::Engine => "/surveys", :as => "surveyor"
+
   resources :dwelling_units do
     member do
       put :create_household_unit
@@ -98,13 +100,11 @@ NcsNavigatorCore::Application.routes.draw do
     member do
       get :edit_contact_information
       put :update_contact_information
-
       get :staff_list
       get :new_staff
       post :create_staff
       get :edit_staff
       put :update_staff
-
       get :contact_log
       get :post_recruitment_contact
       get :recruited
@@ -112,6 +112,7 @@ NcsNavigatorCore::Application.routes.draw do
       get :refused
       put :process_refused
     end
+    resources :ineligible_batches
     resources :non_interview_providers, :except => [:destroy]
     resources :people, :except => [:index, :destroy, :show]
   end
@@ -236,6 +237,7 @@ NcsNavigatorCore::Application.routes.draw do
   match "/welcome/pending_events", :to => "welcome#pending_events"
   match "welcome/start_pregnancy_screener_instrument", :to => "welcome#start_pregnancy_screener_instrument", :as => "start_pregnancy_screener_instrument"
   match "welcome/start_pbs_eligibility_screener_instrument", :to => "welcome#start_pbs_eligibility_screener_instrument", :as => "start_pbs_eligibility_screener_instrument"
+  match "appointment_sheet/:person/:date", :to => "appointment_sheets#show", :as => "appointment_sheet", :via => [:get]
 
   root :to => "welcome#index"
 
