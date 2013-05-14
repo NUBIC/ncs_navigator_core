@@ -70,6 +70,40 @@ describe Response do
     end
   end
 
+  describe "#answer_associated_with_question" do
+    let!(:q) { Factory(:question,
+      :text => 'What is your date of birth?',
+      :reference_identifier => 'DOB',
+      :data_export_identifier => 'TABLE_NAME.DOB') }
+    let!(:a1) { Factory(:answer, :question => q, :response_class => 'date', :text => 'DATE') }
+
+    let!(:a_other_q) { Factory(:answer, :question => Factory(:question),
+      :response_class => 'answer', :text => 'FOO') }
+
+    describe "on create" do
+      it "is invalid if the answer_id is not associated with the response question" do
+        response = Factory.build(:response, :question => q, :answer => a_other_q)
+        response.should_not be_valid
+      end
+      it "raises error" do
+        lambda { Factory(:response, :question => q, :answer => a_other_q) }.should raise_error
+      end
+    end
+
+    describe "on update" do
+      it "is invalid if the answer_id is not associated with the response question" do
+        response = Factory(:response, :question => q, :answer => a1)
+        response.answer = a_other_q
+        response.should_not be_valid
+      end
+      it "raises error" do
+        response = Factory(:response, :question => q, :answer => a1)
+        response.answer = a_other_q
+        lambda { response.save! }.should raise_error
+      end
+    end
+  end
+
   it_should_behave_like 'a publicly identified record' do
     let(:a) { Factory(:answer) }
     let(:q) { Factory(:question) }

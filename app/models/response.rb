@@ -31,6 +31,20 @@ class Response < ActiveRecord::Base
 
   default_scope includes(:answer, :question)
 
+  # TODO: remove this validation if Surveyor is ever updated to include same
+  validate :answer_associated_with_question
+
+  def answer_associated_with_question
+    answer_ids = Answer.where(:question_id => self.question_id).map(&:id)
+    unless answer_ids.blank?
+      # not certain if the validates_presence_of, :answer_id is fired before this check
+      if !self.answer_id.blank? && !answer_ids.include?(self.answer_id)
+        errors.add(:base,
+          "answer_id #{self.answer_id} not in collection of answers [#{answer_ids}] associated with question #{self.question_id} ")
+      end
+    end
+  end
+
   with_options(:as => :system) do |r|
     r.attr_accessible :answer, :question, :value
   end
