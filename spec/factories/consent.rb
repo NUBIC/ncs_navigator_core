@@ -56,7 +56,6 @@ end
 
 Factory.define :participant_consent_sample do |pcs|
 
-  pcs.association :participant, :factory => :participant
   pcs.association :participant_consent, :factory => :participant_consent
 
   pcs.psu_code                   20000030

@@ -215,7 +215,7 @@ module NcsNavigator::Core
         }
 
         let!(:sample_consent) {
-          Factory(:participant_consent_sample, :participant => mother, :participant_consent => consent)
+          Factory(:participant_consent_sample, :participant_consent => consent)
         }
 
         before do
@@ -271,7 +271,6 @@ module NcsNavigator::Core
           'participant_consents.first',
           'participant_consents.first.contact',
           'participant_consents.first.participant_consent_samples.first',
-          'participant_consent_samples.first',
           'events.last',
           'events.where(:event_type_code => 23).first.contact_links.order(:contact_id).last',
           'events.where(:event_type_code => 23).first.contact_links.order(:contact_id).last.contact',
