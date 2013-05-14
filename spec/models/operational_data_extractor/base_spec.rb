@@ -268,314 +268,424 @@ describe OperationalDataExtractor::Base do
         @base_extractor.which_addresses_changed(@addresses).should include(@changed_business_address, @changed_school_address)
         @base_extractor.which_addresses_changed(@addresses).should_not include(@unchanged_address)
       end
+    end
 
-      describe "#process_birth_institution_and_address" do
+    describe "#process_birth_institution_and_address" do
+      before do
+        @institution_map   = OperationalDataExtractor::PregnancyVisit::INSTITUTION_MAP
+        @birth_address_map = OperationalDataExtractor::PregnancyVisit::BIRTH_ADDRESS_MAP
 
-        before do
-          @institution_map   = OperationalDataExtractor::PregnancyVisit::INSTITUTION_MAP
-          @birth_address_map = OperationalDataExtractor::PregnancyVisit::BIRTH_ADDRESS_MAP
+        @participant = Factory(:participant)
+        @part_person_link = Factory(:participant_person_link, :participant => @participant, :person => @person)
+        @survey = create_pbs_pregnancy_visit_1_with_birth_institution_operational_data
+        @response_set, @instrument = prepare_instrument(@person, @participant, @survey)
 
-          @participant = Factory(:participant)
-          @part_person_link = Factory(:participant_person_link, :participant => @participant, :person => @person)
-          @survey = create_pbs_pregnancy_visit_1_with_birth_institution_operational_data
-          @response_set, @instrument = prepare_instrument(@person, @participant, @survey)
+        hospital = NcsCode.for_list_name_and_local_code("ORGANIZATION_TYPE_CL1", 1)
+        state = NcsCode.for_list_name_and_local_code("STATE_CL1", 14)
 
-          hospital = NcsCode.for_list_name_and_local_code("ORGANIZATION_TYPE_CL1", 1)
-          state = NcsCode.for_list_name_and_local_code("STATE_CL1", 14)
+        take_survey(@survey, @response_set) do |r|
+          r.a "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.BIRTH_PLAN", hospital
+          r.a "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.BIRTH_PLACE", "FAKE HOSPITAL MEMORIAL"
+          r.a "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.B_ADDRESS_1", "123 Any Street"
+          r.a "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.B_CITY", "Springfield"
+          r.a "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.B_STATE", state
+          r.a "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.B_ZIPCODE", "65445"
+        end
+        @response_set.save!
 
+        @pregnancy_visit_extractor = OperationalDataExtractor::PregnancyVisit.new(@response_set)
+      end
+
+      it "populates birth address record from instrument responses" do
+        birth_address_and_institution = @pregnancy_visit_extractor.process_birth_institution_and_address(@birth_address_map, @institution_map)
+        birth_address = birth_address_and_institution[0]
+        birth_address.should be_an_instance_of(Address)
+        birth_address.address_rank_code.should == 1
+        birth_address.address_type_code.should == -5
+        birth_address.address_one.should == "123 Any Street"
+        birth_address.city.should == "Springfield"
+        birth_address.zip.should == "65445"
+        birth_address.address_type_other.should == "Birth"
+      end
+
+      it "returns a created institution" do
+        birth_address_and_institution = @pregnancy_visit_extractor.process_birth_institution_and_address(@birth_address_map, @institution_map)
+        institution = birth_address_and_institution[1]
+        institution.should be_an_instance_of(Institution)
+        institution.institute_name.should == "FAKE HOSPITAL MEMORIAL"
+      end
+
+      context "birth place name doesn't exist" do
+        it "doesn't return an institution" do
+          @response_set.responses.delete(
+            @response_set.responses.where(
+              :questions => {:data_export_identifier => "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.BIRTH_PLACE"})
+          )
           take_survey(@survey, @response_set) do |r|
-            r.a "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.BIRTH_PLAN", hospital
-            r.a "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.BIRTH_PLACE", "FAKE HOSPITAL MEMORIAL"
-            r.a "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.B_ADDRESS_1", "123 Any Street"
-            r.a "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.B_CITY", "Springfield"
-            r.a "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.B_STATE", state
-            r.a "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.B_ZIPCODE", "65445"
+            r.refused "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.BIRTH_PLACE"
           end
           @response_set.save!
-
-          @pregnancy_visit_extractor = OperationalDataExtractor::PregnancyVisit.new(@response_set)
-        end
-
-        it "populates birth address record from instrument responses" do
           birth_address_and_institution = @pregnancy_visit_extractor.process_birth_institution_and_address(@birth_address_map, @institution_map)
-          birth_address = birth_address_and_institution[0]
-          birth_address.should be_an_instance_of(Address)
-          birth_address.address_rank_code.should == 1
-          birth_address.address_type_code.should == -5
-          birth_address.address_one.should == "123 Any Street"
-          birth_address.city.should == "Springfield"
-          birth_address.zip.should == "65445"
-          birth_address.address_type_other.should == "Birth"
-        end
-
-        it "returns a created institution" do
-          birth_address_and_institution = @pregnancy_visit_extractor.process_birth_institution_and_address(@birth_address_map, @institution_map)
-          institution = birth_address_and_institution[1]
-          institution.should be_an_instance_of(Institution)
-          institution.institute_name.should == "FAKE HOSPITAL MEMORIAL"
-        end
-
-        context "birth place name doesn't exist" do
-          it "doesn't return an institution" do
-            @response_set.responses.delete(
-              @response_set.responses.where(
-                :questions => {:data_export_identifier => "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.BIRTH_PLACE"})
-            )
-            take_survey(@survey, @response_set) do |r|
-              r.refused "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.BIRTH_PLACE"
-            end
-            @response_set.save!
-            birth_address_and_institution = @pregnancy_visit_extractor.process_birth_institution_and_address(@birth_address_map, @institution_map)
-            birth_address_and_institution[1].should be_nil
-          end
-        end
-
-        context "when no response for birth plan" do
-          it "returns institution as nil" do
-            @response_set.responses.delete(
-              @response_set.responses.where(
-                :questions => {:data_export_identifier => "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.BIRTH_PLAN"})
-            )
-            @response_set.save!
-            birth, institution = @pregnancy_visit_extractor.process_institution(@institution_map)
-            institution.should be_nil
-          end
-        end
-
-        context "when birth plan is refused" do
-          it "returns institution as nil" do
-            @response_set.responses.delete(
-              @response_set.responses.where(
-                :questions => {:data_export_identifier => "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.BIRTH_PLAN"})
-            )
-            take_survey(@survey, @response_set) do |r|
-              r.refused "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.BIRTH_PLAN"
-            end
-            @response_set.save!
-            birth, institution = @pregnancy_visit_extractor.process_institution(@institution_map)
-            institution.should be_nil
-          end
+          birth_address_and_institution[1].should be_nil
         end
       end
 
-      describe "#get_address" do
-        before do
-          @participant = Factory(:participant)
-          @part_person_link = Factory(:participant_person_link, :participant => @participant, :person => @person)
-          @survey = create_pbs_pregnancy_visit_1_with_work_address_operational_data
-          @response_set, @instrument = prepare_instrument(@person, @participant, @survey)
-          @work_address_map = OperationalDataExtractor::PregnancyVisit::WORK_ADDRESS_MAP
-          @state = NcsCode.for_list_name_and_local_code("STATE_CL1", 14)
-
-          @primary_rank = NcsCode.for_list_name_and_local_code('COMMUNICATION_RANK_CL1', 1)
-          @work_address_type = NcsCode.for_list_name_and_local_code('ADDRESS_CATEGORY_CL1', 2)
-          @home_address_type = NcsCode.for_list_name_and_local_code('ADDRESS_CATEGORY_CL1', 1)
-          @address = Factory(:address,
-                             :person => @person,
-                             :response_set => @response_set,
-                             :address_rank_code => 1,
-                             :state_code => 14,
-                             :address_type_code => @work_address_type.local_code)
-          @address.address_one = "123 Any Street"
-          @address.city = "Springfield"
-          @address.zip = "65445"
-          @address.save!
-        end
-
-        def take_address_survey(address_one, rs = @response_set)
-          take_survey(@survey, rs) do |r|
-            r.a "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.WORK_ADDRESS_1", address_one
-            r.a "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.WORK_CITY", "Springfield"
-            r.a "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.WORK_STATE", @state
-            r.a "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.WORK_ZIP", "65445"
-          end
-          rs.save!
-
-          @pregnancy_visit_extractor = OperationalDataExtractor::PregnancyVisit.new(rs)
-        end
-
-        it "retrieves an address record if one of the same type exists within the response_set" do
-          take_address_survey("321 Diff St")
-          @pregnancy_visit_extractor.get_address(
-            @person,
-            @work_address_map,
-            @work_address_type,
-            @primary_rank
-          ).should == @address
-        end
-
-        it "retrieves an address record if one with the same address and type exists" do
-          response_set, instrument = prepare_instrument(@person, @participant,
-                                                        @survey)
-          take_address_survey("123 Any Street", response_set)
-          @pregnancy_visit_extractor.get_address(
-            @person,
-            @work_address_map,
-            @work_address_type,
-            @primary_rank
-          ).should == @address
-        end
-
-        it "creates a new record if it can't find an existing record based on address content" do
-          response_set, instrument = prepare_instrument(@person, @participant,
-                                                        @survey)
-          take_address_survey("312 Diff Street", response_set)
-          new_address = @pregnancy_visit_extractor.get_address(
-            @person,
-            @work_address_map,
-            @work_address_type,
-            @primary_rank
+      context "when no response for birth plan" do
+        it "returns institution as nil" do
+          @response_set.responses.delete(
+            @response_set.responses.where(
+              :questions => {:data_export_identifier => "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.BIRTH_PLAN"})
           )
-          new_address.should_not == @address
-          new_address.should be_an_instance_of(Address)
-        end
-
-        it "creates a new record if it can't find an existing record of the same type within the reponse set" do
-          @address.address_type_code = @home_address_type.local_code
-          @address.save!
-
-          take_address_survey("123 Any Street")
-          new_address = @pregnancy_visit_extractor.get_address(
-            @person,
-            @work_address_map,
-            @work_address_type,
-            @primary_rank
-          )
-          new_address.should_not == @address
-          new_address.should be_an_instance_of(Address)
+          @response_set.save!
+          birth, institution = @pregnancy_visit_extractor.process_institution(@institution_map)
+          institution.should be_nil
         end
       end
 
-      describe "#get_birth_address" do
-
-        before do
-          @participant = Factory(:participant)
-          @part_person_link = Factory(:participant_person_link, :participant => @participant, :person => @person)
-          @survey = create_pbs_pregnancy_visit_1_with_birth_institution_operational_data
-          @response_set, @instrument = prepare_instrument(@person, @participant, @survey)
-
-          @birth_address_map = OperationalDataExtractor::PregnancyVisit::BIRTH_ADDRESS_MAP
-          @state = NcsCode.for_list_name_and_local_code("STATE_CL1", 14)
-          @hospital = NcsCode.for_list_name_and_local_code("ORGANIZATION_TYPE_CL1", 1)
-
-          @birth_address_type = NcsCode.for_list_name_and_local_code('ADDRESS_CATEGORY_CL1', 2)
-          @primary_rank = NcsCode.for_list_name_and_local_code('COMMUNICATION_RANK_CL1', 1)
-          @birth_address = Factory(:address,
-                              :person => @person,
-                              :response_set => @response_set,
-                              :address_rank_code => 1,
-                              :address_type_code => @birth_address_type.local_code,
-                              :state_code => 14,
-                              :address_type_other => "Birth")
-          @birth_address.address_one = "123 Any Street"
-          @birth_address.city = "Springfield"
-          @birth_address.zip = "65445"
-          @birth_address.save!
-        end
-
-        def take_birth_survey(address_one, rs = @response_set)
-          take_survey(@survey, rs) do |r|
-            r.a "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.B_ADDRESS_1", address_one
-            r.a "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.B_CITY", "Springfield"
-            r.a "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.B_STATE", @state
-            r.a "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.B_ZIPCODE", "65445"
+      context "when birth plan is refused" do
+        it "returns institution as nil" do
+          @response_set.responses.delete(
+            @response_set.responses.where(
+              :questions => {:data_export_identifier => "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.BIRTH_PLAN"})
+          )
+          take_survey(@survey, @response_set) do |r|
+            r.refused "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.BIRTH_PLAN"
           end
-          rs.save!
-
-          @pregnancy_visit_extractor = OperationalDataExtractor::PregnancyVisit.new(rs)
+          @response_set.save!
+          birth, institution = @pregnancy_visit_extractor.process_institution(@institution_map)
+          institution.should be_nil
         end
+      end
+    end
 
-        it "retrieves an address record if one of the same type exists within the response_set" do
-          take_birth_survey("666 DiffStreet")
-          @pregnancy_visit_extractor.get_address(
-            @person,
-            @birth_address_map,
-            @birth_address_type,
-            @primary_rank,
-            "Birth"
-          ).should == @birth_address
+    describe "#get_address" do
+      before do
+        @participant = Factory(:participant)
+        @part_person_link = Factory(:participant_person_link, :participant => @participant, :person => @person)
+        @survey = create_pbs_pregnancy_visit_1_with_work_address_operational_data
+        @response_set, @instrument = prepare_instrument(@person, @participant, @survey)
+        @work_address_map = OperationalDataExtractor::PregnancyVisit::WORK_ADDRESS_MAP
+        @state = NcsCode.for_list_name_and_local_code("STATE_CL1", 14)
+
+        @primary_rank = NcsCode.for_list_name_and_local_code('COMMUNICATION_RANK_CL1', 1)
+        @secondary_rank = NcsCode.for_list_name_and_local_code('COMMUNICATION_RANK_CL1', 2)
+        @work_address_type = NcsCode.for_list_name_and_local_code('ADDRESS_CATEGORY_CL1', 2)
+        @home_address_type = NcsCode.for_list_name_and_local_code('ADDRESS_CATEGORY_CL1', 1)
+        @address = Factory(:address,
+                            :person => @person,
+                            :response_set => @response_set,
+                            :address_rank_code => 1,
+                            :state_code => 14,
+                            :address_type_code => @work_address_type.local_code)
+        @address.address_one = "123 Any Street"
+        @address.city = "Springfield"
+        @address.zip = "65445"
+        @address.save!
+      end
+
+      def take_address_survey(address_one, rs = @response_set)
+        take_survey(@survey, rs) do |r|
+          r.a "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.WORK_ADDRESS_1", address_one
+          r.a "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.WORK_CITY", "Springfield"
+          r.a "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.WORK_STATE", @state
+          r.a "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.WORK_ZIP", "65445"
         end
+        rs.save!
 
-        it "retrieves an address record if one with the same address and type exists" do
-          response_set, @instrument = prepare_instrument(@person, @participant, @survey)
-          take_birth_survey("123 Any Street", response_set)
-          @pregnancy_visit_extractor.get_address(
-            @person,
-            @birth_address_map,
-            @birth_address_type,
-            @primary_rank,
-            "Birth"
-          ).should == @birth_address
-        end
+        @pregnancy_visit_extractor = OperationalDataExtractor::PregnancyVisit.new(rs)
+      end
 
-        it "creates a new record if it can't find an existing record based on address content" do
-          response_set, @instrument = prepare_instrument(@person, @participant, @survey)
-          take_birth_survey("666 DiffStreet", response_set)
-          new_address = @pregnancy_visit_extractor.get_address(
-            @person,
-            @birth_address_map,
-            @birth_address_type,
-            @primary_rank,
-            "Birth"
-          )
-          new_address.should_not == @birth_address
-          new_address.should be_an_instance_of(Address)
-        end
+      it "retrieves an address record if one of the same type and rank exists within the response_set" do
+        take_address_survey("321 Diff St")
+        @pregnancy_visit_extractor.get_address(
+          @person,
+          @work_address_map,
+          @work_address_type,
+          @primary_rank
+        ).should == @address
+      end
 
-        it "creates a new record if an existing address matches but is not a birth address" do
-          @birth_address.address_type_other = nil
-          @birth_address.save!
+      it "retrieves an address record if one with the same address, type and rank exists" do
+        response_set, instrument = prepare_instrument(@person, @participant,
+                                                      @survey)
+        take_address_survey("123 Any Street", response_set)
+        @pregnancy_visit_extractor.get_address(
+          @person,
+          @work_address_map,
+          @work_address_type,
+          @primary_rank
+        ).should == @address
+      end
 
-          take_birth_survey("123 Any Street")
-          new_address = @pregnancy_visit_extractor.get_address(
-            @person,
-            @birth_address_map,
-            @birth_address_type,
-            @primary_rank,
-            "Birth"
-          )
-          new_address.should_not == @birth_address
-          new_address.should be_an_instance_of(Address)
-        end
+      it "creates a new record if it can't find an existing record based on address content" do
+        response_set, instrument = prepare_instrument(@person, @participant,
+                                                      @survey)
+        take_address_survey("312 Diff Street", response_set)
+        new_address = @pregnancy_visit_extractor.get_address(
+          @person,
+          @work_address_map,
+          @work_address_type,
+          @primary_rank
+        )
+        new_address.should_not == @address
+        new_address.should be_an_instance_of(Address)
+      end
 
+      it "creates a new record if existing record matches based on address content by has a different rank" do
+        response_set, @instrument = prepare_instrument(@person, @participant, @survey)
+        take_address_survey("123 Any Street", response_set)
+        new_address = @pregnancy_visit_extractor.get_address(
+          @person,
+          @work_address_map,
+          @work_address_type,
+          @secondary_rank,
+        )
+        new_address.should_not == @address
+        new_address.should be_an_instance_of(Address)
+      end
 
-        it "creates a new record if it can't find record of the same type in the current response_set" do
-          home_address_type = NcsCode.for_list_name_and_local_code('ADDRESS_CATEGORY_CL1', 1)
-          @birth_address.address_type_code = home_address_type.local_code
-          @birth_address.save!
+      it "creates a new record if it can't find an existing record of the same type within the reponse set" do
+        @address.address_type_code = @home_address_type.local_code
+        @address.save!
 
-          take_birth_survey("123 Any Street")
-          new_address = @pregnancy_visit_extractor.get_address(
-            @person,
-            @birth_address_map,
-            @birth_address_type,
-            @primary_rank,
-            "Birth"
-          )
-          new_address.should_not == @birth_address
-          new_address.should be_an_instance_of(Address)
-        end
+        take_address_survey("123 Any Street")
+        new_address = @pregnancy_visit_extractor.get_address(
+          @person,
+          @work_address_map,
+          @work_address_type,
+          @primary_rank
+        )
+        new_address.should_not == @address
+        new_address.should be_an_instance_of(Address)
+      end
 
-        it "creates a new record if a non-birth address exists in the current response set" do
-          @birth_address.address_type_other = nil
-          @birth_address.save!
-
-          take_birth_survey("123 Any Street")
-          new_address = @pregnancy_visit_extractor.get_address(
-            @person,
-            @birth_address_map,
-            @birth_address_type,
-            @primary_rank,
-            "Birth"
-          )
-          new_address.should_not == @birth_address
-          new_address.should be_an_instance_of(Address)
-        end
-
-
+      it "creates a new record if it can't find an existing record of the same rank within the reponse set" do
+        take_address_survey("321 Diff St")
+        new_address = @pregnancy_visit_extractor.get_address(
+          @person,
+          @work_address_map,
+          @work_address_type,
+          @secondary_rank
+        )
+        new_address.should_not == @address
+        new_address.should be_an_instance_of(Address)
       end
 
     end
+
+    describe "#get_birth_address" do
+
+      before do
+        @participant = Factory(:participant)
+        @part_person_link = Factory(:participant_person_link, :participant => @participant, :person => @person)
+        @survey = create_pbs_pregnancy_visit_1_with_birth_institution_operational_data
+        @response_set, @instrument = prepare_instrument(@person, @participant, @survey)
+
+        @birth_address_map = OperationalDataExtractor::PregnancyVisit::BIRTH_ADDRESS_MAP
+        @state = NcsCode.for_list_name_and_local_code("STATE_CL1", 14)
+        @hospital = NcsCode.for_list_name_and_local_code("ORGANIZATION_TYPE_CL1", 1)
+
+        @birth_address_type = NcsCode.for_list_name_and_local_code('ADDRESS_CATEGORY_CL1', 2)
+        @primary_rank = NcsCode.for_list_name_and_local_code('COMMUNICATION_RANK_CL1', 1)
+        @secondary_rank = NcsCode.for_list_name_and_local_code('COMMUNICATION_RANK_CL1', 2)
+        @birth_address = Factory(:address,
+                            :person => @person,
+                            :response_set => @response_set,
+                            :address_rank_code => 1,
+                            :address_type_code => @birth_address_type.local_code,
+                            :state_code => 14,
+                            :address_type_other => "Birth")
+        @birth_address.address_one = "123 Any Street"
+        @birth_address.city = "Springfield"
+        @birth_address.zip = "65445"
+        @birth_address.save!
+      end
+
+      def take_birth_survey(address_one, rs = @response_set)
+        take_survey(@survey, rs) do |r|
+          r.a "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.B_ADDRESS_1", address_one
+          r.a "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.B_CITY", "Springfield"
+          r.a "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.B_STATE", @state
+          r.a "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.B_ZIPCODE", "65445"
+        end
+        rs.save!
+
+        @pregnancy_visit_extractor = OperationalDataExtractor::PregnancyVisit.new(rs)
+      end
+
+      it "retrieves an address record if one of the same type and rank exists within the response_set" do
+        take_birth_survey("666 DiffStreet")
+        @pregnancy_visit_extractor.get_address(
+          @person,
+          @birth_address_map,
+          @birth_address_type,
+          @primary_rank,
+          "Birth"
+        ).should == @birth_address
+      end
+
+      it "retrieves an address record if one with the same address and type exists" do
+        response_set, @instrument = prepare_instrument(@person, @participant, @survey)
+        take_birth_survey("123 Any Street", response_set)
+        @pregnancy_visit_extractor.get_address(
+          @person,
+          @birth_address_map,
+          @birth_address_type,
+          @primary_rank,
+          "Birth"
+        ).should == @birth_address
+      end
+
+      it "creates a new record if it can't find an existing record based on address content" do
+        response_set, @instrument = prepare_instrument(@person, @participant, @survey)
+        take_birth_survey("666 DiffStreet", response_set)
+        new_address = @pregnancy_visit_extractor.get_address(
+          @person,
+          @birth_address_map,
+          @birth_address_type,
+          @primary_rank,
+          "Birth"
+        )
+        new_address.should_not == @birth_address
+        new_address.should be_an_instance_of(Address)
+      end
+
+      it "creates a new record if existing record matches based on address content by has a different rank" do
+        response_set, @instrument = prepare_instrument(@person, @participant, @survey)
+        take_birth_survey("123 Any Street", response_set)
+        new_address = @pregnancy_visit_extractor.get_address(
+          @person,
+          @birth_address_map,
+          @birth_address_type,
+          @secondary_rank,
+          "Birth"
+        )
+        new_address.should_not == @birth_address
+        new_address.should be_an_instance_of(Address)
+      end
+
+      it "creates a new record if an existing address matches but is not a birth address" do
+        @birth_address.address_type_other = nil
+        @birth_address.save!
+
+        take_birth_survey("123 Any Street")
+        new_address = @pregnancy_visit_extractor.get_address(
+          @person,
+          @birth_address_map,
+          @birth_address_type,
+          @primary_rank,
+          "Birth"
+        )
+        new_address.should_not == @birth_address
+        new_address.should be_an_instance_of(Address)
+      end
+
+
+      it "creates a new record if it can't find record of the same type in the current response_set" do
+        home_address_type = NcsCode.for_list_name_and_local_code('ADDRESS_CATEGORY_CL1', 1)
+        @birth_address.address_type_code = home_address_type.local_code
+        @birth_address.save!
+
+        take_birth_survey("123 Any Street")
+        new_address = @pregnancy_visit_extractor.get_address(
+          @person,
+          @birth_address_map,
+          @birth_address_type,
+          @primary_rank,
+          "Birth"
+        )
+        new_address.should_not == @birth_address
+        new_address.should be_an_instance_of(Address)
+      end
+
+      it "creates a new record if it can't find record of the same rank in the current response_set" do
+        take_birth_survey("123 Any Street")
+        new_address = @pregnancy_visit_extractor.get_address(
+          @person,
+          @birth_address_map,
+          @birth_address_type,
+          @secondary_rank,
+          "Birth"
+        )
+        new_address.should_not == @birth_address
+        new_address.should be_an_instance_of(Address)
+      end
+
+      it "creates a new record if a non-birth address exists in the current response set" do
+        @birth_address.address_type_other = nil
+        @birth_address.save!
+
+        take_birth_survey("123 Any Street")
+        new_address = @pregnancy_visit_extractor.get_address(
+          @person,
+          @birth_address_map,
+          @birth_address_type,
+          @primary_rank,
+          "Birth"
+        )
+        new_address.should_not == @birth_address
+        new_address.should be_an_instance_of(Address)
+      end
+    end
+
+    describe "#process_address" do
+      before do
+        @participant = Factory(:participant)
+        @part_person_link = Factory(:participant_person_link, :participant => @participant, :person => @person)
+        @survey = create_pbs_pregnancy_visit_1_with_birth_institution_operational_data
+        @response_set, @instrument = prepare_instrument(@person, @participant, @survey)
+
+        @birth_address_map = OperationalDataExtractor::PregnancyVisit::BIRTH_ADDRESS_MAP
+        @state = NcsCode.for_list_name_and_local_code("STATE_CL1", 14)
+        @hospital = NcsCode.for_list_name_and_local_code("ORGANIZATION_TYPE_CL1", 1)
+        @birth_address_type = NcsCode.for_list_name_and_local_code('ADDRESS_CATEGORY_CL1', 2)
+
+        @primary_rank = NcsCode.for_list_name_and_local_code('COMMUNICATION_RANK_CL1', 1)
+        @birth_address = Factory(:address,
+                            :person => @person,
+                            :response_set => @response_set,
+                            :address_rank_code => 1,
+                            :address_type_code => @birth_address_type.local_code,
+                            :state_code => 14,
+                            :address_type_other => "Birth")
+        @birth_address.address_one = "123 Any Street"
+        @birth_address.city = "Springfield"
+        @birth_address.zip = "65445"
+        @birth_address.save!
+      end
+
+      it "returns an address with values equal to those from the response set." do
+        take_survey(@survey, @response_set) do |r|
+          r.a "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.B_ADDRESS_1", "666 Boo St."
+          r.a "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.B_CITY", "Sprintfeld"
+          r.a "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.B_STATE", @state
+          r.a "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.B_ZIPCODE", "66666"
+        end
+        @response_set.save!
+        @pregnancy_visit_extractor = OperationalDataExtractor::PregnancyVisit.new(@response_set)
+        address = @pregnancy_visit_extractor.process_address(
+          @person,
+          @birth_address_map,
+          @birth_address_type,
+          @primary_rank,
+        )
+        address.address_one.should == "666 Boo St."
+        address.city.should == "Sprintfeld"
+        address.zip.should == "66666"
+        address.state.should == @state
+      end
+
+      it "returns nil if there aren't any address-related responses." do
+        @pregnancy_visit_extractor = OperationalDataExtractor::PregnancyVisit.new(@response_set)
+        address = @pregnancy_visit_extractor.process_address(
+          @person,
+          @birth_address_map,
+          @birth_address_type,
+          @primary_rank,
+        ).should be_nil
+      end
+    end
+
   end
 
   context "processing emails" do

@@ -410,26 +410,32 @@ module OperationalDataExtractor
       participant.person
     end
 
+    def mapped_address_hash(map)
+      address = Hash.new
+      address_attribute_value_pairs(map) do |attribute, value|
+        if value && value.is_a?(String)
+          address[attribute] = value
+        end
+      end
+      address
+    end
+
+    def common_address_attribs(h, address_type, address_rank, address_type_other)
+      h[:address_rank_code] = address_rank.local_code
+      h[:address_type_code] = address_type.local_code if address_type
+      h[:address_type_other] = address_type_other if address_type_other
+    end
+
     def find_address(person, map, address_type, address_rank, address_type_other)
       by_rs = Hash.new
       by_rs[:response_set_id] = response_set.id
-      by_rs[:address_type_code] = address_type.local_code if address_type
-      by_rs[:address_type_other] = address_type_other if address_type_other
+      common_address_attribs(by_rs, address_type, address_rank, address_type_other)
 
-      by_add = Hash.new
-      address_attribute_value_pairs(map) do |attribute, value|
-        if value && value.is_a?(String)
-          by_add[attribute] = value if value
-        end
-      end
+      by_add = mapped_address_hash(map)
       by_add[:person_id] = person.id
-      by_add[:address_type_code] = address_type.local_code if address_type
-      by_add[:address_type_other] = address_type_other if address_type_other
+      common_address_attribs(by_add, address_type, address_rank, address_type_other)
 
-      if address  = Address.where(by_rs).last ||
-                                  address = Address.where(by_add).last
-         address.address_rank = address_rank
-      end
+      address  = Address.where(by_rs).last || address = Address.where(by_add).last
       address
     end
 
@@ -697,7 +703,9 @@ module OperationalDataExtractor
       end
     end
 
-    def process_address(owner, map, address_type = address_other_tyoe, address_rank = primary_rank)
+    def process_address(owner, map, address_type = address_other_type, address_rank = primary_rank)
+      # Only process if any parts of the address in the response set
+      return unless mapped_address_hash(map).present?
       address = get_address(owner, map, address_type, address_rank)
       address_attribute_value_pairs(map) do |attribute, value|
           set_value(address, attribute, value) if value
