@@ -105,8 +105,8 @@ module NcsNavigator::Core::Surveyor
     end
 
     def reload(*)
-      remove_instance_variable(:@value)
-      remove_instance_variable(:@value_set)
+      remove_instance_variable(:@value) if instance_variable_defined?(:@value)
+      remove_instance_variable(:@value_set) if instance_variable_defined?(:@value_set)
       super
     end
 
