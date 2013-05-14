@@ -391,14 +391,6 @@ describe ParticipantConsent do
         ParticipantConsent.first.response_set.should_not be_nil
       end
 
-      it "creates a ParticipantConsentSample record for each type of sample consent" do
-        pc = ParticipantConsent.first
-        ParticipantConsentSample::SAMPLE_CONSENT_TYPE_CODES.each do |code|
-          samples = pc.participant_consent_samples.where(:sample_consent_type_code => code).all
-          samples.should_not be_empty
-          samples.size.should == 1
-        end
-      end
     end
 
     describe "for a existing ParticipantConsent record" do
