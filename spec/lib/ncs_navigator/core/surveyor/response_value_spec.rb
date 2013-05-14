@@ -150,6 +150,14 @@ module NcsNavigator::Core::Surveyor
       end
     end
 
+    describe '#reload' do
+      describe 'if a value was never set' do
+        it 'returns the object' do
+          r.reload.should == r
+        end
+      end
+    end
+
     describe 'with response class answer' do
       before do
         a.update_attribute(:response_class, 'answer')
