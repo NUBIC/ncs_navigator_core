@@ -238,7 +238,7 @@ describe OperationalDataExtractor::PpgFollowUp do
     person = Person.find(person.id)
 
     extracted_emails = person.emails.all
-    extracted_emails.size == 2
+    extracted_emails.size.should == 2
 
     extracted_email_addresses = []
     extracted_emails.each { |email| extracted_email_addresses << email.email }

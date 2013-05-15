@@ -435,8 +435,8 @@ module OperationalDataExtractor
       by_add[:person_id] = person.id
       common_address_attribs(by_add, address_type, address_rank, address_type_other)
 
-      address  = Address.where(by_rs).last || address = Address.where(by_add).last
-      address
+      address = Address.where(by_rs).last
+      address ||= Address.where(by_add).last
     end
 
     def get_address(person, map, address_type, address_rank, address_type_other = nil)
@@ -454,11 +454,12 @@ module OperationalDataExtractor
       address
     end
 
-    def find_telephone_by_number(person, number, phone_type)
-      return nil unless number && number.is_a?(String)
+    def find_telephone_by_number(person, number, phone_type, phone_rank)
+      return nil unless number.try(:is_a?, String)
       by_nr = Hash.new
-      by_nr[:phone_nbr] = number
+      by_nr[:phone_nbr] = number.gsub(/[^0-9]/, "")
       by_nr[:person_id] = person.id
+      by_nr[:phone_rank_code] = phone_rank.local_code
       by_nr[:phone_type_code] = phone_type.local_code if phone_type
       Telephone.where(by_nr).last
     end
@@ -466,13 +467,11 @@ module OperationalDataExtractor
     def find_telephone(person, number, phone_type, phone_rank)
       by_rs = Hash.new
       by_rs[:response_set_id] = response_set.id
+      by_rs[:phone_rank_code] = phone_rank.local_code
       by_rs[:phone_type_code] = phone_type.local_code if phone_type
 
       phone  = Telephone.where(by_rs).last
-      if phone || phone  = find_telephone_by_number(person, number, phone_type)
-         phone.phone_rank = phone_rank
-      end
-      phone
+      phone ||= find_telephone_by_number(person, number, phone_type, phone_rank)
     end
 
     def get_telephone(person, number, phone_type = nil, phone_rank = primary_rank)
@@ -500,9 +499,9 @@ module OperationalDataExtractor
       by_rs[:response_set_id] = response_set.id
       by_rs[:email_type_code] = email_type.local_code if email_type
 
-      email  = Email.where(by_rs).last
-      if email || email = find_email_by_addres(person, address, email_type)
-         email.email_rank = primary_rank
+      email = Email.where(by_rs).last
+      if email ||= find_email_by_addres(person, address, email_type)
+        email.email_rank = primary_rank
       end
       email
     end
@@ -735,16 +734,26 @@ module OperationalDataExtractor
       addresses.find_all{ |a| !a.to_s.blank? }
     end
 
-    def process_telephone(owner, map, phone_type = home_phone_type, phone_rank = primary_rank)
-      phone = nil
-      map.each do |key, attribute|
+    def value_by_key(key)
         if r = data_export_identifier_indexed_responses[key]
-          value = response_value(r)
-          unless value.blank?
-            phone ||= get_telephone(owner, value, phone_type, phone_rank)
-            set_value(phone, attribute, value)
-          end
+          return response_value(r)
         end
+    end
+
+    def value_by_attribute(map, attrib)
+      map.select { |k, a| a == attrib }.collect { |k, a|
+        value_by_key(k)
+      }.compact.first
+    end
+
+    def process_telephone(owner, map, phone_type = home_phone_type, phone_rank = primary_rank)
+      phone_nr = value_by_attribute(map, 'phone_nbr')
+      return if !phone_nr || phone_nr.empty?
+
+      phone = get_telephone(owner, phone_nr, phone_type, phone_rank)
+      map.each do |key, attribute|
+        value = value_by_key(key)
+        set_value(phone, attribute, value) if value
       end
       phone
     end
@@ -772,15 +781,13 @@ module OperationalDataExtractor
     end
 
     def process_email(map, email_type = personal_email_type)
-      email = nil
+      email_address = value_by_attribute(map, 'email')
+      return if !email_address or email_address.empty?
+
+      email = get_email(person, email_address, email_type)
       map.each do |key, attribute|
-        if r = data_export_identifier_indexed_responses[key]
-          value = response_value(r)
-          unless value.blank?
-            email ||= get_email(person, value, email_type)
-            set_value(email, attribute, value)
-          end
-        end
+        value = value_by_key(key)
+        set_value(email, attribute, value) if value
       end
       email
     end
