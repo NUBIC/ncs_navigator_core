@@ -278,21 +278,27 @@ module NcsNavigator::Core::Warehouse::ThreePointTwo
 
     describe 'for ParticipantConsentSample' do
       before do
-        Factory(:participant_consent_sample)
+        pcs = [Factory(:participant_consent_sample), Factory(:participant_consent_sample)]
         producer_names << :participant_consent_samples
+        pcs.sort_by!{|a| a.participant_consent_sample_id}
+        results.sort_by!{|a| a.participant_consent_sample_id}
+        @paired = results.zip pcs
       end
 
       it 'generates one per source record' do
-        results.collect(&:class).should == [wh_config.model(:ParticipantConsentSample)]
+        results.collect(&:class).should == [wh_config.model(:ParticipantConsentSample)]*2
       end
 
       it "uses the participant's public ID" do
-        results.first.p_id.should == Participant.first.p_id
+        @paired.each do |(result,pcs)|
+          result.p_id.should == pcs.participant_consent.participant.p_id
+        end
       end
 
       it "uses the participant consent's public ID" do
-        results.first.participant_consent_id.should ==
-          ParticipantConsent.first.participant_consent_id
+        @paired.each do |(result,pcs)|
+          result.participant_consent_id.should == pcs.participant_consent.participant_consent_id
+        end
       end
     end
 

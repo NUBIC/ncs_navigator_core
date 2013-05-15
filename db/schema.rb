@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130502152819) do
+ActiveRecord::Schema.define(:version => 20130514215040) do
 
   create_table "addresses", :force => true do |t|
     t.integer  "psu_code",                                                :null => false
@@ -601,7 +601,6 @@ ActiveRecord::Schema.define(:version => 20130502152819) do
   create_table "participant_consent_samples", :force => true do |t|
     t.integer  "psu_code",                                    :null => false
     t.string   "participant_consent_sample_id", :limit => 36, :null => false
-    t.integer  "participant_id"
     t.integer  "participant_consent_id"
     t.integer  "sample_consent_type_code",                    :null => false
     t.integer  "sample_consent_given_code",                   :null => false
@@ -1494,7 +1493,6 @@ ActiveRecord::Schema.define(:version => 20130502152819) do
   add_foreign_key "participant_authorization_forms", "participants", :name => "participant_authorization_forms_participants_fk"
 
   add_foreign_key "participant_consent_samples", "participant_consents", :name => "participant_consent_samples_participant_consents_fk"
-  add_foreign_key "participant_consent_samples", "participants", :name => "participant_consent_samples_participants_fk"
 
   add_foreign_key "participant_consents", "contacts", :name => "participant_consents_contacts_fk"
   add_foreign_key "participant_consents", "participants", :name => "participant_consents_participants_fk"
