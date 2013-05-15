@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # == Schema Information
-# Schema version: 20120629204215
+# Schema version: 20130514215040
 #
 # Table name: participant_consent_samples
 #
@@ -8,7 +8,6 @@
 #  id                            :integer          not null, primary key
 #  participant_consent_id        :integer
 #  participant_consent_sample_id :string(36)       not null
-#  participant_id                :integer
 #  psu_code                      :integer          not null
 #  sample_consent_given_code     :integer          not null
 #  sample_consent_type_code      :integer          not null
@@ -26,7 +25,6 @@ describe ParticipantConsentSample do
     pcs.should_not be_nil
   end
 
-  it { should belong_to(:participant) }
   it { should belong_to(:participant_consent) }
 
 
@@ -42,7 +40,6 @@ describe ParticipantConsentSample do
     it "uses the ncs_code 'Missing in Error' for all required ncs codes" do
 
       pcs = ParticipantConsentSample.new
-      pcs.participant = Factory(:participant)
       pcs.participant_consent = Factory(:participant_consent)
       pcs.save!
 
@@ -51,7 +48,7 @@ describe ParticipantConsentSample do
       obj.sample_consent_given.local_code.should == -4
     end
   end
-  
+
   context "consent type code lists" do
 
     it "knows all of the consent types" do
@@ -78,6 +75,5 @@ describe ParticipantConsentSample do
     end
 
   end
-  
-end
 
+end

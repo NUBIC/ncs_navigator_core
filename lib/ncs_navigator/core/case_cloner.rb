@@ -69,7 +69,6 @@ module NcsNavigator::Core
       :low_intensity_state_transition_audits => [],
       :high_intensity_state_transition_audits => [],
       :participant_consents => [:participant_consent_samples],
-      :participant_consent_samples => [],
       :events => { :contact_links => { :contact => [], :instrument => { :response_sets => :responses } } },
       :response_sets => [:responses]
     }
