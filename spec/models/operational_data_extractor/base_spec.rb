@@ -243,15 +243,22 @@ describe OperationalDataExtractor::Base do
       before do
         @existing_business_address = Factory(:address, :address_rank_code => 1, :address_type_code => 2)
         @existing_school_address   = Factory(:address, :address_rank_code => 1, :address_type_code => 3)
-        @new_business_address = Factory(:address, :address_rank_code => 4, :address_type_code => 2)
-        @new_school_address   = Factory(:address, :address_rank_code => 4, :address_type_code => 3)
-        @new_addresses = [ @new_business_address, @new_school_address]
         @person.addresses = [@existing_business_address, @existing_school_address]
       end
 
-      it "demotes existing address in favor of new addresses of the same type" do
-        @base_extractor.finalize_addresses(@new_addresses)
-        @existing_business_address.address_rank_code.should == 2
+      it "only demotes existing address in favor of new addresses of the same type" do
+        @new_home_address = Factory(:address, :address_rank_code => 1, :address_type_code => 1)
+        @new_school_address   = Factory(:address, :address_rank_code => 1, :address_type_code => 3)
+        @base_extractor.finalize_addresses(@new_home_address, @new_school_address)
+        @existing_business_address.address_rank_code.should == 1
+        @existing_school_address.address_rank_code.should   == 2
+      end
+
+      it "only demotes if changed address of primary rank" do
+        @new_business_address = Factory(:address, :address_rank_code => 2, :address_type_code => 2)
+        @new_school_address   = Factory(:address, :address_rank_code => 1, :address_type_code => 3)
+        @base_extractor.finalize_addresses(@new_business_address, @new_school_address)
+        @existing_business_address.address_rank_code.should == 1
         @existing_school_address.address_rank_code.should   == 2
       end
     end
@@ -296,10 +303,17 @@ describe OperationalDataExtractor::Base do
         @pregnancy_visit_extractor = OperationalDataExtractor::PregnancyVisit.new(@response_set)
       end
 
+      def delete_response_by_question_dei(data_export_identifier)
+        @response_set.responses.delete(
+          @response_set.responses.where(
+            :questions => {:data_export_identifier => data_export_identifier}
+          )
+        )
+      end
+
       it "populates birth address record from instrument responses" do
         birth_address_and_institution = @pregnancy_visit_extractor.process_birth_institution_and_address(@birth_address_map, @institution_map)
         birth_address = birth_address_and_institution[0]
-        birth_address.should be_an_instance_of(Address)
         birth_address.address_rank_code.should == 1
         birth_address.address_type_code.should == -5
         birth_address.address_one.should == "123 Any Street"
@@ -311,16 +325,12 @@ describe OperationalDataExtractor::Base do
       it "returns a created institution" do
         birth_address_and_institution = @pregnancy_visit_extractor.process_birth_institution_and_address(@birth_address_map, @institution_map)
         institution = birth_address_and_institution[1]
-        institution.should be_an_instance_of(Institution)
         institution.institute_name.should == "FAKE HOSPITAL MEMORIAL"
       end
 
       context "birth place name doesn't exist" do
         it "doesn't return an institution" do
-          @response_set.responses.delete(
-            @response_set.responses.where(
-              :questions => {:data_export_identifier => "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.BIRTH_PLACE"})
-          )
+          delete_response_by_question_dei("#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.BIRTH_PLACE")
           take_survey(@survey, @response_set) do |r|
             r.refused "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.BIRTH_PLACE"
           end
@@ -332,11 +342,7 @@ describe OperationalDataExtractor::Base do
 
       context "when no response for birth plan" do
         it "returns institution as nil" do
-          @response_set.responses.delete(
-            @response_set.responses.where(
-              :questions => {:data_export_identifier => "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.BIRTH_PLAN"})
-          )
-          @response_set.save!
+          delete_response_by_question_dei("#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.BIRTH_PLAN")
           birth, institution = @pregnancy_visit_extractor.process_institution(@institution_map)
           institution.should be_nil
         end
@@ -344,10 +350,7 @@ describe OperationalDataExtractor::Base do
 
       context "when birth plan is refused" do
         it "returns institution as nil" do
-          @response_set.responses.delete(
-            @response_set.responses.where(
-              :questions => {:data_export_identifier => "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.BIRTH_PLAN"})
-          )
+          delete_response_by_question_dei("#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.BIRTH_PLAN")
           take_survey(@survey, @response_set) do |r|
             r.refused "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.BIRTH_PLAN"
           end
@@ -708,16 +711,22 @@ describe OperationalDataExtractor::Base do
     end
 
     describe "#finalize_email" do
-      before do
-        @new_work_email          = Factory(:email,:email => "new_email@email.com",
-                                           :email_rank_code => 4, :email_type_code => 2)
-      end
-
-      it "demotes existing email addresses in favor of new email addresses of the same type" do
-        @pbs_eligibility_extractor.finalize_email(@new_work_email)
+      it "doesn't demote existing email addresses in favor of new email addresses of different type" do
+        new_work_email = Factory(:email,:email => "new_email@email.com",
+                                 :email_rank_code => 1, :email_type_code => 1)
+        @pbs_eligibility_extractor.finalize_email(new_work_email)
         @existing_work_email.email_rank_code.should == 1
         updated_work_email = Email.find(@existing_work_email.id)
-        updated_work_email.email_rank_code.should == 2
+        updated_work_email.email_rank_code.should == 1
+      end
+
+      it "doesn't demote existing email addresses in favor of new email addresses of other then primary rank" do
+        new_work_email = Factory(:email,:email => "new_email@email.com",
+                                 :email_rank_code => 2, :email_type_code => 1)
+        @pbs_eligibility_extractor.finalize_email(new_work_email)
+        @existing_work_email.email_rank_code.should == 1
+        updated_work_email = Email.find(@existing_work_email.id)
+        updated_work_email.email_rank_code.should == 1
       end
 
     end
@@ -760,7 +769,7 @@ describe OperationalDataExtractor::Base do
         ).should == @existing_work_email
       end
 
-      it "retrieves an eamil record based on email address and email type" do
+      it "retrieves an email record based on email address and email type" do
         @pbs_eligibility_extractor.find_email(
           @person,
           @existing_work_email.email,
@@ -800,7 +809,7 @@ describe OperationalDataExtractor::Base do
         ).should == @existing_work_email
       end
 
-      it "creates a new email record can't find one because of address" do
+      it "creates a new email record if one can't be located based on email address" do
         response_set, instrument = prepare_instrument(@person, @participant, @survey)
         pbs_eligibility_extractor = OperationalDataExtractor::PbsEligibilityScreener.new(response_set)
         new_email = pbs_eligibility_extractor.get_email(
@@ -813,7 +822,7 @@ describe OperationalDataExtractor::Base do
         new_email.should be_an_instance_of(Email)
       end
 
-      it "creates a new email record can't find one because of type in another response_set" do
+      it "creates a new email record if one can't be located based on type" do
         shared_email_type_code = NcsCode.for_list_name_and_local_code('EMAIL_TYPE_CL1', 3)
         response_set, instrument = prepare_instrument(@person, @participant, @survey)
         pbs_eligibility_extractor = OperationalDataExtractor::PbsEligibilityScreener.new(response_set)
@@ -868,14 +877,47 @@ describe OperationalDataExtractor::Base do
 
     describe "#finalize_telephones" do
       before do
-        @new_work_phone = Factory(:telephone, :phone_nbr => "888-888-8888", :phone_rank_code => 4, :phone_type_code => 2)
       end
 
       it "demotes existing telephone records in favor of new telephone records of the same type" do
+        new_work_phone = Factory(:telephone, :phone_nbr => "888-888-8888",
+                                 :phone_rank_code => 1, :phone_type_code => 2)
+        @existing_work_phone.phone_rank_code.should == 1
+        @pbs_eligibility_extractor.finalize_telephones(new_work_phone)
+        updated_work_phone = Telephone.find(@existing_work_phone.id)
+        updated_work_phone.phone_rank_code.should == 2
+      end
+
+      it "demotes all existing telephone records in favor of new telephone records of the same types" do
+        new_work_phone = Factory(:telephone, :phone_nbr => "888-888-8888",
+                                 :phone_rank_code => 1, :phone_type_code => 2)
+        new_home_phone = Factory(:telephone, :phone_nbr => "888-888-8888",
+                                 :phone_rank_code => 1, :phone_type_code => 1)
+        @existing_work_phone.phone_rank_code.should == 1
+        @existing_home_phone.phone_rank_code.should == 1
+        @pbs_eligibility_extractor.finalize_telephones(new_work_phone, new_home_phone)
+        updated_work_phone = Telephone.find(@existing_work_phone.id)
+        updated_work_phone.phone_rank_code.should == 2
+        updated_home_phone = Telephone.find(@existing_home_phone.id)
+        updated_home_phone.phone_rank_code.should == 2
+      end
+
+      it "doesn't demote existing telephone records in favor of new telephone records of different type" do
+        new_home_phone = Factory(:telephone, :phone_nbr => "888-888-8888",
+                                 :phone_rank_code => 1, :phone_type_code => 1)
+        @existing_work_phone.phone_rank_code.should == 1
+        @pbs_eligibility_extractor.finalize_telephones(new_home_phone)
+        updated_work_phone = Telephone.find(@existing_work_phone.id)
+        updated_work_phone.phone_rank_code.should == 1
+      end
+
+      it "doesn't demote existing telephone records in favor of new telephone records of rank other then primary" do
+        new_work_phone = Factory(:telephone, :phone_nbr => "888-888-8888",
+                                 :phone_rank_code => 2, :phone_type_code => 2)
         @existing_work_phone.phone_rank_code.should == 1
         @pbs_eligibility_extractor.finalize_telephones(@new_work_phone)
         updated_work_phone = Telephone.find(@existing_work_phone.id)
-        updated_work_phone.phone_rank_code.should == 2
+        updated_work_phone.phone_rank_code.should == 1
       end
 
     end
@@ -983,7 +1025,7 @@ describe OperationalDataExtractor::Base do
         ).should == @existing_work_phone
       end
 
-      it "creates a phone record if can't find one because of phone number" do
+      it "creates a phone record if can't find one based on phone number" do
         response_set, instrument = prepare_instrument(@person, @participant, @survey)
         pbs_eligibility_extractor = OperationalDataExtractor::PbsEligibilityScreener.new(response_set)
         new_phone = pbs_eligibility_extractor.get_telephone(
@@ -997,7 +1039,7 @@ describe OperationalDataExtractor::Base do
         new_phone.should be_an_instance_of(Telephone)
       end
 
-      it "creates a phone record if can't find one because of phone rank" do
+      it "creates a phone record if can't find one based on phone rank" do
         response_set, instrument = prepare_instrument(@person, @participant, @survey)
         pbs_eligibility_extractor = OperationalDataExtractor::PbsEligibilityScreener.new(response_set)
         new_phone = pbs_eligibility_extractor.get_telephone(
@@ -1011,7 +1053,7 @@ describe OperationalDataExtractor::Base do
         new_phone.should be_an_instance_of(Telephone)
       end
 
-      it "creates a phone record if can't find one because of phone tyep" do
+      it "creates a phone record if can't find one based on phone type" do
         response_set, instrument = prepare_instrument(@person, @participant, @survey)
         pbs_eligibility_extractor = OperationalDataExtractor::PbsEligibilityScreener.new(response_set)
         new_phone = pbs_eligibility_extractor.get_telephone(
