@@ -413,7 +413,7 @@ module OperationalDataExtractor
     def mapped_address_hash(map)
       address = Hash.new
       address_attribute_value_pairs(map) do |attribute, value|
-        if value && value.is_a?(String)
+        if value.try(:is_a?, String)
           address[attribute] = value
         end
       end
@@ -486,7 +486,7 @@ module OperationalDataExtractor
     end
 
     def find_email_by_addres(person, address, email_type)
-      return nil unless address && address.is_a?(String)
+      return nil unless address.try(:is_a?, String)
       by_add = Hash.new
       by_add[:email] = address
       by_add[:person_id] = person.id
@@ -696,8 +696,7 @@ module OperationalDataExtractor
 
     def address_attribute_value_pairs(map)
       map.each do |key, attribute|
-        r = data_export_identifier_indexed_responses[key]
-        value = response_value(r) if r
+        value = value_by_key(key)
         yield [attribute, value]
       end
     end
@@ -715,7 +714,9 @@ module OperationalDataExtractor
     def finalize_addresses(*addresses)
       if any_address_changes?(addresses)
         changed_addresses = which_addresses_changed(addresses).flatten
-        changed_addresses.each do |change_addrs|
+        changed_addresses.select { |a|
+          a.address_rank == primary_rank
+        }.each do |change_addrs|
           person.addresses.each do |a|
             unless a.id == change_addrs.id
               a.demote_primary_rank_to_secondary(change_addrs.address_type_code)
@@ -761,7 +762,9 @@ module OperationalDataExtractor
     def finalize_telephones(*telephones)
       if any_telephone_changes?(telephones)
         changed_phones = which_telephones_changed(telephones).flatten
-        changed_phones.each do |phone|
+        changed_phones.select { |t|
+          t.phone_rank == primary_rank
+        }.each do |phone|
           person.telephones.each do |t|
             unless t.id == phone.id
               t.demote_primary_rank_to_secondary(phone.phone_type_code)
@@ -853,8 +856,10 @@ module OperationalDataExtractor
     end
 
     def finalize_email(email)
-      unless email.try(:email).blank?
-        person.emails.each do |e|
+      if email.try(:email).present? && email.email_rank == primary_rank
+        person.emails.select { |e|
+          e.email_rank == primary_rank
+        }.each do |e|
           unless e.id == email.id
             e.demote_primary_rank_to_secondary(email.email_type_code)
           end
