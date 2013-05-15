@@ -726,20 +726,30 @@ describe OperationalDataExtractor::Base do
 
       before do
         @map = OperationalDataExtractor::PbsEligibilityScreener::EMAIL_MAP
-
-        question = Factory(:question, :data_export_identifier => "PBS_ELIG_SCREENER.R_EMAIL")
-        answer = Factory(:answer, :response_class => "string")
-        email_response = Factory(:response, :string_value => "some_email_address@email.com", :question => question, :answer => answer, :response_set => @response_set)
-
-        @response_set.responses << email_response
+        @question = Factory(:question, :data_export_identifier => "PBS_ELIG_SCREENER.R_EMAIL")
+        @answer = Factory(:answer, :response_class => "string")
       end
 
-      it "creates an email record from the responses of am instrument" do
+      it "returns an email record from the responses of am instrument" do
+        email_response = Factory(:response, :string_value => "some_email_address@email.com", :question => @question, :answer => @answer, :response_set => @response_set)
+        @response_set.responses << email_response
         email = @pbs_eligibility_extractor.process_email(@map)
         email.email.should == "some_email_address@email.com"
       end
 
+      it "returns an nothing if the email address is empty" do
+        email_response = Factory(:response, :string_value => "", :question => @question, :answer => @answer, :response_set => @response_set)
+        @response_set.responses << email_response
+        email = @pbs_eligibility_extractor.process_email(@map)
+        email.should be_nil
+      end
+
+      it "returns an nothing if there's no response containig an email address" do
+        email = @pbs_eligibility_extractor.process_email(@map)
+        email.should be_nil
+      end
     end
+
     describe "#find_email" do
 
       it "retrieves an email record based on response_set and email type" do
@@ -781,8 +791,7 @@ describe OperationalDataExtractor::Base do
       end
 
       it "retrieves an email record if one with the same address and type exists" do
-        response_set, instrument = prepare_instrument(@person, @participant,
-                                                      @survey)
+        response_set, instrument = prepare_instrument(@person, @participant, @survey)
         pbs_eligibility_extractor = OperationalDataExtractor::PbsEligibilityScreener.new(response_set)
         pbs_eligibility_extractor.get_email(
           @person,
@@ -791,12 +800,37 @@ describe OperationalDataExtractor::Base do
         ).should == @existing_work_email
       end
 
-      it "creates a new email record if one does not exist " do
-        shared_email_type_code = NcsCode.for_list_name_and_local_code(
-                                                  'EMAIL_TYPE_CL1', 3)
-        new_email = @pbs_eligibility_extractor.get_email(@person,
-                                               'doesnt@exist.net',
-                                               shared_email_type_code)
+      it "creates a new email record can't find one because of address" do
+        response_set, instrument = prepare_instrument(@person, @participant, @survey)
+        pbs_eligibility_extractor = OperationalDataExtractor::PbsEligibilityScreener.new(response_set)
+        new_email = pbs_eligibility_extractor.get_email(
+          @person,
+          'bad@email.net',
+          @work_email_type_code
+        )
+        new_email.should_not == @existing_work_email
+        new_email.should_not == @existing_email
+        new_email.should be_an_instance_of(Email)
+      end
+
+      it "creates a new email record can't find one because of type in another response_set" do
+        shared_email_type_code = NcsCode.for_list_name_and_local_code('EMAIL_TYPE_CL1', 3)
+        response_set, instrument = prepare_instrument(@person, @participant, @survey)
+        pbs_eligibility_extractor = OperationalDataExtractor::PbsEligibilityScreener.new(response_set)
+        new_email = pbs_eligibility_extractor.get_email(
+          @person,
+          @existing_work_email.email,
+          shared_email_type_code
+        )
+        new_email.should_not == @existing_work_email
+        new_email.should_not == @existing_email
+        new_email.should be_an_instance_of(Email)
+      end
+
+      it "creates a new email record if can't find one of the same type in the same response_set" do
+        shared_email_type_code = NcsCode.for_list_name_and_local_code('EMAIL_TYPE_CL1', 3)
+        new_email = @pbs_eligibility_extractor.get_email(@person, 'doesnt@exist.net',
+                                                         shared_email_type_code)
         new_email.should_not == @existing_work_email
         new_email.should_not == @existing_email
         new_email.should be_an_instance_of(Email)
@@ -812,6 +846,8 @@ describe OperationalDataExtractor::Base do
       @person = Factory(:person)
       @survey = create_pbs_eligibility_screener_survey_with_telephone_operational_data
       @participant = Factory(:participant)
+      @primary_rank = NcsCode.for_list_name_and_local_code('COMMUNICATION_RANK_CL1', 1)
+      @secondary_rank = NcsCode.for_list_name_and_local_code('COMMUNICATION_RANK_CL1', 2)
       @response_set, @instrument = prepare_instrument(@person, @participant, @survey)
       @home_phone_type_code = NcsCode.for_list_name_and_local_code('PHONE_TYPE_CL1', 1)
       @work_phone_type_code = NcsCode.for_list_name_and_local_code('PHONE_TYPE_CL1', 2)
@@ -862,32 +898,40 @@ describe OperationalDataExtractor::Base do
 
       before do
         @map = OperationalDataExtractor::PbsEligibilityScreener::TELEPHONE_MAP1
-
-        question = Factory(:question, :data_export_identifier => "PBS_ELIG_SCREENER.R_PHONE_1")
-        answer = Factory(:answer, :response_class => "string")
-        phone_number_response = Factory(:response, :string_value => "484-484-4848", :question => question, :answer => answer, :response_set => @response_set)
         question = Factory(:question, :data_export_identifier => "PBS_ELIG_SCREENER.R_PHONE_TYPE1")
         answer = Factory(:answer, :response_class => "string")
         phone_type_response = Factory(:response, :string_value => "Home", :question => question, :answer => answer, :response_set => @response_set)
-
-        @response_set.responses << phone_number_response << phone_type_response
+        @response_set.responses << phone_type_response
+        @question = Factory(:question, :data_export_identifier => "PBS_ELIG_SCREENER.R_PHONE_1")
+        @answer = Factory(:answer, :response_class => "string")
       end
 
-      it "creates a phone record from the responses of an instrument" do
+      it "returns a phone record based on the responses of an instrument" do
+        phone_number_response = Factory(:response, :string_value => "484-484-4848", :question => @question, :answer => @answer, :response_set => @response_set)
+        @response_set.responses << phone_number_response
+
         phone = @pbs_eligibility_extractor.process_telephone(@person, @map)
         phone.phone_nbr.should == "4844844848"
       end
 
-      it "doesn't create dupes when the same number is entered in a different instrument" do
+      it "doesn't return a phone record if there's no number specified" do
+        phone_number_response = Factory(:response, :string_value => "", :question => @question, :answer => @answer, :response_set => @response_set)
+        @response_set.responses << phone_number_response
+
         phone = @pbs_eligibility_extractor.process_telephone(@person, @map)
-        phone.phone_nbr.should == "4844844848"
+        phone.should be_nil
+      end
+
+      it "doesn't return a phone record if there's no related response" do
+        phone = @pbs_eligibility_extractor.process_telephone(@person, @map)
+        phone.should be_nil
       end
 
     end
 
     describe "#find_telephone" do
 
-      it "retrieves a phone record based on response_set and phone type" do
+      it "retrieves a phone record based on response_set, phone type and rank" do
         @pbs_eligibility_extractor.find_telephone(
           @person,
           '3213123211',
@@ -896,7 +940,7 @@ describe OperationalDataExtractor::Base do
         ).should == @existing_work_phone
       end
 
-      it "retrieves a phone record based on phone number and phone type" do
+      it "retrieves a phone record based on phone number and phone type and rank" do
         @pbs_eligibility_extractor.find_telephone(
           @person,
           @existing_work_phone.phone_nbr,
@@ -905,7 +949,7 @@ describe OperationalDataExtractor::Base do
         ).should == @existing_work_phone
       end
 
-      it "returns nil if no match exists" do
+      it "returns nil if different numbers" do
         cell_phone_type_code = NcsCode.for_list_name_and_local_code(
                                                 'PHONE_TYPE_CL1', 3)
         @pbs_eligibility_extractor.find_telephone(
@@ -919,7 +963,7 @@ describe OperationalDataExtractor::Base do
 
     describe "#get_telephone" do
 
-      it "retrieves a phone record if one of the same type exists within the response_set" do
+      it "retrieves a phone record if one of the same type and rank exists within the response_set" do
         @pbs_eligibility_extractor.get_telephone(
           @person,
           '3213123211',
@@ -928,9 +972,8 @@ describe OperationalDataExtractor::Base do
         ).should == @existing_work_phone
       end
 
-      it "retrieves a phone record if one with the same number exists" do
-        response_set, instrument = prepare_instrument(@person, @participant,
-                                                      @survey)
+      it "retrieves a phone record with the same number and rank but linked to another response_set" do
+        response_set, instrument = prepare_instrument(@person, @participant, @survey)
         pbs_eligibility_extractor = OperationalDataExtractor::PbsEligibilityScreener.new(response_set)
         pbs_eligibility_extractor.get_telephone(
           @person,
@@ -940,13 +983,43 @@ describe OperationalDataExtractor::Base do
         ).should == @existing_work_phone
       end
 
-      it "creates a new phone record if one does not exist " do
-        cell_phone_type_code = NcsCode.for_list_name_and_local_code(
-                                                'PHONE_TYPE_CL1', 3)
-        new_phone = @pbs_eligibility_extractor.get_telephone(@person,
-                                                        '3214567890',
-                                                        cell_phone_type_code,
-                                                        @primary_rank)
+      it "creates a phone record if can't find one because of phone number" do
+        response_set, instrument = prepare_instrument(@person, @participant, @survey)
+        pbs_eligibility_extractor = OperationalDataExtractor::PbsEligibilityScreener.new(response_set)
+        new_phone = pbs_eligibility_extractor.get_telephone(
+          @person,
+          '4543212122',
+          @work_phone_type_code,
+          @primary_rank
+        )
+        new_phone.should_not == @existing_work_phone
+        new_phone.should_not == @existing_home_phone
+        new_phone.should be_an_instance_of(Telephone)
+      end
+
+      it "creates a phone record if can't find one because of phone rank" do
+        response_set, instrument = prepare_instrument(@person, @participant, @survey)
+        pbs_eligibility_extractor = OperationalDataExtractor::PbsEligibilityScreener.new(response_set)
+        new_phone = pbs_eligibility_extractor.get_telephone(
+          @person,
+          @existing_work_phone.phone_nbr,
+          @work_phone_type_code,
+          @secondary_rank
+        )
+        new_phone.should_not == @existing_work_phone
+        new_phone.should_not == @existing_home_phone
+        new_phone.should be_an_instance_of(Telephone)
+      end
+
+      it "creates a phone record if can't find one because of phone tyep" do
+        response_set, instrument = prepare_instrument(@person, @participant, @survey)
+        pbs_eligibility_extractor = OperationalDataExtractor::PbsEligibilityScreener.new(response_set)
+        new_phone = pbs_eligibility_extractor.get_telephone(
+          @person,
+          @existing_work_phone.phone_nbr,
+          @home_phone_type_code,
+          @primary_rank
+        )
         new_phone.should_not == @existing_work_phone
         new_phone.should_not == @existing_home_phone
         new_phone.should be_an_instance_of(Telephone)
