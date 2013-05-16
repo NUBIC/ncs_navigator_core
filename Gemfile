@@ -21,7 +21,7 @@ gem 'ncs_navigator_authority'
 
 gem 'exception_notification', :require => 'exception_notifier'
 gem 'paper_trail', '~> 2'
-gem 'ransack'
+gem 'ransack', '0.6.0'
 gem 'foreman'
 gem 'foreigner'
 gem 'facets', :require => false
