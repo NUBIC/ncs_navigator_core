@@ -314,6 +314,8 @@ class Event < ActiveRecord::Base
 
     result_set.tap do |s|
       s.group_by(&:participant).each do |p, events|
+        next unless p && p.person
+
         pscp = PscParticipant.new(psc, p)
         events.each { |e| e.load_scheduled_activities(pscp) }
       end
