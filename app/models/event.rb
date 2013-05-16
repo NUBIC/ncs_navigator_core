@@ -310,7 +310,7 @@ class Event < ActiveRecord::Base
   # @param [PatientStudyCalendar] psc a PatientStudyCalendar object
   # @return Array<Event>
   def self.with_psc_data(psc)
-    result_set = includes(:participant).to_a
+    result_set = includes(:participant => { :participant_person_links => :person }).to_a
 
     result_set.tap do |s|
       s.group_by(&:participant).each do |p, events|
