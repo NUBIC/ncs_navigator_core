@@ -69,8 +69,14 @@ class Event < ActiveRecord::Base
   # Scheduled activities for this event.  These are not persisted in Cases and
   # SHOULD be loaded from PSC.
   #
+  # However, in some circumstances, it is convenient to associate a set of
+  # scheduled activities with an Event.  This is an accessor to facilitate this
+  # case; however, if your use case permits using {.with_psc_data} or
+  # {#load_scheduled_activities}, you SHOULD use that.
+  #
+  # @see .with_psc_data
   # @see #load_scheduled_activities
-  attr_reader :scheduled_activities
+  attr_accessor :scheduled_activities
 
   POSTNATAL_EVENTS = [
     18, # Birth
