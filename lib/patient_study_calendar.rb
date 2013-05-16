@@ -441,16 +441,14 @@ class PatientStudyCalendar
   private :participant_activities
 
   def scheduled_activities_report(options = {})
-    filters = {:state => Psc::ScheduledActivity::SCHEDULED, :end_date => 3.months.from_now.to_date.to_s, :current_user => nil }
-    filters.merge!(options)
+    params = {
+      'state' => options[:state],
+      'end-date' => options[:end_date],
+      'start-date' => options[:start_date],
+      'responsible-user' => options[:current_user]
+    }.reject { |_, v| v.blank? }
 
-    path = "reports/scheduled-activities.json?"
-    path << "state=#{filters[:state]}"
-    path << "&end-date=#{filters[:end_date]}" if filters[:end_date]
-    path << "&start-date=#{filters[:start_date]}" if filters[:start_date]
-    path << "&responsible-user=#{filters[:current_user]}" if filters[:current_user]
-
-    get(path)
+    get "reports/scheduled-activities.json?#{Rack::Utils.build_query(params)}"
   end
 
   ##
