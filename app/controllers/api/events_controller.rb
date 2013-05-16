@@ -8,9 +8,13 @@ class Api::EventsController < ApiController
       report = Reports::EventReport.new(codes, data_collectors, range, psc)
       report.run
 
-      respond_with report
+      respond_with report, :serializer => EventReportSerializer
     rescue Reports::ScopeTooBroadError
       render :nothing => true, :status => :bad_request
     end
+  end
+
+  def default_serializer_options
+    { root: false }
   end
 end

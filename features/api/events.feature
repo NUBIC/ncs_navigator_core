@@ -21,12 +21,12 @@ Feature: Event search API
 
     Then the response status is 400
 
-  @wip
   Scenario: GET /api/v1/events satisfies its schema
     Given an authenticated user
 
     When I GET /api/v1/events with
       | header:X-Client-ID | foo |
+      | types[]            | 10  |
 
     Then the response status is 200
     And the response body satisfies the event search schema
