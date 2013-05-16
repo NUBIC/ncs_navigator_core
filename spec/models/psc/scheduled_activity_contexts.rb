@@ -86,17 +86,20 @@ shared_context 'from schedule' do
               "type": "Instrument"
           },
           "assignment": {
-              "id": "mother"
+              "id": "mother",
+              "subject_coordinator": {
+                  "username": "abc123"
+              }
           },
           "current_state": {
-              "name": "scheduled",
               "date": "2011-01-01",
+              "name": "scheduled",
               "time": "14:10"
           },
-          "study_segment": "HI-Intensity: Child",
           "id": "11",
           "ideal_date": "2011-01-01",
-          "labels": "event:birth instrument:2.0:ins_que_birth_int_ehpbhi_p2_v2.0_baby_name instrument:3.0:ins_que_birth_int_ehpbhi_p2_v3.0_baby_name references:2.0:ins_que_birth_int_ehpbhi_p2_v2.0 references:3.0:ins_que_birth_int_ehpbhi_p2_v3.0 order:01_02 participant_type:child collection:biological"
+          "labels": "event:birth instrument:2.0:ins_que_birth_int_ehpbhi_p2_v2.0_baby_name instrument:3.0:ins_que_birth_int_ehpbhi_p2_v3.0_baby_name references:2.0:ins_que_birth_int_ehpbhi_p2_v2.0 references:3.0:ins_que_birth_int_ehpbhi_p2_v3.0 order:01_02 participant_type:child collection:biological",
+          "study_segment": "HI-Intensity: Child"
       }
     })
   end
