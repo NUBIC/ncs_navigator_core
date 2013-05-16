@@ -451,39 +451,271 @@ describe Person do
   context "determining ssu and tsu" do
 
     let(:person) { Factory(:person) }
+    let(:du) { Factory(:dwelling_unit) }
+    let(:du2) { Factory(:dwelling_unit) }
+    let(:hu) { Factory(:household_unit) }
 
-    it "is not in a tsu if there are no households" do
-      person.household_units.should be_empty
-      person.should_not be_in_tsu
+    describe "#dwelling_units" do
+
+      describe "without associated addresses or household_units" do
+        before do
+          person.addresses.should be_empty
+          person.household_units.should be_empty
+        end
+
+        it "is empty when the person addresses and household_units associations are empty" do
+          person.dwelling_units.should be_empty
+        end
+      end
+
+      describe "with associated addresses but no household_unit association" do
+
+        before do
+          person.addresses << Factory(:address, :person => person, :dwelling_unit => du)
+          person.household_units.should be_empty
+        end
+
+        it "returns the person addresses dwelling_unit associations" do
+          person.dwelling_units.should == [du]
+        end
+      end
+
+      describe "with associated household units but no address association" do
+
+        before do
+          Factory(:dwelling_household_link, :dwelling_unit => du, :household_unit => hu)
+          Factory(:household_person_link, :person => person, :household_unit => hu)
+
+          person.addresses.should be_empty
+        end
+
+        it "returns the person household_units dwelling_unit associations" do
+          person.dwelling_units.should == [du]
+        end
+      end
+
+      describe "with household units and addresses associations" do
+
+        before do
+          Factory(:dwelling_household_link, :dwelling_unit => du, :household_unit => hu)
+          Factory(:household_person_link, :person => person, :household_unit => hu)
+          person.addresses << Factory(:address, :person => person, :dwelling_unit => du)
+          person.addresses << Factory(:address, :person => person, :dwelling_unit => du2)
+        end
+
+        it "returns the all uniq dwelling_unit associations" do
+          person.dwelling_units.should == [du, du2]
+        end
+      end
     end
 
-    it "is not in a tsu if there are no dwelling units" do
-      person.dwelling_units.should be_empty
-      person.should_not be_in_tsu
+    describe "#ssu_ids" do
+      describe "with household units and addresses associations" do
+
+        describe "and both of the dwelling units has a ssu_id" do
+          before do
+            du.update_attribute(:ssu_id, "ssu_id")
+            du2.update_attribute(:ssu_id, "ssu_id2")
+            Factory(:dwelling_household_link, :dwelling_unit => du, :household_unit => hu)
+            Factory(:household_person_link, :person => person, :household_unit => hu)
+            person.addresses << Factory(:address, :person => person, :dwelling_unit => du)
+            person.addresses << Factory(:address, :person => person, :dwelling_unit => du2)
+          end
+
+          it "returns all tsu_ids" do
+            person.ssu_ids.should == ["ssu_id", "ssu_id2"]
+          end
+        end
+
+        describe "and both of the dwelling units have the same ssu_id" do
+          before do
+            du.update_attribute(:ssu_id, "ssu_id")
+            du2.update_attribute(:ssu_id, "ssu_id")
+            Factory(:dwelling_household_link, :dwelling_unit => du, :household_unit => hu)
+            Factory(:household_person_link, :person => person, :household_unit => hu)
+            person.addresses << Factory(:address, :person => person, :dwelling_unit => du)
+            person.addresses << Factory(:address, :person => person, :dwelling_unit => du2)
+          end
+
+          it "returns the uniq ssu_id" do
+            person.ssu_ids.should == ["ssu_id"]
+          end
+        end
+      end
     end
 
-    it "is in a tsu if the dwelling unit for the household has a tsu id" do
-      du = Factory(:dwelling_unit, :ssu_id => 'ssu', :tsu_id => 'tsu')
-      hh = Factory(:household_unit)
-      dh_link = Factory(:dwelling_household_link, :dwelling_unit => du, :household_unit => hh)
-      hh_pers_link = Factory(:household_person_link, :household_unit => hh, :person => person)
-      person.household_units.should == [hh]
-      person.dwelling_units.should == [du]
-      person.dwelling_units.first.tsu_id.should == 'tsu'
-      person.should be_in_tsu
+    describe "#tsu_ids" do
+      describe "with household units and addresses associations" do
+
+        describe "and none of the dwelling unit has a tsu_id" do
+          before do
+            du.tsu_id.should be_nil
+            du2.tsu_id.should be_nil
+            Factory(:dwelling_household_link, :dwelling_unit => du, :household_unit => hu)
+            Factory(:household_person_link, :person => person, :household_unit => hu)
+            person.addresses << Factory(:address, :person => person, :dwelling_unit => du)
+            person.addresses << Factory(:address, :person => person, :dwelling_unit => du2)
+          end
+
+          it "returns an empty collection" do
+            person.tsu_ids.should be_empty
+          end
+        end
+
+        describe "and one of the dwelling units has a tsu_id" do
+          before do
+            du.tsu_id.should be_nil
+            du2.update_attribute(:tsu_id, "tsu_id")
+            Factory(:dwelling_household_link, :dwelling_unit => du, :household_unit => hu)
+            Factory(:household_person_link, :person => person, :household_unit => hu)
+            person.addresses << Factory(:address, :person => person, :dwelling_unit => du)
+            person.addresses << Factory(:address, :person => person, :dwelling_unit => du2)
+          end
+
+          it "returns the one tsu_id" do
+            person.tsu_ids.should == ["tsu_id"]
+          end
+        end
+
+        describe "and both of the dwelling units has a tsu_id" do
+          before do
+            du.update_attribute(:tsu_id, "tsu_id")
+            du2.update_attribute(:tsu_id, "tsu_id2")
+            Factory(:dwelling_household_link, :dwelling_unit => du, :household_unit => hu)
+            Factory(:household_person_link, :person => person, :household_unit => hu)
+            person.addresses << Factory(:address, :person => person, :dwelling_unit => du)
+            person.addresses << Factory(:address, :person => person, :dwelling_unit => du2)
+          end
+
+          it "returns all tsu_ids" do
+            person.tsu_ids.should == ["tsu_id", "tsu_id2"]
+          end
+        end
+
+        describe "and both of the dwelling units have the same tsu_id" do
+          before do
+            du.update_attribute(:tsu_id, "tsu_id")
+            du2.update_attribute(:tsu_id, "tsu_id")
+            Factory(:dwelling_household_link, :dwelling_unit => du, :household_unit => hu)
+            Factory(:household_person_link, :person => person, :household_unit => hu)
+            person.addresses << Factory(:address, :person => person, :dwelling_unit => du)
+            person.addresses << Factory(:address, :person => person, :dwelling_unit => du2)
+          end
+
+          it "returns the uniq tsu_id" do
+            person.tsu_ids.should == ["tsu_id"]
+          end
+        end
+      end
     end
 
-    it "is NOT in a tsu if the dwelling unit for the household does NOT have a tsu id" do
-      du = Factory(:dwelling_unit, :ssu_id => 'ssu', :tsu_id => nil)
-      hh = Factory(:household_unit)
-      dh_link = Factory(:dwelling_household_link, :dwelling_unit => du, :household_unit => hh)
-      hh_pers_link = Factory(:household_person_link, :household_unit => hh, :person => person)
-      person.household_units.should == [hh]
-      person.dwelling_units.should == [du]
-      person.dwelling_units.first.tsu_id.should be_nil
-      person.should_not be_in_tsu
-    end
+    describe "#in_tsu?" do
 
+      describe "without associated addresses or household_units" do
+        before do
+          person.addresses.should be_empty
+          person.household_units.should be_empty
+        end
+
+        it "is not in a tsu" do
+          person.should_not be_in_tsu
+        end
+      end
+
+      describe "with associated addresses but no household_unit association" do
+
+        describe "and the dwelling unit has a tsu_id" do
+          before do
+            du.update_attribute(:tsu_id, "tsu_id")
+            person.addresses << Factory(:address, :person => person, :dwelling_unit => du)
+            person.household_units.should be_empty
+          end
+
+          it "is in a tsu" do
+            person.should be_in_tsu
+          end
+        end
+
+        describe "and the dwelling unit does not have a tsu_id" do
+          before do
+            du.tsu_id.should be_nil
+            person.addresses << Factory(:address, :person => person, :dwelling_unit => du)
+            person.household_units.should be_empty
+          end
+
+          it "is not in a tsu" do
+            person.should_not be_in_tsu
+          end
+        end
+
+      end
+
+      describe "with associated household units but no address association" do
+
+        describe "and the dwelling unit has a tsu_id" do
+          before do
+            du.update_attribute(:tsu_id, "tsu_id")
+            Factory(:dwelling_household_link, :dwelling_unit => du, :household_unit => hu)
+            Factory(:household_person_link, :person => person, :household_unit => hu)
+
+            person.addresses.should be_empty
+          end
+
+          it "is in a tsu" do
+            person.should be_in_tsu
+          end
+        end
+
+        describe "and the dwelling unit does not have a tsu_id" do
+          before do
+            du.tsu_id.should be_nil
+            Factory(:dwelling_household_link, :dwelling_unit => du, :household_unit => hu)
+            Factory(:household_person_link, :person => person, :household_unit => hu)
+
+            person.addresses.should be_empty
+          end
+
+          it "is not in a tsu" do
+            person.should_not be_in_tsu
+          end
+        end
+
+      end
+
+      describe "with household units and addresses associations" do
+
+        describe "and one of the dwelling units has a tsu_id" do
+
+          before do
+            du.tsu_id.should be_nil
+            du2.update_attribute(:tsu_id, "tsu_id")
+            Factory(:dwelling_household_link, :dwelling_unit => du, :household_unit => hu)
+            Factory(:household_person_link, :person => person, :household_unit => hu)
+            person.addresses << Factory(:address, :person => person, :dwelling_unit => du)
+            person.addresses << Factory(:address, :person => person, :dwelling_unit => du2)
+          end
+
+          it "is in a tsu" do
+            person.should be_in_tsu
+          end
+        end
+
+        describe "and none of the dwelling units has a tsu_id" do
+          before do
+            du.tsu_id.should be_nil
+            du2.tsu_id.should be_nil
+            Factory(:dwelling_household_link, :dwelling_unit => du, :household_unit => hu)
+            Factory(:household_person_link, :person => person, :household_unit => hu)
+            person.addresses << Factory(:address, :person => person, :dwelling_unit => du)
+            person.addresses << Factory(:address, :person => person, :dwelling_unit => du2)
+          end
+
+          it "is not in a tsu" do
+            person.should_not be_in_tsu
+          end
+        end
+      end
+    end
   end
 
   describe 'phone number helpers' do
