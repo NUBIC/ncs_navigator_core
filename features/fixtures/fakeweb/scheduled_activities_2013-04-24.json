@@ -1,0 +1,125 @@
+{
+    "filters": {
+        "end_date": "2013-05-01", 
+        "responsible_user": "jdi613", 
+        "start_date": "2013-04-24", 
+        "states": [
+            "Scheduled"
+        ]
+    }, 
+    "rows": [
+        {
+            "activity_name": "Birth Interview Part Two", 
+            "activity_status": "Scheduled", 
+            "activity_type": "Instrument", 
+            "details": "w/in 10 days of birth", 
+            "grid_id": "bf8bd56a-1e86-472d-a528-36896052c9c8", 
+            "ideal_date": "2013-04-24", 
+            "labels": [
+                "event:birth", 
+                "instrument:2.0:ins_que_birth_int_ehpbhi_p2_v2.0_part_two", 
+                "instrument:2.1:ins_que_birth_int_ehpbhi_p2_v2.0_part_two", 
+                "instrument:2.2:ins_que_birth_int_ehpbhi_p2_v2.0_part_two", 
+                "instrument:3.0:ins_que_birth_int_ehpbhipbs_m3.0_v3.0_part_two", 
+                "instrument:3.1:ins_que_birth_int_ehpbhipbs_m3.0_v3.0_part_two", 
+                "instrument:3.2:ins_que_birth_int_m3.2_v3.1_part_two", 
+                "order:01_03", 
+                "participant_type:mother", 
+                "references:2.0:ins_que_birth_int_ehpbhi_p2_v2.0_part_one", 
+                "references:2.1:ins_que_birth_int_ehpbhi_p2_v2.0_part_one", 
+                "references:2.2:ins_que_birth_int_ehpbhi_p2_v2.0_part_one", 
+                "references:3.0:ins_que_birth_int_ehpbhipbs_m3.0_v3.0_part_one", 
+                "references:3.1:ins_que_birth_int_ehpbhipbs_m3.0_v3.0_part_one", 
+                "references:3.2:ins_que_birth_int_m3.2_v3.1_part_one"
+            ], 
+            "last_change_reason": "Initialized from template", 
+            "responsible_user": "jdi613", 
+            "scheduled_date": "2013-04-24", 
+            "scheduled_study_segment": {
+                "grid_id": "8f852201-e7fc-4454-9f0b-5ad48f3400de", 
+                "start_date": "2013-04-24", 
+                "start_day": 1
+            }, 
+            "site": "Training", 
+            "study": "NCS Hi-Lo", 
+            "subject": {
+                "grid_id": "a0579e0f-d7a3-48b1-8cef-91d4bc7e71a0", 
+                "name": "Aria Appleton", 
+                "person_id": "registered_with_psc"
+            }
+        }, 
+        {
+            "activity_name": "Birth Interview Baby Name", 
+            "activity_status": "Scheduled", 
+            "activity_type": "Instrument", 
+            "details": "for each child", 
+            "grid_id": "36dcb0f5-8fb9-4f5b-8fc5-753dabb7fac7", 
+            "ideal_date": "2013-04-24", 
+            "labels": [
+                "event:birth", 
+                "instrument:2.0:ins_que_birth_int_ehpbhi_p2_v2.0_birth_visit_baby_name", 
+                "instrument:2.1:ins_que_birth_int_ehpbhi_p2_v2.0_birth_visit_baby_name", 
+                "instrument:2.2:ins_que_birth_int_ehpbhi_p2_v2.0_birth_visit_baby_name", 
+                "instrument:3.0:ins_que_birth_int_ehpbhipbs_m3.0_v3.0_birth_visit_baby_name_3", 
+                "instrument:3.1:ins_que_birth_int_ehpbhipbs_m3.0_v3.0_birth_visit_baby_name_3", 
+                "instrument:3.2:ins_que_birth_int_m3.2_v3.1_birth_visit_baby_name", 
+                "order:01_02", 
+                "participant_type:child", 
+                "references:2.0:ins_que_birth_int_ehpbhi_p2_v2.0_part_one", 
+                "references:2.1:ins_que_birth_int_ehpbhi_p2_v2.0_part_one", 
+                "references:2.2:ins_que_birth_int_ehpbhi_p2_v2.0_part_one", 
+                "references:3.0:ins_que_birth_int_ehpbhipbs_m3.0_v3.0_part_one", 
+                "references:3.1:ins_que_birth_int_ehpbhipbs_m3.0_v3.0_part_one", 
+                "references:3.2:ins_que_birth_int_m3.2_v3.1_part_one"
+            ], 
+            "last_change_reason": "Initialized from template", 
+            "responsible_user": "jdi613", 
+            "scheduled_date": "2013-04-24", 
+            "scheduled_study_segment": {
+                "grid_id": "8f852201-e7fc-4454-9f0b-5ad48f3400de", 
+                "start_date": "2013-04-24", 
+                "start_day": 1
+            }, 
+            "site": "Training", 
+            "study": "NCS Hi-Lo", 
+            "subject": {
+                "grid_id": "a0579e0f-d7a3-48b1-8cef-91d4bc7e71a0", 
+                "name": "Aria Appleton", 
+                "person_id": "registered_with_psc"
+            }
+        }, 
+        {
+            "activity_name": "Birth Interview Part One", 
+            "activity_status": "Scheduled", 
+            "activity_type": "Instrument", 
+            "grid_id": "f74a5ff2-100b-451e-902c-80ee08873144", 
+            "ideal_date": "2013-04-24", 
+            "labels": [
+                "event:birth", 
+                "instrument:2.0:ins_que_birth_int_ehpbhi_p2_v2.0_part_one", 
+                "instrument:2.1:ins_que_birth_int_ehpbhi_p2_v2.0_part_one", 
+                "instrument:2.2:ins_que_birth_int_ehpbhi_p2_v2.0_part_one", 
+                "instrument:3.0:ins_que_birth_int_ehpbhipbs_m3.0_v3.0_part_one", 
+                "instrument:3.1:ins_que_birth_int_ehpbhipbs_m3.0_v3.0_part_one", 
+                "instrument:3.2:ins_que_birth_int_m3.2_v3.1_part_one", 
+                "order:01_01", 
+                "participant_type:mother"
+            ], 
+            "last_change_reason": "Initialized from template", 
+            "responsible_user": "jdi613", 
+            "scheduled_date": "2013-04-24", 
+            "scheduled_study_segment": {
+                "grid_id": "8f852201-e7fc-4454-9f0b-5ad48f3400de", 
+                "start_date": "2013-04-24", 
+                "start_day": 1
+            }, 
+            "site": "Training", 
+            "study": "NCS Hi-Lo", 
+            "subject": {
+                "grid_id": "a0579e0f-d7a3-48b1-8cef-91d4bc7e71a0", 
+                "name": "Aria Appleton", 
+                "person_id": "registered_with_psc"
+            }
+        }
+    ]
+}

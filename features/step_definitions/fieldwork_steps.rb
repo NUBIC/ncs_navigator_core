@@ -63,3 +63,23 @@ Then /^I see the conflict report$/ do |table|
 
   table.diff!(actual)
 end
+
+Given /^the participant person link$/ do |table|
+  table.map_column!('relationship_code') { |c| c.to_i }
+  table.hashes.each do |hash|
+    p_id = hash.delete('p_id')
+    person_id = hash.delete('person_id')
+    hash.merge!(
+      :participant => Participant.where(:p_id => p_id).first, 
+      :person => Person.where(:person_id => person_id).first)
+
+    Factory(:participant_person_link, hash)
+  end
+end
+
+Then /^the response body has "([^"]*)" distinct values for "([^"]*)" at "([^"]*)"$/ do |count, element, root|
+  json = JSON.parse(last_response.body)
+  ptr = Hana::Pointer.new(root)
+  val = ptr.eval(json)
+  val.map{|v| v[element] }.uniq.size.should == count.to_i
+end
