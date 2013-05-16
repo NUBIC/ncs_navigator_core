@@ -15,5 +15,4 @@
 //= require event
 //= require radio_reset_button
 //= require nested_attributes
-//= require jquery.surveyor
 //= require_tree .
