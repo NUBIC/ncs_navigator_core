@@ -410,6 +410,11 @@ module OperationalDataExtractor
       participant.person
     end
 
+    def find_by_response_set(model, by_rs)
+      rs_hash = by_rs.merge({:response_set_id => response_set.id})
+      model.where(rs_hash).last
+    end
+
     def mapped_address_hash(map)
       address = Hash.new
       address_attribute_value_pairs(map) do |attribute, value|
@@ -420,26 +425,25 @@ module OperationalDataExtractor
       address
     end
 
-    def common_address_attribs(h, address_type, address_rank, address_type_other)
+    def common_address_attribs(person, address_type, address_rank, address_type_other)
+      h = Hash.new
+      h[:person_id] = person.id
       h[:address_rank_code] = address_rank.local_code
       h[:address_type_code] = address_type.local_code if address_type
       h[:address_type_other] = address_type_other if address_type_other
+      h
     end
 
     def find_address(person, map, address_type, address_rank, address_type_other)
-      by_rs = Hash.new
-      by_rs[:response_set_id] = response_set.id
-      common_address_attribs(by_rs, address_type, address_rank, address_type_other)
-
-      by_add = mapped_address_hash(map)
-      by_add[:person_id] = person.id
-      common_address_attribs(by_add, address_type, address_rank, address_type_other)
-
-      address = Address.where(by_rs).last
+      return unless person.id
+      ahash = common_address_attribs(person, address_type,
+                                     address_rank, address_type_other)
+      address = find_by_response_set(Address, ahash)
+      by_add = ahash.merge(mapped_address_hash(map))
       address ||= Address.where(by_add).last
     end
 
-    def get_address(person, map, address_type, address_rank, address_type_other = nil)
+    def find_or_create_address(person, map, address_type, address_rank, address_type_other = nil)
       address = find_address(person, map, address_type, address_rank,
                              address_type_other)
       if address.nil?
@@ -454,27 +458,29 @@ module OperationalDataExtractor
       address
     end
 
-    def find_telephone_by_number(person, number, phone_type, phone_rank)
+    def common_phone_attribs_hash(person, phone_type, phone_rank)
+      h = Hash.new
+      h[:person_id] = person.id
+      h[:phone_rank_code] = phone_rank.local_code
+      h[:phone_type_code] = phone_type.local_code if phone_type
+      h
+    end
+
+    def find_telephone_by_number(person, number, by_nr)
       return nil unless number.try(:is_a?, String)
-      by_nr = Hash.new
       by_nr[:phone_nbr] = number.gsub(/[^0-9]/, "")
-      by_nr[:person_id] = person.id
-      by_nr[:phone_rank_code] = phone_rank.local_code
-      by_nr[:phone_type_code] = phone_type.local_code if phone_type
       Telephone.where(by_nr).last
     end
 
     def find_telephone(person, number, phone_type, phone_rank)
-      by_rs = Hash.new
-      by_rs[:response_set_id] = response_set.id
-      by_rs[:phone_rank_code] = phone_rank.local_code
-      by_rs[:phone_type_code] = phone_type.local_code if phone_type
-
-      phone  = Telephone.where(by_rs).last
-      phone ||= find_telephone_by_number(person, number, phone_type, phone_rank)
+      # Only search if Person's record has already been saved
+      return unless person.id
+      phash = common_phone_attribs_hash(person, phone_type, phone_rank)
+      phone  = find_by_response_set(Telephone, phash)
+      phone ||= find_telephone_by_number(person, number, phash)
     end
 
-    def get_telephone(person, number, phone_type = nil, phone_rank = primary_rank)
+    def find_or_create_telephone(person, number, phone_type = nil, phone_rank = primary_rank)
       phone = find_telephone(person, number, phone_type, phone_rank)
       if phone.nil?
         phone = Telephone.new(:person => person, :psu => person.psu,
@@ -485,28 +491,25 @@ module OperationalDataExtractor
       phone
     end
 
-    def find_email_by_addres(person, address, email_type)
-      return nil unless address.try(:is_a?, String)
-      by_add = Hash.new
+    def find_email_by_addres(address, by_add)
+      return unless address.try(:is_a?, String)
       by_add[:email] = address
-      by_add[:person_id] = person.id
-      by_add[:email_type_code] = email_type.local_code if email_type
       Email.where(by_add).last
     end
 
     def find_email(person, address, email_type)
-      by_rs = Hash.new
-      by_rs[:response_set_id] = response_set.id
-      by_rs[:email_type_code] = email_type.local_code if email_type
+      ehash = Hash.new
+      return unless ehash[:person_id] = person.id
+      ehash[:email_type_code] = email_type.local_code if email_type
 
-      email = Email.where(by_rs).last
-      if email ||= find_email_by_addres(person, address, email_type)
+      email = find_by_response_set(Email, ehash)
+      if email ||= find_email_by_addres(address, ehash)
         email.email_rank = primary_rank
       end
       email
     end
 
-    def get_email(person, email_address, email_type)
+    def find_or_create_email(person, email_address, email_type)
       email = find_email(person, email_address, email_type)
       if email.nil?
         email = Email.new(:person => person, :psu => person.psu,
@@ -686,7 +689,7 @@ module OperationalDataExtractor
 
     def process_birth_institution_and_address(birth_address_map, institution_map)
       institution = process_institution(institution_map)
-      birth_address = get_address(person, birth_address_map,
+      birth_address = find_or_create_address(person, birth_address_map,
                                   address_other_type, primary_rank, "Birth")
       address_attribute_value_pairs(birth_address_map) do |attribute, value|
           set_value(birth_address, attribute, value) if value
@@ -704,7 +707,7 @@ module OperationalDataExtractor
     def process_address(owner, map, address_type = address_other_type, address_rank = primary_rank)
       # Only process if any parts of the address in the response set
       return unless mapped_address_hash(map).present?
-      address = get_address(owner, map, address_type, address_rank)
+      address = find_or_create_address(owner, map, address_type, address_rank)
       address_attribute_value_pairs(map) do |attribute, value|
           set_value(address, attribute, value) if value
       end
@@ -751,7 +754,7 @@ module OperationalDataExtractor
       phone_nr = value_by_attribute(map, 'phone_nbr')
       return if !phone_nr || phone_nr.empty?
 
-      phone = get_telephone(owner, phone_nr, phone_type, phone_rank)
+      phone = find_or_create_telephone(owner, phone_nr, phone_type, phone_rank)
       map.each do |key, attribute|
         value = value_by_key(key)
         set_value(phone, attribute, value) if value
@@ -787,7 +790,7 @@ module OperationalDataExtractor
       email_address = value_by_attribute(map, 'email')
       return if !email_address or email_address.empty?
 
-      email = get_email(person, email_address, email_type)
+      email = find_or_create_email(person, email_address, email_type)
       map.each do |key, attribute|
         value = value_by_key(key)
         set_value(email, attribute, value) if value
