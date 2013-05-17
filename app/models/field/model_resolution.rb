@@ -273,7 +273,7 @@ module Field
                 c << pm.participant.build_child_person_and_participant if pm.participant
               end
             else
-              raise "Cannot resolve participant type '#{participant_type}'' for survey '#{resolved_survey.title}'"
+              raise "Cannot resolve participant type '#{participant_type}'' for survey '#{sm.title}'"
             end
           end
 
