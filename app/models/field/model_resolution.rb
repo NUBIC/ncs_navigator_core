@@ -270,9 +270,7 @@ module Field
             when 'child'
               c.push(*pm.children.map(&:participant))
               if pm.children.empty?
-                if pm.participant
-                  c << pm.participant.build_child_person_and_participant
-                end
+                c << pm.participant.build_child_person_and_participant if pm.participant
               end
             else
               raise "Cannot resolve participant type '#{participant_type}'' for survey '#{resolved_survey.title}'"
