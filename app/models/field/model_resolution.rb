@@ -217,16 +217,47 @@ module Field
     #
     # @private
     def resolve_instruments
-      instruments.each do |instrument|
+      instrument_plans.each do |instrument_plan|
+        instrument = instrument_plan.root
         pm  = m instrument.person
-        pam = m(instrument.person).try(:participant)
-        sm  = m instrument.survey
-        rm  = m instrument.referenced_survey
         em  = m instrument.event
 
-        if pm && pam && (sm || rm) && em
-          resolutions[instrument] = ::Instrument.start(pm, pam, rm, sm, em)
-        end
+        instrument_plan.surveys.each do |survey|
+          sm  = m instrument.survey
+          rm  = m instrument.referenced_survey
+
+          participant_type = survey.participant_type.try(:content)
+          pams = [].tap do |c|
+            case participant_type
+            when nil, 'mother'
+              c << m(instrument.person).try(:participant)
+            when 'child'
+              c.push(*pm.children.map(&:participant))
+              if pm.children.empty?
+                if pm.participant
+                  new_child_pa = pm.participant.build_child_person_and_participant
+                  prng = Random.new
+                  resolutions[prng.rand] = new_child_pa
+                  resolutions[prng.rand] = new_child_pa.person
+                  c << new_child_pa
+                end
+              end
+            else
+              raise "Cannot resolve participant type '#{participant_type}'' for survey '#{resolved_survey.title}'"
+            end
+          end
+
+          pams.each do |pam|
+            if pm && pam && (sm || rm) && em
+              if !resolutions[instrument]
+                resolutions[instrument] = ::Instrument.start(pm, pam, rm, sm, em)
+              else
+                inm = resolutions[instrument]
+                resolutions[instrument] = pm.start_instrument(sm, pam, nil, em, inm)
+              end
+            end
+          end
+        end  
       end
     end
 

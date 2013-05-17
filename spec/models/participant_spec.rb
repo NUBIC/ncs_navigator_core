@@ -2769,4 +2769,29 @@ describe Participant do
     end
 
   end
+
+  describe "#build_child_person_and_participant" do
+    let!(:mother) { Factory(:participant) }
+    let!(:child) { mother.build_child_person_and_participant }
+
+    it "should be a new record" do
+      child.should be_new_record
+    end
+
+    it "should be linked to a person" do
+      child.person.should be_new_record
+    end
+
+    it "should make a person linked back to the participant" do
+      child.person.participant.should == child
+    end
+
+    it "should be child of mother" do
+      mother.children[0].should == child.person
+    end
+
+    it "should be child of mother" do
+      child.mother.should == mother.person
+    end
+  end
 end
