@@ -235,11 +235,7 @@ module Field
               c.push(*pm.children.map(&:participant))
               if pm.children.empty?
                 if pm.participant
-                  new_child_pa = pm.participant.build_child_person_and_participant
-                  prng = Random.new
-                  resolutions[prng.rand] = new_child_pa
-                  resolutions[prng.rand] = new_child_pa.person
-                  c << new_child_pa
+                  c << pm.participant.build_child_person_and_participant
                 end
               end
             else
