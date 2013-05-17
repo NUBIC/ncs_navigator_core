@@ -25,6 +25,14 @@ module Field
     end
 
     ##
+    # Intermediate instruments generated when impied instruments 
+    # (i.e. Psc::ImpliedEntities::Instrument) are resolved to entities from the 
+    # Cases' database.
+    def intermediate_instruments
+      @intermediate_instruments ||= {}
+    end
+
+    ##
     # Finds or builds model objects.
     #
     # Resolution and construction of contact links requires a staff ID, so
@@ -33,6 +41,7 @@ module Field
       raise 'Model resolution requires #staff_id to be set' unless staff_id
 
       resolutions.clear
+      intermediate_instruments.clear
 
       logger.info 'Resolution started'
 
@@ -217,6 +226,29 @@ module Field
     #
     # @private
     def resolve_instruments
+      generate_intermediate_instruments
+
+      intermediate_instruments.each do |derived, intermediates|
+        intermediates.each do |intermediate|
+          pm  = intermediate.respondent
+          pam = intermediate.concerning
+          sm  = intermediate.survey
+          rm  = intermediate.referenced_survey
+          em  = intermediate.event
+
+          if pm && pam && (sm || rm) && em
+            existing = resolutions[derived]
+            if !existing
+              resolutions[derived] = ::Instrument.start(pm, pam, rm, sm, em)
+            else
+              resolutions[derived] = pm.start_instrument(sm, pam, nil, em, existing)
+            end
+          end
+        end
+      end
+    end
+
+    def generate_intermediate_instruments
       instrument_plans.each do |instrument_plan|
         instrument = instrument_plan.root
         pm  = m instrument.person
@@ -244,14 +276,16 @@ module Field
           end
 
           pams.each do |pam|
-            if pm && pam && (sm || rm) && em
-              if !resolutions[instrument]
-                resolutions[instrument] = ::Instrument.start(pm, pam, rm, sm, em)
-              else
-                inm = resolutions[instrument]
-                resolutions[instrument] = pm.start_instrument(sm, pam, nil, em, inm)
-              end
-            end
+            intermediate_instruments[instrument] ||= []
+
+            i = OpenStruct.new(
+              :respondent => pm, 
+              :concerning => pam, 
+              :survey => sm, 
+              :referenced_survey => rm, 
+              :event => em)              
+
+            intermediate_instruments[instrument] << i
           end
         end  
       end
