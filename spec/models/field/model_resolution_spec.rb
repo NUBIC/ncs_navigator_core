@@ -192,6 +192,130 @@ module Field
             end
           end
         end
+
+        describe 'if the instrument has a person, THREE surveys, and event' do
+          let(:data_fn) { File.expand_path('../../../../features/fixtures/fakeweb/scheduled_activities_2013-04-24.json', __FILE__) }
+          let(:data) { JSON.parse(File.read(data_fn)) }
+
+          let(:person_id) { 'registered_with_psc' }
+
+          let!(:s_part_one) { Factory(:survey, :access_code => 'ins-que-birth-int-ehpbhipbs-m3-0-v3-0-part-one', :title => 'Birth Interview Part One') }
+          let!(:s_child) { Factory(:survey, :access_code => 'ins-que-birth-int-ehpbhipbs-m3-0-v3-0-birth-visit-baby-name-3', :title => 'Birth Interview Baby Name') }
+          let!(:s_part_two) { Factory(:survey, :access_code => 'ins-que-birth-int-ehpbhipbs-m3-0-v3-0-part-two', :title => 'Birth Interview Part Two') }
+
+          let!(:p) { Factory(:person, :person_id => person_id) }
+          let!(:pa) { Factory(:participant) }
+
+          before do
+            # Link up.
+            p.participant = pa
+            p.save!
+          end
+
+          # 18 => birth data collection
+          let!(:et) { NcsCode.for_list_name_and_local_code('EVENT_TYPE_CL1', 18) }
+          let(:ideal_date) { '2013-04-24' }
+          let!(:e) { Factory(:event, :participant => pa, :event_start_date => ideal_date, :event_type => et) }
+
+          it 'starts an instrument' do
+            report.reify_models
+
+            instrument = report.resolutions.values.detect { |v| ::Instrument === v }
+            instrument.should_not be_nil
+          end
+
+          describe "the intermediate instruments" do
+            let(:derived) { report.intermediate_instruments.keys[0] }
+            let(:first) { report.intermediate_instruments[derived][0] }
+            let(:second) { report.intermediate_instruments[derived][1] }
+            let(:third) { report.intermediate_instruments[derived][2] }
+
+            before do
+              report.reify_models
+            end
+
+            it "should generate three" do
+              report.intermediate_instruments[derived].size.should == 3
+            end
+
+            describe "the mother survey" do
+              it 'has a survey' do
+                first.survey.should == s_part_one
+              end
+
+              it 'has a survey respondent' do
+                first.respondent.should == p
+              end
+
+              it 'has a concerning person' do
+                first.concerning.should == pa
+              end
+            end
+
+            describe "the child survey" do
+              context 'when no child exists' do
+                it 'has a survey' do
+                  second.survey.should == s_child
+                end
+
+                it 'has a survey respondent' do
+                  second.respondent.should == p
+                end
+
+                it 'has a concerning person' do
+                  second.concerning.should_not == pa
+                  second.concerning.should be_child_participant
+                end
+              end
+
+              context 'when child exists' do
+                let!(:child) { pa.create_child_person_and_participant!(:first_name => 'child') }
+                
+                before do
+                  report.reify_models
+                end
+
+                it 'has a survey' do
+                  second.survey.should == s_child
+                end
+
+                it 'has a survey respondent' do
+                  second.respondent.should == p
+                end
+
+                it 'has a concerning person' do
+                  second.concerning.should == child
+                end
+              end
+
+              context 'when multiple children exists' do
+                let!(:child_1) { pa.create_child_person_and_participant!(:first_name => 'child 1') }
+                let!(:child_2) { pa.create_child_person_and_participant!(:first_name => 'child 2') }
+                
+                let(:survey_person_associations_collection) { instrument_plan.survey_person_associations_collection }
+
+                before do
+                  report.reify_models
+                end
+
+                it 'has a survey' do
+                  second.survey.should == s_child
+                  third.survey.should == s_child
+                end
+
+                it 'has a survey respondent' do
+                  second.respondent.should == p
+                  third.respondent.should == p
+                end
+
+                it 'has a concerning person' do
+                  second.concerning.should == child_1
+                  third.concerning.should == child_2
+                end
+              end
+            end
+          end
+        end
       end
 
       describe 'for contacts' do

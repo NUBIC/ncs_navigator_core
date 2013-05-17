@@ -255,7 +255,7 @@ module Field
         em  = m instrument.event
 
         instrument_plan.surveys.each do |survey|
-          sm  = m instrument.survey
+          sm  = m survey
           rm  = m instrument.referenced_survey
 
           participant_type = survey.participant_type.try(:content)
