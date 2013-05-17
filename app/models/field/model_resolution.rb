@@ -248,6 +248,10 @@ module Field
       end
     end
 
+    ###
+    # Builds a hash with the key the derived instrument
+    # and the value is an array of instrument data needed
+    # to start an instrument via ::Instrument#start
     def generate_intermediate_instruments
       instrument_plans.each do |instrument_plan|
         instrument = instrument_plan.root
