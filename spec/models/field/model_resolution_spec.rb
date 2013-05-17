@@ -158,6 +158,39 @@ module Field
               instrument.survey.should == s
             end
           end
+
+          describe "the intermediate instruments" do
+            let(:derived) { report.intermediate_instruments.keys[0] }
+            let(:intermediate) { report.intermediate_instruments[derived][0] }
+
+            before do
+              report.reify_models
+            end
+
+            it "should generate one" do
+              report.intermediate_instruments[derived].size.should == 1
+            end
+
+            it "should have respondent" do
+              intermediate.respondent.should == p
+            end
+
+            it "should have a concerning participant" do
+              intermediate.concerning.should == pa
+            end
+
+            it "should have a survey" do
+              intermediate.survey.should == s
+            end
+
+            it "should not have a referenced survey" do
+              intermediate.referenced_survey.should be_nil
+            end
+
+            it "should have an event" do
+              intermediate.event.should == e
+            end
+          end
         end
       end
 
