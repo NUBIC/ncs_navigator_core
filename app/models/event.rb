@@ -333,6 +333,28 @@ class Event < ActiveRecord::Base
   end
 
   ##
+  # The minimum activity date associated with this Event.  If this Event has no
+  # scheduled activities or scheduled activities have not been loaded (see
+  # {.with_psc_data}), returns nil.
+  #
+  # @return [String,nil]
+  def scheduled_date
+    return nil unless scheduled_activities
+
+    scheduled_activities.map(&:activity_date).min
+  end
+
+  ##
+  # Usernames of staff members associated with this Event.  If this Event has
+  # no scheduled activities or scheduled activities have not been loaded,
+  # returns [].
+  def data_collectors
+    return [] unless scheduled_activities
+
+    scheduled_activities.map(&:responsible_user).uniq
+  end
+
+  ##
   # Format the event start date
   # @return [String]
   def event_start
