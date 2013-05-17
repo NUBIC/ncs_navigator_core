@@ -158,9 +158,9 @@ Feature: Fieldwork check-out and check-in
       | /contacts/0/events/0/instruments/1/name | Pregnancy Probability Group Follow-Up Interview |
 
   Scenario: POST /api/v1/fieldwork returns instruments in template-prescribed order
-    This scenario relies on data in
-    features/fixtures/fakeweb/scheduled_activities_2013-04-24.json; refer to
-    the Birth event in that file for more information.
+    This scenarios tests fieldwork generation for the birth instrument before a
+    child has been created. It relies on data in
+    features/fixtures/fakeweb/scheduled_activities_2013-04-24.json.
 
     Given an authenticated user
     And the participant
@@ -184,19 +184,18 @@ Feature: Fieldwork check-out and check-in
       | header:X-Client-ID | 1234567890 |
 
     Then the response body satisfies
-      | /contacts/0/events/0/name | Birth |
+      | /contacts/0/events/0/name                                    | Birth               |
       | /contacts/0/events/0/instruments/0/response_sets/0/person_id | registered_with_psc |
       | /contacts/0/events/0/instruments/0/response_sets/1/person_id | registered_with_psc |
       | /contacts/0/events/0/instruments/0/response_sets/2/person_id | registered_with_psc |
-      | /contacts/0/events/0/instruments/0/response_sets/0/p_id | abc-de-fghi |
-      | /contacts/0/events/0/instruments/0/response_sets/2/p_id | abc-de-fghi |
+      | /contacts/0/events/0/instruments/0/response_sets/0/p_id      | abc-de-fghi         |
+      | /contacts/0/events/0/instruments/0/response_sets/2/p_id      | abc-de-fghi         |
     And the response body has "2" distinct values for "p_id" at "/contacts/0/events/0/instruments/0/response_sets"
       
   Scenario: POST /api/v1/fieldwork returns instruments in template-prescribed order
-    This scenario relies on data in
-    features/fixtures/fakeweb/scheduled_activities_2013-04-24.json; refer to
-    the Birth event in that file for more information. This is for when the
-    child exists.
+    This scenarios tests fieldwork generation for the birth instrument after a
+    child has been created. It relies on data in
+    features/fixtures/fakeweb/scheduled_activities_2013-04-24.json.
 
     Given an authenticated user
     And the participant
@@ -228,11 +227,11 @@ Feature: Fieldwork check-out and check-in
       | header:X-Client-ID | 1234567890 |
 
     Then the response body satisfies
-      | /contacts/0/events/0/name | Birth |
+      | /contacts/0/events/0/name                                    | Birth               |
       | /contacts/0/events/0/instruments/0/response_sets/0/person_id | registered_with_psc |
       | /contacts/0/events/0/instruments/0/response_sets/1/person_id | registered_with_psc |
       | /contacts/0/events/0/instruments/0/response_sets/2/person_id | registered_with_psc |
-      | /contacts/0/events/0/instruments/0/response_sets/0/p_id | abc-de-fghi |
-      | /contacts/0/events/0/instruments/0/response_sets/1/p_id | jkl-mn-opqr |
-      | /contacts/0/events/0/instruments/0/response_sets/2/p_id | abc-de-fghi |
+      | /contacts/0/events/0/instruments/0/response_sets/0/p_id      | abc-de-fghi         |
+      | /contacts/0/events/0/instruments/0/response_sets/1/p_id      | jkl-mn-opqr         |
+      | /contacts/0/events/0/instruments/0/response_sets/2/p_id      | abc-de-fghi         |
       

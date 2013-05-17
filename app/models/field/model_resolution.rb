@@ -25,7 +25,7 @@ module Field
     end
 
     ##
-    # Intermediate instruments generated when impied instruments 
+    # Intermediate instruments generated when implied instruments 
     # (i.e. Psc::ImpliedEntities::Instrument) are resolved to entities from the 
     # Cases' database.
     def intermediate_instruments
