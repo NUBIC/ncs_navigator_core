@@ -241,7 +241,8 @@ module Field
             if !existing
               resolutions[derived] = ::Instrument.start(pm, pam, rm, sm, em)
             else
-              resolutions[derived] = pm.start_instrument(sm, pam, nil, em, existing)
+              response_set = existing.response_sets.detect { |rs| rs.survey == sm && rs.person == pm}
+              resolutions[derived] = pm.start_instrument(sm, pam, nil, em, existing) if !response_set
             end
           end
         end
