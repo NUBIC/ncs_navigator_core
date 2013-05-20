@@ -70,7 +70,7 @@ describe Response do
     end
   end
 
-  describe "#answer_associated_with_question" do
+  describe "#ensure_association_integrity" do
     let!(:q) { Factory(:question,
       :text => 'What is your date of birth?',
       :reference_identifier => 'DOB',
@@ -81,40 +81,40 @@ describe Response do
       :response_class => 'answer', :text => 'FOO') }
 
     describe "on create" do
-      it "is invalid if the answer_id is not associated with the response question" do
-        response = Factory.build(:response, :question => q, :answer => a_other_q)
-        response.should_not be_valid
-      end
-      it "raises error" do
-        lambda { Factory(:response, :question => q, :answer => a_other_q) }.should raise_error
+      describe "when answer references another question" do
+        let(:response) { Factory.build(:response, :question => q, :answer => a_other_q) }
+        it "raises error on save" do
+          lambda { response.save }.should raise_error
+        end
       end
     end
 
     describe "on update" do
-      it "is invalid if the answer_id is not associated with the response question" do
-        response = Factory(:response, :question => q, :answer => a1)
-        response.answer = a_other_q
-        response.should_not be_valid
-      end
-      it "raises error" do
-        response = Factory(:response, :question => q, :answer => a1)
-        response.answer = a_other_q
-        lambda { response.save! }.should raise_error
+      describe "when updated answer references another question" do
+        let(:response) { Factory(:response, :question => q, :answer => a1) }
+
+        before do
+          response.answer = a_other_q
+        end
+
+        it "raises error on save" do
+          lambda { response.save }.should raise_error
+        end
       end
     end
   end
 
   it_should_behave_like 'a publicly identified record' do
-    let(:a) { Factory(:answer) }
     let(:q) { Factory(:question) }
+    let(:a) { Factory(:answer, :question => q) }
 
     let(:o1) { Factory(:response, :answer => a, :question => q) }
     let(:o2) { Factory(:response, :answer => a, :question => q) }
   end
 
   it_should_behave_like 'an optimistically locked record' do
-    let(:a) { Factory(:answer) }
     let(:q) { Factory(:question) }
+    let(:a) { Factory(:answer, :question => q) }
 
     subject { Factory(:response, :answer => a, :question => q) }
 
