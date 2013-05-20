@@ -726,14 +726,14 @@ describe Event do
 
   end
 
-  describe '#scheduled_activities' do
+  describe '#load_scheduled_activities' do
     let(:event) { Factory(:event) }
 
     describe "if the given PscParticipant does not match this event's participant" do
       let(:psc_participant) { stub(:participant => Participant.new) }
 
       it 'raises an error' do
-        lambda { event.scheduled_activities(psc_participant) }.should raise_error
+        lambda { event.load_scheduled_activities(psc_participant) }.should raise_error
       end
     end
 
@@ -748,16 +748,82 @@ describe Event do
 
     let(:psc_participant) { stub(:participant => event.participant) }
 
-    it 'returns activities whose label and ideal date match' do
-      # Pregnancy Visit 1.
+    before do
       event.event_type = NcsCode.for_list_name_and_local_code('EVENT_TYPE_CL1', 13)
       event.psc_ideal_date = '2012-01-01'
       psc_participant.stub!(:scheduled_activities).and_return(schedule)
+    end
 
-      event.scheduled_activities(psc_participant).should == [
+    it 'returns activities whose label and ideal date match' do
+      # Pregnancy Visit 1.
+      event.load_scheduled_activities(psc_participant)
+
+      event.scheduled_activities.should == [
         sa(:labels => ['event:pregnancy_visit_1'], :ideal_date => '2012-01-01', :activity_id => 'foo'),
         sa(:labels => ['event:pregnancy_visit_1'], :ideal_date => '2012-01-01', :activity_id => 'bar')
       ]
+    end
+
+    describe 'result set' do
+      it 'is cleared on model reload' do
+        event.load_scheduled_activities(psc_participant)
+        event.reload
+
+        event.scheduled_activities.should be_nil
+      end
+    end
+  end
+
+  describe '#reload' do
+    let(:event) { Factory(:event) }
+
+    describe 'when scheduled activities have not been loaded' do
+      it 'returns the event' do
+        event.reload.should == event
+      end
+    end
+  end
+
+  describe '#implied_by?' do
+    let(:event) { Event.new }
+
+    before do
+      event.psc_ideal_date = '2000-01-01'
+      event.stub!(:label => 'foo_bar')
+    end
+
+    describe 'given an event label and ideal date' do
+      it "returns true if its label and ideal date match what's given" do
+        event.implied_by?('foo_bar', '2000-01-01').should be_true
+      end
+
+      it "returns false if its label does not match" do
+        event.implied_by?('baz', '2000-01-01').should be_false
+      end
+
+      it "returns false if its ideal date does not match" do
+        event.implied_by?('foo_bar', '1999-12-31').should be_false
+      end
+    end
+
+    describe 'given a Psc::ScheduledActivity' do
+      let(:sa) { Psc::ScheduledActivity.new(:ideal_date => '2000-01-01', :labels => 'event:foo_bar') }
+
+      it "returns true if its label and ideal date match the activity" do
+        event.implied_by?(sa).should be_true
+      end
+
+      it "returns false if its label does not match the activity's event label" do
+        sa.labels = 'event:baz'
+
+        event.implied_by?(sa).should be_false
+      end
+
+      it "returns false if its ideal date does not match" do
+        sa.ideal_date = '1999-12-31'
+
+        event.implied_by?(sa).should be_false
+      end
     end
   end
 

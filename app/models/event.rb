@@ -65,6 +65,13 @@ class Event < ActiveRecord::Base
   before_save :set_start_time
   before_save :set_psc_ideal_date
 
+  ##
+  # Scheduled activities for this event.  These are not persisted in Cases and
+  # SHOULD be loaded from PSC.
+  #
+  # @see #load_scheduled_activities
+  attr_reader :scheduled_activities
+
   POSTNATAL_EVENTS = [
     18, # Birth
     23, # 3 Month
@@ -284,6 +291,27 @@ class Event < ActiveRecord::Base
 
   def self.by_event_start_date
     order(:event_start_date)
+  end
+
+  ##
+  # Loads PSC data for an ActiveRecord::Relation of events.
+  #
+  # This method forces evaluation of a relation, so you can only use it at the
+  # end of a scope chain.
+  #
+  # This method does not implement any special error handling for PSC queries.
+  #
+  # @param [PatientStudyCalendar] psc a PatientStudyCalendar object
+  # @return Array<Event>
+  def self.with_psc_data(psc)
+    result_set = includes(:participant).to_a
+
+    result_set.tap do |s|
+      s.group_by(&:participant).each do |p, events|
+        pscp = PscParticipant.new(psc, p)
+        events.each { |e| e.load_scheduled_activities(pscp) }
+      end
+    end
   end
 
   def self.by_type_order
@@ -641,24 +669,36 @@ class Event < ActiveRecord::Base
   end
 
   ##
-  # Given a {PscParticipant}, returns the participant's scheduled activities
-  # that match this event.  If no activities match, returns [].
-  #
-  # A PscParticipant, just like an Event, is associated with a {Participant}.
-  # The PscParticipant passed here MUST reference the same participant as this
-  # event.
+  # Given a {PscParticipant}, loads the participant's scheduled activities that
+  # match this event.  The {PscParticipant} MUST reference the same participant
+  # as this event; if it does not, an error will be raised.
   #
   # This method will load the {#participant} association.  If you're planning
   # on calling this method across multiple Events, you SHOULD eager-load
   # participants.
-  def scheduled_activities(psc_participant)
+  #
+  # When this method returns, the scheduled activities for this event will be
+  # available in the {#scheduled_activities} reader.
+  #
+  # @return void
+  def load_scheduled_activities(psc_participant)
     if psc_participant.participant.id != participant.id
       raise "Participant mismatch (psc_participant: #{psc_participant.participant.id}, self: #{participant.id})"
     end
 
+    return @scheduled_activities if @scheduled_activities
+
     all_activities = psc_participant.scheduled_activities
 
-    all_activities.select { |_, sa| implied_by?(sa.event_label.try(:content), sa.ideal_date) }.values
+    @scheduled_activities = all_activities.select { |_, sa| implied_by?(sa) }.values.freeze
+  end
+
+  def reload
+    if instance_variable_defined?(:@scheduled_activities)
+      remove_instance_variable(:@scheduled_activities)
+    end
+
+    super
   end
 
   ##
@@ -715,8 +755,15 @@ class Event < ActiveRecord::Base
     implied_by?(label, scheduled_activity.ideal_date)
   end
 
-  def implied_by?(label, date)
-    self.label == label && psc_ideal_date.to_s == date
+  def implied_by?(*args)
+    if args.length == 1
+      activity = args.first
+      self.label == activity.event_label.try(:content) && psc_ideal_date.to_s == activity.ideal_date
+    elsif args.length == 2
+      self.label == args.first && psc_ideal_date.to_s == args.second
+    else
+      raise ArgumentError, "wrong number of arguments (#{args.length} for 1 or 2)"
+    end
   end
 
   def set_event_disposition_category(contact)
