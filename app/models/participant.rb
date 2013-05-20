@@ -351,6 +351,21 @@ class Participant < ActiveRecord::Base
      child_participant
   end
 
+  def build_child_person_and_participant(person_attrs = {})
+    child_person = Person.new(:psu_code => NcsNavigatorCore.psu)
+      # 6 - NCS Child - Participant Type
+    Participant.new(:psu_code => NcsNavigatorCore.psu, :p_type_code => 6).tap do |child_participant|
+      # Building participant_person_link instead of using person= because person= uses ids (which we don't have yet)
+      child_participant.participant_person_links.build(:relationship_code => 1, :participant => child_participant, :person => child_person, :psu => self.psu)
+      child_person.participant_person_links.build(:relationship_code => 1, :participant => child_participant, :person => child_person, :psu => self.psu)
+
+      # 2 - Mother, associating child participant with its mother - ParticipantPersonRelationship
+      self.participant_person_links.build(:participant => child_participant, :person => self.person, :relationship_code => 2)
+      # 8 - Child, associating mother participant with its child - ParticipantPersonRelationship
+      self.participant_person_links.build(:participant => self, :person => child_person, :relationship_code => 8)
+    end
+  end
+
   ##
   # True if the participant has children
   # @return[Boolean]

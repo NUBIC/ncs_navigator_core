@@ -25,6 +25,14 @@ module Field
     end
 
     ##
+    # Intermediate instruments generated when implied instruments 
+    # (i.e. Psc::ImpliedEntities::Instrument) are resolved to entities from the 
+    # Cases' database.
+    def intermediate_instruments
+      @intermediate_instruments ||= {}
+    end
+
+    ##
     # Finds or builds model objects.
     #
     # Resolution and construction of contact links requires a staff ID, so
@@ -33,6 +41,7 @@ module Field
       raise 'Model resolution requires #staff_id to be set' unless staff_id
 
       resolutions.clear
+      intermediate_instruments.clear
 
       logger.info 'Resolution started'
 
@@ -217,16 +226,71 @@ module Field
     #
     # @private
     def resolve_instruments
-      instruments.each do |instrument|
+      generate_intermediate_instruments
+
+      intermediate_instruments.each do |derived, intermediates|
+        intermediates.each do |intermediate|
+          pm  = intermediate.respondent
+          pam = intermediate.concerning
+          sm  = intermediate.survey
+          rm  = intermediate.referenced_survey
+          em  = intermediate.event
+
+          if pm && pam && (sm || rm) && em
+            existing = resolutions[derived]
+            if !existing
+              resolutions[derived] = ::Instrument.start(pm, pam, rm, sm, em)
+            else
+              response_set = existing.response_sets.detect { |rs| rs.survey == sm && rs.person == pm}
+              resolutions[derived] = pm.start_instrument(sm, pam, nil, em, existing) if !response_set
+            end
+          end
+        end
+      end
+    end
+
+    ###
+    # Builds a hash with the key the derived instrument
+    # and the value is an array of instrument data needed
+    # to start an instrument via ::Instrument#start
+    def generate_intermediate_instruments
+      instrument_plans.each do |instrument_plan|
+        instrument = instrument_plan.root
         pm  = m instrument.person
-        pam = m(instrument.person).try(:participant)
-        sm  = m instrument.survey
-        rm  = m instrument.referenced_survey
         em  = m instrument.event
 
-        if pm && pam && (sm || rm) && em
-          resolutions[instrument] = ::Instrument.start(pm, pam, rm, sm, em)
-        end
+        instrument_plan.surveys.each do |survey|
+          sm  = m survey
+          rm  = m instrument.referenced_survey
+
+          participant_type = survey.participant_type.try(:content)
+          pams = [].tap do |c|
+            case participant_type
+            when nil, 'mother'
+              c << m(instrument.person).try(:participant)
+            when 'child'
+              c.push(*pm.children.map(&:participant))
+              if pm.children.empty?
+                c << pm.participant.build_child_person_and_participant if pm.participant
+              end
+            else
+              raise "Cannot resolve participant type '#{participant_type}'' for survey '#{sm.title}'"
+            end
+          end
+
+          pams.each do |pam|
+            intermediate_instruments[instrument] ||= []
+
+            i = OpenStruct.new(
+              :respondent => pm, 
+              :concerning => pam, 
+              :survey => sm, 
+              :referenced_survey => rm, 
+              :event => em)              
+
+            intermediate_instruments[instrument] << i
+          end
+        end  
       end
     end
 

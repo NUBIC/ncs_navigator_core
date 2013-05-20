@@ -44,8 +44,11 @@ class ParticipantPersonLink < ActiveRecord::Base
   # huge speedup in the importer; if validating the associated
   # instance is necessary, we should provide a scoped validation so it
   # can be excluded in the importer context.
-  validates_presence_of :person_id
-  validates_presence_of :participant_id
+  validates_presence_of :person_id, :on => :update
+  validates_presence_of :participant_id, :on => :update
+
+  validates_presence_of :person, :on => :create
+  validates_presence_of :participant, :on => :create
 
   def initialize(*args)
     super

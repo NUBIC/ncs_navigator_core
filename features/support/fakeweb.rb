@@ -38,7 +38,8 @@ FakeWeb.register_uri(:post, /\/api\/v1\/studies\/(.*)\/sites\/(.*)\/subject-assi
   %w(end-date=2005-07-30&responsible-user=test_user&start-date=2005-07-01&state=scheduled scheduled_activities_for_july_2005.json),
   %w(end-date=2012-03-01&responsible-user=test_user&start-date=2012-02-01&state=scheduled scheduled_activities_for_february.json),
   %w(end-date=2013-01-07&responsible-user=test_user&start-date=2013-01-01&state=scheduled scheduled_activities_2013-01-01.json),
-  %w(end-date=2013-04-13&responsible-user=test_user&start-date=2013-04-08&state=scheduled scheduled_activities_for_appointment_sheet.json)
+  %w(end-date=2013-04-13&responsible-user=test_user&start-date=2013-04-08&state=scheduled scheduled_activities_for_appointment_sheet.json),
+  %w(end-date=2013-05-01&responsible-user=test_user&start-date=2013-04-24&state=scheduled scheduled_activities_2013-04-24.json)
 ].each do |qs, fn|
   FakeWeb.register_uri(:get, %r[/api/v1/reports/scheduled-activities\.json\?#{qs}$],
                        :body => File.expand_path("../../fixtures/fakeweb/#{fn}", __FILE__),
