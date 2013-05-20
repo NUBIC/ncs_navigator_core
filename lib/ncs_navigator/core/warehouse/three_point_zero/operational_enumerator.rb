@@ -280,7 +280,7 @@ module NcsNavigator::Core::Warehouse::ThreePointZero
 
     produce_one_for_one(:participant_consent_samples, :ParticipantConsentSample,
       :public_ids => [:participant_consents],
-      :selects    => "(SELECT participants.p_id FROM participants WHERE participants.id = pub_0.participant_id)"
+      :selects    => "(SELECT participants.p_id FROM participants WHERE participants.id = pub_0.participant_id) AS p_id"
     )
 
     produce_one_for_one(:participant_authorization_forms, :ParticipantAuth,
