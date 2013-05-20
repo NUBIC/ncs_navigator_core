@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # == Schema Information
-# Schema version: 20130408184301
+# Schema version: 20130516212715
 #
 # Table name: participants
 #
@@ -23,12 +23,14 @@
 #  pid_entry_code            :integer          not null
 #  pid_entry_other           :string(255)
 #  psu_code                  :integer          not null
+#  ssu                       :string(255)
 #  status_info_date          :date
 #  status_info_mode_code     :integer          not null
 #  status_info_mode_other    :string(255)
 #  status_info_source_code   :integer          not null
 #  status_info_source_other  :string(255)
 #  transaction_type          :string(36)
+#  tsu                       :string(255)
 #  updated_at                :datetime
 #
 
@@ -228,7 +230,6 @@ class Participant < ActiveRecord::Base
     event :birth_cohort do
       transition :converted_high_intensity => :ready_for_birth
     end
-
   end
 
   ##

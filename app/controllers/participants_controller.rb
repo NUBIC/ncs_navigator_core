@@ -260,6 +260,15 @@ class ParticipantsController < ApplicationController
 
   # GET /participants/1/edit
   def edit
+    # set ssu/tsu defaults for a participant
+    if @participant.person
+      if @participant.ssu.blank?
+        @participant.ssu = @participant.person.ssu_ids.first
+      end
+      if @participant.tsu.blank?
+        @participant.tsu = @participant.person.tsu_ids.first
+      end
+    end
   end
 
   def update
