@@ -32,6 +32,7 @@ module Psc
       it_maps 'grid_id' => 'activity_id'
       it_maps 'ideal_date' => 'ideal_date'
       it_maps 'labels' => 'labels'
+      it_maps 'responsible_user' => 'responsible_user'
       it_maps 'scheduled_date' => 'activity_date'
       it_maps 'subject.person_id' => 'person_id'
 
@@ -46,6 +47,7 @@ module Psc
       it_maps 'activity.name' => 'activity_name'
       it_maps 'activity.type' => 'activity_type'
       it_maps 'assignment.id' => 'person_id'
+      it_maps 'assignment.subject_coordinator.username' => 'responsible_user'
       it_maps 'current_state.date' => 'activity_date'
       it_maps 'current_state.name' => 'current_state'
       it_maps 'current_state.time' => 'activity_time'
