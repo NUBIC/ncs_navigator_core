@@ -149,7 +149,7 @@ event:pre-pregnancy_visit order:95_02
 Pregnancy Visit 1 - 13
 ----------------------
 
-# Multi Mode Visit Info 
+# Multi Mode Visit Info
 event:pregnancy_visit_1 instrument:3.0:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0 instrument:3.1:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0 instrument:3.2:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0 order:00_00 participant_type:mother
 
 # Biospecimen Adult Blood Instrument
@@ -281,7 +281,7 @@ event:father order:95_02
 Birth LI - 18
 -------------
 
-# Multi Mode Visit Info 
+# Multi Mode Visit Info
 event:birth instrument:3.0:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0 instrument:3.1:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0 instrument:3.2:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0 order:00_00 participant_type:mother
 
 # Birth Interview (LI) Part 1
@@ -301,7 +301,7 @@ event:birth order:00_99 form:2.0:irb_con_informed_consent form:2.1:irb_con_infor
 Birth - 18
 ----------
 
-# Multi Mode Visit Info 
+# Multi Mode Visit Info
 event:birth instrument:3.0:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0 instrument:3.1:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0 instrument:3.2:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0 order:00_00 participant_type:mother
 
 # Biospecimen Cord Blood Instrument
@@ -341,7 +341,7 @@ event:birth order:95_04
 3 Month - 23
 ------------
 
-# Multi Mode Visit Info 
+# Multi Mode Visit Info
 event:3_month instrument:3.0:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0 instrument:3.1:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0 instrument:3.2:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0 order:00_00 participant_type:mother
 
 # 3-Month Mother Interview Part 1 - 01_01
@@ -372,7 +372,7 @@ collection:biological event:3_month instrument:3.1:ins_bio_breastmilkcoll_saqspe
 6 Month - 24
 ------------
 
-# Multi Mode Visit Info 
+# Multi Mode Visit Info
 event:6_month instrument:3.0:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0 instrument:3.1:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0 instrument:3.2:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0 order:00_00 participant_type:mother
 
 # Participant Verification Questionnaire Part 1
@@ -411,7 +411,7 @@ event:6_month order:95_02
 9 Month - 26
 ------------
 
-# Multi Mode Visit Info 
+# Multi Mode Visit Info
 event:9_month instrument:3.0:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0 instrument:3.1:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0 instrument:3.2:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0 order:00_00 participant_type:mother
 
 # 9-Month Mother Phone Interview Part 1
@@ -433,7 +433,7 @@ event:9_month instrument:3.0:ins_que_tracing_int_ehpbhilipbs_m3.0_v1.0 instrumen
 12 Month - 27
 -------------
 
-# Multi Mode Visit Info 
+# Multi Mode Visit Info
 event:12_month instrument:3.0:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0 instrument:3.1:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0 instrument:3.2:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0 order:00_00 participant_type:mother
 
 # 12-Month Mother Interview Part 1
@@ -487,7 +487,7 @@ event:12_month order:96_01
 18 Month - 30
 -------------
 
-# Multi Mode Visit Info 
+# Multi Mode Visit Info
 event:18_month instrument:3.0:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0 instrument:3.1:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0 instrument:3.2:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0 order:00_00 participant_type:mother
 
 # 18-Month Mother Interview Part 1 - 01_01
@@ -539,12 +539,11 @@ event:18_month instrument:3.1:ins_neu_22monthasq_saqspec_ehpbhilipbs_m3.1_v1.0 i
 24 Month - 31
 -------------
 
-# Multi Mode Visit Info 
+# Multi Mode Visit Info
 event:24_month instrument:3.0:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0 instrument:3.1:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0 instrument:3.2:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0 order:00_00 participant_type:mother
 
 # 24-Month Mother Interview Part 1 - 01_01
-event:24_month instrument:2.0:ins_que_24mmother_int_ehpbhi_p2_v1.0_part_one instrument:2.1:ins_que_24mmother_int_ehpbhi_p2_v1.0_part_one instrument:2.2:ins_que_24mmother_int_ehpbhi_m2.2_v2.0_part_one instrument:3.0:ins_que_24mmother_int_ehpbhi_m2.2_v2.0_part_one
-instrument:3.1:ins_que_24month_int_ehpbhilipbs_m3.1_v3.0_part_one instrument:3.2:ins_que_24month_int_ehpbhilipbs_m3.1_v3.0_part_one order:01_01 participant_type:mother
+event:24_month instrument:2.0:ins_que_24mmother_int_ehpbhi_p2_v1.0_part_one instrument:2.1:ins_que_24mmother_int_ehpbhi_p2_v1.0_part_one instrument:2.2:ins_que_24mmother_int_ehpbhi_m2.2_v2.0_part_one instrument:3.0:ins_que_24mmother_int_ehpbhi_m2.2_v2.0_part_one instrument:3.1:ins_que_24month_int_ehpbhilipbs_m3.1_v3.0_part_one instrument:3.2:ins_que_24month_int_ehpbhilipbs_m3.1_v3.0_part_one order:01_01 participant_type:mother
 
 # 24-Month Mother Interview Mother Detail - (3.1 Mother Habits) - 01_02
 event:24_month instrument:2.0:ins_que_24mmother_int_ehpbhi_p2_v1.0_twenty_four_mth_mother_detail instrument:2.1:ins_que_24mmother_int_ehpbhi_p2_v1.0_twenty_four_mth_mother_detail instrument:2.2:ins_que_24mmother_int_ehpbhi_m2.2_v2.0_twenty_four_mth_mother_detail instrument:3.0:ins_que_24mmother_int_ehpbhi_m2.2_v2.0_twenty_four_mth_mother_detail instrument:3.1:ins_que_24month_int_ehpbhilipbs_m3.1_v3.0_twenty_four_mth_mother_habits instrument:3.2:ins_que_24month_int_ehpbhilipbs_m3.1_v3.0_twenty_four_mth_mother_habits order:01_02 participant_type:child references:2.0:ins_que_24mmother_int_ehpbhi_p2_v1.0_part_one references:2.1:ins_que_24mmother_int_ehpbhi_p2_v1.0_part_one references:2.2:ins_que_24mmother_int_ehpbhi_m2.2_v2.0_part_one references:3.0:ins_que_24mmother_int_ehpbhi_m2.2_v2.0_part_one references:3.1:ins_que_24month_int_ehpbhilipbs_m3.1_v3.0_part_one references:3.2:ins_que_24month_int_ehpbhilipbs_m3.1_v3.0_part_one
@@ -585,8 +584,6 @@ event:24_month instrument:3.1:ins_pm_childbp_dci_ehpbhi_m3.1_v1.0 instrument:3.2
 # 27 Month Ages & Stages-3 SAQ
 event:24_month instrument:3.1:ins_neu_27monthasq_saqspec_ehpbhilipbs_m3.1_v1.0 instrument:3.2:ins_neu_27monthasq_saqspec_ehpbhilipbs_m3.1_v1.0 order:95_01 participant_type:child
 
-# 30 Month Ages & Stages-3 SAQ
-event:24_month instrument:3.1:ins_neu_30monthasq_saqspec_ehpbhilipbs_m3.1_v1.0 instrument:3.2:ins_neu_30monthasq_saqspec_ehpbhilipbs_m3.1_v1.0 order:95_02 participant_type:child
 
 # M-CHAT SAQ
 event:24_month instrument:3.1:ins_neu_mchat_saqspec_ehpbhilipbs_m3.1_v1.0 instrument:3.2:ins_neu_mchat_saqspec_ehpbhilipbs_m3.1_v1.0 order:95_03 participant_type:child
@@ -594,7 +591,7 @@ event:24_month instrument:3.1:ins_neu_mchat_saqspec_ehpbhilipbs_m3.1_v1.0 instru
 30 Month - 36
 --------------
 
-# Multi Mode Visit Info 
+# Multi Mode Visit Info
 event:30_month instrument:3.0:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0 instrument:3.1:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0 instrument:3.2:ins_con_multimodevisitinfo_dci_ehpbhilipbs_m3.0_1.0 order:00_00 participant_type:mother
 
 # 30-Month Interview Part 1
@@ -616,10 +613,13 @@ event:30_month instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0
 event:30_month instrument:3.0:ins_que_tracing_int_ehpbhilipbs_m3.0_v1.0 instrument:3.1:ins_que_tracing_int_ehpbhilipbs_m3.0_v1.0 instrument:3.2:ins_que_tracing_int_ehpbhilipbs_m3.0_v1.0 order:90_01 participant_type:mother
 
 # Brief Infant Toddler Social Emotional Assessment (BITSEA) SAQ
-event:30_month instrument:3.1:ins_neu_bitsea_saqspec_ehpbhilipbs_m3.1_v1.0 instrument:3.2:ins_neu_bitsea_saqspec_ehpbhilipbs_m3.1_v1.0 order:95_01 participant_type:child
+event:30_month instrument:3.1:ins_neu_bitsea_saqspec_ehpbhilipbs_m3.1_v1.0 instrument:3.2:ins_neu_bitsea_saqspec_ehpbhilipbs_m3.1_v1.0 order:95_02 participant_type:child
+
+# 30 Month Ages & Stages-3 SAQ
+event:30_month instrument:3.1:ins_neu_30monthasq_saqspec_ehpbhilipbs_m3.1_v1.0 instrument:3.2:ins_neu_30monthasq_saqspec_ehpbhilipbs_m3.1_v1.0 order:95_01 participant_type:child
 
 # Brief Symptom Inventory (BSI) SAQ
-event:30_month instrument:3.1:ins_neu_bsi_saqspec_ehpbhilipbs_m3.1_v1.0 instrument:3.2:ins_neu_bsi_saqspec_ehpbhilipbs_m3.1_v1.0 order:95_02 participant_type:child
+event:30_month instrument:3.1:ins_neu_bsi_saqspec_ehpbhilipbs_m3.1_v1.0 instrument:3.2:ins_neu_bsi_saqspec_ehpbhilipbs_m3.1_v1.0 order:95_03 participant_type:child
 
 # Infant Sensory Profile SAQ
 event:30_month instrument:3.1:ins_neu_infantsensoryprofile_saqspec_ehpbhilipbs_m3.1_v1.0 instrument:3.2:ins_neu_infantsensoryprofile_saqspec_ehpbhilipbs_m3.1_v1.0 order:95_03 participant_type:child
