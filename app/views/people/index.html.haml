@@ -22,33 +22,34 @@
       .page_entries_info
         = raw page_entries_info @people
     %table.records
-      %tr
-        %th
-          PSU
-        %th
-          = sort_link @q, "first_name"
-        %th
-          = sort_link @q, "last_name"
-        %th
-          = sort_link @q, "person_id", "Person Identifier"
-        %th{ :colspan => "3" }
-
-      - @people.each do |person|
-        %tr{ :class => cycle('even_record', 'odd_record') }
-          %td
-            = person.psu
-          %td
-            = blank_safe(person.first_name)
-          %td
-            = blank_safe(person.last_name)
-          %td
-            = person.person_id
-          %td
-            = link_to 'View', person_path(person), :class => "show_link icon_link"
-          %td
-            = link_to 'Edit', edit_person_path(person), :class => "edit_link icon_link"
-          %td
-            = link_to 'Versions', versions_person_path(person), :class => "version_link icon_link"
+      %thead
+        %tr
+          %th
+            PSU
+          %th
+            = sort_link @q, "first_name"
+          %th
+            = sort_link @q, "last_name"
+          %th
+            = sort_link @q, "person_id", "Person Identifier"
+          %th{ :colspan => "3" }
+      %tbody
+        - @people.each do |person|
+          %tr{ :class => cycle('even_record', 'odd_record') }
+            %td
+              = person.psu
+            %td
+              = blank_safe(person.first_name)
+            %td
+              = blank_safe(person.last_name)
+            %td
+              = person.person_id
+            %td
+              = link_to 'View', person_path(person), :class => "show_link icon_link"
+            %td
+              = link_to 'Edit', edit_person_path(person), :class => "edit_link icon_link"
+            %td
+              = link_to 'Versions', versions_person_path(person), :class => "version_link icon_link"
 
   .links
     = link_to 'New Person', new_person_path, :class => "add_link icon_link"

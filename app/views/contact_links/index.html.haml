@@ -48,48 +48,49 @@
       .page_entries_info
         = raw page_entries_info @contact_links
     %table.records
-      %tr
-        %th
-          = sort_link @q, "contact_contact_type_code", "Type"
-        %th
-          = sort_link @q, "contact_contact_date_date", "Date"
-        %th
-          Time
-        %th
-          = sort_link @q, "person_last_name", "Person"
-        - if recruitment_strategy.pbs?
+      %thead
+        %tr
           %th
-            = sort_link @q, "provider_name_practice", "Provider"
-        %th
-          = sort_link @q, "contact_contact_disposition", "Contact Disp"
-        %th
-          = sort_link @q, "event_event_type_code", "Event"
-        %th
-          Current Staff
-
-      - @contact_links.each do |cl|
-        %tr{ :class => cycle('even_record', 'odd_record') }
-          %td
-            = cl.contact.contact_type
-          %td
-            = link_to cl.contact.contact_date_date, edit_contact_link_contact_path(cl, cl.contact), :class => "edit_link icon_link"
-          %td
-            = "#{cl.contact.contact_start_time}-#{blank_safe(cl.contact.contact_end_time)}"
-          %td
-            - if cl.person.blank?
-              = blank_safe(cl.person, "N/A")
-            - elsif cl.person.participant?
-              = link_to blank_safe(cl.person.to_s), participant_path(cl.person.participant), :class => 'edit_link icon_link'
-            - else
-              = blank_safe(cl.person.to_s)
+            = sort_link @q, "contact_contact_type_code", "Type"
+          %th
+            = sort_link @q, "contact_contact_date_date", "Date"
+          %th
+            Time
+          %th
+            = sort_link @q, "person_last_name", "Person"
           - if recruitment_strategy.pbs?
+            %th
+              = sort_link @q, "provider_name_practice", "Provider"
+          %th
+            = sort_link @q, "contact_contact_disposition", "Contact Disp"
+          %th
+            = sort_link @q, "event_event_type_code", "Event"
+          %th
+            Current Staff
+      %tbody
+        - @contact_links.each do |cl|
+          %tr{ :class => cycle('even_record', 'odd_record') }
             %td
-              = cl.provider
-          %td
-            = cl.contact_disposition
-          %td
-            - if cl.event
-              = cl.event.event_type
-          %td
-            = staff_name(cl.staff_id)
+              = cl.contact.contact_type
+            %td
+              = link_to cl.contact.contact_date_date, edit_contact_link_contact_path(cl, cl.contact), :class => "edit_link icon_link"
+            %td
+              = "#{cl.contact.contact_start_time}-#{blank_safe(cl.contact.contact_end_time)}"
+            %td
+              - if cl.person.blank?
+                = blank_safe(cl.person, "N/A")
+              - elsif cl.person.participant?
+                = link_to blank_safe(cl.person.to_s), participant_path(cl.person.participant), :class => 'edit_link icon_link'
+              - else
+                = blank_safe(cl.person.to_s)
+            - if recruitment_strategy.pbs?
+              %td
+                = cl.provider
+            %td
+              = cl.contact_disposition
+            %td
+              - if cl.event
+                = cl.event.event_type
+            %td
+              = staff_name(cl.staff_id)
   = will_paginate @contact_links
