@@ -1,4 +1,14 @@
 .page_section
+  %p
+    - if recruitment_strategy.two_tier_knowledgable?
+      = @participant.high_intensity? ? "High Intensity Participant" : "Low Intensity Participant"
+      %b
+        = "::"
+    = @participant.ppg_status
+    - if @participant.ppg_status.blank? && !@participant.ineligible?
+      %span.warning
+        No PPG Assigned
+
   - if @participant.known_to_be_pregnant?
     %p
       %b
