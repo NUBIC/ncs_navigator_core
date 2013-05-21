@@ -1,12 +1,18 @@
-%h3
-  = display_person person
-
-%p
-  - if recruitment_strategy.two_tier_knowledgable?
-    = participant.high_intensity? ? "High Intensity Participant" : "Low Intensity Participant"
-    %b
-      = "::"
-  = participant.ppg_status
-  - if participant.ppg_status.blank? && !participant.ineligible?
-    %span.warning
-      No PPG Assigned
+.participant_header_information
+  %span{:class => 'participant_name'}
+    = display_person person
+  %span{:class => 'participant_data_point'}
+    P_ID:
+    = participant.p_id
+  %span{:class => 'participant_data_point'}
+    Language:
+    = blank_safe_ncs_code(person.language)
+  %span{:class => 'participant_data_point'}
+    Date of Birth:
+    = blank_safe(person.person_dob)
+  %span{:class => 'participant_data_point'}
+    SSU/TSU:
+    = "#{blank_safe(participant.ssu)}/#{blank_safe(participant.tsu)}"
+  = # TODO: Add Special Considerations here
+= # TODO: If Mother participant -- links to chid(ren) participants.
+= # If child, then link to primary caregivers?? (this is a placeholder for now until requirements confirmed with WROC)
