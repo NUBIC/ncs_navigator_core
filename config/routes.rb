@@ -207,6 +207,7 @@ NcsNavigatorCore::Application.routes.draw do
       resources :merges
       resources :code_lists, :only => :index
       resources :providers, :only => :index
+      resources :events, :only => :index
 
       match '/system-status', :to => 'status#show'
     end
