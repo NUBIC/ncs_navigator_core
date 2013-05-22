@@ -303,7 +303,7 @@ namespace :import do
     begin
       date = Date.parse(date_str)
 
-      participants_unable_to_be_scheduled = NcsNavigator::Core::Psc::ReconsentScheduler.new(
+      participants_unable_to_be_scheduled = NcsNavigator::Core::ReconsentScheduler.new(
         expected_followed_participants_for_psc, date).schedule(psc)
 
       result = "All #{expected_followed_participants_for_psc.size} participants scheduled for reconsent."
