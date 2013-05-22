@@ -53,6 +53,8 @@ class WelcomeController < ApplicationController
     person = Person.create(:psu_code => @psu_code)
     participant = Participant.create(:psu_code => @psu_code)
     participant.person = person
+    household = HouseholdUnit.create!
+    HouseholdPersonLink.create!(:person => person, :household_unit => household)
     participant.save!
 
     resp = psc.assign_subject(participant)
@@ -72,6 +74,8 @@ class WelcomeController < ApplicationController
     else
       participant = Participant.create(:psu_code => @psu_code)
       participant.person = person
+      household = HouseholdUnit.create!
+      HouseholdPersonLink.create!(:person => person, :household_unit => household)
       participant.save!
       resp = psc.assign_subject(participant)
       if resp && resp.status.to_i < 299

@@ -184,6 +184,7 @@ describe OperationalDataExtractor::Base do
 
     before(:each) do
       @person = Factory(:person)
+      @person.household_units << Factory(:household_unit)
       @participant = Factory(:participant)
       @survey = create_pregnancy_screener_survey_with_ppg_detail_operational_data
       @response_set, @instrument = prepare_instrument(@person, @participant, @survey)
@@ -234,6 +235,7 @@ describe OperationalDataExtractor::Base do
 
     before do
       @person = Factory(:person)
+      @person.household_units << Factory(:household_unit)
       @rs = Factory(:response_set)
       @rs.person = @person
       @base_extractor = OperationalDataExtractor::Base.new(@rs)
@@ -443,6 +445,20 @@ describe OperationalDataExtractor::Base do
           )
           new_address.should_not == @address
           new_address.should be_an_instance_of(Address)
+        end
+
+        it "creates an association between the dwelling unit association and the household association of the person" do
+          @address.address_type_code = @home_address_type.local_code
+          @address.save!
+
+          take_address_survey("123 Any Street")
+          address = @pregnancy_visit_extractor.get_address(
+            @person,
+            @work_address_map,
+            @work_address_type,
+            @primary_rank
+          )
+          address.dwelling_unit.household_units.first.should == @person.household_units.first
         end
       end
 
@@ -857,6 +873,7 @@ describe OperationalDataExtractor::Base do
       @person = Factory(:person)
       @participant = Factory(:participant)
       @part_person_link = Factory(:participant_person_link, :participant => @participant, :person => @person)
+      @person.household_units << Factory(:household_unit)
       @survey = create_pbs_pregnancy_visit_1_with_birth_institution_operational_data
       @response_set, @instrument = prepare_instrument(@person, @participant, @survey)
 

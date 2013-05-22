@@ -13,6 +13,7 @@ describe OperationalDataExtractor::Birth do
       @child_type = NcsCode.for_list_name_and_local_code("PARTICIPANT_TYPE_CL1", 6)
 
       @person = Factory(:person)
+      @person.household_units << Factory(:household_unit)
       @participant = Factory(:participant)
       @participant.person = @person
       Factory(:ppg_detail, :participant => @participant)
@@ -73,6 +74,7 @@ describe OperationalDataExtractor::Birth do
 
     before(:each) do
       @person = Factory(:person)
+      @person.household_units << Factory(:household_unit)
       @participant = Factory(:participant)
       @participant.person = @person
       @participant.save!
@@ -255,7 +257,7 @@ describe OperationalDataExtractor::Birth do
       # The birth instrument collects institute type and no other institution
       # details (e.g. name or address). Currently, there is no reason to create
       # an institution record with only institute type.
-      
+
       hospital = NcsCode.for_list_name_and_local_code("BIRTH_PLACE_PLAN_CL1", 1)
 
       response_set, instrument = prepare_instrument(@person, @participant, @survey)
