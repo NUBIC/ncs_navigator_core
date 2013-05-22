@@ -50,14 +50,11 @@ module NcsNavigator::Core::Warehouse
     describe 'for a single-survey instrument' do
       let(:questions_dsl) {
         <<-DSL
-        q_health "Would you say your health in general is...",
+        q_hemophilia "Do you have hemophilia or any bleeding disorder?",
           :pick=>:one,
-          :data_export_identifier=>"PRE_PREG.HEALTH"
-          a_1 "Excellent"
-          a_2 "Very good,"
-          a_3 "Good,"
-          a_4 "Fair, or"
-          a_5 "Poor?"
+          :data_export_identifier=>"SPEC_BLOOD.HEMOPHILIA"
+          a_1 "Yes"
+          a_2 "No"
           a_neg_1 "Refused"
           a_neg_2 "Don't know"
         DSL
@@ -72,13 +69,13 @@ module NcsNavigator::Core::Warehouse
       let(:rs_person) { Factory(:person) }
       let(:dwelling_unit) { Factory(:dwelling_unit) }
       let(:household_unit) { Factory(:household_unit) }
-      let(:dwelling_household_link) {
+      let!(:dwelling_household_link) {
         Factory(:dwelling_household_link,
                 :dwelling_unit => dwelling_unit,
                 :household_unit => household_unit
                )
       }
-      let(:household_person_link) {
+      let!(:household_person_link) {
         Factory(:household_person_link,
                 :person => rs_person,
                 :household_unit => household_unit
@@ -95,11 +92,11 @@ module NcsNavigator::Core::Warehouse
       }
 
       context 'external references' do
-        let(:primary) { records.find { |rec| rec.class.mdes_table_name == 'pre_preg' } }
-        let(:question) { questions_map['health'] }
+        let(:primary) { records.find { |rec| rec.class.mdes_table_name == 'spec_blood' } }
+        let(:question) { questions_map['hemophilia'] }
         let!(:response) {
           create_response_for(question) { |r|
-            r.answer = question.answers.find_by_text('Excellent')
+            r.answer = question.answers.find_by_text('Yes')
           }
         }
 
@@ -109,7 +106,7 @@ module NcsNavigator::Core::Warehouse
         end
 
         it 'uses the imported ID as the PK if the responses were imported' do
-          response.source_mdes_table = 'pre_preg'
+          response.source_mdes_table = 'spec_blood'
           response.source_mdes_id = 'Eleventy-two'
           response.save!
 
@@ -154,14 +151,10 @@ module NcsNavigator::Core::Warehouse
         end
 
         it 'uses the public ID for the dwelling unit' do
-          household_person_link.should_not be_nil
-          dwelling_household_link.should_not be_nil
           primary.du_id.should == dwelling_unit.public_id
         end
 
         it 'uses the public ID for the household unit' do
-          pending "Needs a different mdes table."
-          household_person_link.should_not be_nil
           primary.hh_id.should == household_unit.public_id
         end
 
@@ -216,14 +209,14 @@ module NcsNavigator::Core::Warehouse
       end
 
       describe 'with a purely coded question' do
-        let(:question) { questions_map['health'] }
+        let(:question) { questions_map['hemophilia'] }
 
         it 'sets a positive code correctly' do
           create_response_for(question) { |r|
-            r.answer = question.answers.find_by_text('Poor?')
+            r.answer = question.answers.find_by_text('No')
           }
 
-          records.first.health.should == '5'
+          records.first.hemophilia.should == '2'
         end
 
         it 'sets a negative code correctly' do
@@ -231,7 +224,7 @@ module NcsNavigator::Core::Warehouse
             r.answer = question.answers.find_by_text('Refused')
           }
 
-          records.first.health.should == '-1'
+          records.first.hemophilia.should == '-1'
         end
       end
 
