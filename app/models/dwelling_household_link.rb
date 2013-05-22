@@ -47,9 +47,8 @@ class DwellingHouseholdLink < ActiveRecord::Base
 
   DU_RANK_ORDER = [1, 2, -5, 3, 4, -4]
   def self.order_by_rank(dwelling_household_links)
-    DU_RANK_ORDER.inject([]) do |accum, num|
-      found = dwelling_household_links.select{ |l| l.du_rank.local_code == num }
-      accum.push(*found)
+    dwelling_household_links.sort_by do |link|
+      DU_RANK_ORDER.index(link.du_rank.local_code)
     end
   end
 end

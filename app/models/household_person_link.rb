@@ -41,9 +41,8 @@ class HouseholdPersonLink < ActiveRecord::Base
 
   HH_RANK_ORDER = [1, 2, -5, 3, 4, -4]
   def self.order_by_rank(household_person_links)
-    HH_RANK_ORDER.inject([]) do |accum, num|
-      found = household_person_links.select{ |l| l.hh_rank.local_code == num }
-      accum.push(*found)
+    household_person_links.sort_by do |link|
+      HH_RANK_ORDER.index(link.hh_rank.local_code)
     end
   end
 end
