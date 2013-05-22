@@ -70,6 +70,20 @@ module NcsNavigator::Core::Warehouse
 
       let(:rs_participant) { Factory(:participant) }
       let(:rs_person) { Factory(:person) }
+      let(:dwelling_unit) { Factory(:dwelling_unit) }
+      let(:household_unit) { Factory(:household_unit) }
+      let(:dwelling_household_link) {
+        Factory(:dwelling_household_link,
+                :dwelling_unit => dwelling_unit,
+                :household_unit => household_unit
+               )
+      }
+      let(:household_person_link) {
+        Factory(:household_person_link,
+                :person => rs_person,
+                :household_unit => household_unit
+               )
+      }
       let(:response_set) {
         ResponseSet.new.tap { |rs|
           rs.survey = survey
@@ -140,11 +154,15 @@ module NcsNavigator::Core::Warehouse
         end
 
         it 'uses the public ID for the dwelling unit' do
-          pending 'Is this necessary? Documentation scarce.'
+          household_person_link.should_not be_nil
+          dwelling_household_link.should_not be_nil
+          primary.du_id.should == dwelling_unit.public_id
         end
 
         it 'uses the public ID for the household unit' do
-          pending 'Needs a different instrument'
+          pending "Needs a different mdes table."
+          household_person_link.should_not be_nil
+          primary.hh_id.should == household_unit.public_id
         end
 
         context do
