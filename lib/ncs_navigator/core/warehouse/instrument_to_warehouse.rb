@@ -20,7 +20,7 @@ module NcsNavigator::Core::Warehouse
       :person_id => 'response_sets.first.person.person_id',
       # TODO: See #3193
       :ppg_first => 'response_sets.first.participant.ppg_details.first.ppg_first_code',
-      :hh_id => 'response_sets.first.person.primary_household_unit.public_id',
+      :hh_id => 'response_sets.first.person.highest_ranked_household_person_link.household_unit.public_id',
       :du_id => 'response_sets.first.person.primary_dwelling_unit.public_id'
     }
 
@@ -116,8 +116,6 @@ module NcsNavigator::Core::Warehouse
     private :wh_resolve_internal_references
 
     def wh_select_best_match(response_bin, candidate_pairs)
-      if candidate_pairs.present?
-      end
       if candidate_pairs.size == 1
         return candidate_pairs.first.first
       end
