@@ -39,10 +39,9 @@ class HouseholdPersonLink < ActiveRecord::Base
   ncs_coded_attribute :is_active, 'CONFIRM_TYPE_CL2'
   ncs_coded_attribute :hh_rank,   'COMMUNICATION_RANK_CL1'
 
-  HH_RANK_ORDER = [1, 2, -5, 3, 4, -4]
   def self.order_by_rank(household_person_links)
     household_person_links.sort_by do |link|
-      HH_RANK_ORDER.index(link.hh_rank.local_code)
+      CommunicationRankCLOne.sort_by_index(link.hh_rank)
     end
   end
 end

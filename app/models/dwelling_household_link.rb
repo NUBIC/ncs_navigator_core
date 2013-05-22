@@ -45,10 +45,9 @@ class DwellingHouseholdLink < ActiveRecord::Base
   ncs_coded_attribute :is_active, 'CONFIRM_TYPE_CL2'
   ncs_coded_attribute :du_rank,   'COMMUNICATION_RANK_CL1'
 
-  DU_RANK_ORDER = [1, 2, -5, 3, 4, -4]
   def self.order_by_rank(dwelling_household_links)
     dwelling_household_links.sort_by do |link|
-      DU_RANK_ORDER.index(link.du_rank.local_code)
+      CommunicationRankCLOne.sort_by_index(link.du_rank)
     end
   end
 end
