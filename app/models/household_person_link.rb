@@ -38,5 +38,13 @@ class HouseholdPersonLink < ActiveRecord::Base
   ncs_coded_attribute :psu,       'PSU_CL1'
   ncs_coded_attribute :is_active, 'CONFIRM_TYPE_CL2'
   ncs_coded_attribute :hh_rank,   'COMMUNICATION_RANK_CL1'
+
+  HH_RANK_ORDER = [1, 2, -5, 3, 4, -4]
+  def self.order_by_rank(household_person_links)
+    HH_RANK_ORDER.inject([]) do |accum, num|
+      found = household_person_links.select{ |l| l.hh_rank == num }
+      accum.push(*found)
+    end
+  end
 end
 

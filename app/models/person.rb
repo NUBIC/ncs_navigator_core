@@ -387,10 +387,10 @@ class Person < ActiveRecord::Base
   end
 
   ##
-  # Returns the highest ranked HouseholdUnit associated with the person or nil
-  # @return[HouseholdUnit]
-  def primary_household_unit
-    primary_dwelling_household_link.try(:household_unit) || household_units.first
+  # Returns the highest ranked HouseholdPersonLink associated with the person or nil
+  # @return[HouseholdPersonLink]
+  def highest_ranked_household_person_link
+    HouseholdPersonLink.order_by_rank(household_person_links).first
   end
 
   ##
