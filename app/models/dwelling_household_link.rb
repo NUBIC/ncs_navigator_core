@@ -45,5 +45,12 @@ class DwellingHouseholdLink < ActiveRecord::Base
   ncs_coded_attribute :is_active, 'CONFIRM_TYPE_CL2'
   ncs_coded_attribute :du_rank,   'COMMUNICATION_RANK_CL1'
 
+  DU_RANK_ORDER = [1, 2, -5, 3, 4, -4]
+  def self.order_by_rank(dwelling_household_links)
+    DU_RANK_ORDER.inject([]) do |accum, num|
+      found = dwelling_household_links.select{ |l| l.du_rank.local_code == num }
+      accum.push(*found)
+    end
+  end
 end
 
