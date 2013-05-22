@@ -371,6 +371,29 @@ class Person < ActiveRecord::Base
   end
 
   ##
+  # Returns the highest ranked DwellingHouseholdLink associated with the person
+  # or nil
+  # @return[DwellingHouseholdLink]
+  def primary_dwelling_household_link
+    DwellingHouseholdLink.where(:dwelling_unit_id => dwelling_units
+                               ).order(:du_rank_code).first
+  end
+
+  ##
+  # Returns the highest ranked DwellingUnit associated with the person or nil
+  # @return[DwellingUnit]
+  def primary_dwelling_unit
+    primary_dwelling_household_link.try(:dwelling_unit)
+  end
+
+  ##
+  # Returns the highest ranked HouseholdUnit associated with the person or nil
+  # @return[HouseholdUnit]
+  def primary_household_unit
+    primary_dwelling_household_link.try(:household_unit) || household_units.first
+  end
+
+  ##
   # Returns true if a dwelling_unit has a tsu_is and this person has an association to the
   # tsu dwelling unit through their household
   # @return [true,false]
