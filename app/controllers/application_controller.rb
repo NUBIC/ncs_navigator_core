@@ -107,8 +107,11 @@ class ApplicationController < ActionController::Base
 
     def ransack_paginate(model)
       q = model.search(params[:q])
+      selects = q.sorts.map{|sort| "\"#{sort.parent.table_name}\".\"#{sort.attr_name}\""}
       q.sorts = 'id'
-      page = q.result(:distinct => true).paginate(:page => params[:page], :per_page => 20)
+      page = q.result(:distinct => true)
+        .select(selects)
+        .paginate(:page => params[:page], :per_page => 20)
       [q, page]
     end
 end
