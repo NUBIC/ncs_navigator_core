@@ -893,6 +893,23 @@ class Event < ActiveRecord::Base
   end
 
   ##
+  # Schedule the Expanded Low Intensity Postnatal Segment in PSC.
+  # If successful, create a corresponding, pending Event record
+  #
+  # @see PatientStudyCalendar#schedule_low_intensity_postnatal
+  # @see Event#create_event_placeholder_and_cancel_activities
+  #
+  # @param[PatientStudyCalendar]
+  # @param[Participant]
+  # @param[Date] (optional)
+  # @return[Response]
+  def self.schedule_low_intensity_postnatal(psc, participant, date = nil)
+    resp = psc.schedule_low_intensity_postnatal(participant, date)
+    create_event_placeholder_and_cancel_activities(psc, participant, date, resp)
+    resp
+  end
+
+  ##
   # After successfully scheduling the next segment for the Participant
   # in PSC, create a corresponding Event using the scheduled ideal date as
   # the Event#start_date and the Ncs EVENT_TYPE_CL1 code matching the PSC activity
