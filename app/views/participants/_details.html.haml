@@ -9,6 +9,19 @@
       %span.warning
         No PPG Assigned
 
+  - if show_low_intensity_postnatal_scheduling_link?(@participant)
+    %p
+      = link_to "Schedule Expanded Low Intensity Postnatal Data Collection",
+        low_intensity_postnatal_scheduler_participant_path(@participant),
+        :class => "reschedule_link icon_link"
+
+  - if permit?(Role::SYSTEM_ADMINISTRATOR)
+    - unless @participant.pending_events.blank?
+      %p
+        = link_to "Nullify Pending Events",
+          cancel_pending_events_participant_path(@participant),
+          :class => "cancel_link icon_link"
+
   - if @participant.known_to_be_pregnant?
     %p
       %b
