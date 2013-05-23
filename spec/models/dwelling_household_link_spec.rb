@@ -51,5 +51,17 @@ describe DwellingHouseholdLink do
     end
   end
 
+  describe "#order_by_rank" do
+    let(:primary)   { Factory(:dwelling_household_link, :du_rank => NcsCode.for_list_name_and_local_code('COMMUNICATION_RANK_CL1', 1))  }
+    let(:secondary) { Factory(:dwelling_household_link, :du_rank => NcsCode.for_list_name_and_local_code('COMMUNICATION_RANK_CL1', 2))  }
+    let(:other)     { Factory(:dwelling_household_link, :du_rank => NcsCode.for_list_name_and_local_code('COMMUNICATION_RANK_CL1', -5)) }
+    let(:unordered) { [other, primary, secondary] }
+
+    it "should be ordered" do
+      DwellingHouseholdLink.order_by_rank(unordered).should == [primary, secondary, other]
+    end
+  end
+
+
 end
 
