@@ -8,8 +8,11 @@ module CommunicationRankCLOne
   ##
   # Returns index of the COMMUNICATION_RANK_CL1 that can be used
   # by sort_by to rank from MOST -> LEAST important.
+  #
+  # If rank not found is RANK, size is returned
+  #
   # @return[Integer]
   def self.sort_by_index(rank)
-    ORDER.index(rank)
+    ORDER.include?(rank) ? ORDER.index(rank) : ORDER.size
   end
 end
