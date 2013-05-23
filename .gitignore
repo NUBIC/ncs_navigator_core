@@ -25,6 +25,9 @@ public/maintenance.html
 
 # Generated reports
 reports
+!app/models/reports
+!spec/models/reports
+!spec/integration/models/reports
 coverage.data
 coverage
 

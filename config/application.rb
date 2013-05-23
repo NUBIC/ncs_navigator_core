@@ -119,7 +119,6 @@ module NcsNavigatorCore
 end
 
 require 'patient_study_calendar'
-require 'reporting'
 require 'recruitment_strategy'
 
 require 'ncs_navigator/core'
