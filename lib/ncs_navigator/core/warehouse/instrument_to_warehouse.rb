@@ -19,7 +19,9 @@ module NcsNavigator::Core::Warehouse
       # sets.
       :person_id => 'response_sets.first.person.person_id',
       # TODO: See #3193
-      :ppg_first => 'response_sets.first.participant.ppg_details.first.ppg_first_code'
+      :ppg_first => 'response_sets.first.participant.ppg_details.first.ppg_first_code',
+      :hh_id => 'response_sets.first.person.highest_ranked_household_person_link.household_unit.public_id',
+      :du_id => 'response_sets.first.person.highest_ranked_household_person_link.household_unit.highest_ranked_dwelling_household_link.dwelling_unit.public_id'
     }
 
     ##
