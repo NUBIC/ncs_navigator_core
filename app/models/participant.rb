@@ -841,6 +841,11 @@ class Participant < ActiveRecord::Base
     self.save!
   end
 
+  def nullify_pending_events!(psc, reason = "Pending event has been deleted.")
+    self.pending_events.each { |e| e.cancel_and_close_or_delete!(psc, reason) }
+  end
+
+
   ##
   # Consenting to the study does the following things
   # 1. update the enrollment status for the participant
@@ -1550,7 +1555,9 @@ class Participant < ActiveRecord::Base
     # @see Participant#pending_events
     # @see ActiveRecord::Base#destroy
     def destroy_pending_events
-      pending_events.each { |e| e.destroy if e.contact_links.blank? }
+      pending_events.each do |e|
+        e.destroy if e.contact_links.blank?
+      end
     end
 
     def set_switch_arm_state(hi_intensity)
