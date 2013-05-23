@@ -1,7 +1,6 @@
 - page_title "Select Instrument to Administer"
 
-%h3
-  = @person
+= render "participants/header_information", :person => @person, :participant => @event.participant
 
 .page_section
   %h3
