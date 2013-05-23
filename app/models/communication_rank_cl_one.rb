@@ -1,7 +1,7 @@
 # Helper methods for dealing with the COMMUNICATION_RANK_CL1 code list
 #
 module CommunicationRankCLOne
-  ORDER = [1, 2, -5, 3, 4, -4].map do |rank|
+  ORDER = [1, 2, 3, 4, -5, -4].map do |rank|
     NcsCode.for_list_name_and_local_code('COMMUNICATION_RANK_CL1', rank)
   end
 
