@@ -184,6 +184,48 @@ class ParticipantsController < ApplicationController
     schedule_consent_event('Child Consent', :schedule_child_consent_six_month_to_age_of_majority, params[:date])
   end
 
+  def low_intensity_postnatal_scheduler
+    if @participant.eligible_for_low_intensity_postnatal_data_collection?
+      @birth_date = @participant.children.map(&:person_dob).min
+    else
+      msg = "Participant is in not eligible to schedule Low Intensity Postnatal data collection. Please complete the Low Intensity Birth Event."
+      redirect_to(participant_path(@participant), :flash => { :warning => msg } )
+    end
+  end
+
+  ##
+  # Schedule the Child: Low Intensity Child Segment in PSC with the
+  # ideal date of the Child's Date of Birth
+  # @see Event.schedule_low_intensity_postnatal
+  def schedule_low_intensity_postnatal
+    msg = 'Could not schedule Expanded Low Intensity Postnatal segment.'
+    flash_type = :warning
+
+    begin
+      date = Date.parse(params[:date_of_birth])
+
+      if @participant.move_to_low_intensity_postnatal
+        # TODO: given an Event Type or start collection date cancel the events scheduled
+        #       prior to that date
+        resp = Event.schedule_low_intensity_postnatal(psc, @participant, date)
+        if resp.success?
+          msg =  "Expanded Low Intensity Postnatal segment scheduled for Participant."
+          flash_type = :notice
+        end
+      else
+        msg += " Participant is not a Low Intensity Participant."
+      end
+
+    rescue ArgumentError
+      # if date cannot be parsed do not allow user to schedule the informed consent event
+      # simply let the user know
+      msg += " Date provided [#{date_string}] was invalid. Please choose another date."
+    end
+
+    redirect_to(participant_path(@participant), :flash => { flash_type => msg } )
+
+  end
+
   ##
   # Private method to help the scheduling of the different types of
   # standalone consent events. This will schedule the event for the
