@@ -514,7 +514,7 @@ DEPENDENCIES
   psc
   rack-test
   rails (= 3.2.13)
-  ransack
+  ransack (= 0.6.0)
   rb-fsevent
   redis
   rspec-rails (~> 2.12.0)

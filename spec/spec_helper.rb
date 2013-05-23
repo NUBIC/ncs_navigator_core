@@ -55,6 +55,7 @@ Spork.prefork do
   ENV["RAILS_ENV"] ||= 'test'
   require File.expand_path("../../config/environment", __FILE__)
   require 'rspec/rails'
+  require 'capybara/rspec'
 
   # Factory Girl was not autoloading factories hence the call to Factory.find_definitions
   # cf. http://stackoverflow.com/questions/1160004/setup-factory-girl-with-testunit-and-shoulda
@@ -80,6 +81,15 @@ Spork.prefork do
 
     def login(as)
       controller.request.env['aker.check'] = Aker::Rack::Facade.new(Aker.configuration, as)
+    end
+
+    def capybara_login(as)
+      current_user = Aker::User.new(as, "NCSNavigator")
+      visit '/login'
+      fill_in 'username', :with => as
+      fill_in 'password', :with => as
+      click_button 'Log in'
+      current_user
     end
   end
 
