@@ -25,6 +25,7 @@ class PatientStudyCalendar
   PPG_1_AND_2           = "PPG 1 and 2"
   HI_LO_CONVERSION      = "Low to High Conversion"
   POSTNATAL             = "Postnatal"
+  LOW_INTENSITY_CHILD   = "Lo Intensity Child"
 
   # Hi and Lo Segments (incl. EH, PB, PBS)
   PPG_FOLLOW_UP         = "PPG Follow-Up" # Not for PBS
@@ -58,7 +59,8 @@ class PatientStudyCalendar
   BIRTH_COHORT_SCREENING = "#{PBS_ELIGIBILITY}: #{BIRTH_COHORT}"
 
   # Birth and Post-Natal Epoch and Segment
-  CHILD_CHILD = "#{CHILD_EPOCH}: #{CHILD}"
+  CHILD_CHILD               = "#{CHILD_EPOCH}: #{CHILD}"
+  CHILD_LOW_INTENSITY_CHILD = "#{CHILD_EPOCH}: #{LOW_INTENSITY_CHILD}"
 
   # Informed Consent Segments
   INFORMED_CONSENT = "Informed Consent"
@@ -513,6 +515,10 @@ class PatientStudyCalendar
 
   def schedule_child_consent_six_months_to_age_of_majority(participant, date = Date.today.to_s)
     schedule_segment(participant, INFORMED_CONSENT_CHILD_CONSENT_SIX_MONTHS, date)
+  end
+
+  def schedule_low_intensity_postnatal(participant, date = Date.today.to_s)
+    schedule_segment(participant, CHILD_LOW_INTENSITY_CHILD, date)
   end
 
   ##
