@@ -64,6 +64,9 @@
               %ul
                 %li
                   = link_to "Case Status Report", {:controller => "reports", :action => "case_status"}, :class => "report_link icon_link"
+                  - if @fieldwork_present
+                    %li
+                      = link_to "Field Activity Report", fieldwork_index_path, :class => "report_link icon_link"
             - else
               %ul
                 %li
