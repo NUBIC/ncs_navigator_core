@@ -166,6 +166,10 @@ class Participant < ActiveRecord::Base
       transition [:moved_to_high_intensity_arm] => :following_low_intensity
     end
 
+    event :start_low_intensity_postnatal_data_collection do
+      transition [:in_pregnancy_probability_group, :consented_low_intensity, :pregnant_low, :following_low_intensity, :postnatal] => :postnatal
+    end
+
   end
 
   ##
@@ -983,6 +987,7 @@ class Participant < ActiveRecord::Base
   ##
   # True if the participant state is in one of the initial states
   # i.e. not updated from an action in the study
+  # @return [true,false]
   def new_participant_in_study?
     (converted_high_intensity? || pending? || registered?)
   end
@@ -1038,6 +1043,22 @@ class Participant < ActiveRecord::Base
   # True if a participant in the low_intensity arm has a ppg status of pregnant or trying and is in tsu
   def eligible_for_high_intensity_invitation?
     low_intensity? && pregnant_or_trying? && in_tsu? && completed_event?(NcsCode.low_intensity_data_collection)
+  end
+
+  ##
+  # True if participant is in low intensity arm, is in the postnatal
+  # state, and has children
+  # @see #low_intensity?
+  # @see #postnatal?
+  # @see #has_children?
+  # @return [true,false]
+  def eligible_for_low_intensity_postnatal_data_collection?
+    low_intensity? && postnatal? && has_children?
+  end
+
+  def move_to_low_intensity_postnatal
+    start_low_intensity_postnatal_data_collection!
+    destroy_pending_events
   end
 
   ##
