@@ -1,0 +1,23 @@
+- page_title "Participant"
+
+= render "participants/header_information", :person => @participant.person, :participant => @participant
+
+.page_section
+  = form_for @participant, :url => schedule_low_intensity_postnatal_participant_path(@participant) do |f|
+    %p
+      %b
+        Date of Child's Birth
+      = text_field_tag :date_of_birth, @birth_date.to_s, :class => 'datepicker'
+    %p
+      %b
+        Date to Start Postnatal Collection
+      = text_field_tag :date_of_birth, @birth_date.to_s, :class => 'datepicker'
+      .instructional_note
+        This is the date on which Low Intensity Postnatal Collection will begin.
+        %br
+        Ideally it would start on the birth date of the child. However if data
+        collection begins after the child has been born all events scheduled prior to this date will be canceled.
+    %p
+      = f.submit 'Schedule Expanded Low Intensity Postnatal Events',
+        :disable_with => 'Scheduling Expanded Low Intensity Postnatal Events...',
+        :confirm => 'Are you certain you would like to start Expanded Low Intensity Postnatal data collection?'
