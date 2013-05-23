@@ -68,6 +68,10 @@ NcsNavigatorCore::Application.routes.draw do
       put :enroll
       put :unenroll
       put :remove_from_active_followup
+      get :low_intensity_postnatal_scheduler
+      put :schedule_low_intensity_postnatal
+      get :cancel_pending_events
+      put :nullify_pending_events
     end
     resources :participant_consents, :only => [:edit]
     resources :ppg_details, :only => [:edit, :update]

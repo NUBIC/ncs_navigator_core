@@ -6,7 +6,8 @@ class ParticipantsController < ApplicationController
   layout proc { |controller| controller.request.xhr? ? nil : 'application'  }
 
   permit Role::SYSTEM_ADMINISTRATOR, Role::USER_ADMINISTRATOR, Role::ADMINISTRATIVE_STAFF, Role::STAFF_SUPERVISOR ,
-         :only => [:edit_ppg_status, :update_ppg_status, :enroll, :unenroll, :remove_from_active_followup, :current_workflow]
+         :only => [:edit_ppg_status, :update_ppg_status, :enroll, :unenroll, :remove_from_active_followup, :current_workflow,
+                   :cancel_pending_events, :nullify_pending_events]
 
   before_filter :load_participant, :except => [:index, :in_ppg_group, :new, :create]
   ##
@@ -346,6 +347,18 @@ class ParticipantsController < ApplicationController
     url = params[:redirect_to] unless params[:redirect_to].blank?
 
     redirect_to(url, :notice => "Participant is no longer being actively followed in the study.")
+  end
+
+  def cancel_pending_events
+  end
+
+  def nullify_pending_events
+    @participant.nullify_pending_events!(psc, params[:reason])
+
+    url = participant_path(@participant)
+    url = params[:redirect_to] unless params[:redirect_to].blank?
+
+    redirect_to(url, :notice => "All pending events canceled.")
   end
 
   ##

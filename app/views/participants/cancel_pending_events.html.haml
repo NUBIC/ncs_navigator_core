@@ -1,0 +1,30 @@
+- page_title "Cancel Pending Events"
+
+= render "participants/header_information", :person => @participant.person, :participant => @participant
+
+.page_section
+  .enrollment
+    - if @participant.pending_events.blank?
+      No pending events exist for participant.
+    - else
+      The following events will be nullified:
+      - @participant.pending_events.each do |e|
+        %dl
+          %dt
+            = e.event_start_date
+          %dd
+            = e.event_type
+      %b
+        Nullify Pending Events
+      %div
+        = form_for(@participant, :url => nullify_pending_events_participant_path(@participant)) do |f|
+          %p
+            = label_tag :reason, "Reason for nullifying pending events:"
+            %br
+            = text_area_tag :reason
+          %p
+            - msg = "Are you certain that you would like to cancel and close or delete all #{@participant.pending_events.size} events?"
+            - msg << " This process will take some time to complete."
+            = f.submit "Nullify Pending Events",
+              :disable_with => 'Submitting Request...',
+              :confirm => msg
