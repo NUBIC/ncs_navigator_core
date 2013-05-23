@@ -1,15 +1,18 @@
 .participant_header_information
   %span{:class => 'participant_name'}
-    = display_person person
-  %span{:class => 'participant_data_point'}
-    P_ID:
-    = participant.p_id
+    = link_to blank_safe(person.to_s), person_path(person), :class => "header_link"
+  - if participant
+    %span{:class => 'participant_data_point'}
+      P_ID:
+      = participant.p_id
+
   %span{:class => 'participant_data_point'}
     Language:
     = blank_safe_ncs_code(person.language)
   %span{:class => 'participant_data_point'}
     Date of Birth:
     = blank_safe(person.person_dob)
+
   %span{:class => 'participant_data_point'}
     SSU/TSU:
     = "#{blank_safe(participant.ssu)}/#{blank_safe(participant.tsu)}"
