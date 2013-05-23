@@ -400,6 +400,7 @@ class Instrument < ActiveRecord::Base
   end
 
   def self.collection?(lbl)
+    return false if lbl.blank?
     lbl.include? COLLECTION_LABEL_MARKER
   end
 
