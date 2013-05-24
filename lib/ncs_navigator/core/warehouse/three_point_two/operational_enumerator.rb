@@ -128,7 +128,12 @@ module NcsNavigator::Core::Warehouse::ThreePointTwo
             WHEN t.event_end_date IS NULL
                  THEN t.event_disposition % 500
             ELSE t.event_disposition % 500 + 500
-            END) normalized_event_disposition}
+            END) normalized_event_disposition},
+        %q{(CASE
+            WHEN t.event_start_date IS NULL
+                 THEN '9666-96-96'
+            ELSE to_char(t.event_start_date, 'YYYY-MM-DD')
+            END) non_null_event_start_date}
       ],
       :where => %q{
         t.event_disposition IS NOT NULL OR
@@ -139,10 +144,11 @@ module NcsNavigator::Core::Warehouse::ThreePointTwo
         :normalized_event_disposition => :event_disp,
         :event_disposition_category_code => :event_disp_cat,
         :event_incentive_cash => :event_incent_cash,
-        :event_incentive_noncash => :event_incent_noncash
+        :event_incentive_noncash => :event_incent_noncash,
+        :non_null_event_start_date => :event_start_date
       },
       :ignored_columns => %w(event_disposition scheduled_study_segment_identifier
-        psc_ideal_date lock_version imported_invalid)
+        psc_ideal_date lock_version imported_invalid event_start_date)
     )
 
     produce_one_for_one(:instruments, :Instrument,
