@@ -596,6 +596,18 @@ module NcsNavigator::Core::Warehouse::ThreePointTwo
         results.first.participant_id.should == Participant.first.p_id
       end
 
+      it 'uses MDES "unknown" date on null event_start_date' do
+        event.event_start_date = nil
+        event.save!
+        results.first.event_start_date.should == '9666-96-96'
+      end
+
+      it 'uses the event\'s event_start_date if event_start_date is not null' do
+        event.event_start_date = '2013-05-15'
+        event.save!
+        results.first.event_start_date.should == '2013-05-15'
+      end
+
       describe 'with no disposition' do
         before do
           event.event_disposition = nil
