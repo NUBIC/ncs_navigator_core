@@ -1277,4 +1277,34 @@ describe OperationalDataExtractor::Base do
     end
   end
 
+  describe "#get_ppg_detail" do
+
+    before do
+      adult = NcsCode.for_list_name_and_local_code("PARTICIPANT_TYPE_CL1", 3)
+      child = NcsCode.for_list_name_and_local_code("PARTICIPANT_TYPE_CL1", 6)
+      @adult_participant = Factory(:participant, :p_type_code => adult.local_code)
+      @child_participant = Factory(:participant, :p_type_code => child.local_code)
+      adult_person = Factory(:person)
+      child_person = Factory(:person)
+      survey = create_pregnancy_screener_survey_with_ppg_detail_operational_data
+      @response_set, instrument = prepare_instrument(adult_person, @adult_participant, survey)
+      @response_set_child, instrument = prepare_instrument(child_person, @child_participant, survey)
+      @ode = OperationalDataExtractor::PregnancyScreener.new(@response_set)
+      @ode_child = OperationalDataExtractor::PregnancyScreener.new(@response_set_child)
+    end
+
+    it "finds a ppg_detail if a participant already has one" do
+      existing_ppg_detail = PpgDetail.create!(:response_set_id => @response_set.id)
+      @ode.get_ppg_detail(@adult_participant).should == existing_ppg_detail
+    end
+
+    it "returns a new ppg_detail if one isn't found and the participant is not a child" do
+      @ode.get_ppg_detail(@adult_participant).class.should == PpgDetail
+    end
+
+    it "returns nil if a participant is a child" do
+      @ode_child.get_ppg_detail(@child_participant).should be_nil
+    end
+  end
+
 end
