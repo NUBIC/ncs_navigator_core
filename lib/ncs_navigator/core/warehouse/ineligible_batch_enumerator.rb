@@ -27,12 +27,10 @@ module NcsNavigator::Core::Warehouse
             per.move_info = -4
             per.p_info_source = -4
             per.p_tracing = -4
-            per.person_id = -4
             per.person_lang = -4
             per.plan_move = -4
             per.pref_contact = -4
             per.prefix = -4
-            per.psu_id = -4
             per.sex = -4
             per.suffix = -4
             per.when_move = -4
