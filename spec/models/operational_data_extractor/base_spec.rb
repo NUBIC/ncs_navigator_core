@@ -35,6 +35,24 @@ describe OperationalDataExtractor::Base do
     let(:person) { Factory(:person) }
     let(:participant) { Factory(:participant) }
 
+     context "with a pbs participant verification instrument" do
+      it "chooses the OperationalDataExtractor::ParticipantVerification" do
+        survey = create_pbs_part_verification_with_part_two_survey_for_m3_2
+        response_set, instrument = prepare_instrument(person, participant, survey)
+        handler = OperationalDataExtractor::Base.extractor_for(response_set)
+        handler.class.should == OperationalDataExtractor::PbsParticipantVerification
+      end
+    end
+
+    context "with a participant verification instrument" do
+      it "chooses the OperationalDataExtractor::ParticipantVerification" do
+        survey = create_participant_verification_survey
+        response_set, instrument = prepare_instrument(person, participant, survey)
+        handler = OperationalDataExtractor::Base.extractor_for(response_set)
+        handler.class.should == OperationalDataExtractor::ParticipantVerification
+      end
+    end
+
     context "with a pregnancy screener instrument" do
       it "chooses the OperationalDataExtractor::PregnancyScreener" do
         survey = create_pregnancy_screener_survey_with_ppg_detail_operational_data

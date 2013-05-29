@@ -19,6 +19,7 @@ module OperationalDataExtractor
   autoload :Specimen,                   'operational_data_extractor/specimen'
 
   EXTRACTORS = [
+    [/_PBSPartVerBirth_/,  OperationalDataExtractor::PbsParticipantVerification],
     [/_ParticipantVerif_/,  OperationalDataExtractor::ParticipantVerification],
     [/_Tracing_/,           OperationalDataExtractor::TracingModule],
     [/_PBSamplingScreen_/,  OperationalDataExtractor::PbsEligibilityScreener],
