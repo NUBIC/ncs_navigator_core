@@ -70,6 +70,18 @@ module NcsNavigator::Core::Warehouse
     end
 
     ##
+    # Format null date column in database to the unknown date MDES formatted
+    # string representation (9666-96-96)
+    # @return[String]
+    def null_mdes_date(date_type)
+      %Q|(CASE
+        WHEN t.#{date_type}_date IS NULL
+             THEN '9666-96-96'
+        ELSE to_char(t.#{date_type}_date, 'YYYY-MM-DD')
+        END) non_null_#{date_type}_date|
+    end
+
+    ##
     # Datetime column alias used in mdes_formatted_datetime_query and
     # in column_map for produce_one_for_one.
     # @return[String]

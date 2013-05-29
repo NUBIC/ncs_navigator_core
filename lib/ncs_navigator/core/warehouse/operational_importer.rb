@@ -484,6 +484,8 @@ module NcsNavigator::Core::Warehouse
           end
         elsif core_attribute =~ /^mdes_datetime_value_.*$/
           core_record.send("#{core_attribute.sub(/^mdes_datetime_value_/, '')}=", mdes_record.send(mdes_variable))
+        elsif core_attribute =~ /^non_null_.*_date$/
+          core_record.send("#{core_attribute.sub(/^non_null_/, '')}=", mdes_record.send(mdes_variable))
         else
           core_record.send("#{core_attribute}=", mdes_record.send(mdes_variable))
         end
