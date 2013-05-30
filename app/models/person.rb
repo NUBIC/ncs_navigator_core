@@ -380,8 +380,6 @@ class Person < ActiveRecord::Base
   end
 
   ##
-  # Returns true if a dwelling_unit has a tsu_is and this person has an association to the
-  # tsu dwelling unit through their household
   # Returns all tsu_ids associated with the Person
   # either through the household_unit or address association
   # @return[Array<String]
