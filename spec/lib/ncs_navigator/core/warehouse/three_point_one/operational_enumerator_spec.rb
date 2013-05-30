@@ -602,7 +602,7 @@ module NcsNavigator::Core::Warehouse::ThreePointOne
         results.first.event_start_date.should == '9666-96-96'
       end
 
-      it 'uses the event\'s event_start_date if event_start_date is not null' do
+      it "uses the event's event_start_date if event_start_date is not null" do
         event.event_start_date = '2013-05-15'
         event.save!
         results.first.event_start_date.should == '2013-05-15'

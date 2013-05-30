@@ -163,11 +163,7 @@ module NcsNavigator::Core::Warehouse::TwoPointOne
                  THEN t.event_disposition % 500
             ELSE t.event_disposition % 500 + 500
             END) normalized_event_disposition},
-        %q{(CASE
-            WHEN t.event_start_date IS NULL
-                 THEN '9666-96-96'
-            ELSE to_char(t.event_start_date, 'YYYY-MM-DD')
-            END) non_null_event_start_date}
+        null_mdes_date('event_start')
       ],
       :where => %q{
         t.event_disposition IS NOT NULL OR
