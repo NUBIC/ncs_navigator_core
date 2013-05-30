@@ -228,7 +228,7 @@ class Participant < ActiveRecord::Base
     end
 
     event :birth_event do
-      transition [:pregnancy_one, :pregnancy_two, :ready_for_birth] => :parenthood
+      transition [:in_high_intensity_arm, :pregnancy_one, :pregnancy_two, :ready_for_birth] => :parenthood
     end
 
     event :birth_cohort do
@@ -284,7 +284,11 @@ class Participant < ActiveRecord::Base
     when 2
       non_pregnant_informed_consent!
     else
-      follow!
+      if has_children?
+        birth_event!
+      else
+        follow!
+      end
     end
   end
 
@@ -618,9 +622,9 @@ class Participant < ActiveRecord::Base
       0
     when pregnancy_two?
       60.days
-    when followed?, in_pregnancy_probability_group?, following_low_intensity?, postnatal?
+    when followed?, in_pregnancy_probability_group?, following_low_intensity?
       follow_up_interval
-    when in_pregnant_state?
+    when in_pregnant_state?, postnatal?
       due_date ? 1.day : 0
     else
       0
@@ -1465,7 +1469,7 @@ class Participant < ActiveRecord::Base
     end
 
     def eligible_for_ppg_follow_up?
-      return false if ppg_status.nil?
+      return false if ppg_status.nil? || postnatal?
       status_codes = [3,4]
       status_codes << 2 if consented_to_high_intensity_arm? || following_high_intensity? || pre_pregnancy?
       status_codes.include?(ppg_status.local_code)
@@ -1549,7 +1553,7 @@ class Participant < ActiveRecord::Base
     end
 
     def next_event_is_birth?
-      pregnant_low? || ready_for_birth?
+      pregnant_low? || ready_for_birth? || postnatal?
     end
 
     def in_pregnant_state?
