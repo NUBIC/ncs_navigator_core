@@ -1040,12 +1040,6 @@ class Participant < ActiveRecord::Base
   end
 
   ##
-  # True if a participant in the low_intensity arm has a ppg status of pregnant or trying and is in tsu
-  def eligible_for_high_intensity_invitation?
-    low_intensity? && pregnant_or_trying? && in_tsu? && completed_event?(NcsCode.low_intensity_data_collection)
-  end
-
-  ##
   # True if participant is in low intensity arm, is in the postnatal
   # state, and has children
   # @see #low_intensity?

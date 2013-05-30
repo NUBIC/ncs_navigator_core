@@ -2,7 +2,7 @@
 - if recruitment_strategy.two_tier_knowledgable?
   .page_section
     .arm
-      - if permit?(Role::FIELD_STAFF, Role::STAFF_SUPERVISOR) && (@participant.eligible_for_high_intensity_invitation? || @participant.high_intensity?)
+      - if permit?(Role::FIELD_STAFF, Role::STAFF_SUPERVISOR)
         %b
           Switch Protocol Arm
         .high_intensity_invitation

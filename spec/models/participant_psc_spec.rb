@@ -318,21 +318,8 @@ describe Participant do
           participant.next_scheduled_event.event.should == participant.next_study_segment
           participant.next_scheduled_event.date.should == 6.months.since(date).to_date
         end
-
-        it "is NOT eligible to be moved in the high intensity arm" do
-          du = Factory(:dwelling_unit, :ssu_id => 'ssu', :tsu_id => 'tsu')
-          hh = Factory(:household_unit)
-          dh_link = Factory(:dwelling_household_link, :dwelling_unit => du, :household_unit => hh)
-          hh_pers_link = Factory(:household_person_link, :household_unit => hh, :person => participant.person)
-
-          participant.should be_in_tsu
-          participant.should_not be_eligible_for_high_intensity_invitation
-        end
-
       end
-
     end
-
   end
 
   context "in the high intensity arm" do
