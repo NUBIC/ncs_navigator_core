@@ -602,11 +602,11 @@ class PatientStudyCalendar
   end
 
   ##
-  # Cancels all activities as canceled for those labeled as collection instruments (environmental or biological)
+  # Marks all activities as canceled for those labeled as collection instruments (environmental or biological)
   # for the participant. Called when scheduling new segments.
   # @param participant [Participant]
   # @param scheduled_study_segment_identifier [String]
-  # @param date [String]
+  # @param date [Date]
   # @param reason [String]
   def cancel_collection_instruments(participant, scheduled_study_segment_identifier, date, reason)
     activities_for_scheduled_segment(participant, scheduled_study_segment_identifier).each do |a|
@@ -617,11 +617,31 @@ class PatientStudyCalendar
   end
 
   ##
+  # Marks all activities as canceled for those whose activity date is less that the cancel_before_date
+  # @param participant [Participant]
+  # @param scheduled_study_segment_identifier [String]
+  # @param date [Date]
+  # @param reason [String]
+  # @param cancel_before_date [Date]
+  def cancel_activities_prior_to_date(participant, scheduled_study_segment_identifier, date, reason, cancel_before_date)
+    activities_for_scheduled_segment(participant, scheduled_study_segment_identifier).each do |a|
+      if activity_date_scheduled_before(a, cancel_before_date)
+        update_activity_state(a.activity_id, participant, Psc::ScheduledActivity::CANCELED, date, reason)
+      end
+    end
+  end
+
+  def activity_date_scheduled_before(activity, cancel_before_date)
+    activity.date && cancel_before_date && (Date.parse(activity.date) < cancel_before_date)
+  end
+  private :activity_date_scheduled_before
+
+  ##
   # Cancels all activities as canceled for those that have instruments but those instruments do not match
   # the current mdes version known to the application. Called when scheduling new segments.
   # @param participant [Participant]
   # @param scheduled_study_segment_identifier [String]
-  # @param date [String]
+  # @param date [Date]
   # @param reason [String]
   def cancel_non_matching_mdes_version_instruments(participant, scheduled_study_segment_identifier, date, reason)
     activities_for_scheduled_segment(participant, scheduled_study_segment_identifier).each do |a|
@@ -639,7 +659,7 @@ class PatientStudyCalendar
   # Participant has already consented, those activities do not need to remain scheduled.
   # @param participant [Participant]
   # @param scheduled_study_segment_identifier [String]
-  # @param date [String]
+  # @param date [Date]
   # @param reason [String]
   def cancel_consent_activities(participant, scheduled_study_segment_identifier, date, reason)
     return unless participant.consented?

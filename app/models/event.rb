@@ -976,13 +976,14 @@ class Event < ActiveRecord::Base
   # @see PatientStudyCalendar#schedule_low_intensity_postnatal
   # @see Event#create_event_placeholder_and_cancel_activities
   #
-  # @param[PatientStudyCalendar]
-  # @param[Participant]
-  # @param[Date] (optional)
+  # @param psc [PatientStudyCalendar]
+  # @param participant [Participant]
+  # @param child_birth_date [Date]
+  # @param data_collection_start_date [Date]
   # @return[Response]
-  def self.schedule_low_intensity_postnatal(psc, participant, date = nil)
-    resp = psc.schedule_low_intensity_postnatal(participant, date)
-    create_event_placeholder_and_cancel_activities(psc, participant, date, resp)
+  def self.schedule_low_intensity_postnatal(psc, participant, child_birth_date, data_collection_start_date)
+    resp = psc.schedule_low_intensity_postnatal(participant, child_birth_date)
+    create_event_placeholder_and_cancel_activities(psc, participant, child_birth_date, resp, data_collection_start_date)
     resp
   end
 
@@ -998,7 +999,8 @@ class Event < ActiveRecord::Base
   # @param[Participant]
   # @param[Date]
   # @param[Response]
-  def self.create_event_placeholder_and_cancel_activities(psc, participant, date, resp)
+  # @param data_collection_start_date [Date]
+  def self.create_event_placeholder_and_cancel_activities(psc, participant, date, resp, data_collection_start_date = nil)
     should_cancel_consent = true
     if resp && resp.success?
       study_segment_identifier = PatientStudyCalendar.extract_scheduled_study_segment_identifier(resp.body)
@@ -1013,10 +1015,12 @@ class Event < ActiveRecord::Base
           Rails.logger.warn("Cannot find event for MDES version '#{NcsNavigatorCore.mdes.version}' for psc activity label '#{lbl}'")
         end
       end
+      # cancel all specimen/sample collection actiivites unless configured to do so
       unless NcsNavigatorCore.expanded_phase_two?
         psc.cancel_collection_instruments(participant, study_segment_identifier, date,
           "Not configured to run expanded phase 2 instruments.")
       end
+      # cancel all activities without a matching MDES version instrument
       unless NcsNavigatorCore.mdes.version.blank?
         psc.cancel_non_matching_mdes_version_instruments(participant, study_segment_identifier, date,
           "Does not include an instrument for MDES version #{NcsNavigatorCore.mdes.version}.")
@@ -1025,6 +1029,14 @@ class Event < ActiveRecord::Base
       if participant.consented? && should_cancel_consent
         psc.cancel_consent_activities(participant, study_segment_identifier, date,
           "Participant has already consented.")
+      end
+      # cancel activities prior to data_collection_start_date
+      if data_collection_start_date
+        psc.cancel_activities_prior_to_date(participant, study_segment_identifier, date,
+          "Canceling activities prior to data collection start date #{data_collection_start_date}", data_collection_start_date)
+        participant.pending_events.where("event_start_date < ?", data_collection_start_date).all.each do |e|
+          e.mark_out_of_window
+        end
       end
     end
   end

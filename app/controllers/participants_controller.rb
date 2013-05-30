@@ -203,23 +203,26 @@ class ParticipantsController < ApplicationController
 
     begin
       date = Date.parse(params[:date_of_birth])
+      data_collection_start_date = Date.parse(params[:data_collection_start_date])
 
       if @participant.move_to_low_intensity_postnatal
-        # TODO: given an Event Type or start collection date cancel the events scheduled
-        #       prior to that date
-        resp = Event.schedule_low_intensity_postnatal(psc, @participant, date)
+        resp = Event.schedule_low_intensity_postnatal(psc, @participant, date, data_collection_start_date)
         if resp.success?
-          msg =  "Expanded Low Intensity Postnatal segment scheduled for Participant."
+          msg = "Expanded Low Intensity Postnatal segment scheduled for Participant."
           flash_type = :notice
         end
       else
-        msg += " Participant is not a Low Intensity Participant."
+        msg += " Participant was not able to be moved to that segment."
       end
 
-    rescue ArgumentError
-      # if date cannot be parsed do not allow user to schedule the informed consent event
-      # simply let the user know
-      msg += " Date provided [#{date_string}] was invalid. Please choose another date."
+    rescue ArgumentError => e
+      if e.message == "invalid date"
+        # if date cannot be parsed do not allow user to schedule the informed consent event
+        msg += " Date provided for child date of birth [#{params[:date_of_birth]}] or data collection start date [#{params[:data_collection_start_date]}] was invalid. Please choose another date."
+      else
+        # otherwise show the problem to the user
+        msg += " Error: #{e.message}"
+      end
     end
 
     redirect_to(participant_path(@participant), :flash => { flash_type => msg } )
