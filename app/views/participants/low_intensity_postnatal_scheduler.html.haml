@@ -11,7 +11,7 @@
     %p
       %b
         Date to Start Postnatal Collection
-      = text_field_tag :date_of_birth, @birth_date.to_s, :class => 'datepicker'
+      = text_field_tag :data_collection_start_date, @birth_date.to_s, :class => 'datepicker'
       .instructional_note
         This is the date on which Low Intensity Postnatal Collection will begin.
         %br
@@ -20,4 +20,4 @@
     %p
       = f.submit 'Schedule Expanded Low Intensity Postnatal Events',
         :disable_with => 'Scheduling Expanded Low Intensity Postnatal Events...',
-        :confirm => 'Are you certain you would like to start Expanded Low Intensity Postnatal data collection?'
+        :confirm => 'Are you certain you would like to start Expanded Low Intensity Postnatal data collection? This may take some time.'
