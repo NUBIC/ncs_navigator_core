@@ -115,7 +115,7 @@ describe Participant do
         end
 
         describe "participant has given birth" do
-          it "schedules the LO-Intensity Postnatal segment 6.months after the birth event" do
+          it "schedules the LO-Intensity Postnatal segment the day of the birth event" do
             participant.should be_in_pregnancy_probability_group
             participant.should be_known_to_be_pregnant
             participant.impregnate_low!
@@ -129,7 +129,7 @@ describe Participant do
             participant.should be_postnatal
             participant.next_study_segment.should == PatientStudyCalendar::LOW_INTENSITY_POSTNATAL
             participant.next_scheduled_event.event.should == participant.next_study_segment
-            participant.next_scheduled_event.date.should == 6.months.since(date).to_date
+            participant.next_scheduled_event.date.should == date
           end
         end
 
