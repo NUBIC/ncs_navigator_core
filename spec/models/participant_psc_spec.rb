@@ -112,19 +112,6 @@ describe Participant do
             participant.next_scheduled_event.date.should == 151.days.since(date).to_date
           end
 
-          it "is eligible to be moved in the high intensity arm if in tsu" do
-            du = Factory(:dwelling_unit, :ssu_id => 'ssu', :tsu_id => 'tsu')
-            hh = Factory(:household_unit)
-            dh_link = Factory(:dwelling_household_link, :dwelling_unit => du, :household_unit => hh)
-            hh_pers_link = Factory(:household_person_link, :household_unit => hh, :person => participant.person)
-
-            Factory(:event, :event_type => NcsCode.low_intensity_data_collection,
-                    :participant => participant, :event_end_date => date)
-
-            participant.should be_in_tsu
-            participant.should be_eligible_for_high_intensity_invitation
-          end
-
         end
 
         describe "participant has given birth" do
@@ -144,16 +131,6 @@ describe Participant do
             participant.next_scheduled_event.event.should == participant.next_study_segment
             participant.next_scheduled_event.date.should == 6.months.since(date).to_date
           end
-        end
-
-        it "is NOT eligible to be moved in the high intensity arm if NOT in tsu" do
-          du = Factory(:dwelling_unit, :ssu_id => 'ssu', :tsu_id => nil)
-          hh = Factory(:household_unit)
-          dh_link = Factory(:dwelling_household_link, :dwelling_unit => du, :household_unit => hh)
-          hh_pers_link = Factory(:household_person_link, :household_unit => hh, :person => participant.person)
-
-          participant.should_not be_in_tsu
-          participant.should_not be_eligible_for_high_intensity_invitation
         end
 
       end
@@ -225,38 +202,6 @@ describe Participant do
           participant.next_scheduled_event.event.should == participant.next_study_segment
           participant.next_scheduled_event.date.should == date
         end
-
-        it "is eligible to be moved in the high intensity arm if in tsu" do
-          du = Factory(:dwelling_unit, :ssu_id => 'ssu', :tsu_id => 'tsu')
-          hh = Factory(:household_unit)
-          dh_link = Factory(:dwelling_household_link, :dwelling_unit => du, :household_unit => hh)
-          hh_pers_link = Factory(:household_person_link, :household_unit => hh, :person => participant.person)
-
-          Factory(:event, :event_type => NcsCode.low_intensity_data_collection,
-                  :participant => participant, :event_end_date => Date.today)
-
-          participant.person.should be_in_tsu
-          participant.should be_in_tsu
-          participant.should be_eligible_for_high_intensity_invitation
-        end
-
-        it "is NOT eligible to be moved in the high intensity arm if NOT in tsu" do
-          participant.should_not be_in_tsu
-          participant.should_not be_eligible_for_high_intensity_invitation
-        end
-
-        it "is NOT eligible to be moved in the high intensity until participant has taken Lo I Quex" do
-          du = Factory(:dwelling_unit, :ssu_id => 'ssu', :tsu_id => 'tsu')
-          hh = Factory(:household_unit)
-          dh_link = Factory(:dwelling_household_link, :dwelling_unit => du, :household_unit => hh)
-          hh_pers_link = Factory(:household_person_link, :household_unit => hh, :person => participant.person)
-
-          participant.should be_in_tsu
-          participant.should_not be_eligible_for_high_intensity_invitation
-
-          participant.completed_event?(NcsCode.low_intensity_data_collection).should be_false
-        end
-
       end
 
       context "PPG Group 3: High Probability - Recent Pregnancy Loss" do
@@ -282,17 +227,6 @@ describe Participant do
           participant.next_scheduled_event.event.should == participant.next_study_segment
           participant.next_scheduled_event.date.should == 6.months.since(date).to_date
         end
-
-        it "is NOT eligible to be moved in the high intensity arm" do
-          du = Factory(:dwelling_unit, :ssu_id => 'ssu', :tsu_id => 'tsu')
-          hh = Factory(:household_unit)
-          dh_link = Factory(:dwelling_household_link, :dwelling_unit => du, :household_unit => hh)
-          hh_pers_link = Factory(:household_person_link, :household_unit => hh, :person => participant.person)
-
-          participant.should be_in_tsu
-          participant.should_not be_eligible_for_high_intensity_invitation
-        end
-
       end
 
       context "PPG Group 4: Other Probability - Not Pregnant and not Trying" do
