@@ -445,7 +445,8 @@ module OperationalDataExtractor
                               :address_type => address_type,
                               :address_rank => address_rank,
                               :address_type_other => address_type_other)
-        DwellingHouseholdLink.create!(:household_unit => person.household_units.first, :dwelling_unit => dwelling)
+        DwellingHouseholdLink.create!(:household_unit => person.find_or_create_household_unit,
+          :dwelling_unit => dwelling, :du_rank_code => 1)
       end
       address
     end

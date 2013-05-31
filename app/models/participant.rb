@@ -349,7 +349,7 @@ class Participant < ActiveRecord::Base
      # 8 - Child, associating mother participant with its child - ParticipantPersonRelationship
      ParticipantPersonLink.create(:participant_id => self.id, :person_id => child.id, :relationship_code => 8)
      # join child to mothers household
-     HouseholdPersonLink.create(:household_unit_id => self.person.household_units.first.id, :person_id => child.id)
+     HouseholdPersonLink.create(:household_unit_id => self.person.find_or_create_household_unit.id, :person_id => child.id)
      child_participant
   end
 
