@@ -530,7 +530,7 @@ module OperationalDataExtractor
 
     def get_ppg_detail(participant)
       ppg_detail = PpgDetail.where(:response_set_id => response_set.id).first
-      if ppg_detail.nil?
+      if ppg_detail.nil? && participant.p_type_code != 6
         ppg_detail = PpgDetail.new(:participant => participant, :psu => participant.psu,
                                    :response_set => response_set)
       end
