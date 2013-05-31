@@ -447,13 +447,16 @@ module OperationalDataExtractor
       address = find_address(person, map, address_type, address_rank,
                              address_type_other)
       if address.nil?
+        dwelling = DwellingUnit.new
         address = Address.new(:person => person,
-                              :dwelling_unit => DwellingUnit.new,
+                              :dwelling_unit => dwelling,
                               :psu => person.psu,
                               :response_set => response_set,
                               :address_type => address_type,
                               :address_rank => address_rank,
                               :address_type_other => address_type_other)
+        DwellingHouseholdLink.create!(:household_unit => person.find_or_create_household_unit,
+          :dwelling_unit => dwelling, :du_rank_code => 1)
       end
       address
     end
@@ -641,6 +644,8 @@ module OperationalDataExtractor
               # 7 Partner/Significant Other
               relationship = ParticipantPersonLink.new(:person => father,
                 :participant => participant, :relationship_code => 7)
+              household = HouseholdUnit.create
+              HouseholdPersonLink.create(:household_unit => household, :person => father)
             end
 
             set_value(father, attribute, value)
@@ -660,6 +665,8 @@ module OperationalDataExtractor
                                       attribute => value.to_s).first
             if contact.nil?
               contact = Person.new(:psu => person.psu, :response_set => response_set)
+              household = HouseholdUnit.create
+              HouseholdPersonLink.create(:household_unit => household, :person => contact)
             end
             set_value(contact, attribute, value)
           end
