@@ -79,6 +79,7 @@ module NcsNavigator::Core::Warehouse::TwoPointZero
       :ignored_columns => %w(
         person_id high_intensity low_intensity_state high_intensity_state
         enrollment_status_comment being_followed lock_version
+        ssu tsu
       )
     )
 
