@@ -69,7 +69,7 @@
         = f.radio_button :person_dob_modifier, :unknown
 
       %p
-        = f.label :age, "Age"
+        = f.label :age, "Age #{"(#{@person.computed_age} years from DOB)" if @person.computed_age}"
         %br
         = f.text_field :age
 
