@@ -35,6 +35,24 @@ describe OperationalDataExtractor::Base do
     let(:person) { Factory(:person) }
     let(:participant) { Factory(:participant) }
 
+     context "with a pbs participant verification instrument" do
+      it "chooses the OperationalDataExtractor::ParticipantVerification" do
+        survey = create_pbs_part_verification_with_part_two_survey_for_m3_2
+        response_set, instrument = prepare_instrument(person, participant, survey)
+        handler = OperationalDataExtractor::Base.extractor_for(response_set)
+        handler.class.should == OperationalDataExtractor::PbsParticipantVerification
+      end
+    end
+
+    context "with a participant verification instrument" do
+      it "chooses the OperationalDataExtractor::ParticipantVerification" do
+        survey = create_participant_verification_survey
+        response_set, instrument = prepare_instrument(person, participant, survey)
+        handler = OperationalDataExtractor::Base.extractor_for(response_set)
+        handler.class.should == OperationalDataExtractor::ParticipantVerification
+      end
+    end
+
     context "with a pregnancy screener instrument" do
       it "chooses the OperationalDataExtractor::PregnancyScreener" do
         survey = create_pregnancy_screener_survey_with_ppg_detail_operational_data
@@ -1394,6 +1412,37 @@ describe OperationalDataExtractor::Base do
 
         PersonRace.where(:person_id => @person.id, :race_code => white_race.local_code).size.should == 1
       end
+    end
+  end
+
+  describe "#get_ppg_detail" do
+
+    before do
+      adult = NcsCode.for_list_name_and_local_code("PARTICIPANT_TYPE_CL1", 3)
+      child = NcsCode.for_list_name_and_local_code("PARTICIPANT_TYPE_CL1", 6)
+      @adult_participant = Factory(:participant, :p_type_code => adult.local_code)
+      @child_participant = Factory(:participant, :p_type_code => child.local_code)
+      adult_person = Factory(:person)
+      child_person = Factory(:person)
+      survey = create_pregnancy_screener_survey_with_ppg_detail_operational_data
+      @response_set, instrument = prepare_instrument(adult_person, @adult_participant, survey)
+      @response_set_child, instrument = prepare_instrument(child_person, @child_participant, survey)
+      @ode = OperationalDataExtractor::PregnancyScreener.new(@response_set)
+      @ode_child = OperationalDataExtractor::PregnancyScreener.new(@response_set_child)
+    end
+
+    it "finds a ppg_detail if a participant already has one" do
+      existing_ppg_detail = PpgDetail.create!(:response_set_id => @response_set.id)
+      @ode.get_ppg_detail(@adult_participant).should == existing_ppg_detail
+    end
+
+    it "returns a new ppg_detail if one isn't found and the participant is not a child" do
+      @ode.get_ppg_detail(@adult_participant).class.should == PpgDetail
+      @ode.get_ppg_detail(@adult_participant).should be_new_record
+    end
+
+    it "returns nil if a participant is a child" do
+      @ode_child.get_ppg_detail(@child_participant).should be_nil
     end
   end
 
