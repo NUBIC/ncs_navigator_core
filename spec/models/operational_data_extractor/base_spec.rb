@@ -202,6 +202,7 @@ describe OperationalDataExtractor::Base do
 
     before(:each) do
       @person = Factory(:person)
+      @person.household_units << Factory(:household_unit)
       @participant = Factory(:participant)
       @survey = create_pregnancy_screener_survey_with_ppg_detail_operational_data
       @response_set, @instrument = prepare_instrument(@person, @participant, @survey)
@@ -252,6 +253,7 @@ describe OperationalDataExtractor::Base do
 
     before do
       @person = Factory(:person)
+      @person.household_units << Factory(:household_unit)
       @rs = Factory(:response_set)
       @rs.person = @person
       @base_extractor = OperationalDataExtractor::Base.new(@rs)
@@ -995,6 +997,7 @@ describe OperationalDataExtractor::Base do
       @person = Factory(:person)
       @participant = Factory(:participant)
       @part_person_link = Factory(:participant_person_link, :participant => @participant, :person => @person)
+      @person.household_units << Factory(:household_unit)
       @survey = create_pbs_pregnancy_visit_1_with_birth_institution_operational_data
       @response_set, @instrument = prepare_instrument(@person, @participant, @survey)
 

@@ -40,6 +40,7 @@ Factory.define :person do |pers|
   pers.person_comment                 nil
   pers.transaction_type               nil
   pers.person_id                      nil
+  pers.household_units { |household| [household.association(:household_unit)] }
 end
 
 Factory.define :person_race do |pr|

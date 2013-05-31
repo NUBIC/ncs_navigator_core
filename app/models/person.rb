@@ -364,8 +364,21 @@ class Person < ActiveRecord::Base
   end
 
   ##
-  # Returns all DwellingUnits associated with this person
-  # either through the household_unit or address association
+  # Return the first HouseholdUnit associated with this Person record.
+  # If one does not exist create one.
+  # @return [HouseholdUnit]
+  def find_or_create_household_unit
+    if household_units.blank?
+      hu = HouseholdUnit.create!
+      HouseholdPersonLink.create!(:person => self, :household_unit => hu, :hh_rank_code => 1)
+    else
+      hu = household_units.first
+    end
+    return hu
+  end
+
+  ##
+  # Returns all DwellingUnits associated with the person's household units
   # @return[Array<DwellingUnit]
   def dwelling_units
     (household_units.collect(&:dwelling_units).flatten.compact +
