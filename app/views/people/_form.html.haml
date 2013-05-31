@@ -60,13 +60,6 @@
       = render "shared/ncs_code_select", { :f => f, :code => :sex_code, :label_text => "Sex" }
 
       %p
-        = f.label :age, "Age"
-        %br
-        = f.text_field :age
-
-      = render "shared/ncs_code_select", { :f => f, :code => :age_range_code, :label_text => "Age Range" }
-
-      %p
         = f.label :person_dob_date, "Date Of Birth"
         %br
         = f.text_field :person_dob_date, :class => "datepicker"
@@ -74,6 +67,13 @@
         = f.radio_button :person_dob_modifier, :refused
         = f.label :person_dob_modifier_unknown, "Unknown"
         = f.radio_button :person_dob_modifier, :unknown
+
+      %p
+        = f.label :age, "Age"
+        %br
+        = f.text_field :age
+
+      = render "shared/ncs_code_select", { :f => f, :code => :age_range_code, :label_text => "Age Range" }
 
       = render "shared/ncs_code_select", { :f => f, :code => :deceased_code, :label_text => "Deceased" }
 
