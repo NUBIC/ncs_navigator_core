@@ -452,8 +452,7 @@ describe Person do
 
     let(:person) { Factory(:person) }
 
-    it "is not in a tsu if there are no households" do
-      person.household_units.should be_empty
+    it "is not in a tsu by default" do
       person.should_not be_in_tsu
     end
 
@@ -464,22 +463,14 @@ describe Person do
 
     it "is in a tsu if the dwelling unit for the household has a tsu id" do
       du = Factory(:dwelling_unit, :ssu_id => 'ssu', :tsu_id => 'tsu')
-      hh = Factory(:household_unit)
-      dh_link = Factory(:dwelling_household_link, :dwelling_unit => du, :household_unit => hh)
-      hh_pers_link = Factory(:household_person_link, :household_unit => hh, :person => person)
-      person.household_units.should == [hh]
-      person.dwelling_units.should == [du]
+      dh_link = Factory(:dwelling_household_link, :dwelling_unit => du, :household_unit => person.household_units.first)
       person.dwelling_units.first.tsu_id.should == 'tsu'
       person.should be_in_tsu
     end
 
     it "is NOT in a tsu if the dwelling unit for the household does NOT have a tsu id" do
       du = Factory(:dwelling_unit, :ssu_id => 'ssu', :tsu_id => nil)
-      hh = Factory(:household_unit)
-      dh_link = Factory(:dwelling_household_link, :dwelling_unit => du, :household_unit => hh)
-      hh_pers_link = Factory(:household_person_link, :household_unit => hh, :person => person)
-      person.household_units.should == [hh]
-      person.dwelling_units.should == [du]
+      dh_link = Factory(:dwelling_household_link, :dwelling_unit => du, :household_unit => person.household_units.first)
       person.dwelling_units.first.tsu_id.should be_nil
       person.should_not be_in_tsu
     end
