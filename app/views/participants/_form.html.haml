@@ -40,6 +40,16 @@
     = render "shared/ncs_code_select", { :f => f, :code => :pid_age_eligibility_code, :label_text => "Age Eligibility" }
 
     %p
+      = f.label :ssu, "Secondary Sampling Unit (SSU)"
+      %br
+      = f.select(:ssu, DwellingUnit.ssus, { :include_blank => "-- Select SSU --" })
+
+    %p
+      = f.label :tsu, "Tertiary Sampling Unit (TSU)"
+      %br
+      = f.select(:tsu, DwellingUnit.tsus, { :include_blank => "-- Select TSU --" })
+
+    %p
       = f.label :pid_comment, "Comment"
       %br
       = f.text_area :pid_comment

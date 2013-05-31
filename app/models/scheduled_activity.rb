@@ -321,6 +321,7 @@ class ScheduledActivity
   end
 
   def has_non_matching_mdes_version_instrument?
+    return false if labels.blank?
     labels.include?(Instrument::INSTRUMENT_LABEL_MARKER) && instrument.blank?
   end
 

@@ -300,27 +300,11 @@ namespace :import do
     hl = HighLine.new
     date_str = hl.ask("Date to schedule reconsent ['YYYY-MM-DD']: ")
 
-    participants_unable_to_be_scheduled = []
-
     begin
       date = Date.parse(date_str)
-      expected_followed_participants_for_psc.each do |pt|
 
-        msg = "Re-consent event scheduled for #{pt.p_id}."
-
-        if pt.date_available_for_informed_consent_event?(date)
-          resp = Event.schedule_reconsent(psc, pt, date)
-          unless resp.success?
-            msg = "!!! Could not schedule informed consent for #{pt.p_id} !!!"
-            participants_unable_to_be_scheduled << pt
-          end
-        else
-          msg = "!!! Date [#{date_str}] unavailable for participant #{pt.p_id} !!!"
-          participants_unable_to_be_scheduled << pt
-        end
-        $stderr.puts(msg)
-        Rails.logger.info(msg)
-      end
+      participants_unable_to_be_scheduled = NcsNavigator::Core::ReconsentScheduler.new(
+        expected_followed_participants_for_psc, date).schedule(psc)
 
       result = "All #{expected_followed_participants_for_psc.size} participants scheduled for reconsent."
       unless participants_unable_to_be_scheduled.empty?

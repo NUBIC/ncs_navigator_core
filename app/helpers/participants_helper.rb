@@ -99,6 +99,10 @@ module ParticipantsHelper
     !participant.ineligible? && !(participant.pending_events.first.try(:event_type_code) == Event.informed_consent_code)
   end
 
+  def show_low_intensity_postnatal_scheduling_link?(participant)
+     recruitment_strategy.two_tier_knowledgable? && participant.eligible_for_low_intensity_postnatal_data_collection?
+  end
+
   def child_consent_description(consent)
     consent.consented? ? "Consent given for #{consent.description}" : "Consent not given for #{consent.description}"
   end
