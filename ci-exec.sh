@@ -15,7 +15,7 @@ fi
 
 # Feel free to bump this as new versions of bundler that work with this CI
 # script are released.
-export BUNDLER_VERSION=1.2.2
+export BUNDLER_VERSION=1.3.5
 
 set +xe
 echo "Initializing RVM"
