@@ -5,7 +5,7 @@ require 'spec_helper'
 describe OperationalDataExtractor::PbsParticipantVerification do
   include SurveyCompletion
   include NcsNavigator::Core::Surveyor::SurveyTaker
-  
+
   let(:survey) { create_pbs_part_verification_with_part_two_survey_for_m3_2 }
 
   context "child records" do
@@ -27,9 +27,10 @@ describe OperationalDataExtractor::PbsParticipantVerification do
       respond(response_set, survey) do |r|
         r.answer "CHILD_DOB", "date", :value => '01/01/2013'
       end
+
+      response_set.complete!
       response_set.save!
       response_set.responses.size.should == 1
-      OperationalDataExtractor::PbsParticipantVerification.new(response_set).extract_data
 
       mother = Person.find(@person.id)
       participant = mother.participant
