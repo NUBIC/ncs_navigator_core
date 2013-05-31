@@ -1785,6 +1785,8 @@ describe Participant do
         Factory(:participant_person_link, :person => @ineligible_person, :participant => @ineligible_participant, :relationship_code => 1)
         @eligible_participant.stub!(:hospital? => true)
         @ineligible_participant.stub!(:hospital? => true)
+        @eligible_participant.stub!(:birth_cohort? => true)
+        @ineligible_participant.stub!(:birth_cohort? => true)
 
         # ineligible questions
         negative_age_eligible_question = Factory(:question, :data_export_identifier => prefix + ".AGE_ELIG")
@@ -1815,10 +1817,16 @@ describe Participant do
         @positive_provider_in_frame_response = Factory(:response, :question => positive_provider_in_frame_question, :answer => eligible_provider_answer)
       end
 
-      context "A person is ineligible when they have" do
-        it "no responses for eligiblity questions (except provider frame questions)" do
-          @ineligible_participant.should be_ineligible
+      context "A person is not ineligible when they have" do
+        it "no responses for eligiblity questions" do
+          ppl = Factory(:participant_person_link, :relationship_code => 1)
+          not_ineligible_participant = ppl.participant
+          not_ineligible_participant.stub!(:hospital? => true)
+          not_ineligible_participant.should_not be_ineligible
         end
+      end
+
+      context "A person is ineligible when they have" do
 
         it "all ineligible responses" do
           all_ineligible_response_set = Factory(:response_set, :person => @ineligible_person)

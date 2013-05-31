@@ -18,6 +18,7 @@ module Psc
     ideal_date
     labels
     person_id
+    responsible_user
     study_segment
   ).map(&:to_sym)
 
@@ -175,6 +176,7 @@ module Psc
         a.ideal_date = row['ideal_date']
         a.labels = row['labels']
         a.person_id = row['subject']['person_id'] if row['subject']
+        a.responsible_user = row['responsible_user']
       end
     end
 
@@ -193,8 +195,12 @@ module Psc
           a.current_state = state['name']
         end
 
-        if row['assignment']
-          a.person_id = row['assignment']['id']
+        if (assign = row['assignment'])
+          a.person_id = assign['id']
+
+          if assign['subject_coordinator']
+            a.responsible_user = assign['subject_coordinator']['username']
+          end
         end
 
         a.activity_id = row['id']

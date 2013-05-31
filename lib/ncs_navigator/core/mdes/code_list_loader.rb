@@ -134,8 +134,8 @@ module NcsNavigator::Core::Mdes
         partitioned[:insert].each do |entry|
           do_update(
             %Q(
-              INSERT INTO ncs_codes (local_code, list_name, display_text, created_at)
-              VALUES (?, ?, ?, CURRENT_TIMESTAMP)
+              INSERT INTO ncs_codes (local_code, list_name, display_text, created_at, updated_at)
+              VALUES (?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
             ), %w(local_code list_name display_text).map { |k| entry[k] })
         end
 

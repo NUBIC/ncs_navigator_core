@@ -58,14 +58,14 @@ module NcsNavigator::Core::Warehouse
       }
 
       it "creates three MDES v2.0 Person records" do
-      results.count.should == 6
+        results.count.should == 6
         results.select { |r|
           NcsNavigator::Warehouse::Models::TwoPointZero::Person === r
         }.length.should == 3
       end
 
       it "creahhhes three MDES v2.0 LinkPersonProvider records" do
-      results.count.should == 6
+        results.count.should == 6
         results.select { |r|
           NcsNavigator::Warehouse::Models::TwoPointZero::LinkPersonProvider === r
         }.length.should == 3

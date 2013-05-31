@@ -34,7 +34,7 @@ class ReportsController < ApplicationController
     if request.post?
       @outfile = "case_status_report_" + Time.now.strftime("%m-%d-%Y") + ".csv"
 
-      reporter = Reporting::CaseStatusReport.new(psc,
+      reporter = Reports::CaseStatusReport.new(psc,
                   { :start_date => @start_date, :end_date => @end_date })
       csv_data = reporter.generate_report
       send_data csv_data,

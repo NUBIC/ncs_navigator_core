@@ -53,5 +53,16 @@ describe HouseholdPersonLink do
     end
   end
 
+  describe "#order_by_rank" do
+    let(:primary)   { Factory(:household_person_link, :hh_rank => NcsCode.for_list_name_and_local_code('COMMUNICATION_RANK_CL1', 1))  }
+    let(:secondary) { Factory(:household_person_link, :hh_rank => NcsCode.for_list_name_and_local_code('COMMUNICATION_RANK_CL1', 2))  }
+    let(:other)     { Factory(:household_person_link, :hh_rank => NcsCode.for_list_name_and_local_code('COMMUNICATION_RANK_CL1', -5)) }
+    let(:unordered) { [other, primary, secondary] }
+
+    it "should have primary first" do
+      HouseholdPersonLink.order_by_rank(unordered).should == [primary, secondary, other]
+    end
+  end
+
 end
 

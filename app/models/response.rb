@@ -31,6 +31,20 @@ class Response < ActiveRecord::Base
 
   default_scope includes(:answer, :question)
 
+  validate :ensure_association_integrity
+
+  ##
+  # Raise an error if the answer associated with this Response
+  # is not in the set of answers for the associated Question.
+  def ensure_association_integrity
+    if answer_id && question
+      valid_answer_ids = Answer.where(:question_id => self.question_id).map(&:id)
+      unless valid_answer_ids.include?(answer_id)
+        raise "Error: answer_id #{answer_id} not in the set of answers [#{valid_answer_ids}] for question #{question.id}"
+      end
+    end
+  end
+
   with_options(:as => :system) do |r|
     r.attr_accessible :answer, :question, :value
   end

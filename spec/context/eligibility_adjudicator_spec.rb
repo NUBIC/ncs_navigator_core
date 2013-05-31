@@ -6,7 +6,7 @@ describe EligibilityAdjudicator do
 
   context "person having taken screener" do
 
-    before do
+    before :all do
       father =      Factory(:person)
       grandparent = Factory(:person)
       @participant = Factory(:participant)
@@ -16,6 +16,8 @@ describe EligibilityAdjudicator do
       Factory(:participant_person_link, :person => father, :participant=> @participant, :relationship_code => 4)
       Factory(:participant_person_link, :person => grandparent,:participant => @participant, :relationship_code => 10)
       Factory(:ppg_detail, :participant => @participant)
+      consent = Factory(:participant_consent, :participant => @participant)
+      Factory(:participant_consent_sample, :participant => @participant, :participant_consent => consent)
       @person.participant = @participant
       @person.save!
       screener_survey = Factory(:survey, :title => "INS_QUE_PBSamplingScreen_INT_PBS_M3.0_V1.0")
@@ -56,6 +58,15 @@ describe EligibilityAdjudicator do
         SampledPersonsIneligibility.count.should == 1
       end
 
+      it "deletes consent sample records" do
+        ParticipantConsentSample.count.should == 0
+      end
+
+      it "deletes consent records" do
+        ParticipantConsent.where(:participant_id => @response_set.participant_id).all.size.should == 0
+      end
+
+
       it "deletes participant record" do
         Participant.count.should == 0
       end
@@ -92,11 +103,21 @@ describe EligibilityAdjudicator do
         SampledPersonsIneligibility.count.should == 0
       end
 
+      it "does not delete participant consent samples" do
+        consents = ParticipantConsent.where(:participant_id => @participant.id).all
+        sample_consents = consents.inject([]) { |sc, c| sc << ParticipantConsentSample.where(:participant_consent_id => c.id).all }
+        sample_consents.flatten.size.should == 1
+      end
+
+      it "does not delete participant consents" do
+        ParticipantConsent.where(:participant_id => @response_set.participant.id).count.should == 1
+      end
+
       it "does not deletes participant record" do
         Participant.count.should be 1
       end
 
-      it "adjudicates the person as eligible" do  
+      it "adjudicates the person as eligible" do
         @adjudication[:eligible].should == [@participant]
         @adjudication[:ineligible].should be_empty
       end
@@ -106,7 +127,7 @@ describe EligibilityAdjudicator do
       let(:jeff) { Factory(:participant).tap{ |p| p.stub(:ineligible? => false) } }
       let(:greg) { Factory(:participant).tap{ |p| p.stub(:ineligible? => true) } }
       let(:steve) { Factory(:participant).tap{ |p| p.stub(:ineligible? => false) } }
-      
+
       it "groups by eligiblity" do
         a = Participant.adjudicate_eligibility(jeff, steve, greg)
         a.should == {

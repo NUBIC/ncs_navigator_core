@@ -1336,14 +1336,16 @@ class Participant < ActiveRecord::Base
   ##
   # If the reference_identifier for the response associated with the
   # given data_export_identifier is "1" (true) then return true
-  # otherwise false
+  # otherwise false.
+  # If the response does not exist, the Participant is assumed eligible
+  # until determined otherwise.
   # @param[Person, nil] Person the person associated with the participant
   # @param[String] data_export_identifier for question
   # @return[Boolean]
   def eligible_for?(person, reference_identifier)
     data_export_identifier = pbs_eligibility_prefix + "." + reference_identifier
     most_recent_response = person.responses_for(data_export_identifier).last
-    most_recent_response.try(:answer).try(:reference_identifier) == "1"
+    most_recent_response.nil? ? true : most_recent_response.answer.reference_identifier.to_i == NcsCode::YES
   end
   private :eligible_for?
 

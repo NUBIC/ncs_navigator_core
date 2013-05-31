@@ -385,6 +385,13 @@ class Person < ActiveRecord::Base
   end
 
   ##
+  # Returns the highest ranked HouseholdPersonLink associated with the person or nil
+  # @return[HouseholdPersonLink]
+  def highest_ranked_household_person_link
+    HouseholdPersonLink.order_by_rank(household_person_links).first
+  end
+
+  ##
   # Returns true if a dwelling_unit has a tsu_is and this person has an association to the
   # tsu dwelling unit through their household
   # @return [true,false]

@@ -162,7 +162,8 @@ module NcsNavigator::Core::Warehouse::TwoPointOne
             WHEN t.event_end_date IS NULL
                  THEN t.event_disposition % 500
             ELSE t.event_disposition % 500 + 500
-            END) normalized_event_disposition}
+            END) normalized_event_disposition},
+        null_mdes_date('event_start')
       ],
       :where => %q{
         t.event_disposition IS NOT NULL OR
@@ -173,10 +174,11 @@ module NcsNavigator::Core::Warehouse::TwoPointOne
         :normalized_event_disposition => :event_disp,
         :event_disposition_category_code => :event_disp_cat,
         :event_incentive_cash => :event_incent_cash,
-        :event_incentive_noncash => :event_incent_noncash
+        :event_incentive_noncash => :event_incent_noncash,
+        :non_null_event_start_date => :event_start_date
       },
       :ignored_columns => %w(event_disposition scheduled_study_segment_identifier
-        psc_ideal_date lock_version imported_invalid)
+        psc_ideal_date lock_version imported_invalid event_start_date)
     )
 
     produce_one_for_one(:instruments, :Instrument,
@@ -263,7 +265,7 @@ module NcsNavigator::Core::Warehouse::TwoPointOne
 
     produce_one_for_one(:participant_consent_samples, :ParticipantConsentSample,
       :public_ids => [:participant_consents],
-      :selects    => "(SELECT participants.p_id FROM participants WHERE participants.id = pub_0.participant_id)"
+      :selects    => "(SELECT participants.p_id FROM participants WHERE participants.id = pub_0.participant_id) AS p_id"
     )
 
     produce_one_for_one(:participant_authorization_forms, :ParticipantAuth,

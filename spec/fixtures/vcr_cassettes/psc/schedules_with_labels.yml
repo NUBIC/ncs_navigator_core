@@ -1,0 +1,447 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://ncsn-psc.local/api/v1/reports/scheduled-activities.json?end-date=2011-10-30&start-date=2011-08-01
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Authorization:
+      - Basic cGZyOTU3OnBzYw==
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - application/json
+      Server:
+      - Restlet-Framework/2.0.3
+      Date:
+      - Thu, 16 May 2013 00:00:00 GMT
+      Vary:
+      - Accept-Charset, Accept-Encoding, Accept-Language, Accept
+      Accept-Ranges:
+      - bytes
+      Cache-Control:
+      - no-store, no-cache, must-revalidate, post-check=0, pre-check=0
+      Transfer-Encoding:
+      - chunked
+      Pragma:
+      - no-cache
+    body:
+      encoding: UTF-8
+      string: |-
+        {
+            "filters": {
+                "end_date": "2011-10-30",
+                "start_date": "2011-08-01"
+            },
+            "rows": [
+                {
+                    "activity_name": "Pregnancy Screener Instrument",
+                    "activity_status": "Scheduled",
+                    "activity_type": "Instrument",
+                    "grid_id": "7afb008d-2e6a-422d-8332-55c63f57ed3f",
+                    "id": "c32af1e0-3483-4a28-87b4-1b2019abc082",
+                    "ideal_date": "2011-08-29",
+                    "labels": [
+                        "event:pregnancy_screener"
+                    ],
+                    "last_change_reason": "Initialized from template",
+                    "responsible_user": "pfr957",
+                    "scheduled_date": "2011-08-29",
+                    "scheduled_study_segment": {
+                        "grid_id": "3a0e383d-e3d0-4756-ae61-4d2de92067e7",
+                        "start_date": "2011-08-29",
+                        "start_day": 1
+                    },
+                    "site": "GCSC",
+                    "study": "NCS Hi-Lo",
+                    "subject": {
+                        "grid_id": "926e62ed-0e83-4bfb-b49c-b55b0e20f7df",
+                        "name": "Ella Fitzgerald",
+                        "person_id": "test"
+                    }
+                },
+                {
+                    "activity_name": "Pregnancy Visit 1 Instrument",
+                    "activity_status": "Scheduled",
+                    "activity_type": "Instrument",
+                    "grid_id": "7afb008d-2e6a-422d-8332-55c63f57ed3f",
+                    "ideal_date": "2011-09-03",
+                    "labels": [
+                        "event:pregnancy_visit_1"
+                    ],
+                    "last_change_reason": "Bumped",
+                    "responsible_user": "abc123",
+                    "scheduled_date": "2011-10-01",
+                    "scheduled_study_segment": {
+                        "grid_id": "3a0e383d-e3d0-4756-ae61-4d2de92067e7",
+                        "start_date": "2011-08-29",
+                        "start_day": 1
+                    },
+                    "site": "GCSC",
+                    "study": "NCS Hi-Lo",
+                    "subject": {
+                        "grid_id": "926e62ed-0e83-4bfb-b49c-b55b0e20f7df",
+                        "name": "Ella Fitzgerald",
+                        "person_id": "test"
+                    }
+                }
+            ]
+        }
+    http_version: '1.1'
+  recorded_at: Thu, 16 May 2013 19:01:00 GMT
+- request:
+    method: get
+    uri: https://ncsn-psc.local/api/v1/subjects/test/schedules.json
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Authorization:
+      - Basic cGZyOTU3OnBzYw==
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - application/json
+      Server:
+      - Restlet-Framework/2.0.3
+      Date:
+      - Fri, 26 Aug 2011 18:54:05 GMT
+      Vary:
+      - Accept-Charset, Accept-Encoding, Accept-Language, Accept
+      Accept-Ranges:
+      - bytes
+      Cache-Control:
+      - no-store, no-cache, must-revalidate, post-check=0, pre-check=0
+      Transfer-Encoding:
+      - chunked
+      Pragma:
+      - no-cache
+    body:
+      encoding: UTF-8
+      string: |-
+        {
+            "days": {
+                "2011-08-29": {
+                    "activities": [
+                        {
+                            "activity": {
+                                "name": "Pregnancy Screener Instrument",
+                                "type": "Instrument"
+                            },
+                            "assignment": {
+                                "id": "todo_1314638760",
+                                "name": "NCS Hi-Lo",
+                                "privileges": [
+                                    "update"
+                                ],
+                                "subject_coordinator": {
+                                    "username": "pfr957"
+                                }
+                            },
+                            "current_state": {
+                                "date": "2011-08-29",
+                                "name": "scheduled",
+                                "reason": "Initialized from template"
+                            },
+                            "formatted_plan_day": "Day 1",
+                            "id": "c32af1e0-3483-4a28-87b4-1b2019abc082",
+                            "ideal_date": "2011-08-29",
+                            "labels": "event:pregnancy_screener",
+                            "plan_day": "1",
+                            "state_history": [
+                                {
+                                    "date": "2011-08-29",
+                                    "name": "scheduled",
+                                    "reason": "Initialized from template"
+                                }
+                            ],
+                            "study": "NCS Hi-Lo",
+                            "study_segment": "LO-Intensity: Pregnancy Screener",
+                            "subject": "Ella Fitzgerald"
+                        }
+                    ],
+                    "hidden_activities": "false"
+                },
+                "2011-10-01": {
+                    "activities": [
+                        {
+                            "activity": {
+                                "name": "Pregnancy Visit 1 Instrument",
+                                "type": "Instrument"
+                            },
+                            "assignment": {
+                                "id": "todo_1317445200",
+                                "name": "NCS Hi-Lo",
+                                "privileges": [
+                                    "update"
+                                ],
+                                "subject_coordinator": {
+                                    "username": "abc123"
+                                }
+                            },
+                            "current_state": {
+                                "date": "2011-10-01",
+                                "name": "scheduled",
+                                "reason": "Initialized from template"
+                            },
+                            "formatted_plan_day": "Day 1",
+                            "id": "7afb008d-2e6a-422d-8332-55c63f57ed3f",
+                            "ideal_date": "2011-09-03",
+                            "labels": "event:pregnancy_visit_1",
+                            "plan_day": "1",
+                            "state_history": [
+                                {
+                                    "date": "2011-09-03",
+                                    "name": "scheduled",
+                                    "reason": "Initialized from template"
+                                },
+                                {
+                                    "date": "2011-09-27",
+                                    "name": "scheduled",
+                                    "reason": "Bumped"
+                                }
+                            ],
+                            "study": "NCS Hi-Lo",
+                            "study_segment": "LO-Intensity: Pregnancy Screener",
+                            "subject": "Ella Fitzgerald"
+                        }
+                    ],
+                    "hidden_activities": "false"
+                },
+                "2011-12-01": {
+                    "activities": [
+                        {
+                            "activity": {
+                                "name": "Pregnancy Visit 1 Instrument",
+                                "type": "Instrument"
+                            },
+                            "assignment": {
+                                "id": "todo_1317445200",
+                                "name": "NCS Hi-Lo",
+                                "privileges": [
+                                    "update"
+                                ],
+                                "subject_coordinator": {
+                                    "username": "pfr957"
+                                }
+                            },
+                            "current_state": {
+                                "date": "2011-12-01",
+                                "name": "scheduled",
+                                "reason": "Initialized from template"
+                            },
+                            "formatted_plan_day": "Day 1",
+                            "id": "23f0a2c7-785b-48ab-81a7-289c4ff45543",
+                            "ideal_date": "2011-11-25",
+                            "labels": "event:pregnancy_visit_1",
+                            "plan_day": "1",
+                            "state_history": [
+                                {
+                                    "date": "2011-11-25",
+                                    "name": "scheduled",
+                                    "reason": "Initialized from template"
+                                },
+                                {
+                                    "date": "2011-11-27",
+                                    "name": "scheduled",
+                                    "reason": "Bumped"
+                                }
+                            ],
+                            "study": "NCS Hi-Lo",
+                            "study_segment": "LO-Intensity: Pregnancy Screener",
+                            "subject": "Ella Fitzgerald"
+                        }
+                    ],
+                    "hidden_activities": "false"
+                }
+            },
+            "study_segments": [
+                {
+                    "assignment": {
+                        "id": "todo_1314638760",
+                        "name": "NCS Hi-Lo",
+                        "privileges": [
+                            "update"
+                        ],
+                        "subject_coordinator": {
+                            "username": "pfr957"
+                        }
+                    },
+                    "id": "3a0e383d-e3d0-4756-ae61-4d2de92067e7",
+                    "name": "LO-Intensity: Pregnancy Screener",
+                    "planned": {
+                        "epoch": {
+                            "id": "73f6c858-4069-411a-8d82-c9d558c07d68",
+                            "name": "LO-Intensity"
+                        },
+                        "segment": {
+                            "id": "6caf9143-bfb0-47e4-b1e4-ccc810a4cbc8",
+                            "name": "Pregnancy Screener"
+                        },
+                        "study": {
+                            "assigned_identifier": "NCS Hi-Lo"
+                        }
+                    },
+                    "range": {
+                        "start_date": "2011-08-29",
+                        "stop_date": "2011-08-29"
+                    },
+                    "subject": "Ella Fitzgerald"
+                }
+            ],
+            "subject": {
+                "birth_date": "1931-08-29",
+                "first_name": "Ella",
+                "full_name": "Ella Fitzgerald",
+                "gender": "Male",
+                "last_first": "Fitzgerald, Ella",
+                "last_name": "Fitzgerald",
+                "properties": []
+            }
+        }
+    http_version: '1.1'
+  recorded_at: Thu, 10 Jan 2013 18:04:42 GMT
+- request:
+    method: get
+    uri: https://ncsn-psc.local/api/v1/reports/scheduled-activities.json?responsible-user=abc123
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Authorization:
+      - Basic cGZyOTU3OnBzYw==
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - application/json
+      Server:
+      - Restlet-Framework/2.0.3
+      Date:
+      - Thu, 16 May 2013 00:00:00 GMT
+      Vary:
+      - Accept-Charset, Accept-Encoding, Accept-Language, Accept
+      Accept-Ranges:
+      - bytes
+      Cache-Control:
+      - no-store, no-cache, must-revalidate, post-check=0, pre-check=0
+      Transfer-Encoding:
+      - chunked
+      Pragma:
+      - no-cache
+    body:
+      encoding: UTF-8
+      string: |-
+        {
+            "filters": {
+                "responsible_user": "abc123"
+            },
+            "rows": [
+                {
+                    "activity_name": "Pregnancy Visit 1 Instrument",
+                    "activity_status": "Scheduled",
+                    "activity_type": "Instrument",
+                    "grid_id": "7afb008d-2e6a-422d-8332-55c63f57ed3f",
+                    "ideal_date": "2011-09-03",
+                    "labels": [
+                        "event:pregnancy_visit_1"
+                    ],
+                    "last_change_reason": "Bumped",
+                    "responsible_user": "abc123",
+                    "scheduled_date": "2011-10-01",
+                    "scheduled_study_segment": {
+                        "grid_id": "3a0e383d-e3d0-4756-ae61-4d2de92067e7",
+                        "start_date": "2011-08-29",
+                        "start_day": 1
+                    },
+                    "site": "GCSC",
+                    "study": "NCS Hi-Lo",
+                    "subject": {
+                        "grid_id": "926e62ed-0e83-4bfb-b49c-b55b0e20f7df",
+                        "name": "Ella Fitzgerald",
+                        "person_id": "test"
+                    }
+                }
+            ]
+        }
+    http_version: '1.1'
+  recorded_at: Thu, 16 May 2013 19:01:00 GMT
+- request:
+    method: get
+    uri: https://ncsn-psc.local/api/v1/reports/scheduled-activities.json?responsible-user=pfr957
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Authorization:
+      - Basic cGZyOTU3OnBzYw==
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - application/json
+      Server:
+      - Restlet-Framework/2.0.3
+      Date:
+      - Thu, 16 May 2013 00:00:00 GMT
+      Vary:
+      - Accept-Charset, Accept-Encoding, Accept-Language, Accept
+      Accept-Ranges:
+      - bytes
+      Cache-Control:
+      - no-store, no-cache, must-revalidate, post-check=0, pre-check=0
+      Transfer-Encoding:
+      - chunked
+      Pragma:
+      - no-cache
+    body:
+      encoding: UTF-8
+      string: |-
+        {
+            "filters": {
+                "responsible_user": "pfr957"
+            },
+            "rows": [
+                {
+                    "activity_name": "Pregnancy Screener Instrument",
+                    "activity_status": "Scheduled",
+                    "activity_type": "Instrument",
+                    "grid_id": "7afb008d-2e6a-422d-8332-55c63f57ed3f",
+                    "id": "c32af1e0-3483-4a28-87b4-1b2019abc082",
+                    "ideal_date": "2011-08-29",
+                    "labels": [
+                        "event:pregnancy_screener"
+                    ],
+                    "last_change_reason": "Initialized from template",
+                    "responsible_user": "pfr957",
+                    "scheduled_date": "2011-08-29",
+                    "scheduled_study_segment": {
+                        "grid_id": "3a0e383d-e3d0-4756-ae61-4d2de92067e7",
+                        "start_date": "2011-08-29",
+                        "start_day": 1
+                    },
+                    "site": "GCSC",
+                    "study": "NCS Hi-Lo",
+                    "subject": {
+                        "grid_id": "926e62ed-0e83-4bfb-b49c-b55b0e20f7df",
+                        "name": "Ella Fitzgerald",
+                        "person_id": "test"
+                    }
+                }
+            ]
+        }
+    http_version: '1.1'
+  recorded_at: Thu, 16 May 2013 19:01:00 GMT
+recorded_with: VCR 2.4.0
