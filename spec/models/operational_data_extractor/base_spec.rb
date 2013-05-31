@@ -1300,6 +1300,7 @@ describe OperationalDataExtractor::Base do
 
     it "returns a new ppg_detail if one isn't found and the participant is not a child" do
       @ode.get_ppg_detail(@adult_participant).class.should == PpgDetail
+      @ode.get_ppg_detail(@adult_participant).should be_new_record
     end
 
     it "returns nil if a participant is a child" do
