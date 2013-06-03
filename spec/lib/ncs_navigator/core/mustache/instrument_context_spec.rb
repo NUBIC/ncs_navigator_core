@@ -383,9 +383,25 @@ module NcsNavigator::Core::Mustache
           instrument_context.babys_babies.should == "baby's"
         end
 
-        it "returns 'babies'' if multiple birth" do
+        it "returns 'babies' if multiple birth" do
           create_multiple_birth
           instrument_context.babys_babies.should == "babies'"
+        end
+      end
+
+      describe ".babys_babies_upcase" do
+        it "returns 'BABY'S' if unknown if single or multiple birth" do
+          instrument_context.babys_babies_upcase.should == "BABY'S"
+        end
+
+        it "returns 'BABY'S' if single birth" do
+          create_single_birth
+          instrument_context.babys_babies_upcase.should == "BABY'S"
+        end
+
+        it "returns 'BABIES' if multiple birth" do
+          create_multiple_birth
+          instrument_context.babys_babies_upcase.should == "BABIES'"
         end
       end
 
