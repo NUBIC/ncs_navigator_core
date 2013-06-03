@@ -64,6 +64,20 @@ module NcsNavigator::Core
           expect { checker.expected_participants }.to raise_error(/has no p_id column/)
         end
       end
+
+      describe 'without a differently-cased p_id column' do
+        before do
+          create_csv(
+            %w(P_Id),
+            %w(A400),
+            %w(B787)
+          )
+        end
+
+        it 'reads the p_ids' do
+          checker.expected_p_ids.should == %w(A400 B787)
+        end
+      end
     end
 
     describe '#expected_p_ids' do
