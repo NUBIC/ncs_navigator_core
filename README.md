@@ -8,7 +8,7 @@ for any event in the participant cycle. Also it is used to
 synchronize data between the NCS Navigator Offline [field]][] application
 and the NCS Navigator Core application.
 
-Cases extensively uses Patient Study Calendar [PSC][] to not only determine
+Cases extensively uses [Patient Study Calendar][] [PSC][] to not only determine
 the participant schedule but also to inform Cases of the structure of
 the National Children's Study [NCS][].
 
@@ -19,7 +19,8 @@ It is a Ruby on Rails application which uses Rails 3 and a PostgreSQL
 database.
 
 [field]: https://github.com/NUBIC/ncs_navigator_field
-[PSC]: https://cabig.nci.nih.gov/community/tools/PatientStudyCalendar
+[Patient Study Calendar]: https://cabig.nci.nih.gov/community/tools/PatientStudyCalendar
+[PSC]: https://github.com/NCIP/psc
 [NCS]: http://www.nationalchildrensstudy.gov/Pages/default.aspx
 
 Prerequisites
@@ -244,4 +245,4 @@ that will parse the survey syntax and load the surveys into the database.
     $ bundle exec rake setup:surveys
 
 [surveyor]: https://github.com/NUBIC/surveyor
-[ncs-instruments]: https://code.nubic.northwestern.edu/git/?p=ncs-instruments.git;a=summary
+[ncs-instruments]: https://github.com/NUBIC/ncs_navigator_instruments
