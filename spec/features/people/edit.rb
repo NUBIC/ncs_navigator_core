@@ -17,4 +17,24 @@ describe "/people/x/edit", :clean_with_truncation, :js do
     visit edit_person_path(Factory(:person, :person_dob => nil ))
     find("//label[@for='person_age']").text.should == "Age"
   end
+
+  it "allows toggling the age and age_range fields" do
+    visit edit_person_path(Factory(:person))
+    find_link('Enable Age and Age Range fields').visible?.should == true
+    find_link('Disable Age and Age Range fields').visible?.should == false
+    find("//input[@id='person_age']")['disabled'].nil?.should == false
+    find("//select[@id='person_age_range_code']")['disabled'].nil?.should == false
+
+    click_link('Enable Age and Age Range fields')
+    find_link('Enable Age and Age Range fields').visible?.should == false
+    find_link('Disable Age and Age Range fields').visible?.should == true
+    find("//input[@id='person_age']")['disabled'].nil?.should == true
+    find("//select[@id='person_age_range_code']")['disabled'].nil?.should == true
+
+    click_link('Disable Age and Age Range fields')
+    find_link('Enable Age and Age Range fields').visible?.should == true
+    find_link('Disable Age and Age Range fields').visible?.should == false
+    find("//input[@id='person_age']")['disabled'].nil?.should == false
+    find("//select[@id='person_age_range_code']")['disabled'].nil?.should == false
+  end
 end

@@ -69,11 +69,17 @@
         = f.radio_button :person_dob_modifier, :unknown
 
       %p
+        %a{ :href => "javascript:void(0);", :class => "toggle_enable_link icon_link", :id => "enable_person_dob_derivatives" }
+          Enable Age and Age Range fields
+        %a{ :href => "javascript:void(0);", :class => "toggle_disable_link icon_link", :id => "disable_person_dob_derivatives" }
+          Disable Age and Age Range fields
+
+      %p
         = f.label :age, "Age #{"(#{@person.computed_age} years from DOB)" if @person.computed_age}"
         %br
-        = f.text_field :age
+        = f.text_field :age, :class => "person_dob_derivatives", :disabled =>true
 
-      = render "shared/ncs_code_select", { :f => f, :code => :age_range_code, :label_text => "Age Range" }
+      = render "shared/ncs_code_select", { :f => f, :code => :age_range_code, :label_text => "Age Range" , :html_attrs => {:class =>"person_dob_derivatives", :disabled => true}}
 
       = render "shared/ncs_code_select", { :f => f, :code => :deceased_code, :label_text => "Deceased" }
 
