@@ -202,6 +202,7 @@ class Person < ActiveRecord::Base
       self.person_dob_date = Date.parse(dob)
     rescue
       # Date entered is unparseable
+      self.person_dob_date = nil
     end
   end
 

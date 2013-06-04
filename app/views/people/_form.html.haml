@@ -60,9 +60,9 @@
       = render "shared/ncs_code_select", { :f => f, :code => :sex_code, :label_text => "Sex" }
 
       %p
-        = f.label :person_dob_date, "Date Of Birth"
+        = f.label :person_dob, "Date Of Birth"
         %br
-        = f.text_field :person_dob_date, :class => "datepicker"
+        = f.text_field :person_dob, :class => "datepicker"
         = f.label :person_dob_modifier_refused, "Refused"
         = f.radio_button :person_dob_modifier, :refused
         = f.label :person_dob_modifier_unknown, "Unknown"

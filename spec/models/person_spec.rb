@@ -240,6 +240,17 @@ describe Person do
       pers = Person.last
       pers.date_move.should == '9777-97'
     end
+
+    it "clears person_dob_date if person_dob is not a date" do
+      pers = Factory(:person, :person_dob => '1998-05-01')
+      pers.person_dob_date.should == Date.parse('1998-05-01')
+      pers.person_dob_modifier = "refused"
+      pers.save!
+
+      pers = Person.last
+      pers.person_dob.should == '9111-91-91'
+      pers.person_dob_date.should == nil
+    end
   end
 
   describe "#computed_age" do
