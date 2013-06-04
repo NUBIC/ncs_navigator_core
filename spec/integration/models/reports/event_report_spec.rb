@@ -11,22 +11,6 @@ module Reports
     let(:rows) { report.rows }
 
     describe '#run' do
-      describe 'given event types and scheduled dates' do
-        let(:report) { EventReport.new([pv1_code], [], '[2000-01-01,2011-11-01]', psc) }
-
-        before do
-          report.run
-        end
-
-        it 'filters by scheduled date' do
-          rows.length.should == 1
-        end
-
-        it 'returns events whose scheduled date falls in the given interval' do
-          rows.map(&:scheduled_date).all? { |sd| sd.between?('2000-01-01', '2011-11-01') }.should be_true
-        end
-      end
-
       describe 'with start and end dates' do
         let(:report) { EventReport.new([], [], '[2011-08-01,2011-10-30]', psc) }
 
@@ -49,6 +33,22 @@ module Reports
 
         it 'returns events implied by the returned activities' do
           rows.should == [screener, pv1_1]
+        end
+      end
+
+      describe 'given event types and scheduled dates' do
+        let(:report) { EventReport.new([pv1_code], [], '[2000-01-01,2011-11-01]', psc) }
+
+        before do
+          report.run
+        end
+
+        it 'filters by scheduled date' do
+          rows.length.should == 1
+        end
+
+        it 'returns events whose scheduled date falls in the given interval' do
+          rows.map(&:scheduled_date).all? { |sd| sd.between?('2000-01-01', '2011-11-01') }.should be_true
         end
       end
 
