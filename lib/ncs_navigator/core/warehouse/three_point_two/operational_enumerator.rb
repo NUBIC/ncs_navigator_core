@@ -45,7 +45,16 @@ module NcsNavigator::Core::Warehouse::ThreePointTwo
     )
 
     produce_one_for_one(:people, :Person,
+      :selects =>
+        [
+         %q{(CASE
+               WHEN t.person_dob_date IS NOT NULL
+                 THEN CAST (date_part('year',age(t.person_dob_date)) AS integer)
+               ELSE t.age
+             END) computed_age}
+        ],
       :column_map => {
+        :computed_age  => :age,
         :language_code => :person_lang,
         :language_other => :person_lang_oth,
         :language_new_code => :person_lang_new,
@@ -57,7 +66,7 @@ module NcsNavigator::Core::Warehouse::ThreePointTwo
         :planned_move_code => :plan_move
       },
       :ignored_columns => %w(
-        person_dob_date date_move_date response_set_id role lock_version
+        age person_dob_date date_move_date response_set_id role lock_version
       )
     )
 

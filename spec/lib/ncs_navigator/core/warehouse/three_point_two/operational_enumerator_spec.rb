@@ -150,6 +150,30 @@ module NcsNavigator::Core::Warehouse::ThreePointTwo
         results.collect(&:first_name).should == %w(Fred Ginger)
       end
 
+      context 'without a DOB' do
+        it "maps age column from the database" do
+          p=Factory(:person, :person_id => "093kdm1", :person_dob => nil, :age => 33)
+          p[:person_dob].should == nil
+          p[:person_dob_date].should == nil
+          r=results.select{|p|p.person_id=="093kdm1"}
+          r.size.should == 1
+          r.first.age.should == '33'
+        end
+        it "maps age_range column from the database"
+      end
+
+      context 'with a DOB' do
+        it "computes age column from person_dob_date" do
+          p=Factory(:person, :person_id => "093kdm1", :person_dob => 25.years.ago.to_date.to_s(:db), :age => 23)
+          p[:person_dob].should == 25.years.ago.to_date.to_s(:db)
+          p[:person_dob_date].should == 25.years.ago.to_date
+          r=results.select{|p|p.person_id=="093kdm1"}
+          r.size.should == 1
+          r.first.age.should == '25'
+        end
+        it "computes age_range from person_dob_date"
+      end
+
       context 'with manually determined variables' do
         include_context 'mapping test'
 
