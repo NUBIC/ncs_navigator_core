@@ -22,8 +22,8 @@ module Reports
 
       parse_dates
 
-      if [data_collectors?, type_codes?, date_range?].none?
-        raise ScopeTooBroadError, 'at least one criterion must be specified'
+      if date_range.blank?
+        raise ScopeTooBroadError, 'a date range must be specified'
       end
     end
 
