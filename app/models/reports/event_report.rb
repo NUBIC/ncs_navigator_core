@@ -64,13 +64,20 @@ module Reports
       begin
         start = Time.now.to_i
 
-        @rows = if type_codes?
-                  start_with_event_types
-                elsif date_range?
-                  start_with_date_range
-                elsif data_collectors?
-                  start_with_data_collectors
-                end
+        report = Psc::ScheduledActivityReport.new(logger)
+        report.populate_from_psc(psc, date_range_as_report_filter)
+
+        set = resolve_events(report.activities)
+
+        if data_collectors?
+          select_targeted_data_collectors!(set)
+        end
+
+        if type_codes?
+          select_targeted_event_types!(set)
+        end
+
+        @rows = set
       ensure
         finish = Time.now.to_i
         logger.info "Report run took #{finish - start} seconds."
@@ -78,46 +85,6 @@ module Reports
     end
 
     private
-
-    def start_with_event_types
-      set = Event.where(:event_type_code => type_codes)
-      set = set.with_psc_data(psc)
-
-      if date_range?
-        set.select! { |e| e.scheduled_date.try(:between?, start_date, end_date) }
-      end
-
-      if data_collectors?
-        select_targeted_data_collectors!(set)
-      end
-
-      set
-    end
-
-    def start_with_date_range
-      report = Psc::ScheduledActivityReport.new(logger)
-      report.populate_from_psc(psc, date_range_as_report_filter)
-
-      set = implied_events(report.activities)
-
-      if data_collectors?
-        select_targeted_data_collectors!(set)
-      end
-
-      set
-    end
-
-    def start_with_data_collectors
-      reports = data_collectors.map do |dc|
-        Psc::ScheduledActivityReport.new(logger).tap do |r|
-          r.populate_from_psc(psc, :current_user => dc)
-        end
-      end
-
-      all_activities = reports.map { |r| r.activities.to_a }.flatten
-
-      implied_events(all_activities)
-    end
 
     def date_range?
       [start_date, end_date].any?
@@ -139,7 +106,7 @@ module Reports
       @end_date = matches[2]
     end
 
-    def implied_events(activities)
+    def resolve_events(activities)
       ideal_dates = activities.map(&:ideal_date).uniq
 
       Event.where(:psc_ideal_date => ideal_dates).each_with_object([]) do |e, arr|
@@ -150,6 +117,12 @@ module Reports
           arr << e
         end
       end
+    end
+
+    def select_targeted_event_types!(rows)
+      ets = Hash[*type_codes.zip([true].cycle).flatten]
+
+      rows.select! { |e| ets[e.event_type_code] }
     end
 
     def select_targeted_data_collectors!(rows)

@@ -50,6 +50,10 @@ module Reports
         it 'returns events whose scheduled date falls in the given interval' do
           rows.map(&:scheduled_date).all? { |sd| sd.between?('2000-01-01', '2011-11-01') }.should be_true
         end
+
+        it 'returns events whose event type is in the type code list' do
+          rows.map(&:event_type_code).should == [pv1_code]
+        end
       end
 
       describe 'with start and end dates and data collectors' do
