@@ -4,6 +4,10 @@ class EventReportRowSerializer < ActiveModel::Serializer
   attributes :participant_id, :participant_first_name, :participant_last_name
   attribute :data_collectors, :key => :data_collector_usernames
 
+  def participant_id
+    object.participant.try(:p_id)
+  end
+
   def participant_first_name
     person.try(:first_name)
   end

@@ -40,6 +40,10 @@ describe EventReportRowSerializer do
       e.participant = p
     end
 
+    it "writes the public ID of the event's participant" do
+      json['participant_id'].should == 'foo-bar-baz'
+    end
+
     it "writes the participant's given name" do
       json['participant_first_name'].should == 'Jane'
     end
