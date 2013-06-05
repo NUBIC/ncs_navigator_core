@@ -6,7 +6,7 @@ describe EligibilityAdjudicator do
 
   context "person having taken screener" do
 
-    before :all do
+    before do
       father =      Factory(:person)
       grandparent = Factory(:person)
       @participant = Factory(:participant)
