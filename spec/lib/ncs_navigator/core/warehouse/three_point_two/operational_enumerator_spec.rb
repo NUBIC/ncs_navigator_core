@@ -151,27 +151,38 @@ module NcsNavigator::Core::Warehouse::ThreePointTwo
       end
 
       context 'without a DOB' do
-        it "maps age column from the database" do
-          p=Factory(:person, :person_id => "093kdm1", :person_dob => nil, :age => 33)
+        before :each do
+          p=Factory(:person, :person_id => "093kdm1", :person_dob => nil, :age => 33, :age_range_code => 3)
           p[:person_dob].should == nil
           p[:person_dob_date].should == nil
-          r=results.select{|p|p.person_id=="093kdm1"}
-          r.size.should == 1
-          r.first.age.should == '33'
+          @r = results.select{|p|p.person_id == "093kdm1"}
+          @r.size.should == 1
         end
-        it "maps age_range column from the database"
+
+        it "maps age and age_range column from the database" do
+          @r.first.age.should == '33'
+        end
+
+        it "maps age_range column from the database" do
+          @r.first.age_range.should == '3'
+        end
       end
 
       context 'with a DOB' do
-        it "computes age column from person_dob_date" do
-          p=Factory(:person, :person_id => "093kdm1", :person_dob => 25.years.ago.to_date.to_s(:db), :age => 23)
-          p[:person_dob].should == 25.years.ago.to_date.to_s(:db)
-          p[:person_dob_date].should == 25.years.ago.to_date
-          r=results.select{|p|p.person_id=="093kdm1"}
-          r.size.should == 1
-          r.first.age.should == '25'
+        before :each do
+          p=Factory(:person, :person_id => "093kdm1", :person_dob => 24.years.ago.to_date.to_s(:db), :age => 65)
+          p[:person_dob].should == 24.years.ago.to_date.to_s(:db)
+          p[:person_dob_date].should == 24.years.ago.to_date
+          @r=results.select{|p|p.person_id=="093kdm1"}
+          @r.size.should == 1
         end
-        it "computes age_range from person_dob_date"
+        it "computes age column from person_dob_date" do
+          @r.first.age.should == '24'
+        end
+
+        it "computes age_range from person_dob_date" do
+          @r.first.age_range.should == '2'
+        end
       end
 
       context 'with manually determined variables' do
