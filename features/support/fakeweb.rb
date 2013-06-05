@@ -35,6 +35,7 @@ FakeWeb.register_uri(:post, /\/api\/v1\/studies\/(.*)\/sites\/(.*)\/subject-assi
 
 # PSC scheduled activity report
 [
+  %w(end-date=2005-07-30&start-date=2005-07-01 scheduled_activities_for_july_2005.json),
   %w(end-date=2005-07-30&responsible-user=test_user&start-date=2005-07-01&state=scheduled scheduled_activities_for_july_2005.json),
   %w(end-date=2012-03-01&responsible-user=test_user&start-date=2012-02-01&state=scheduled scheduled_activities_for_february.json),
   %w(end-date=2013-01-07&responsible-user=test_user&start-date=2013-01-01&state=scheduled scheduled_activities_2013-01-01.json),
