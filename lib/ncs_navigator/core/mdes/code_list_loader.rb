@@ -182,7 +182,12 @@ module NcsNavigator::Core::Mdes
       else
         Rails.logger.info(quoted_cmd_string(cmd))
       end
-      system(quoted_cmd_string(cmd)) or fail "load_from_pg_dump failed. See output."
+
+      if system(quoted_cmd_string(cmd))
+        Rails.logger.info("pg_restore resulted in #{NcsCode.count} NcsCode(s)")
+      else
+        fail "load_from_pg_dump failed. See output."
+      end
     end
 
     ##
