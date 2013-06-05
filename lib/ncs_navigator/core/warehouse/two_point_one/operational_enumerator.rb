@@ -261,7 +261,7 @@ module NcsNavigator::Core::Warehouse::TwoPointOne
           :public_id => :person_id,
           :public_ref => :person_wthdrw_consent_id }
       ],
-      :ignored_columns => %w(consent_reconsent_code consent_reconsent_reason_code consent_reconsent_reason_other)
+      :ignored_columns => %w(consent_reconsent_code consent_reconsent_reason_code consent_reconsent_reason_other consent_withdraw_date_date)
     )
 
     produce_one_for_one(:participant_consent_samples, :ParticipantConsentSample,
