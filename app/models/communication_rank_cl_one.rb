@@ -1,8 +1,13 @@
 # Helper methods for dealing with the COMMUNICATION_RANK_CL1 code list
 #
 module CommunicationRankCLOne
-  ORDER = [1, 2, 3, 4, -5, -4].map do |rank|
-    NcsCode.for_list_name_and_local_code('COMMUNICATION_RANK_CL1', rank)
+  ##
+  # @private
+  # TODO: if this is ever used as a mixin, use a less generic name
+  def self.order
+    @order ||= [1, 2, 3, 4, -5, -4].map do |rank|
+      NcsCode.for_list_name_and_local_code('COMMUNICATION_RANK_CL1', rank)
+    end
   end
 
   ##
@@ -13,6 +18,6 @@ module CommunicationRankCLOne
   #
   # @return[Integer]
   def self.sort_by_index(rank)
-    ORDER.include?(rank) ? ORDER.index(rank) : ORDER.size
+    order.include?(rank) ? order.index(rank) : order.size
   end
 end
