@@ -278,7 +278,8 @@ module NcsNavigator::Core::Warehouse::ThreePointOne
       :column_map => {
         :consent_reconsent_code => :consent_reconsent,
         :consent_reconsent_reason_other => :consent_reconsent_reason_oth
-      }
+      },
+      :ignored_columns => %w(consent_withdraw_date_date)
     )
 
     produce_one_for_one(:participant_consent_samples, :ParticipantConsentSample,
