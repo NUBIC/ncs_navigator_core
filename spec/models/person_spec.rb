@@ -304,6 +304,38 @@ describe Person do
     end
   end
 
+  describe "#computed_age_range" do
+    it "returns nil if person_dob_date is nil" do
+      p=Factory(:person, :person_dob => nil)
+      p[:person_dob_date].should == nil
+      p.computed_age_range.should == nil
+
+      p1=Factory(:person, :person_dob=>"9666-96-96")
+      p1[:person_dob_date].should == nil
+      p1.computed_age_range.should == nil
+    end
+
+    it "returns codes for AGE_RANGE_CL1" do
+      [[3.months, 1],
+      [3.years,   1],
+      [25.years,  3],
+      [64.years,  6],
+      [100.years, 7]].each do |(time, code)|
+        Person.new(:person_dob=>time.ago.to_date.to_s).computed_age_range.should == code
+      end
+    end
+
+    it "returns display text for AGE_RANGE_CL1" do
+      [[3.months, 'Less than 18'],
+      [3.years,   'Less than 18'],
+      [25.years,  '25-34'],
+      [64.years,  '50-64'],
+      [100.years, '65+']].each do |(time, text)|
+        Person.new(:person_dob=>time.ago.to_date.to_s).computed_age_range(true).should == text
+      end
+    end
+  end
+
   context "with events and assigned to a PPG" do
 
     describe "a person who is not a participant" do

@@ -8,14 +8,28 @@ describe "/people/x/edit", :clean_with_truncation, :js do
     capybara_login('admin_user')
   end
 
-  it "displays a computed age when an exact DOB exists" do
-    visit edit_person_path(Factory(:person, :person_dob => 10.years.ago.to_date.to_s))
-    find("//label[@for='person_age']").text.should == "Age (10 years from DOB)"
+  context "when an exact DOB exists" do
+    it "displays a computed age" do
+      visit edit_person_path(Factory(:person, :person_dob => 10.years.ago.to_date.to_s))
+      find("//label[@for='person_age']").text.should == "Age (10 years from DOB)"
+    end
+
+    it "displays a computed age range" do
+      visit edit_person_path(Factory(:person, :person_dob => 10.years.ago.to_date.to_s))
+      find("//label[@for='person_age_range_code']").text.should == "Age Range (Less than 18 years from DOB)"
+    end
   end
 
-  it "does not display a computed age when there is no exact DOB" do
-    visit edit_person_path(Factory(:person, :person_dob => nil ))
-    find("//label[@for='person_age']").text.should == "Age"
+  context "when there is no exact DOB" do
+    it "does not display a computed age" do
+      visit edit_person_path(Factory(:person, :person_dob => nil ))
+      find("//label[@for='person_age']").text.should == "Age"
+    end
+
+    it "does not display a computed age range" do
+      visit edit_person_path(Factory(:person, :person_dob => nil ))
+      find("//label[@for='person_age_range_code']").text.should == "Age Range"
+    end
   end
 
   it "allows toggling the age and age_range fields" do

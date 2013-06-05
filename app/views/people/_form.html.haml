@@ -73,13 +73,17 @@
           Enable Age and Age Range fields
         %a{ :href => "javascript:void(0);", :class => "toggle_disable_link icon_link", :id => "disable_person_dob_derivatives" }
           Disable Age and Age Range fields
+        %span{ :class => "help_icon" }
+          = render "people/person_computed_age_age_range_tooltip"
 
       %p
         = f.label :age, "Age #{"(#{@person.computed_age} years from DOB)" if @person.computed_age}"
         %br
         = f.text_field :age, :class => "person_dob_derivatives", :disabled =>true
 
-      = render "shared/ncs_code_select", { :f => f, :code => :age_range_code, :label_text => "Age Range" , :html_attrs => {:class =>"person_dob_derivatives", :disabled => true}}
+      = render "shared/ncs_code_select", { :f => f, :code => :age_range_code,
+                                           :label_text => "Age Range #{"(#{@person.computed_age_range(true)} years from DOB)" if @person.computed_age_range(true)}",
+                                           :html_attrs => {:class =>"person_dob_derivatives", :disabled => true}}
 
       = render "shared/ncs_code_select", { :f => f, :code => :deceased_code, :label_text => "Deceased" }
 
