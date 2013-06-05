@@ -188,6 +188,8 @@ module NcsNavigator::Core::Mdes
       else
         fail "load_from_pg_dump failed. See output."
       end
+
+      Rails.application.code_list_cache.reset
     end
 
     ##
