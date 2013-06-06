@@ -458,6 +458,19 @@ describe OperationalDataExtractor::Base do
         ).should == @address
       end
 
+      it "returns nil if address with the same address, type and rank exists but street name is missing" do
+        response_set, instrument = prepare_instrument(@person, @participant,
+                                                      @survey)
+        take_address_survey("", response_set)
+        @pregnancy_visit_extractor.find_address(
+          @person,
+          @work_address_map,
+          @work_address_type,
+          @primary_rank,
+          nil
+        ).should be_nil
+      end
+
       it "returns nil if it can't find one based on address content" do
         response_set, instrument = prepare_instrument(@person, @participant,
                                                       @survey)

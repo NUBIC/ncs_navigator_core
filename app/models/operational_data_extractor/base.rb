@@ -440,7 +440,9 @@ module OperationalDataExtractor
                                      address_rank, address_type_other)
       address = find_by_response_set(Address, ahash)
       by_add = ahash.merge(mapped_address_hash(map))
-      address ||= Address.where(by_add).last
+      # Don't search if street name and number missing
+      address ||= Address.where(by_add).last if by_add['address_one']
+      address
     end
 
     def find_or_create_address(person, map, address_type, address_rank, address_type_other = nil)
