@@ -2486,14 +2486,14 @@ describe Participant do
           let!(:participant_consent) {
             Factory(:participant_consent,
               :participant => participant,
-              :consent_date => early_date,
+              :consent_date => early_date.to_s,
               :consent_given_code => NcsCode::YES,
               :consent_form_type_code => pregnant_woman)
           }
           let!(:withdrawal) {
             Factory(:participant_consent,
               :participant => participant,
-              :consent_withdraw_date => late_date,
+              :consent_withdraw_date => late_date.to_s,
               :consent_given_code => NcsCode::NO,
               :consent_form_type_code => pregnant_woman)
           }
