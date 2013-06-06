@@ -81,29 +81,29 @@ module ResponseSetPrepopulation
                     has_answered_driver_license?(question)
                   when "ADDRESS_1"
                     response_type = "string_value"
-                    value = person.primary_address.try(:address_one)
+                    value = primary_residential_address(person).try(:address_one)
                     question.answers.find { |a| a.response_class == "string" }
                   when "ADDRESS_2"
                     response_type = "string_value"
-                    value = person.primary_address.try(:address_two)
+                    value = primary_residential_address(person).try(:address_two)
                     question.answers.find { |a| a.response_class == "string" }
                   when "UNIT"
                     response_type = "string_value"
-                    value = person.primary_address.try(:unit)
+                    value = primary_residential_address(person).try(:unit)
                     question.answers.find { |a| a.response_class == "string" }
                   when "CITY"
                     response_type = "string_value"
-                    value = person.primary_address.try(:city)
+                    value = primary_residential_address(person).try(:city)
                     question.answers.find { |a| a.response_class == "string" }
                   when "STATE"
-                    answer_for(question, person.primary_address.try(:state_code))
+                    answer_for(question, primary_residential_address(person).try(:state_code))
                   when "ZIP"
                     response_type = "string_value"
-                    value = person.primary_address.try(:zip)
+                    value = primary_residential_address(person).try(:zip)
                     question.answers.find { |a| a.response_class == "string" }
                   when "ZIP4"
                     response_type = "string_value"
-                    value = person.primary_address.try(:zip4)
+                    value = primary_residential_address(person).try(:zip4)
                     question.answers.find { |a| a.response_class == "string" }
                   else
                     nil
@@ -113,12 +113,17 @@ module ResponseSetPrepopulation
             build_response_for_value(response_type, response_set,
                                      question, answer, nil)
           else
-            build_response_for_value(response_type, response_set,
-                                     question, answer, value)
+            value.present? && build_response_for_value(response_type,
+                             response_set, question, answer, value)
           end
         end
       end
       response_set
+    end
+
+    def primary_residential_address(person)
+      # Primary, residential type address only
+      person.addresses.find { |a| a.address_rank_code == 1 && a.address_type_code == 1 }
     end
 
     #  PROGRAMMER INSTRUCTIONS:
@@ -153,7 +158,7 @@ module ResponseSetPrepopulation
     #   False
     #   - ALLOW INTERVIEWER TO MAKE CORRECTIONS OR ADD NEW ADDRESS INFORMATION.
     def has_address?(question)
-      answer_for(question, !person.primary_address.to_s.blank?)
+      answer_for(question, !primary_residential_address(person).to_s.blank?)
     end
 
     #  PROGRAMMER INSTRUCTIONS:
