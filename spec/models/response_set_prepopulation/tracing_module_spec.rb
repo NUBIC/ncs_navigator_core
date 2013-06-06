@@ -99,6 +99,18 @@ module ResponseSetPrepopulation
           OperationalDataExtractor::Base.process(@response_set)
         end
 
+        it "should not prepopulate ADDRESS_1 if no primary address of residential type exists" do
+          address = @person.addresses.first
+          address.address_type_code = 3 # non-residential type address
+          address.save!
+          init_instrument_and_response_set(nil,
+               :create_tracing_module_survey_with_address_operational_data)
+          TracingModule.new(@response_set).run
+          response = @response_set.responses.detect { |r|
+            r.question.try(:reference_identifier) == 'ADDRESS_1'
+          }.should be_nil
+        end
+
         it "should prepopulate ADDRESS_1 if it exists" do
           init_instrument_and_response_set(nil,
                :create_tracing_module_survey_with_address_operational_data)
