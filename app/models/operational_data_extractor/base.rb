@@ -396,7 +396,7 @@ module OperationalDataExtractor
     end
 
     def person
-      response_set.person
+      response_set.participant.try(:person) || response_set.person
     end
 
     def participant
