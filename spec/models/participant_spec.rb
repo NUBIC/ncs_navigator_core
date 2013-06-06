@@ -1796,12 +1796,13 @@ describe Participant do
         negative_provider_in_frame_question = Factory(:question, :data_export_identifier => provider_prefix + ".PROVIDER_OFFICE_ON_FRAME")
 
         # ineligible answers
-        ineligible_answer = Factory(:answer, :reference_identifier => 2)
-        ineligible_provider_answer = Factory(:answer, :reference_identifier => 1)
+        ineligible_age_answer = Factory(:answer, :reference_identifier => 2, :question => negative_age_eligible_question)
+        ineligible_psu_answer = Factory(:answer, :reference_identifier => 2, :question => negative_psu_county_eligible_question)
+        ineligible_provider_answer = Factory(:answer, :reference_identifier => 1, :question => negative_provider_in_frame_question)
 
         # ineligible responses
-        @negative_age_eligible_response = Factory(:response, :question => negative_age_eligible_question, :answer => ineligible_answer)
-        @negative_psu_county_eligible_response = Factory(:response, :question => negative_psu_county_eligible_question, :answer => ineligible_answer)
+        @negative_age_eligible_response = Factory(:response, :question => negative_age_eligible_question, :answer => ineligible_age_answer)
+        @negative_psu_county_eligible_response = Factory(:response, :question => negative_psu_county_eligible_question, :answer => ineligible_psu_answer)
         @negative_provider_in_frame_response = Factory(:response, :question => negative_provider_in_frame_question, :answer => ineligible_provider_answer)
 
         # eligible questions
@@ -1810,12 +1811,13 @@ describe Participant do
         positive_provider_in_frame_question = Factory(:question, :data_export_identifier => provider_prefix + ".PROVIDER_OFFICE_ON_FRAME")
 
         #eligible answers
-        eligible_provider_answer = Factory(:answer, :reference_identifier => 3)
-        eligible_answer   = Factory(:answer, :reference_identifier => 1)
+        eligible_provider_answer = Factory(:answer, :reference_identifier => 3, :question => positive_provider_in_frame_question)
+        eligible_age_answer = Factory(:answer, :reference_identifier => 1, :question => positive_age_eligible_question)
+        eligible_psu_answer = Factory(:answer, :reference_identifier => 1, :question => positive_psu_county_eligible_question)
 
         # eligible responses
-        @positive_age_eligible_response = Factory(:response, :question => positive_age_eligible_question, :answer => eligible_answer)
-        @positive_psu_county_eligible_response = Factory(:response, :question => positive_psu_county_eligible_question, :answer => eligible_answer)
+        @positive_age_eligible_response = Factory(:response, :question => positive_age_eligible_question, :answer => eligible_age_answer)
+        @positive_psu_county_eligible_response = Factory(:response, :question => positive_psu_county_eligible_question, :answer => eligible_psu_answer)
         @positive_provider_in_frame_response = Factory(:response, :question => positive_provider_in_frame_question, :answer => eligible_provider_answer)
       end
 
