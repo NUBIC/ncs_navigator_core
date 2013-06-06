@@ -44,29 +44,10 @@ module NcsNavigator::Core::Warehouse::ThreePointTwo
       ]
     )
 
-    age_expression = %q{CAST (date_part('year', age(t.person_dob_date)) AS integer)}
     produce_one_for_one(:people, :Person,
       :selects =>
-        [
-         %Q{(CASE
-               WHEN t.person_dob_date IS NOT NULL
-                 THEN #{age_expression}
-               ELSE t.age
-             END) computed_age},
-         %Q{(CASE
-               WHEN t.person_dob_date IS NOT NULL
-                 THEN CASE
-                   WHEN #{age_expression} < 18 THEN 1
-                   WHEN #{age_expression} < 25 THEN 2
-                   WHEN #{age_expression} < 35 THEN 3
-                   WHEN #{age_expression} < 45 THEN 4
-                   WHEN #{age_expression} < 50 THEN 5
-                   WHEN #{age_expression} < 65 THEN 6
-                   ELSE 7
-                 END
-               ELSE t.age_range_code
-             END
-           ) computed_age_range}],
+        [person_computed_age("computed_age"),
+         person_computed_age_range_code("computed_age_range")],
       :column_map => {
         :computed_age  => :age,
         :computed_age_range => :age_range,
