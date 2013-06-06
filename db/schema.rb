@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130516212715) do
+ActiveRecord::Schema.define(:version => 20130604202538) do
 
   create_table "addresses", :force => true do |t|
     t.integer  "psu_code",                                                :null => false
@@ -337,7 +337,7 @@ ActiveRecord::Schema.define(:version => 20130516212715) do
     t.integer  "age_eligible_code"
     t.string   "batch_id",                     :limit => 36, :null => false
     t.integer  "county_of_residence_code"
-    t.date     "created_at"
+    t.date     "created_at",                                 :null => false
     t.string   "date_first_visit",                           :null => false
     t.date     "date_first_visit_date",                      :null => false
     t.integer  "first_prenatal_visit_code"
@@ -350,7 +350,7 @@ ActiveRecord::Schema.define(:version => 20130516212715) do
     t.string   "provider_intro_outcome_other"
     t.integer  "psu_code",                                   :null => false
     t.integer  "sampled_person_code",                        :null => false
-    t.datetime "updated_at"
+    t.datetime "updated_at",                                 :null => false
   end
 
   create_table "institution_person_links", :force => true do |t|
@@ -622,7 +622,6 @@ ActiveRecord::Schema.define(:version => 20130516212715) do
     t.integer  "consent_withdraw_code",                                         :null => false
     t.integer  "consent_withdraw_type_code",                                    :null => false
     t.integer  "consent_withdraw_reason_code",                                  :null => false
-    t.date     "consent_withdraw_date"
     t.integer  "consent_language_code",                                         :null => false
     t.string   "consent_language_other"
     t.integer  "person_who_consented_id"
@@ -639,6 +638,8 @@ ActiveRecord::Schema.define(:version => 20130516212715) do
     t.integer  "consent_reconsent_code",                        :default => -4, :null => false
     t.integer  "consent_reconsent_reason_code",                 :default => -4, :null => false
     t.string   "consent_reconsent_reason_other"
+    t.date     "consent_withdraw_date_date"
+    t.string   "consent_withdraw_date"
   end
 
   create_table "participant_high_intensity_state_transitions", :force => true do |t|
@@ -1349,8 +1350,8 @@ ActiveRecord::Schema.define(:version => 20130516212715) do
     t.integer  "survey_id"
     t.string   "locale"
     t.text     "translation"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
   end
 
   create_table "surveys", :force => true do |t|

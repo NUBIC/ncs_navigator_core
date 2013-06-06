@@ -9,9 +9,9 @@
     = render "shared/ncs_code_select", { :f => f, :code => :consent_withdraw_reason_code, :label_text => "Withdrawn Consent Reason" }
 
     %p
-      = f.label :consent_withdraw_date, "Consent Withdrawn Date"
+      = f.label :consent_withdraw_date_date, "Consent Withdrawn Date"
       %br
-      = f.text_field :consent_withdraw_date, :class => "date"
+      = f.text_field :consent_withdraw_date_date, :class => "date"
 
     = render "shared/ncs_code_select", { :f => f, :code => :who_wthdrw_consent_code, :label_text => "Who Withdrew Consent" }
 

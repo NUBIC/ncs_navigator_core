@@ -703,8 +703,8 @@ class Participant < ActiveRecord::Base
   #
   # @return[ParticipantConsent]
   def most_recent_consent
-    sortable_consents = participant_consents.select { |c| c.consent_date || c.consent_withdraw_date }
-    sortable_consents.sort_by { |c| c.consent_date || c.consent_withdraw_date }.last
+    sortable_consents = participant_consents.select { |c| c.consent_date || c.consent_withdraw_date_date }
+    sortable_consents.sort_by { |c| c.consent_date || c.consent_withdraw_date_date }.last
   end
 
   ##

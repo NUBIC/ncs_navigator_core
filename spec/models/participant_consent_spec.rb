@@ -18,7 +18,8 @@
 #  consent_type_code               :integer          not null
 #  consent_version                 :string(9)
 #  consent_withdraw_code           :integer          not null
-#  consent_withdraw_date           :date
+#  consent_withdraw_date_date      :date
+#  consent_withdraw_date           :string
 #  consent_withdraw_reason_code    :integer          not null
 #  consent_withdraw_type_code      :integer          not null
 #  contact_id                      :integer

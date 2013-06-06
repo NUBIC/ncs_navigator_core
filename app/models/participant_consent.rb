@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # == Schema Information
-# Schema version: 20130108204723
+# Schema version: 20130604202538
 #
 # Table name: participant_consents
 #
@@ -18,7 +18,8 @@
 #  consent_type_code               :integer          not null
 #  consent_version                 :string(9)
 #  consent_withdraw_code           :integer          not null
-#  consent_withdraw_date           :date
+#  consent_withdraw_date           :string(255)
+#  consent_withdraw_date_date      :date
 #  consent_withdraw_reason_code    :integer          not null
 #  consent_withdraw_type_code      :integer          not null
 #  contact_id                      :integer
@@ -42,7 +43,8 @@
 class ParticipantConsent < ActiveRecord::Base
   include NcsNavigator::Core::Mdes::MdesRecord
   include NcsNavigator::Core::Surveyor::SurveyTaker
-  acts_as_mdes_record :public_id_field => :participant_consent_id
+  acts_as_mdes_record :public_id_field => :participant_consent_id,
+                      :date_fields => [:consent_withdraw_date]
 
   belongs_to :participant
   belongs_to :contact
