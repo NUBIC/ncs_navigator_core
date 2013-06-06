@@ -209,7 +209,7 @@ describe OperationalDataExtractor::InformedConsent do
         c.consent_withdraw.should == yes
         c.consent_withdraw_type.should == wdraw1
         c.consent_withdraw_reason.should == wdraw2
-        c.consent_withdraw_date.should == Date.parse(date)
+        c.consent_withdraw_date_date.should == Date.parse(date)
         c.who_wthdrw_consent.should == who
         c.person_wthdrw_consent.should == response_set.person
       end
