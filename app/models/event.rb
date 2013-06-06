@@ -1036,6 +1036,8 @@ class Event < ActiveRecord::Base
           "Canceling activities prior to data collection start date #{data_collection_start_date}", data_collection_start_date)
         participant.pending_events.where("event_start_date < ?", data_collection_start_date).all.each do |e|
           e.mark_out_of_window
+          e.event_end_date = data_collection_start_date
+          e.save!
         end
       end
     end
