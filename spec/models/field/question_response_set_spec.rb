@@ -7,9 +7,9 @@ module Field
     let(:group) { QuestionResponseSet.new }
     let(:q1) { Factory(:question) }
     let(:q2) { Factory(:question) }
-    let(:a1) { Factory(:answer) }
-    let(:a2) { Factory(:answer) }
-    let(:a3) { Factory(:answer) }
+    let(:a1) { Factory(:answer, :question => q1) }
+    let(:a2) { Factory(:answer, :question => q2) }
+    let(:a3) { Factory(:answer, :question => q1) }
     let(:r1) { adapt_model(Factory(:response, :question => q1, :answer => a1)) }
     let(:r1b) { adapt_model(Factory(:response, :question => q1, :answer => a3)) }
     let(:r2) { adapt_model(Factory(:response, :question => q2, :answer => a2)) }
@@ -127,7 +127,7 @@ module Field
         # responses.
         r1 = adapt_model(Factory(:response, :question => q1, :answer => a1, :api_id => 'foo'))
         rs = Factory(:response_set)
-        r2 = adapt_model(Response.new(:question => q1, :answer => a2, :api_id => 'foo', :response_set => rs))
+        r2 = adapt_model(Response.new(:question => q1, :answer => a3, :api_id => 'foo', :response_set => rs))
 
         r1.mark_for_destruction
 
