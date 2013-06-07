@@ -107,14 +107,10 @@ module NcsNavigator::Core
         end
 
         it 'does not copy created_at to the clone' do
-          in_source # prompt to create
-          sleep 1
           in_clone.created_at.should_not == in_source.created_at
         end
 
         it 'does not copy updated_at to the clone' do
-          in_source # prompt to create
-          sleep 1
           in_clone.updated_at.should_not == in_source.updated_at
         end
 
@@ -229,6 +225,10 @@ module NcsNavigator::Core
           child_q = threem_survey_child.questions.first
           threem_child1_rs.responses.create!(:question => child_q, :answer => child_q.answers.first, :unit => 'cm')
           threem_child2_rs.responses.create!(:question => child_q, :answer => child_q.answers.last, :unit => 'cm')
+
+          # Run clone in before(:all) for performance. Can't use anything in a `let` for this.
+          sleep 1 # ensure time has passed between creation and clone for each element
+          @mother_clone = cloner.clone_cases_side[mother]
         end
 
         def self.response_sets_for_survey(survey_title)
@@ -276,8 +276,9 @@ module NcsNavigator::Core
           'response_sets.first.responses.first'
         ].each do |exp|
           describe exp do
-            let(:in_source) { mother.instance_eval(exp) }
-            let(:in_clone)  { mother_clone.instance_eval(exp) }
+            # Can't use `let` when referencing info from before(:all)
+            define_method(:in_source) { mother.instance_eval(exp) }
+            define_method(:in_clone)  { @mother_clone.instance_eval(exp) }
 
             include_examples 'clone verification'
           end
@@ -291,8 +292,9 @@ module NcsNavigator::Core
           response_sets.first.responses.first.answer
         ).each do |exp|
           describe exp do
-            let(:in_source) { mother.instance_eval(exp) }
-            let(:in_clone)  { mother_clone.instance_eval(exp) }
+            # Can't use `let` when referencing info from before(:all)
+            define_method(:in_source) { mother.instance_eval(exp) }
+            define_method(:in_clone)  { @mother_clone.instance_eval(exp) }
 
             it 'is the same object' do
               in_clone.id.should == in_source.id
@@ -303,8 +305,8 @@ module NcsNavigator::Core
         it 'reuses the same cloned object when there are multiple referencing paths' do
           threem_survey_mother = Survey.where(:title => '3M Mother').first
 
-          participant_rs = mother_clone.response_sets.where(:survey_id => threem_survey_mother).first
-          instrument_rs = mother_clone.events.where(:event_type_code => 23).first.
+          participant_rs = @mother_clone.response_sets.where(:survey_id => threem_survey_mother).first
+          instrument_rs = @mother_clone.events.where(:event_type_code => 23).first.
             contact_links.first.instrument.response_sets.where(:survey_id => threem_survey_mother).first
 
           participant_rs.id.should == instrument_rs.id
