@@ -26,6 +26,9 @@ module NcsNavigator::Core::Mdes::VersionMigrations
       let!(:p6) { Factory(:participant, :p_type_code => 6) }
 
       before do
+        # N.b.: these migrations rely on the new code lists, so stubbing out
+        # the code list switch for performance is not possible here.
+
         NcsNavigator::Core::Mdes::Version.set!(migration.from)
         with_versioning do
           migration.run

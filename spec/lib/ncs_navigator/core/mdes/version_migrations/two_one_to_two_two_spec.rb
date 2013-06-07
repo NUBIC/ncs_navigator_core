@@ -26,9 +26,9 @@ module NcsNavigator::Core::Mdes::VersionMigrations
       let(:lo_intensity_survey) { create_li_preg_not_preg_main_heat_survey }
       let(:samples_survey) { create_adult_urine_specimen_status_survey }
 
-      after do
-        # restore the code list to the current version
-        NcsNavigator::Core::Mdes::CodeListLoader.new.load_from_pg_dump
+      before do
+        # skip code list updating for performance
+        NcsNavigator::Core::Mdes::CodeListLoader.any_instance.stub(:load_from_yaml)
       end
 
       context "postnatal surveys" do

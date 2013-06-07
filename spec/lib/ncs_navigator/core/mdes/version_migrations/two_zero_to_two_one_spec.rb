@@ -26,6 +26,9 @@ module NcsNavigator::Core::Mdes::VersionMigrations
       let(:survey_birth_li) { create_birth_M2_0_hcare("BIRTH_VISIT_LI") }
 
       before do
+        # Skip code list switch for performance
+        NcsNavigator::Core::Mdes::CodeListLoader.any_instance.stub(:load_from_yaml)
+
         response_set, instrument = prepare_instrument(person, participant,
                                                       survey)
         take_survey(survey, response_set) do |r|
@@ -50,11 +53,6 @@ module NcsNavigator::Core::Mdes::VersionMigrations
         with_versioning do
           migration.run
         end
-      end
-
-      after do
-        # restore the code list to the current version
-        NcsNavigator::Core::Mdes::CodeListLoader.new.load_from_pg_dump
       end
 
       describe 'for data_export_id TWELVE_MTH_MOTHER_DETAIL.HCARE_SICK' do
