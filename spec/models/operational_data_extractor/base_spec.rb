@@ -207,7 +207,7 @@ describe OperationalDataExtractor::Base do
       @survey = create_pregnancy_screener_survey_with_ppg_detail_operational_data
       @response_set, @instrument = prepare_instrument(@person, @participant, @survey)
       question = Factory(:question, :data_export_identifier => "PREG_SCREEN_HI_2.HOME_PHONE")
-      answer = Factory(:answer, :response_class => "string")
+      answer = Factory(:answer, :response_class => "string", :question => question)
       home_phone_response = Factory(:response, :string_value => "3125551212", :question => question, :answer => answer, :response_set => @response_set)
 
       @response_set.responses << home_phone_response
@@ -631,7 +631,7 @@ describe OperationalDataExtractor::Base do
       before do
         @map = OperationalDataExtractor::PbsEligibilityScreener::EMAIL_MAP
         @question = Factory(:question, :data_export_identifier => "PBS_ELIG_SCREENER.R_EMAIL")
-        @answer = Factory(:answer, :response_class => "string")
+        @answer = Factory(:answer, :question => @question, :response_class => "string")
       end
 
       it "returns an email record from the responses of am instrument" do
@@ -852,11 +852,11 @@ describe OperationalDataExtractor::Base do
       before do
         @map = OperationalDataExtractor::PbsEligibilityScreener::TELEPHONE_MAP1
         question = Factory(:question, :data_export_identifier => "PBS_ELIG_SCREENER.R_PHONE_TYPE1")
-        answer = Factory(:answer, :response_class => "string")
+        answer = Factory(:answer, :question => question, :response_class => "string")
         phone_type_response = Factory(:response, :string_value => "Home", :question => question, :answer => answer, :response_set => @response_set)
         @response_set.responses << phone_type_response
         @question = Factory(:question, :data_export_identifier => "PBS_ELIG_SCREENER.R_PHONE_1")
-        @answer = Factory(:answer, :response_class => "string")
+        @answer = Factory(:answer, :question => @question, :response_class => "string")
       end
 
       it "returns a phone record based on the responses of an instrument" do
@@ -1311,15 +1311,15 @@ describe OperationalDataExtractor::Base do
 
       describe "#process_standard_race" do
         let(:general_question) { Factory(:question, :reference_identifier => "BABY_RACE_1") }
-      let(:general_answer)   { Factory(:answer, :reference_identifier => "4", :response_class => "answer", :text => "Asian")}
+      let(:general_answer)   { Factory(:answer, :question => general_question, :reference_identifier => "4", :response_class => "answer", :text => "Asian")}
       let(:general_response) { Factory(:response, :question => general_question, :answer => general_answer)}
 
       let(:specific_asian_question) { Factory(:question, :reference_identifier => "BABY_RACE_2") }
-      let(:specific_asian_answer)   { Factory(:answer, :reference_identifier => "3", :response_class => "answer", :text => "Filipino")}
+      let(:specific_asian_answer)   { Factory(:answer, :question => specific_asian_question, :reference_identifier => "3", :response_class => "answer", :text => "Filipino")}
       let(:specific_asian_response) { Factory(:response, :question => specific_asian_question, :answer => specific_asian_answer)}
 
       let(:specific_pacific_islander_question) { Factory(:question, :reference_identifier => "BABY_RACE_3") }
-      let(:specific_pacific_islander_answer)   { Factory(:answer, :reference_identifier => "3", :response_class => "answer", :text => "Native Hawaiian")}
+      let(:specific_pacific_islander_answer)   { Factory(:answer, :question => specific_pacific_islander_question, :reference_identifier => "3", :response_class => "answer", :text => "Native Hawaiian")}
       let(:specific_pacific_islander_response) { Factory(:response, :question => specific_pacific_islander_question, :answer => specific_pacific_islander_answer)}
 
       before do
@@ -1387,7 +1387,7 @@ describe OperationalDataExtractor::Base do
 
     describe "#get_person_race" do
       let(:question) { Factory(:question) }
-      let(:answer)   { Factory(:answer, :reference_identifier => "-5",  :text => "Other")}
+      let(:answer)   { Factory(:answer, :question => question, :reference_identifier => "-5",  :text => "Other")}
       let(:response) { Factory(:response, :question => question, :answer => answer)}
 
       before do

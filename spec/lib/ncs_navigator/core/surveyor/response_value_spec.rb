@@ -19,7 +19,7 @@ module NcsNavigator::Core::Surveyor
 
   describe 'Response value accessor' do
     let(:r) { Factory(:response, :answer => a, :question => q) }
-    let(:a) { Factory(:answer) }
+    let(:a) { Factory(:answer, :question => q) }
     let(:q) { Factory(:question) }
 
     t_zulu = '2000-01-01T00:00:00Z'

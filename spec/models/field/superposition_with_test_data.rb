@@ -39,7 +39,7 @@ shared_context 'current data for superposition', :needs_superposition_current_da
   let!(:participant) { Factory(:participant, :p_id => participant_id) }
   let!(:person) { Factory(:person, :person_id => person_id) }
   let!(:question) { Factory(:question) }
-  let!(:answer) { Factory(:answer) }
+  let!(:answer) { Factory(:answer, :question => question) }
   let!(:response) { Factory(:response, :api_id => response_id, :question => question, :answer => answer) }
   let!(:response_set) { Factory(:response_set, :api_id => response_set_id) }
 
