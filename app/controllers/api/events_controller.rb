@@ -13,8 +13,4 @@ class Api::EventsController < ApiController
       render :nothing => true, :status => :bad_request
     end
   end
-
-  def default_serializer_options
-    { root: false }
-  end
 end
