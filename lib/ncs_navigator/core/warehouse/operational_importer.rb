@@ -463,19 +463,7 @@ module NcsNavigator::Core::Warehouse
           end
           core_record.send("#{core_model_association_id}=", new_association_id)
         elsif core_attribute =~ /_code$/
-          mdes_value = mdes_record.send(mdes_variable)
-          if mdes_value
-            code_attribute_name = core_attribute.sub(/_code$/, '').to_sym
-            code_attribute = core_model.ncs_coded_attributes[code_attribute_name]
-            core_code = ncs_code_object_for(mdes_value, code_attribute.list_name)
-            if core_code
-              core_record.send("#{code_attribute_name}=", core_code)
-            else
-              core_record.send("#{core_attribute}=", mdes_value)
-            end
-          else
-            core_record.send("#{core_attribute}=", mdes_record.send(mdes_variable))
-          end
+          apply_ncs_coded_attribute(core_model, mdes_record, core_record, core_attribute, mdes_variable)
         elsif core_attribute =~ /^normalized_.*_disposition$/
           # dispositions are always imported as interim
           disp = mdes_record.send(mdes_variable)
@@ -486,11 +474,31 @@ module NcsNavigator::Core::Warehouse
           core_record.send("#{core_attribute.sub(/^mdes_datetime_value_/, '')}=", mdes_record.send(mdes_variable))
         elsif core_attribute =~ /^non_null_.*_date$/
           core_record.send("#{core_attribute.sub(/^non_null_/, '')}=", mdes_record.send(mdes_variable))
+        elsif core_attribute == "computed_age"
+          core_record.send("age=", mdes_record.send(mdes_variable))
+        elsif core_attribute == "computed_age_range"
+          apply_ncs_coded_attribute(core_model, mdes_record, core_record, "age_range_code", mdes_variable)
         else
           core_record.send("#{core_attribute}=", mdes_record.send(mdes_variable))
         end
       end
       core_record
+    end
+
+    def apply_ncs_coded_attribute(core_model, mdes_record, core_record, core_attribute, mdes_variable)
+      mdes_value = mdes_record.send(mdes_variable)
+      if mdes_value
+        code_attribute_name = core_attribute.sub(/_code$/, '').to_sym
+        code_attribute = core_model.ncs_coded_attributes[code_attribute_name]
+        core_code = ncs_code_object_for(mdes_value, code_attribute.list_name)
+        if core_code
+          core_record.send("#{code_attribute_name}=", core_code)
+        else
+          core_record.send("#{core_attribute}=", mdes_value)
+        end
+      else
+        core_record.send("#{core_attribute}=", mdes_record.send(mdes_variable))
+      end
     end
 
     def resolve_failed_associations
