@@ -154,57 +154,6 @@ module ParticipantVerification
     a = Factory(:answer, :question_id => q.id, :text => "Refused", :response_class => "answer", :reference_identifier => "neg_1")
     a = Factory(:answer, :question_id => q.id, :text => "Don't know", :response_class => "answer", :reference_identifier => "neg_2")
 
-    survey
-  end
-
-  def create_participant_verification_part_two_survey_with_prepopulated_fields
-    survey = Factory(:survey, :title => "INS_QUE_ParticipantVerif_DCI_EHPBHILIPBS_M3.0_V1.0_PART_TWO",
-                     :access_code => "ins-que-participantverif-dci-ehpbhilipbs-m3-0-v1-0-part-two")
-    survey_section = Factory(:survey_section, :survey_id => survey.id)
-
-    # prepopulated_should_show_child_name
-    q = Factory(:question, :reference_identifier => "prepopulated_should_show_child_name", :survey_section_id => survey_section.id)
-    a = Factory(:answer, :question_id => q.id, :text => "TRUE", :response_class => "answer", :reference_identifier => "true")
-    a = Factory(:answer, :question_id => q.id, :text => "FALSE", :response_class => "answer", :reference_identifier => "false")
-
-    # Child First Name
-    q = Factory(:question, :reference_identifier => "C_FNAME", :data_export_identifier => "PARTICIPANT_VERIF_CHILD.C_FNAME", :survey_section_id => survey_section.id)
-    a = Factory(:answer, :question_id => q.id, :text => "First Name", :response_class => "string")
-    a = Factory(:answer, :question_id => q.id, :text => "Refused", :response_class => "answer", :reference_identifier => "neg_1")
-    a = Factory(:answer, :question_id => q.id, :text => "Don't know", :response_class => "answer", :reference_identifier => "neg_2")
-    # Child Last Name
-    q = Factory(:question, :reference_identifier => "C_LNAME", :data_export_identifier => "PARTICIPANT_VERIF_CHILD.C_LNAME", :survey_section_id => survey_section.id)
-    a = Factory(:answer, :question_id => q.id, :text => "Last Name", :response_class => "string")
-    a = Factory(:answer, :question_id => q.id, :text => "Refused", :response_class => "answer", :reference_identifier => "neg_1")
-    a = Factory(:answer, :question_id => q.id, :text => "Don't know", :response_class => "answer", :reference_identifier => "neg_2")
-
-    # prepopulated_should_show_child_dob
-    q = Factory(:question, :reference_identifier => "prepopulated_should_show_child_dob", :survey_section_id => survey_section.id)
-    a = Factory(:answer, :question_id => q.id, :text => "TRUE", :response_class => "answer", :reference_identifier => "true")
-    a = Factory(:answer, :question_id => q.id, :text => "FALSE", :response_class => "answer", :reference_identifier => "false")
-
-    # Child Date of Birth
-    q = Factory(:question, :reference_identifier => "CHILD_DOB", :data_export_identifier => "PARTICIPANT_VERIF_CHILD.CHILD_DOB", :survey_section_id => survey_section.id)
-    a = Factory(:answer, :question_id => q.id, :text => "Date of Birth", :response_class => "date")
-    a = Factory(:answer, :question_id => q.id, :text => "Refused", :response_class => "answer", :reference_identifier => "neg_1")
-    a = Factory(:answer, :question_id => q.id, :text => "Don't know", :response_class => "answer", :reference_identifier => "neg_2")
-
-    # prepopulated_should_show_child_sex
-    q = Factory(:question, :reference_identifier => "prepopulated_should_show_child_sex", :survey_section_id => survey_section.id)
-    a = Factory(:answer, :question_id => q.id, :text => "TRUE", :response_class => "answer", :reference_identifier => "true")
-    a = Factory(:answer, :question_id => q.id, :text => "FALSE", :response_class => "answer", :reference_identifier => "false")
-
-    # Child Gender
-    q = Factory(:question, :reference_identifier => "CHILD_SEX", :data_export_identifier => "PARTICIPANT_VERIF_CHILD.CHILD_SEX", :survey_section_id => survey_section.id)
-    a = Factory(:answer, :question_id => q.id, :text => "MALE", :response_class => "answer", :reference_identifier => "1")
-    a = Factory(:answer, :question_id => q.id, :text => "FEMALE", :response_class => "answer", :reference_identifier => "2")
-    a = Factory(:answer, :question_id => q.id, :text => "Refused", :response_class => "answer", :reference_identifier => "neg_1")
-    a = Factory(:answer, :question_id => q.id, :text => "Don't know", :response_class => "answer", :reference_identifier => "neg_2")
-
-    # prepopulated_first_child
-    q = Factory(:question, :reference_identifier => "prepopulated_first_child", :survey_section_id => survey_section.id)
-    a = Factory(:answer, :question_id => q.id, :text => "TRUE", :response_class => "answer", :reference_identifier => "true")
-    a = Factory(:answer, :question_id => q.id, :text => "FALSE", :response_class => "answer", :reference_identifier => "false")
 
     # prepopulated_resp_guard_previously_collected
     q = Factory(:question, :reference_identifier => "prepopulated_resp_guard_previously_collected", :survey_section_id => survey_section.id)
@@ -350,6 +299,58 @@ module ParticipantVerification
     a = Factory(:answer, :question_id => q.id, :text => "Phone", :response_class => "string")
     a = Factory(:answer, :question_id => q.id, :text => "Refused", :response_class => "answer", :reference_identifier => "neg_1")
     a = Factory(:answer, :question_id => q.id, :text => "Don't know", :response_class => "answer", :reference_identifier => "neg_2")
+
+    survey
+  end
+
+  def create_participant_verification_part_two_survey_with_prepopulated_fields
+    survey = Factory(:survey, :title => "INS_QUE_ParticipantVerif_DCI_EHPBHILIPBS_M3.0_V1.0_PART_TWO",
+                     :access_code => "ins-que-participantverif-dci-ehpbhilipbs-m3-0-v1-0-part-two")
+    survey_section = Factory(:survey_section, :survey_id => survey.id)
+
+    # prepopulated_should_show_child_name
+    q = Factory(:question, :reference_identifier => "prepopulated_should_show_child_name", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "TRUE", :response_class => "answer", :reference_identifier => "true")
+    a = Factory(:answer, :question_id => q.id, :text => "FALSE", :response_class => "answer", :reference_identifier => "false")
+
+    # Child First Name
+    q = Factory(:question, :reference_identifier => "C_FNAME", :data_export_identifier => "PARTICIPANT_VERIF_CHILD.C_FNAME", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "First Name", :response_class => "string")
+    a = Factory(:answer, :question_id => q.id, :text => "Refused", :response_class => "answer", :reference_identifier => "neg_1")
+    a = Factory(:answer, :question_id => q.id, :text => "Don't know", :response_class => "answer", :reference_identifier => "neg_2")
+    # Child Last Name
+    q = Factory(:question, :reference_identifier => "C_LNAME", :data_export_identifier => "PARTICIPANT_VERIF_CHILD.C_LNAME", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "Last Name", :response_class => "string")
+    a = Factory(:answer, :question_id => q.id, :text => "Refused", :response_class => "answer", :reference_identifier => "neg_1")
+    a = Factory(:answer, :question_id => q.id, :text => "Don't know", :response_class => "answer", :reference_identifier => "neg_2")
+
+    # prepopulated_should_show_child_dob
+    q = Factory(:question, :reference_identifier => "prepopulated_should_show_child_dob", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "TRUE", :response_class => "answer", :reference_identifier => "true")
+    a = Factory(:answer, :question_id => q.id, :text => "FALSE", :response_class => "answer", :reference_identifier => "false")
+
+    # Child Date of Birth
+    q = Factory(:question, :reference_identifier => "CHILD_DOB", :data_export_identifier => "PARTICIPANT_VERIF_CHILD.CHILD_DOB", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "Date of Birth", :response_class => "date")
+    a = Factory(:answer, :question_id => q.id, :text => "Refused", :response_class => "answer", :reference_identifier => "neg_1")
+    a = Factory(:answer, :question_id => q.id, :text => "Don't know", :response_class => "answer", :reference_identifier => "neg_2")
+
+    # prepopulated_should_show_child_sex
+    q = Factory(:question, :reference_identifier => "prepopulated_should_show_child_sex", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "TRUE", :response_class => "answer", :reference_identifier => "true")
+    a = Factory(:answer, :question_id => q.id, :text => "FALSE", :response_class => "answer", :reference_identifier => "false")
+
+    # Child Gender
+    q = Factory(:question, :reference_identifier => "CHILD_SEX", :data_export_identifier => "PARTICIPANT_VERIF_CHILD.CHILD_SEX", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "MALE", :response_class => "answer", :reference_identifier => "1")
+    a = Factory(:answer, :question_id => q.id, :text => "FEMALE", :response_class => "answer", :reference_identifier => "2")
+    a = Factory(:answer, :question_id => q.id, :text => "Refused", :response_class => "answer", :reference_identifier => "neg_1")
+    a = Factory(:answer, :question_id => q.id, :text => "Don't know", :response_class => "answer", :reference_identifier => "neg_2")
+
+    # prepopulated_first_child
+    q = Factory(:question, :reference_identifier => "prepopulated_first_child", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "TRUE", :response_class => "answer", :reference_identifier => "true")
+    a = Factory(:answer, :question_id => q.id, :text => "FALSE", :response_class => "answer", :reference_identifier => "false")
 
     survey
   end
