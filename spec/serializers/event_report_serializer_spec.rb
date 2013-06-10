@@ -3,7 +3,8 @@ require 'spec_helper'
 describe EventReportSerializer do
   let(:rep) { stub(:rows => [e]) }
   let(:e) { Event.new }
-  let(:serializer) { EventReportSerializer.new(rep) }
+  let(:host) { 'www.example.edu' }
+  let(:serializer) { EventReportSerializer.new(rep, :url_options => { :host => host }) }
   let(:json) { JSON.parse(serializer.to_json) }
 
   it 'generates one row per event' do
@@ -30,8 +31,13 @@ describe EventReportSerializer do
     end
 
     describe 'with a participant' do
+      # A bit overkill.  If you know how to isolate just the routing bits
+      # without an explosion of test setup, be my guest.
+      include RSpec::Rails::RoutingExampleGroup
+
+      let(:p) { Factory(:participant, :p_id => 'foo-bar-baz') }
+
       before do
-        p = Factory(:participant, :p_id => 'foo-bar-baz')
         pe = Factory(:person, :first_name => 'Jane', :last_name => 'Smith')
         p.person = pe
         e.participant = p
@@ -47,6 +53,12 @@ describe EventReportSerializer do
 
       it "writes the participant's surname" do
         row['participant_last_name'].should == 'Smith'
+      end
+
+      it "generates a link to the participant's page" do
+        participant_link = row['links'].detect { |l| l['rel'] == 'participant' }
+
+        participant_link['href'].should == participant_url('foo-bar-baz', :host => host)
       end
     end
 
