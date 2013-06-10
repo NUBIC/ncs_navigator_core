@@ -46,6 +46,7 @@ describe OperationalDataExtractor::PostNatal do
       @person = Factory(:person)
       @participant = Factory(:participant)
       @participant.person = @person
+      @participant.save!
       @survey = create_six_month_mother_int_mother_detail_survey_with_operational_data
     end
 
@@ -72,6 +73,7 @@ describe OperationalDataExtractor::PostNatal do
       @person = Factory(:person)
       @participant = Factory(:participant)
       @participant.person = @person
+      @participant.save!
       @survey = create_six_month_mother_int_mother_detail_survey_with_operational_data
     end
 
