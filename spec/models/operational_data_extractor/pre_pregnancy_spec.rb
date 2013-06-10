@@ -51,6 +51,8 @@ describe OperationalDataExtractor::PrePregnancy do
 
     person = Factory(:person)
     participant = Factory(:participant)
+    participant.person = person
+    participant.save!
     person.telephones.size.should == 0
 
     survey = create_pre_pregnancy_survey_with_telephone_operational_data
@@ -82,6 +84,8 @@ describe OperationalDataExtractor::PrePregnancy do
   it "extracts email operational data from the survey responses" do
     person = Factory(:person)
     participant = Factory(:participant)
+    participant.person = person
+    participant.save!
     person.telephones.size.should == 0
 
     email = Factory(:email, :email => "asdf@asdf.asdf", :email_type_code => 1, :person => person)
