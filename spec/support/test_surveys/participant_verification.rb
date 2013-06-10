@@ -154,7 +154,6 @@ module ParticipantVerification
     a = Factory(:answer, :question_id => q.id, :text => "Refused", :response_class => "answer", :reference_identifier => "neg_1")
     a = Factory(:answer, :question_id => q.id, :text => "Don't know", :response_class => "answer", :reference_identifier => "neg_2")
 
-
     # prepopulated_resp_guard_previously_collected
     q = Factory(:question, :reference_identifier => "prepopulated_resp_guard_previously_collected", :survey_section_id => survey_section.id)
     a = Factory(:answer, :question_id => q.id, :text => "TRUE", :response_class => "answer", :reference_identifier => "true")
@@ -300,6 +299,17 @@ module ParticipantVerification
     a = Factory(:answer, :question_id => q.id, :text => "Refused", :response_class => "answer", :reference_identifier => "neg_1")
     a = Factory(:answer, :question_id => q.id, :text => "Don't know", :response_class => "answer", :reference_identifier => "neg_2")
 
+    # prepopulated_resp_relationship_previously_collected
+    q = Factory(:question, :reference_identifier => "prepopulated_resp_relationship_previously_collected", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "TRUE", :response_class => "answer", :reference_identifier => "true")
+    a = Factory(:answer, :question_id => q.id, :text => "FALSE", :response_class => "answer", :reference_identifier => "false")
+
+    # Respondent Relationship
+    q = Factory(:question, :reference_identifier => "RESP_REL_NEW", :data_export_identifier => "PARTICIPANT_VERIF.RESP_REL_NEW", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "BIOLOGICAL (OR BIRTH) MOTHER", :response_class => "answer", :reference_identifier => "1")
+    a = Factory(:answer, :question_id => q.id, :text => "REFUSED", :response_class => "answer", :reference_identifier => "neg_1")
+    a = Factory(:answer, :question_id => q.id, :text => "DON'T KNOW", :response_class => "answer", :reference_identifier => "neg_2")
+    
     survey
   end
 
