@@ -3,6 +3,7 @@ class EventReportRowSerializer < ActiveModel::Serializer
   attributes :event_id, :scheduled_date
   attributes :participant_id, :participant_first_name, :participant_last_name
   attribute :data_collectors, :key => :data_collector_usernames
+  attribute :links
 
   def participant_id
     object.participant.try(:p_id)
@@ -26,11 +27,19 @@ class EventReportRowSerializer < ActiveModel::Serializer
         disposition: o.disposition_code.try(:disposition)
       }
 
-      h['links'] = []
+      h['links'] = links
     end
   end
 
   private
+
+  def links
+    [].tap do |a|
+      if participant_id
+        a << { 'rel' => 'participant', 'href' => participant_url(participant_id) }
+      end
+    end
+  end
 
   def person
     object.participant.try(:person)
