@@ -150,6 +150,45 @@ module NcsNavigator::Core::Warehouse::TwoPointOne
         results.collect(&:first_name).should == %w(Fred Ginger)
       end
 
+      context 'without a DOB' do
+        before :each do
+          @p=Factory(:person, :person_id => "093kdm1", :person_dob => nil, :age => 33, :age_range_code => 3)
+          @p[:person_dob].should == nil
+          @p[:person_dob_date].should == nil
+          @r = results.select{|p|p.person_id == "093kdm1"}
+          @r.size.should == 1
+        end
+
+        it "maps age and age_range column from the database" do
+          @r.first.age.should == '33'
+          @p.computed_age.should == nil
+        end
+
+        it "maps age_range column from the database" do
+          @r.first.age_range.should == '3'
+          @p.computed_age_range.should == nil
+        end
+      end
+
+      context 'with a DOB' do
+        before :each do
+          @p=Factory(:person, :person_id => "093kdm1", :person_dob => 24.years.ago.to_date.to_s, :age => 65)
+          @p[:person_dob].should == 24.years.ago.to_date.to_s
+          @p[:person_dob_date].should == 24.years.ago.to_date
+          @r=results.select{|p|p.person_id=="093kdm1"}
+          @r.size.should == 1
+        end
+        it "computes age column from person_dob_date" do
+          @r.first.age.should == '24'
+          @r.first.age.should == @p.computed_age.to_s
+        end
+
+        it "computes age_range from person_dob_date" do
+          @r.first.age_range.should == '2'
+          @r.first.age_range.should == @p.computed_age_range.to_s
+        end
+      end
+
       context 'with manually determined variables' do
         include_context 'mapping test'
 
