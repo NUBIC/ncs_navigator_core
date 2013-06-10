@@ -21,10 +21,6 @@ shared_context 'event-PSC linkage' do
     Factory(:event, :psc_ideal_date => '2011-09-03', :event_type_code => pv1_code, :participant => participant)
   end
 
-  let!(:pv1_2) do
-    Factory(:event, :psc_ideal_date => '2011-11-25', :event_type_code => pv1_code, :participant => participant)
-  end
-
   let(:person) { Factory(:person, :person_id => 'test') }
   let(:participant) { Factory(:participant) }
 
