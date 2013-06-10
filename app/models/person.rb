@@ -146,6 +146,27 @@ class Person < ActiveRecord::Base
     now.year - dob.year - offset
   end
 
+  # @note see AGE_RANGE_CL1, this must be maintained with the operational enumerator
+  def computed_age_range(display_text=false)
+    c=computed_age
+    code=case
+      when c.nil? then nil
+      when c < 18 then 1
+      when c < 25 then 2
+      when c < 35 then 3
+      when c < 45 then 4
+      when c < 50 then 5
+      when c < 65 then 6
+      else             7
+    end
+
+    if !display_text || code.nil?
+        return code
+    end
+
+    NcsCode.ncs_code_lookup(:age_range_code).find{|c|c[1]==code}[0]
+  end
+
   ##
   # Display text from the NcsCode list GENDER_CL1
   # cf. sex belongs_to association
@@ -202,6 +223,7 @@ class Person < ActiveRecord::Base
       self.person_dob_date = Date.parse(dob)
     rescue
       # Date entered is unparseable
+      self.person_dob_date = nil
     end
   end
 

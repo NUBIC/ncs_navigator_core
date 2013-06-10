@@ -56,3 +56,6 @@ en:
         definition: "The number of days that listing/sampling will be conducted within each sampled week."
       sampling_notes:
         definition: "Description of any unusual sampling items that occur for the provider (Such as open 6 vs. 5 days a week)."
+    person:
+      computed_age_age_range:
+        definition: "If an exact DOB is given Age and Age Range will be computed for data submission. The fields should only be filled in manually in situations where an exact DOB is not provided"
