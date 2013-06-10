@@ -442,6 +442,32 @@ module ResponseSetPrepopulation
 
       end
 
+      describe "prepopulated_resp_relationship_previously_collected" do
+
+        it "is FALSE if there is no previous RESP_REL_NEW response" do
+          run_populator
+          assert_response_value(@response_set_pt1, "prepopulated_resp_relationship_previously_collected", "FALSE")
+        end
+
+        it "is TRUE if RESP_REL_NEW is 1..12" do
+          init_instrument_and_response_set_pt1
+          take_survey(survey_pt1, @response_set_pt1) do |r|
+            r.a "PARTICIPANT_VERIF.RESP_REL_NEW", mock(NcsCode, :local_code => 1)
+          end
+          run_populator
+          assert_response_value(@response_set_pt1, "prepopulated_resp_relationship_previously_collected", "TRUE")
+        end
+
+        it "is FALSE if RESP_REL_NEW is not 1..12" do
+          init_instrument_and_response_set_pt1
+          take_survey(survey_pt1, @response_set_pt1) do |r|
+            r.a "PARTICIPANT_VERIF.RESP_REL_NEW", mock(NcsCode, :local_code => -2)
+          end
+          run_populator
+          assert_response_value(@response_set_pt1, "prepopulated_resp_relationship_previously_collected", "FALSE")
+        end
+
+      end
     end
 
     context "with participant verification instrument part two" do
