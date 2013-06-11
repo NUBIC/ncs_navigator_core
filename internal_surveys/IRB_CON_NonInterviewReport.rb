@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-survey "IRB_CON_NonInterviewReport", :instrument_type => "-5", :description => "Non Interview Report", :instrument_version => "1.0" do
+survey "IRB_CON_NonInterviewReport", :default_mandatory => false, :instrument_type => "-5", :description => "Non Interview Report", :instrument_version => "1.0" do
   section "Non Interview Report" do
 
     # Should this be anything other than REFUSAL ?
