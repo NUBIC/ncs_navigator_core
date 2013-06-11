@@ -15,15 +15,16 @@
 .page_section
   %h3
     Enter information about the Visit
-  %p
-    - if rvis = @contact_link.contact.participant_visit_record
-      = link_to "Update Participant Record of Visit (RVIS)",
-        edit_participant_visit_record_path(rvis, :contact_link_id => @contact_link.id),
-        :class => "edit_link icon_link"
-    - else
-      = link_to "Create Participant Record of Visit (RVIS)",
-        new_participant_visit_record_path(:contact_link_id => @contact_link.id),
-        :class => "add_link icon_link"
+  - if mdes_version_is_before?(3.0)
+    %p
+      - if rvis = @contact_link.contact.participant_visit_record
+        = link_to "Update Participant Record of Visit (RVIS)",
+          edit_participant_visit_record_path(rvis, :contact_link_id => @contact_link.id),
+          :class => "edit_link icon_link"
+      - else
+        = link_to "Create Participant Record of Visit (RVIS)",
+          new_participant_visit_record_path(:contact_link_id => @contact_link.id),
+          :class => "add_link icon_link"
 
   - if ParticipantVisitConsent.visit_information_sheet_presented?(@event)
     %p
