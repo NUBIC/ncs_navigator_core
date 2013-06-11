@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # == Schema Information
-# Schema version: 20130408184301
+# Schema version: 20130516212715
 #
 # Table name: participants
 #
@@ -23,12 +23,14 @@
 #  pid_entry_code            :integer          not null
 #  pid_entry_other           :string(255)
 #  psu_code                  :integer          not null
+#  ssu                       :string(255)
 #  status_info_date          :date
 #  status_info_mode_code     :integer          not null
 #  status_info_mode_other    :string(255)
 #  status_info_source_code   :integer          not null
 #  status_info_source_other  :string(255)
 #  transaction_type          :string(36)
+#  tsu                       :string(255)
 #  updated_at                :datetime
 #
 
@@ -1785,6 +1787,8 @@ describe Participant do
         Factory(:participant_person_link, :person => @ineligible_person, :participant => @ineligible_participant, :relationship_code => 1)
         @eligible_participant.stub!(:hospital? => true)
         @ineligible_participant.stub!(:hospital? => true)
+        @eligible_participant.stub!(:birth_cohort? => true)
+        @ineligible_participant.stub!(:birth_cohort? => true)
 
         # ineligible questions
         negative_age_eligible_question = Factory(:question, :data_export_identifier => prefix + ".AGE_ELIG")
@@ -1815,10 +1819,16 @@ describe Participant do
         @positive_provider_in_frame_response = Factory(:response, :question => positive_provider_in_frame_question, :answer => eligible_provider_answer)
       end
 
-      context "A person is ineligible when they have" do
-        it "no responses for eligiblity questions (except provider frame questions)" do
-          @ineligible_participant.should be_ineligible
+      context "A person is not ineligible when they have" do
+        it "no responses for eligiblity questions" do
+          ppl = Factory(:participant_person_link, :relationship_code => 1)
+          not_ineligible_participant = ppl.participant
+          not_ineligible_participant.stub!(:hospital? => true)
+          not_ineligible_participant.should_not be_ineligible
         end
+      end
+
+      context "A person is ineligible when they have" do
 
         it "all ineligible responses" do
           all_ineligible_response_set = Factory(:response_set, :person => @ineligible_person)
@@ -2476,14 +2486,14 @@ describe Participant do
           let!(:participant_consent) {
             Factory(:participant_consent,
               :participant => participant,
-              :consent_date => early_date,
+              :consent_date => early_date.to_s,
               :consent_given_code => NcsCode::YES,
               :consent_form_type_code => pregnant_woman)
           }
           let!(:withdrawal) {
             Factory(:participant_consent,
               :participant => participant,
-              :consent_withdraw_date => late_date,
+              :consent_withdraw_date => late_date.to_s,
               :consent_given_code => NcsCode::NO,
               :consent_form_type_code => pregnant_woman)
           }

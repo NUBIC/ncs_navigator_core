@@ -66,6 +66,8 @@ describe OperationalDataExtractor::TracingModule do
     person.addresses.size.should == 0
 
     participant = Factory(:participant)
+    participant.person = person
+    participant.save!
     survey = create_tracing_module_survey_with_address_operational_data
     response_set, instrument = prepare_instrument(person, participant, survey)
     response_set.save!
@@ -101,6 +103,8 @@ describe OperationalDataExtractor::TracingModule do
     person.addresses.size.should == 0
 
     participant = Factory(:participant)
+    participant.person = person
+    participant.save!
     survey = create_tracing_module_survey_with_new_address_operational_data
     response_set, instrument = prepare_instrument(person, participant, survey)
     response_set.save!
@@ -138,6 +142,8 @@ describe OperationalDataExtractor::TracingModule do
       @person.telephones.size.should == 0
 
       @participant = Factory(:participant)
+      @participant.person = @person
+      @participant.save!
       @survey = create_tracing_module_survey_with_telephone_operational_data
     end
 
@@ -175,6 +181,8 @@ describe OperationalDataExtractor::TracingModule do
     person.emails.size.should == 0
 
     participant = Factory(:participant)
+    participant.person = person
+    participant.save!
     survey = create_tracing_module_survey_with_email_operational_data
     response_set, instrument = prepare_instrument(person, participant, survey)
     response_set.save!

@@ -37,10 +37,9 @@ describe OperationalDataExtractor::ParticipantVerification do
         r.a "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_CHILD_PREFIX}.CHILD_SEX", @female
       end
 
-      response_set.responses.reload
+      response_set.complete!
+      response_set.save!
       response_set.responses.size.should == 4
-
-      OperationalDataExtractor::ParticipantVerification.new(response_set).extract_data
 
       mother = Person.find(@person.id)
       participant = mother.participant
@@ -167,6 +166,7 @@ describe OperationalDataExtractor::ParticipantVerification do
       @person = Factory(:person, :first_name => nil, :last_name => nil, :middle_name => nil, :person_dob => nil)
       @participant = Factory(:participant)
       @participant.person = @person
+      @participant.save!
     end
 
     it "extracts person operational data from the survey responses" do

@@ -58,5 +58,9 @@ class HouseholdUnit < ActiveRecord::Base
   has_many :dwelling_units, :through => :dwelling_household_links
 
   accepts_nested_attributes_for :household_person_links, :allow_destroy => true
+
+  def highest_ranked_dwelling_household_link
+    DwellingHouseholdLink.order_by_rank(dwelling_household_links).first
+  end
 end
 

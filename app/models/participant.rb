@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # == Schema Information
-# Schema version: 20130408184301
+# Schema version: 20130516212715
 #
 # Table name: participants
 #
@@ -23,12 +23,14 @@
 #  pid_entry_code            :integer          not null
 #  pid_entry_other           :string(255)
 #  psu_code                  :integer          not null
+#  ssu                       :string(255)
 #  status_info_date          :date
 #  status_info_mode_code     :integer          not null
 #  status_info_mode_other    :string(255)
 #  status_info_source_code   :integer          not null
 #  status_info_source_other  :string(255)
 #  transaction_type          :string(36)
+#  tsu                       :string(255)
 #  updated_at                :datetime
 #
 
@@ -164,6 +166,10 @@ class Participant < ActiveRecord::Base
       transition [:moved_to_high_intensity_arm] => :following_low_intensity
     end
 
+    event :start_low_intensity_postnatal_data_collection do
+      transition [:in_pregnancy_probability_group, :consented_low_intensity, :pregnant_low, :following_low_intensity, :postnatal] => :postnatal
+    end
+
   end
 
   ##
@@ -222,13 +228,12 @@ class Participant < ActiveRecord::Base
     end
 
     event :birth_event do
-      transition [:pregnancy_one, :pregnancy_two, :ready_for_birth] => :parenthood
+      transition [:in_high_intensity_arm, :pregnancy_one, :pregnancy_two, :ready_for_birth] => :parenthood
     end
 
     event :birth_cohort do
       transition :converted_high_intensity => :ready_for_birth
     end
-
   end
 
   ##
@@ -279,7 +284,11 @@ class Participant < ActiveRecord::Base
     when 2
       non_pregnant_informed_consent!
     else
-      follow!
+      if has_children?
+        birth_event!
+      else
+        follow!
+      end
     end
   end
 
@@ -348,6 +357,8 @@ class Participant < ActiveRecord::Base
      ParticipantPersonLink.create(:participant_id => child_participant.id, :person_id => self.person.id, :relationship_code => 2)
      # 8 - Child, associating mother participant with its child - ParticipantPersonRelationship
      ParticipantPersonLink.create(:participant_id => self.id, :person_id => child.id, :relationship_code => 8)
+     # join child to mothers household
+     HouseholdPersonLink.create(:household_unit_id => self.person.find_or_create_household_unit.id, :person_id => child.id)
      child_participant
   end
 
@@ -613,9 +624,9 @@ class Participant < ActiveRecord::Base
       0
     when pregnancy_two?
       60.days
-    when followed?, in_pregnancy_probability_group?, following_low_intensity?, postnatal?
+    when followed?, in_pregnancy_probability_group?, following_low_intensity?
       follow_up_interval
-    when in_pregnant_state?
+    when in_pregnant_state?, postnatal?
       due_date ? 1.day : 0
     else
       0
@@ -692,8 +703,8 @@ class Participant < ActiveRecord::Base
   #
   # @return[ParticipantConsent]
   def most_recent_consent
-    sortable_consents = participant_consents.select { |c| c.consent_date || c.consent_withdraw_date }
-    sortable_consents.sort_by { |c| c.consent_date || c.consent_withdraw_date }.last
+    sortable_consents = participant_consents.select { |c| c.consent_date || c.consent_withdraw_date_date }
+    sortable_consents.sort_by { |c| c.consent_date || c.consent_withdraw_date_date }.last
   end
 
   ##
@@ -840,6 +851,11 @@ class Participant < ActiveRecord::Base
     self.save!
   end
 
+  def nullify_pending_events!(psc, reason = "Pending event has been deleted.")
+    self.pending_events.each { |e| e.cancel_and_close_or_delete!(psc, reason) }
+  end
+
+
   ##
   # Consenting to the study does the following things
   # 1. update the enrollment status for the participant
@@ -977,6 +993,7 @@ class Participant < ActiveRecord::Base
   ##
   # True if the participant state is in one of the initial states
   # i.e. not updated from an action in the study
+  # @return [true,false]
   def new_participant_in_study?
     (converted_high_intensity? || pending? || registered?)
   end
@@ -1029,9 +1046,19 @@ class Participant < ActiveRecord::Base
   end
 
   ##
-  # True if a participant in the low_intensity arm has a ppg status of pregnant or trying and is in tsu
-  def eligible_for_high_intensity_invitation?
-    low_intensity? && pregnant_or_trying? && in_tsu? && completed_event?(NcsCode.low_intensity_data_collection)
+  # True if participant is in low intensity arm, is in the postnatal
+  # state, and has children
+  # @see #low_intensity?
+  # @see #postnatal?
+  # @see #has_children?
+  # @return [true,false]
+  def eligible_for_low_intensity_postnatal_data_collection?
+    low_intensity? && postnatal? && has_children?
+  end
+
+  def move_to_low_intensity_postnatal
+    start_low_intensity_postnatal_data_collection!
+    destroy_pending_events
   end
 
   ##
@@ -1334,14 +1361,16 @@ class Participant < ActiveRecord::Base
   ##
   # If the reference_identifier for the response associated with the
   # given data_export_identifier is "1" (true) then return true
-  # otherwise false
+  # otherwise false.
+  # If the response does not exist, the Participant is assumed eligible
+  # until determined otherwise.
   # @param[Person, nil] Person the person associated with the participant
   # @param[String] data_export_identifier for question
   # @return[Boolean]
   def eligible_for?(person, reference_identifier)
     data_export_identifier = pbs_eligibility_prefix + "." + reference_identifier
     most_recent_response = person.responses_for(data_export_identifier).last
-    most_recent_response.try(:answer).try(:reference_identifier) == "1"
+    most_recent_response.nil? ? true : most_recent_response.answer.reference_identifier.to_i == NcsCode::YES
   end
   private :eligible_for?
 
@@ -1444,7 +1473,7 @@ class Participant < ActiveRecord::Base
     end
 
     def eligible_for_ppg_follow_up?
-      return false if ppg_status.nil?
+      return false if ppg_status.nil? || postnatal?
       status_codes = [3,4]
       status_codes << 2 if consented_to_high_intensity_arm? || following_high_intensity? || pre_pregnancy?
       status_codes.include?(ppg_status.local_code)
@@ -1528,7 +1557,7 @@ class Participant < ActiveRecord::Base
     end
 
     def next_event_is_birth?
-      pregnant_low? || ready_for_birth?
+      pregnant_low? || ready_for_birth? || postnatal?
     end
 
     def in_pregnant_state?
@@ -1547,7 +1576,9 @@ class Participant < ActiveRecord::Base
     # @see Participant#pending_events
     # @see ActiveRecord::Base#destroy
     def destroy_pending_events
-      pending_events.each { |e| e.destroy if e.contact_links.blank? }
+      pending_events.each do |e|
+        e.destroy if e.contact_links.blank?
+      end
     end
 
     def set_switch_arm_state(hi_intensity)

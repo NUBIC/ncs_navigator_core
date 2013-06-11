@@ -160,6 +160,7 @@ Then /^the response body satisfies the (.+) schema$/ do |schema|
   fn = case schema
        when 'providers'; 'providers_schema.json'
        when 'code lists'; 'code_lists_schema.json'
+       when 'event search'; 'events_schema.json'
        when 'fieldwork'; 'fieldwork_schema.json'
        else raise %Q{Cannot map "#{schema}" to a schema filename}
        end

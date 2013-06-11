@@ -24,6 +24,20 @@
 
 }
 
+.participant_header_information {
+  padding: 0.25em;
+
+  .participant_name {
+    padding-right: 1em;
+    font-size: 1.5em;
+  }
+  .participant_data_point {
+    font-size: 1em;
+    border-left: 1px solid #ccc;
+    padding: 0 1em 0 1em;
+  }
+}
+
 .participant_contacts {
   .event {
     @include rounded-corners(0.5em);

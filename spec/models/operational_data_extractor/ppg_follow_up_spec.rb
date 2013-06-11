@@ -170,6 +170,8 @@ describe OperationalDataExtractor::PpgFollowUp do
 
     person = Factory(:person)
     participant = Factory(:participant)
+    participant.person = person
+    participant.save!
     person.telephones.size.should == 0
 
     survey = create_follow_up_survey_with_telephone_operational_data
@@ -203,6 +205,8 @@ describe OperationalDataExtractor::PpgFollowUp do
 
     person = Factory(:person)
     participant = Factory(:participant)
+    participant.person = person
+    participant.save!
     email = Factory(:email, :email => "asdf@asdf.asdf", :person => person)
 
     person.telephones.size.should == 0
@@ -238,7 +242,7 @@ describe OperationalDataExtractor::PpgFollowUp do
     person = Person.find(person.id)
 
     extracted_emails = person.emails.all
-    extracted_emails.size == 2
+    extracted_emails.size.should == 2
 
     extracted_email_addresses = []
     extracted_emails.each { |email| extracted_email_addresses << email.email }

@@ -6,7 +6,8 @@ class ParticipantsController < ApplicationController
   layout proc { |controller| controller.request.xhr? ? nil : 'application'  }
 
   permit Role::SYSTEM_ADMINISTRATOR, Role::USER_ADMINISTRATOR, Role::ADMINISTRATIVE_STAFF, Role::STAFF_SUPERVISOR ,
-         :only => [:edit_ppg_status, :update_ppg_status, :enroll, :unenroll, :remove_from_active_followup, :current_workflow]
+         :only => [:edit_ppg_status, :update_ppg_status, :enroll, :unenroll, :remove_from_active_followup, :current_workflow,
+                   :cancel_pending_events, :nullify_pending_events]
 
   before_filter :load_participant, :except => [:index, :in_ppg_group, :new, :create]
   ##
@@ -183,6 +184,51 @@ class ParticipantsController < ApplicationController
     schedule_consent_event('Child Consent', :schedule_child_consent_six_month_to_age_of_majority, params[:date])
   end
 
+  def low_intensity_postnatal_scheduler
+    if @participant.eligible_for_low_intensity_postnatal_data_collection?
+      @birth_date = @participant.children.map(&:person_dob).min
+    else
+      msg = "Participant is in not eligible to schedule Low Intensity Postnatal data collection. Please complete the Low Intensity Birth Event."
+      redirect_to(participant_path(@participant), :flash => { :warning => msg } )
+    end
+  end
+
+  ##
+  # Schedule the Child: Low Intensity Child Segment in PSC with the
+  # ideal date of the Child's Date of Birth
+  # @see Event.schedule_low_intensity_postnatal
+  def schedule_low_intensity_postnatal
+    msg = 'Could not schedule Expanded Low Intensity Postnatal segment.'
+    flash_type = :warning
+
+    begin
+      date = Date.parse(params[:date_of_birth])
+      data_collection_start_date = Date.parse(params[:data_collection_start_date])
+
+      if @participant.move_to_low_intensity_postnatal
+        resp = Event.schedule_low_intensity_postnatal(psc, @participant, date, data_collection_start_date)
+        if resp.success?
+          msg = "Expanded Low Intensity Postnatal segment scheduled for Participant."
+          flash_type = :notice
+        end
+      else
+        msg += " Participant was not able to be moved to that segment."
+      end
+
+    rescue ArgumentError => e
+      if e.message == "invalid date"
+        # if date cannot be parsed do not allow user to schedule the informed consent event
+        msg += " Date provided for child date of birth [#{params[:date_of_birth]}] or data collection start date [#{params[:data_collection_start_date]}] was invalid. Please choose another date."
+      else
+        # otherwise show the problem to the user
+        msg += " Error: #{e.message}"
+      end
+    end
+
+    redirect_to(participant_path(@participant), :flash => { flash_type => msg } )
+
+  end
+
   ##
   # Private method to help the scheduling of the different types of
   # standalone consent events. This will schedule the event for the
@@ -260,6 +306,15 @@ class ParticipantsController < ApplicationController
 
   # GET /participants/1/edit
   def edit
+    # set ssu/tsu defaults for a participant
+    if @participant.person
+      if @participant.ssu.blank?
+        @participant.ssu = @participant.person.ssu_ids.first
+      end
+      if @participant.tsu.blank?
+        @participant.tsu = @participant.person.tsu_ids.first
+      end
+    end
   end
 
   def update
@@ -337,6 +392,18 @@ class ParticipantsController < ApplicationController
     url = params[:redirect_to] unless params[:redirect_to].blank?
 
     redirect_to(url, :notice => "Participant is no longer being actively followed in the study.")
+  end
+
+  def cancel_pending_events
+  end
+
+  def nullify_pending_events
+    @participant.nullify_pending_events!(psc, params[:reason])
+
+    url = participant_path(@participant)
+    url = params[:redirect_to] unless params[:redirect_to].blank?
+
+    redirect_to(url, :notice => "All pending events canceled.")
   end
 
   ##

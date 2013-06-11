@@ -6,12 +6,12 @@ module EligibilityAdjudicator
   module ClassMethods
     # Elibilility can be adjudicated for one or more participants and then ineligible
     # participants are disqualified from the study. See usage below:
-    # 
+    #
     # Participant.adjudicate_eligibility_and_disqualify_ineligible(
     # => participant1, participant2, participant3)
     #
     # @param [*Participant]
-    # @return [Hash] Participants grouped by eligibility. 
+    # @return [Hash] Participants grouped by eligibility.
     # => ex. {:eligible => [participant1, participant3], :ineligible => [participant2]}
     def adjudicate_eligibility_and_disqualify_ineligible(*participants)
       adjudicate_eligibility(*participants).tap do |adj|
@@ -44,6 +44,8 @@ module EligibilityAdjudicator
           delete_participant_person_links(p)
           disassociates_participant_from_all_events(p)
           disassociates_participant_from_response_sets(p)
+          delete_participant_consent_samples(p)
+          delete_participant_consents(p)
           remove_participant(p)
         end
       end
@@ -70,6 +72,14 @@ module EligibilityAdjudicator
 
     def disassociates_participant_from_response_sets(participant)
       participant.response_sets.each { |rs| rs.update_attribute(:participant_id, nil) }
+    end
+
+    def delete_participant_consent_samples(participant)
+      participant.participant_consents.each { |c| c.participant_consent_samples.destroy_all }
+    end
+
+    def delete_participant_consents(participant)
+      participant.participant_consents.destroy_all
     end
 
     def remove_participant(participant)

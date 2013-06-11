@@ -23,7 +23,7 @@ class WelcomeController < ApplicationController
   end
 
   def overdue_activities
-    criteria = { :end_date => 1.day.ago.to_date.to_s }
+    criteria = { :end_date => 1.day.ago.to_date.to_s, :state => Psc::ScheduledActivity::SCHEDULED }
     @scheduled_activities = Psc::ScheduledActivityCollection.from_report(
         psc.scheduled_activities_report(criteria)).sort_by{ |sa| sa.activity_date }
     if params[:export] && @scheduled_activities
@@ -53,6 +53,8 @@ class WelcomeController < ApplicationController
     person = Person.create(:psu_code => @psu_code)
     participant = Participant.create(:psu_code => @psu_code)
     participant.person = person
+    household = HouseholdUnit.create!
+    HouseholdPersonLink.create!(:person => person, :household_unit => household)
     participant.save!
 
     resp = psc.assign_subject(participant)
@@ -72,6 +74,8 @@ class WelcomeController < ApplicationController
     else
       participant = Participant.create(:psu_code => @psu_code)
       participant.person = person
+      household = HouseholdUnit.create!
+      HouseholdPersonLink.create!(:person => person, :household_unit => household)
       participant.save!
       resp = psc.assign_subject(participant)
       if resp && resp.status.to_i < 299
@@ -127,7 +131,7 @@ class WelcomeController < ApplicationController
       @end_date = Date.parse(params[:end_date]) unless params[:end_date].nil?
       @start_date = 1.day.ago.to_date if @start_date.nil?
       @end_date   = 6.weeks.from_now.to_date if @end_date.nil?
-      criteria = { :start_date => @start_date, :end_date => @end_date, :current_user => nil }
+      criteria = { :start_date => @start_date, :end_date => @end_date, :state => Psc::ScheduledActivity::SCHEDULED }
       criteria.merge!(options) if options
 
       psc.scheduled_activities_report(criteria)

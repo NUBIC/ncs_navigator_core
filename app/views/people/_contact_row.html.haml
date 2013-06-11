@@ -1,0 +1,32 @@
+- cls = cycle('even_record', 'odd_record')
+%tr{ :class => cls }
+  %td
+    = contact.contact_type
+  %td
+    = link_to contact.contact_date, edit_contact_link_contact_path(contact_link, contact), :class => "show_link icon_link"
+  %td
+    = contact.contact_start_time
+  %td
+    = contact.contact_end_time
+  %td
+    - disposition = DispositionMapper.disposition_text_for_contact(contact)
+    = disposition.nil? ? contact.contact_disposition : disposition
+  %td
+    -if @person != contact_link.person
+      = @person.relationship_to_person_via_participant(contact_link.person)
+  %td
+    - if contact.open? && event.try(:open?)
+      - link_text = contact.contact_date.blank? ? "Continue Contact" : "Continue Contact on #{contact.contact_date}"
+      = link_to link_text, decision_page_contact_link_path(contact_link), :class => "continue_link icon_link"
+- unless contact.contact_comment.blank?
+  %tr{ :class => "comment_#{cls} #{cls}"  }
+    %td{ :colspan => 7 }
+      = blank_safe(contact.contact_comment, 'No comment')
+- unless contact.non_interview_reports.blank?
+  %tr{ :class => "comment_#{cls} #{cls}"  }
+    %td{ :colspan => 7 }
+      %b
+        Non-Interview Reports
+      - contact.non_interview_reports.each do |nir|
+        = link_to "#{nir.nir_type_person}", edit_non_interview_report_path(nir, :contact_link_id => contact_link.id),
+          :class => "edit_link icon_link", :title => nir.nir

@@ -17,6 +17,7 @@ module NcsNavigator
     autoload :Psc,                        'ncs_navigator/core/psc'
     autoload :PscRegistrationProcessor,   'ncs_navigator/core/psc_registration_processor'
     autoload :RecordOfContactImporter,    'ncs_navigator/core/record_of_contact_importer'
+    autoload :ReconsentScheduler,         'ncs_navigator/core/reconsent_scheduler'
     autoload :RedisConfiguration,         'ncs_navigator/core/redis_configuration'
     autoload :SidekiqConfiguration,       'ncs_navigator/core/sidekiq_configuration'
     autoload :StatusChecks,               'ncs_navigator/core/status_checks'

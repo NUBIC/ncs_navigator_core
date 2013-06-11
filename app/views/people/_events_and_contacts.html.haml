@@ -6,10 +6,28 @@
       - sort_by_started_at(@events_and_contacts).each do |row|
         -if row.is_a?(ContactLink)
           - contact = row.contact
-          %div.event{ :style => "padding:0.5em;"}
-            = link_to contact.contact_type, edit_contact_link_contact_path(row, contact), :class => "edit_link icon_link"
-            = contact.contact_date
-            = DispositionMapper.disposition_text_for_contact(contact)
+          .event
+            .header
+              %span.type
+                Contact without Event
+            .contact_link
+              %table.records
+                %tr
+                  %th
+                    Type
+                  %th
+                    Date
+                  %th
+                    Start
+                  %th
+                    End
+                  %th
+                    Disposition
+                  %th
+                    Relationship
+                  %th
+                    Continue
+                = render "people/contact_row", :contact => contact, :event => nil, :contact_link => row
         - else
           - event = row
           - event_name = event.to_s
@@ -66,35 +84,4 @@
                       Continue
                   - event.contact_links.map(&:contact).uniq.sort_by { |c| c.contact_date.to_s }.each do |contact|
                     - cl = contact.contact_links.where(:event_id => event.id).first
-                    - cls = cycle('even_record', 'odd_record')
-                    %tr{ :class => cls }
-                      %td
-                        = contact.contact_type
-                      %td
-                        = link_to contact.contact_date, edit_contact_link_contact_path(cl, contact), :class => "show_link icon_link"
-                      %td
-                        = contact.contact_start_time
-                      %td
-                        = contact.contact_end_time
-                      %td
-                        = DispositionMapper.disposition_text_for_contact(contact)
-                      %td
-                        -if @person != cl.person
-                          = @person.relationship_to_person_via_participant(cl.person)
-                      %td
-                        - if contact.open? && event.open?
-                          - link_text = contact.contact_date.blank? ? "Continue Contact" : "Continue Contact on #{contact.contact_date}"
-                          = link_to link_text, decision_page_contact_link_path(cl),
-                            :class => "continue_link icon_link"
-                    - unless contact.contact_comment.blank?
-                      %tr{ :class => "comment_#{cls} #{cls}"  }
-                        %td{ :colspan => 7 }
-                          = blank_safe(contact.contact_comment, 'No comment')
-                    - unless contact.non_interview_reports.blank?
-                      %tr{ :class => "comment_#{cls} #{cls}"  }
-                        %td{ :colspan => 7 }
-                          %b
-                            Non-Interview Reports
-                          - contact.non_interview_reports.each do |nir|
-                            = link_to "#{nir.nir_type_person}", edit_non_interview_report_path(nir, :contact_link_id => cl.id),
-                              :class => "edit_link icon_link", :title => nir.nir
+                    = render "people/contact_row", :contact => contact, :event => event, :contact_link => cl

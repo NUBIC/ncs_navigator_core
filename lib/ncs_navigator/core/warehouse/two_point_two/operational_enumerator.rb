@@ -44,7 +44,12 @@ module NcsNavigator::Core::Warehouse::TwoPointTwo
     )
 
     produce_one_for_one(:people, :Person,
+      :selects =>
+        [person_computed_age("computed_age"),
+         person_computed_age_range_code("computed_age_range")],
       :column_map => {
+        :computed_age  => :age,
+        :computed_age_range => :age_range,
         :language_code => :person_lang,
         :language_other => :person_lang_oth,
         :marital_status_code => :maristat,
@@ -54,7 +59,7 @@ module NcsNavigator::Core::Warehouse::TwoPointTwo
         :planned_move_code => :plan_move
       },
       :ignored_columns => %w(
-        person_dob_date date_move_date response_set_id role
+        age age_range_code person_dob_date date_move_date response_set_id role
         language_new_code language_new_other lock_version
       )
     )
@@ -79,6 +84,7 @@ module NcsNavigator::Core::Warehouse::TwoPointTwo
       :ignored_columns => %w(
         person_id high_intensity low_intensity_state high_intensity_state
         enrollment_status_comment being_followed lock_version
+        ssu tsu
       )
     )
 
@@ -259,7 +265,7 @@ module NcsNavigator::Core::Warehouse::TwoPointTwo
           :public_id => :person_id,
           :public_ref => :person_wthdrw_consent_id }
       ],
-      :ignored_columns => %w(consent_reconsent_code consent_reconsent_reason_code consent_reconsent_reason_other)
+      :ignored_columns => %w(consent_reconsent_code consent_reconsent_reason_code consent_reconsent_reason_other consent_withdraw_date_date)
     )
 
     produce_one_for_one(:participant_consent_samples, :ParticipantConsentSample,

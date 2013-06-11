@@ -146,6 +146,27 @@ class Person < ActiveRecord::Base
     now.year - dob.year - offset
   end
 
+  # @note see AGE_RANGE_CL1, this must be maintained with the operational enumerator
+  def computed_age_range(display_text=false)
+    c=computed_age
+    code=case
+      when c.nil? then nil
+      when c < 18 then 1
+      when c < 25 then 2
+      when c < 35 then 3
+      when c < 45 then 4
+      when c < 50 then 5
+      when c < 65 then 6
+      else             7
+    end
+
+    if !display_text || code.nil?
+        return code
+    end
+
+    NcsCode.ncs_code_lookup(:age_range_code).find{|c|c[1]==code}[0]
+  end
+
   ##
   # Display text from the NcsCode list GENDER_CL1
   # cf. sex belongs_to association
@@ -202,6 +223,7 @@ class Person < ActiveRecord::Base
       self.person_dob_date = Date.parse(dob)
     rescue
       # Date entered is unparseable
+      self.person_dob_date = nil
     end
   end
 
@@ -364,18 +386,58 @@ class Person < ActiveRecord::Base
   end
 
   ##
-  # Returns all DwellingUnits associated with the person's household units
-  # @return[Array<DwellingUnit]
-  def dwelling_units
-    household_units.collect(&:dwelling_units).flatten
+  # Return the first HouseholdUnit associated with this Person record.
+  # If one does not exist create one.
+  # @return [HouseholdUnit]
+  def find_or_create_household_unit
+    if household_units.blank?
+      hu = HouseholdUnit.create!
+      HouseholdPersonLink.create!(:person => self, :household_unit => hu, :hh_rank_code => 1)
+    else
+      hu = household_units.first
+    end
+    return hu
   end
 
   ##
-  # Returns true if a dwelling_unit has a tsu_is and this person has an association to the
-  # tsu dwelling unit through their household
+  # Returns all DwellingUnits associated with the person's household units
+  # @return[Array<DwellingUnit]
+  def dwelling_units
+    (household_units.collect(&:dwelling_units).flatten.compact +
+      addresses.collect(&:dwelling_unit).flatten.compact).uniq
+  end
+
+  ##
+  # Returns the highest ranked HouseholdPersonLink associated with the person or nil
+  # @return[HouseholdPersonLink]
+  def highest_ranked_household_person_link
+    HouseholdPersonLink.order_by_rank(household_person_links).first
+  end
+
+  ##
+  # Returns all tsu_ids associated with the Person
+  # either through the household_unit or address association
+  # @return[Array<String]
+  def tsu_ids
+    dwelling_units.map(&:tsu_id).compact.uniq
+  end
+
+  ##
+  # Returns all tsu_ids associated with the Person
+  # either through the household_unit or address association
+  # @return[Array<String]
+  def ssu_ids
+    dwelling_units.map(&:ssu_id).compact.uniq
+  end
+
+  ##
+  # Returns true if a dwelling_unit has a tsu_id and
+  # this person has an association to the
+  # tsu dwelling unit either through their household_unit
+  # or address association
   # @return [true,false]
   def in_tsu?
-    dwelling_units.map(&:tsu_id).compact.size > 0
+    tsu_ids.size > 0
   end
 
   ##

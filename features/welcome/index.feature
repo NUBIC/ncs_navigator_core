@@ -23,7 +23,8 @@ Feature: Accessing the application
     And I should see "Reports"
     And I should see "Case Status Report"
     And I should see "Upcoming Birth Report"
-    And I should see "Consented Participants"
+    # --- Consented Participants report is being reworked
+    # And I should see "Consented Participants"
 
 
 @javascript

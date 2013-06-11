@@ -43,6 +43,11 @@ module ApplicationHelper
     str.blank? ? default : str
   end
 
+  def blank_safe_ncs_code(code, default = "___")
+    str = code.try(:local_code) == -4 ? nil : code.try(:display_text)
+    blank_safe(str, default)
+  end
+
   def nil_safe(str, default = "___")
     str.nil? ? str.inspect : blank_safe(str, default)
   end

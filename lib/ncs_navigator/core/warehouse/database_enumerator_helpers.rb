@@ -88,5 +88,34 @@ module NcsNavigator::Core::Warehouse
     def mdes_datetime_column_alias(col)
       "mdes_datetime_value_#{col}"
     end
+
+    def person_age_expression
+      %Q{CAST (date_part('year', age(t.person_dob_date)) AS integer)}
+    end
+
+    def person_computed_age(name)
+      %Q{(CASE
+            WHEN t.person_dob_date IS NOT NULL
+              THEN #{person_age_expression}
+            ELSE t.age
+          END) #{name}}
+    end
+
+    def person_computed_age_range_code(name)
+      %Q{(CASE
+            WHEN t.person_dob_date IS NOT NULL
+              THEN CASE
+                WHEN #{person_age_expression} < 18 THEN 1
+                WHEN #{person_age_expression} < 25 THEN 2
+                WHEN #{person_age_expression} < 35 THEN 3
+                WHEN #{person_age_expression} < 45 THEN 4
+                WHEN #{person_age_expression} < 50 THEN 5
+                WHEN #{person_age_expression} < 65 THEN 6
+                ELSE 7
+              END
+            ELSE t.age_range_code
+          END
+        ) #{name}}
+    end
   end
 end
