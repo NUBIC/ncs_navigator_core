@@ -204,6 +204,7 @@ describe OperationalDataExtractor::Base do
       @person = Factory(:person)
       @person.household_units << Factory(:household_unit)
       @participant = Factory(:participant)
+      @participant.person = @person
       @survey = create_pregnancy_screener_survey_with_ppg_detail_operational_data
       @response_set, @instrument = prepare_instrument(@person, @participant, @survey)
       question = Factory(:question, :data_export_identifier => "PREG_SCREEN_HI_2.HOME_PHONE")
@@ -254,32 +255,47 @@ describe OperationalDataExtractor::Base do
     before do
       @person = Factory(:person)
       @person.household_units << Factory(:household_unit)
+      @participant = Factory(:participant)
+      @participant.person = @person
       @rs = Factory(:response_set)
       @rs.person = @person
+      @rs.participant = @participant
       @base_extractor = OperationalDataExtractor::Base.new(@rs)
     end
 
     describe "#finalize_addresses" do
       before do
-        @existing_business_address = Factory(:address, :address_rank_code => 1, :address_type_code => 2)
-        @existing_school_address   = Factory(:address, :address_rank_code => 1, :address_type_code => 3)
-        @person.addresses = [@existing_business_address, @existing_school_address]
+        @existing_business_address = Factory(:address, :address_rank_code => 1, :address_type_code => 2,
+                                             :person => @person)
+        @existing_school_address   = Factory(:address, :address_rank_code => 1, :address_type_code => 3,
+                                             :person => @person)
       end
 
-      it "only demotes existing address in favor of new addresses of the same type" do
-        @new_home_address = Factory(:address, :address_rank_code => 1, :address_type_code => 1)
-        @new_school_address   = Factory(:address, :address_rank_code => 1, :address_type_code => 3)
-        @base_extractor.finalize_addresses(@new_home_address, @new_school_address)
-        @existing_business_address.address_rank_code.should == 1
-        @existing_school_address.address_rank_code.should   == 2
+      it "only demotes address of the person associated with the instrument and not the event/contact" do
+        child = Factory(:person)
+        cparticipant = Factory(:participant)
+        cparticipant.person = child
+        @rs.participant = cparticipant
+        @rs.save
+        base_extractor = OperationalDataExtractor::Base.new(@rs)
+        child_school_address = Factory(:address, :address_rank_code => 1, :address_type_code => 3,
+                                          :person => child)
+        new_child_school_address = Address.new(:address_rank_code => 1, :address_type_code => 3,
+                                                :person => child, :address_one => 'Test')
+
+        base_extractor.finalize_addresses(new_child_school_address)
+        @existing_business_address.reload.address_rank_code.should == 1
+        @existing_school_address.reload.address_rank_code.should   == 1
+        child_school_address.reload.address_rank_code.should       == 2
+        new_child_school_address.reload.address_rank_code.should   == 1
       end
 
       it "only demotes if changed address of primary rank" do
         @new_business_address = Factory(:address, :address_rank_code => 2, :address_type_code => 2)
-        @new_school_address   = Factory(:address, :address_rank_code => 1, :address_type_code => 3)
+        @new_school_address = Factory(:address, :address_rank_code => 1, :address_type_code => 3)
         @base_extractor.finalize_addresses(@new_business_address, @new_school_address)
-        @existing_business_address.address_rank_code.should == 1
-        @existing_school_address.address_rank_code.should   == 2
+        @existing_business_address.reload.address_rank_code.should == 1
+        @existing_school_address.reload.address_rank_code.should   == 2
       end
     end
 
@@ -442,6 +458,19 @@ describe OperationalDataExtractor::Base do
         ).should == @address
       end
 
+      it "returns nil if address with the same address, type and rank exists but street name is missing" do
+        response_set, instrument = prepare_instrument(@person, @participant,
+                                                      @survey)
+        take_address_survey("", response_set)
+        @pregnancy_visit_extractor.find_address(
+          @person,
+          @work_address_map,
+          @work_address_type,
+          @primary_rank,
+          nil
+        ).should be_nil
+      end
+
       it "returns nil if it can't find one based on address content" do
         response_set, instrument = prepare_instrument(@person, @participant,
                                                       @survey)
@@ -592,6 +621,8 @@ describe OperationalDataExtractor::Base do
       @person = Factory(:person)
       @survey = create_pbs_eligibility_screener_survey_with_email_operational_data
       @participant = Factory(:participant)
+      @participant.person = @person
+      @participant.save!
       @response_set, @instrument = prepare_instrument(@person, @participant, @survey)
       @personal_email_type_code = NcsCode.for_list_name_and_local_code('EMAIL_TYPE_CL1', 1)
       @work_email_type_code = NcsCode.for_list_name_and_local_code('EMAIL_TYPE_CL1', 2)
@@ -766,6 +797,7 @@ describe OperationalDataExtractor::Base do
       @person = Factory(:person)
       @survey = create_pbs_eligibility_screener_survey_with_telephone_operational_data
       @participant = Factory(:participant)
+      @part_person_link = Factory(:participant_person_link, :participant => @participant, :person => @person)
       @primary_rank = NcsCode.for_list_name_and_local_code('COMMUNICATION_RANK_CL1', 1)
       @secondary_rank = NcsCode.for_list_name_and_local_code('COMMUNICATION_RANK_CL1', 2)
       @response_set, @instrument = prepare_instrument(@person, @participant, @survey)

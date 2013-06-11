@@ -166,6 +166,7 @@ describe OperationalDataExtractor::ParticipantVerification do
       @person = Factory(:person, :first_name => nil, :last_name => nil, :middle_name => nil, :person_dob => nil)
       @participant = Factory(:participant)
       @participant.person = @person
+      @participant.save!
     end
 
     it "extracts person operational data from the survey responses" do

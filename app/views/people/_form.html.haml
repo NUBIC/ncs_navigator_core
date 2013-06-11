@@ -60,20 +60,30 @@
       = render "shared/ncs_code_select", { :f => f, :code => :sex_code, :label_text => "Sex" }
 
       %p
-        = f.label :age, "Age"
+        = f.label :person_dob, "Date Of Birth"
         %br
-        = f.text_field :age
-
-      = render "shared/ncs_code_select", { :f => f, :code => :age_range_code, :label_text => "Age Range" }
-
-      %p
-        = f.label :person_dob_date, "Date Of Birth"
-        %br
-        = f.text_field :person_dob_date, :class => "datepicker"
+        = f.text_field :person_dob, :class => "datepicker"
         = f.label :person_dob_modifier_refused, "Refused"
         = f.radio_button :person_dob_modifier, :refused
         = f.label :person_dob_modifier_unknown, "Unknown"
         = f.radio_button :person_dob_modifier, :unknown
+
+      %p
+        %a{ :href => "javascript:void(0);", :class => "toggle_enable_link icon_link", :id => "enable_person_dob_derivatives" }
+          Enable Age and Age Range fields
+        %a{ :href => "javascript:void(0);", :class => "toggle_disable_link icon_link", :id => "disable_person_dob_derivatives" }
+          Disable Age and Age Range fields
+        %span{ :class => "help_icon" }
+          = render "people/person_computed_age_age_range_tooltip"
+
+      %p
+        = f.label :age, "Age #{"(#{@person.computed_age} years from DOB)" if @person.computed_age}"
+        %br
+        = f.text_field :age, :class => "person_dob_derivatives", :disabled =>true
+
+      = render "shared/ncs_code_select", { :f => f, :code => :age_range_code,
+                                           :label_text => "Age Range #{"(#{@person.computed_age_range(true)} years from DOB)" if @person.computed_age_range(true)}",
+                                           :html_attrs => {:class =>"person_dob_derivatives", :disabled => true}}
 
       = render "shared/ncs_code_select", { :f => f, :code => :deceased_code, :label_text => "Deceased" }
 
