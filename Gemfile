@@ -64,6 +64,7 @@ gem 'redis'
 group :development do
   gem 'capistrano'
   gem 'debugger'
+  gem 'awesome_print'
 end
 
 group :osx_development do
@@ -92,6 +93,7 @@ group :development, :test, :ci do
   gem 'perftools.rb'
 
   gem 'ci_reporter'
+  gem 'pry'
 end
 
 group :test, :ci do
