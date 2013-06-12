@@ -500,22 +500,20 @@ describe Person do
 
     describe "#dwelling_units" do
 
-      describe "without associated addresses or household_units" do
+      describe "without associated addresses" do
         before do
           person.addresses.should be_empty
-          person.household_units.should be_empty
         end
 
-        it "is empty when the person addresses and household_units associations are empty" do
+        it "is empty when the person addresses associations are empty" do
           person.dwelling_units.should be_empty
         end
       end
 
-      describe "with associated addresses but no household_unit association" do
+      describe "with an associated address" do
 
         before do
           person.addresses << Factory(:address, :person => person, :dwelling_unit => du)
-          person.household_units.should be_empty
         end
 
         it "returns the person addresses dwelling_unit associations" do
@@ -529,6 +527,7 @@ describe Person do
           Factory(:dwelling_household_link, :dwelling_unit => du, :household_unit => hu)
           Factory(:household_person_link, :person => person, :household_unit => hu)
 
+          person.household_units.reload
           person.addresses.should be_empty
         end
 
@@ -654,10 +653,9 @@ describe Person do
 
     describe "#in_tsu?" do
 
-      describe "without associated addresses or household_units" do
+      describe "without associated addresses" do
         before do
           person.addresses.should be_empty
-          person.household_units.should be_empty
         end
 
         it "is not in a tsu" do
@@ -665,13 +663,12 @@ describe Person do
         end
       end
 
-      describe "with associated addresses but no household_unit association" do
+      describe "with associated addresses" do
 
         describe "and the dwelling unit has a tsu_id" do
           before do
             du.update_attribute(:tsu_id, "tsu_id")
             person.addresses << Factory(:address, :person => person, :dwelling_unit => du)
-            person.household_units.should be_empty
           end
 
           it "is in a tsu" do
@@ -683,7 +680,6 @@ describe Person do
           before do
             du.tsu_id.should be_nil
             person.addresses << Factory(:address, :person => person, :dwelling_unit => du)
-            person.household_units.should be_empty
           end
 
           it "is not in a tsu" do
@@ -701,6 +697,7 @@ describe Person do
             Factory(:dwelling_household_link, :dwelling_unit => du, :household_unit => hu)
             Factory(:household_person_link, :person => person, :household_unit => hu)
 
+            person.household_units.reload
             person.addresses.should be_empty
           end
 
