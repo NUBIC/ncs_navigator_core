@@ -499,54 +499,36 @@ describe Person do
     let(:hu) { Factory(:household_unit) }
 
     describe "#dwelling_units" do
-
       describe "without associated addresses or household_units" do
-        before do
-          person.addresses.should be_empty
-          person.household_units.should be_empty
-        end
-
         it "is empty when the person addresses and household_units associations are empty" do
+          person.addresses.should be_empty
           person.dwelling_units.should be_empty
         end
       end
 
       describe "with associated addresses but no household_unit association" do
-
-        before do
-          person.addresses << Factory(:address, :person => person, :dwelling_unit => du)
-          person.household_units.should be_empty
-        end
-
         it "returns the person addresses dwelling_unit associations" do
+          person.addresses << Factory(:address, :person => person, :dwelling_unit => du)
           person.dwelling_units.should == [du]
         end
       end
 
       describe "with associated household units but no address association" do
-
-        before do
+        it "returns the person household_units dwelling_unit associations" do
           Factory(:dwelling_household_link, :dwelling_unit => du, :household_unit => hu)
           Factory(:household_person_link, :person => person, :household_unit => hu)
-
+          person.household_units.reload
           person.addresses.should be_empty
-        end
-
-        it "returns the person household_units dwelling_unit associations" do
           person.dwelling_units.should == [du]
         end
       end
 
       describe "with household units and addresses associations" do
-
-        before do
+        it "returns the all uniq dwelling_unit associations" do
           Factory(:dwelling_household_link, :dwelling_unit => du, :household_unit => hu)
           Factory(:household_person_link, :person => person, :household_unit => hu)
           person.addresses << Factory(:address, :person => person, :dwelling_unit => du)
           person.addresses << Factory(:address, :person => person, :dwelling_unit => du2)
-        end
-
-        it "returns the all uniq dwelling_unit associations" do
           person.dwelling_units.should == [du, du2]
         end
       end
