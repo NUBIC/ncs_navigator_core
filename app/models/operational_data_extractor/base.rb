@@ -761,7 +761,7 @@ module OperationalDataExtractor
 
     def process_telephone(owner, map, phone_type = home_phone_type, phone_rank = primary_rank)
       phone_nr = value_by_attribute(map, 'phone_nbr')
-      return if !phone_nr || phone_nr.empty?
+      return if phone_nr.blank? || !phone_nr.is_a?(String)
 
       phone = find_or_create_telephone(owner, phone_nr, phone_type, phone_rank)
       map.each do |key, attribute|
@@ -797,7 +797,7 @@ module OperationalDataExtractor
 
     def process_email(map, email_type = personal_email_type)
       email_address = value_by_attribute(map, 'email')
-      return if !email_address or email_address.empty?
+      return if email_address.blank? || !email_address.is_a?(String)
 
       email = find_or_create_email(person, email_address, email_type)
       map.each do |key, attribute|
