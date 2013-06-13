@@ -637,11 +637,6 @@ describe Person do
     describe "#in_tsu?" do
 
       describe "without associated addresses or household_units" do
-        before do
-          person.addresses.should be_empty
-          person.household_units.should be_empty
-        end
-
         it "is not in a tsu" do
           person.should_not be_in_tsu
         end
@@ -653,7 +648,6 @@ describe Person do
           before do
             du.update_attribute(:tsu_id, "tsu_id")
             person.addresses << Factory(:address, :person => person, :dwelling_unit => du)
-            person.household_units.should be_empty
           end
 
           it "is in a tsu" do
@@ -665,10 +659,10 @@ describe Person do
           before do
             du.tsu_id.should be_nil
             person.addresses << Factory(:address, :person => person, :dwelling_unit => du)
-            person.household_units.should be_empty
           end
 
           it "is not in a tsu" do
+            person.addresses.reload
             person.should_not be_in_tsu
           end
         end
@@ -687,6 +681,7 @@ describe Person do
           end
 
           it "is in a tsu" do
+            person.household_units.reload
             person.should be_in_tsu
           end
         end
