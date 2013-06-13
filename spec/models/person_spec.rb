@@ -517,9 +517,8 @@ describe Person do
         it "returns the person household_units dwelling_unit associations" do
           Factory(:dwelling_household_link, :dwelling_unit => du, :household_unit => hu)
           Factory(:household_person_link, :person => person, :household_unit => hu)
-          person.household_units.reload
           person.addresses.should be_empty
-          person.dwelling_units.should == [du]
+          person.reload.dwelling_units.should == [du]
         end
       end
 
@@ -662,8 +661,7 @@ describe Person do
           end
 
           it "is not in a tsu" do
-            person.addresses.reload
-            person.should_not be_in_tsu
+            person.reload.should_not be_in_tsu
           end
         end
 
@@ -681,8 +679,7 @@ describe Person do
           end
 
           it "is in a tsu" do
-            person.household_units.reload
-            person.should be_in_tsu
+            person.reload.should be_in_tsu
           end
         end
 
