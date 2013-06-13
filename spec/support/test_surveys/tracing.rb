@@ -70,9 +70,15 @@ module Tracing
     # Home Phone
     q = Factory(:question, :reference_identifier => "HOME_PHONE", :data_export_identifier => "TRACING_INT.HOME_PHONE", :survey_section_id => survey_section.id)
     a = Factory(:answer, :question_id => q.id, :text => "Phone Number", :response_class => "string")
+    a = Factory(:answer, :question_id => q.id, :text => "REFUSED", :response_class => "answer", :reference_identifier => "neg_1")
+    a = Factory(:answer, :question_id => q.id, :text => "DON'T KNOW", :response_class => "answer", :reference_identifier => "neg_2")
+    a = Factory(:answer, :question_id => q.id, :text => "NO HOME PHONE", :response_class => "answer", :reference_identifier => "neg_7")
     # Cell Phone
     q = Factory(:question, :reference_identifier => "CELL_PHONE", :data_export_identifier => "TRACING_INT.CELL_PHONE", :survey_section_id => survey_section.id)
     a = Factory(:answer, :question_id => q.id, :text => "Phone Number", :response_class => "string")
+    a = Factory(:answer, :question_id => q.id, :text => "REFUSED", :response_class => "answer", :reference_identifier => "neg_1")
+    a = Factory(:answer, :question_id => q.id, :text => "DON'T KNOW", :response_class => "answer", :reference_identifier => "neg_2")
+    a = Factory(:answer, :question_id => q.id, :text => "NO CELL PHONE", :response_class => "answer", :reference_identifier => "neg_7")
     # Can call cell?
     q = Factory(:question, :reference_identifier => "CELL_PHONE_2", :data_export_identifier => "TRACING_INT.CELL_PHONE_2", :survey_section_id => survey_section.id)
     a = Factory(:answer, :question_id => q.id, :text => "Yes", :response_class => "answer", :reference_identifier => "1")
@@ -91,6 +97,9 @@ module Tracing
     # Email
     q = Factory(:question, :reference_identifier => "EMAIL", :data_export_identifier => "TRACING_INT.EMAIL", :survey_section_id => survey_section.id)
     a = Factory(:answer, :question_id => q.id, :text => "Email", :response_class => "string")
+    a = Factory(:answer, :question_id => q.id, :text => "REFUSED", :response_class => "answer", :reference_identifier => "neg_1")
+    a = Factory(:answer, :question_id => q.id, :text => "DON'T KNOW", :response_class => "answer", :reference_identifier => "neg_2")
+    a = Factory(:answer, :question_id => q.id, :text => "NO EMAIL ACCOUNT", :response_class => "answer", :reference_identifier => "neg_7")
 
     survey
   end
