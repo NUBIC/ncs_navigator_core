@@ -124,6 +124,10 @@ class PeopleController < ApplicationController
 
         path = people_path
         msg  = 'Person was successfully updated.'
+        if @participant
+          path = participant_path(@participant, :anchor => "relationships_tab")
+          msg  = 'Person was successfully updated.'
+        end
         if @provider
           path = provider_path(@provider)
           msg  = "Person was successfully updated for #{@provider}."
