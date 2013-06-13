@@ -174,6 +174,35 @@ describe OperationalDataExtractor::TracingModule do
       person.primary_cell_phone.phone_nbr.should == '3125557890'
     end
 
+    it "can handle non-nil and non-string answers" do
+      response_set, instrument = prepare_instrument(@person, @participant, @survey)
+      response_set.save!
+
+      neg_7 = mock(NcsCode, :local_code => 'neg_7')
+      take_survey(@survey, response_set) do |r|
+        r.a "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.HOME_PHONE", neg_7
+        r.yes "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.CELL_PHONE_2"
+        r.yes "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.CELL_PHONE_4"
+        r.a "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.CELL_PHONE", '3125557890'
+      end
+
+      response_set.responses.reload
+      response_set.responses.size.should == 4
+
+      OperationalDataExtractor::TracingModule.new(response_set).extract_data
+
+      person  = Person.find(@person.id)
+      person.telephones.size.should == 1
+      person.telephones.each do |t|
+        t.phone_type.should_not be_nil
+        t.phone_nbr[0,6].should == "312555"
+        t.phone_rank_code.should == 1
+      end
+      person.primary_home_phone.should be_nil
+      person.primary_cell_phone.phone_nbr.should == '3125557890'
+    end
+
+
   end
 
   it "extracts email information from the survey responses" do
@@ -202,6 +231,30 @@ describe OperationalDataExtractor::TracingModule do
     person.emails.first.email_rank_code.should == 1
   end
 
+  it "can handle non-nil and non-string answers for email responses" do
+    person = Factory(:person)
+    person.emails.size.should == 0
+
+    participant = Factory(:participant)
+    participant.person = person
+    participant.save!
+    survey = create_tracing_module_survey_with_email_operational_data
+    response_set, instrument = prepare_instrument(person, participant, survey)
+    response_set.save!
+
+    neg_7 = mock(NcsCode, :local_code => 'neg_7')
+    take_survey(survey, response_set) do |r|
+      r.a "#{OperationalDataExtractor::TracingModule::TRACING_MODULE_PREFIX}.EMAIL", neg_7
+    end
+
+    response_set.responses.reload
+    response_set.responses.size.should == 1
+
+    OperationalDataExtractor::TracingModule.new(response_set).extract_data
+
+    person  = Person.find(person.id)
+    person.emails.should be_empty
+  end
 
   context "extracting contact information from the survey responses" do
 
