@@ -94,6 +94,7 @@ group :development, :test, :ci do
 
   gem 'ci_reporter'
   gem 'pry'
+  gem 'pry-debugger'
 end
 
 group :test, :ci do
