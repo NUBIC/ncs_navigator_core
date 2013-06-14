@@ -170,9 +170,10 @@ module ResponseSetPrepopulation
       ri = false
       if person.person_dob_date
         ri = true
-      else
-        most_recent_response = person.responses_for("PARTICIPANT_VERIF.PERSON_DOB").last
+      elsif most_recent_response = person.responses_for("PARTICIPANT_VERIF.PERSON_DOB").last
         ri = true unless %w(neg_1 neg_2).include?(most_recent_response.try(:answer).try(:reference_identifier).to_s)
+      elsif person.person_dob_date.nil?
+        ri = false
       end
       answer_for(question, ri)
     end
