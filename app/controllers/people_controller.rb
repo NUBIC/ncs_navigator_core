@@ -147,23 +147,29 @@ class PeopleController < ApplicationController
     @person = Person.new
     set_person_attribute_defaults(@person, true)
     @participant = Participant.find(params[:participant_id])
-    @contact_link = ContactLink.find(params[:contact_link_id])
-    @relationship_code = '8'
-    respond_to do |format|
-      format.html # new.html.haml
-      format.json  { render :json => @person }
+    if @participant.child_participant?
+      redirect_to(participant_path(@participant), :notice => "Cannot create child participant for a child participant.")
+    else
+      # contact_link is only used in determining re-direct after action
+      @contact_link = ContactLink.find(params[:contact_link_id]) if params[:contact_link_id]
+      @relationship_code = '8'
+      respond_to do |format|
+        format.html # new.html.haml
+        format.json  { render :json => @person }
+      end
     end
   end
 
   # POST /people/create_child
   def create_child
     @participant = Participant.find(params[:participant_id])
-    @contact_link = ContactLink.find(params[:contact_link_id])
+    # contact_link is only used in determining re-direct after action
+    @contact_link = ContactLink.find(params[:contact_link_id]) if params[:contact_link_id]
 
     respond_to do |format|
       if @participant.create_child_person_and_participant!(params[:person])
 
-        path = decision_page_contact_link_path(@contact_link)
+        path = @contact_link.nil? ? participant_path(@participant) : decision_page_contact_link_path(@contact_link)
         msg  = 'Child was successfully created.'
 
         format.html { redirect_to(path, :notice => msg) }

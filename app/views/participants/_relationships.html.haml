@@ -42,3 +42,8 @@
 
   .links
     = link_to 'New Person', new_person_path(:participant_id => @participant), :class => "add_link icon_link"
+    - unless @participant.child_participant?
+      %br
+      = link_to "New Child Participant", new_child_people_path(:participant_id => @participant.id, :contact_link_id => nil),
+        :class => "add_link icon_link", :confirm => "Are you certain you would like to create a new child participant record related to this participant?"
+

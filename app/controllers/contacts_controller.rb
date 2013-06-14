@@ -41,7 +41,7 @@ class ContactsController < ApplicationController
       if @contact.save
         link = find_or_create_contact_link
 
-        format.html { redirect_to(select_instrument_contact_link_path(link), :notice => 'Contact was successfully created.') }
+        format.html { redirect_to(select_instrument_contact_link_path(link.id), :notice => 'Contact was successfully created.') }
         format.json { render :json => @contact }
       else
         format.html { render :action => "new" }
@@ -64,7 +64,7 @@ class ContactsController < ApplicationController
       else
         @event = event_for_person
       end
-      redirect_to(select_instrument_contact_link_path(find_or_create_contact_link))
+      redirect_to(select_instrument_contact_link_path(find_or_create_contact_link.id))
     else
       @event = @contact_link.event
       set_disposition_group
@@ -246,7 +246,7 @@ class ContactsController < ApplicationController
       staff_id = params["staff_id"].blank? ? current_staff_id : params["staff_id"]
 
       if link.blank?
-        link = ContactLink.create(:contact => @contact,
+        link = ContactLink.create!(:contact => @contact,
                                   :person => @person,
                                   :event => @event,
                                   :provider => @provider,
