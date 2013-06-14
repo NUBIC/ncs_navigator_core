@@ -21,7 +21,7 @@ module Reports
 
     let(:scheduled_study_segment_identifier_1) { 'b3e4b432-b4f6-4b27-ad6b-6a37e17da5ab' } # LUCY
     let(:scheduled_study_segment_identifier_2) { 'fdbf8c20-7805-4d7f-b82c-ee3624641509' } # HENRIETTA
-    let(:reporter) { Reports::CaseStatusReport.new(subject, { :start_date => '2012-02-01', :end_date => '2012-02-07' }) }
+    let(:reporter) { Reports::CaseStatusReport.new(subject, { :start_date => '2012-02-01', :end_date => '2012-02-07', :state => 'scheduled' }) }
 
     it "uses the scheduled activities report from psc to get event identifiers" do
 
