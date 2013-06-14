@@ -194,6 +194,280 @@ module ResponseSetPrepopulation
 
       end
 
+      describe "prepopulated_resp_guard_previously_collected" do
+
+        it "is FALSE if there is no previous response for RESP_GUARD" do
+          run_populator
+          assert_response_value(@response_set_pt1, "prepopulated_resp_guard_previously_collected", "FALSE")
+        end
+
+        it "is TRUE if there is a previous response for RESP_GUARD" do
+          init_instrument_and_response_set_pt1
+          take_survey(survey_pt1, @response_set_pt1) do |r|
+            r.yes "PARTICIPANT_VERIF.RESP_GUARD"
+          end
+          run_populator
+          assert_response_value(@response_set_pt1, "prepopulated_resp_guard_previously_collected", "TRUE")
+        end
+
+      end
+
+      describe "prepopulated_should_show_resp_pcare" do
+
+        it "is TRUE if there is no response for RESP_PCARE" do
+          run_populator
+          assert_response_value(@response_set_pt1, "prepopulated_should_show_resp_pcare", "TRUE")
+        end
+
+        it "is TRUE if the person has responded refused previously" do
+          Person.any_instance.stub(:sex_code).and_return(-4)
+
+          init_instrument_and_response_set_pt1
+          take_survey(survey_pt1, @response_set_pt1) do |r|
+            r.refused "PARTICIPANT_VERIF.RESP_PCARE"
+          end
+
+          run_populator
+          assert_response_value(@response_set_pt1, "prepopulated_should_show_resp_pcare", "TRUE")
+        end
+
+        it "is TRUE if the person has responded don't know previously" do
+          Person.any_instance.stub(:sex_code).and_return(-4)
+
+          init_instrument_and_response_set_pt1
+          take_survey(survey_pt1, @response_set_pt1) do |r|
+            r.dont_know "PARTICIPANT_VERIF.RESP_PCARE"
+          end
+          run_populator
+          assert_response_value(@response_set_pt1, "prepopulated_should_show_resp_pcare", "TRUE")
+        end
+
+        it "is FALSE if there is a valid response for RESP_PCARE" do
+          init_instrument_and_response_set_pt1
+          take_survey(survey_pt1, @response_set_pt1) do |r|
+            r.yes "PARTICIPANT_VERIF.RESP_PCARE"
+          end
+          run_populator
+          assert_response_value(@response_set_pt1, "prepopulated_should_show_resp_pcare", "FALSE")
+        end
+
+      end
+
+      describe "prepopulated_resp_pcare_equals_one_in_previous_survey" do
+        it "is FALSE if there is no previous response" do
+          run_populator
+          assert_response_value(@response_set_pt1, "prepopulated_resp_pcare_equals_one_in_previous_survey", "FALSE")
+        end
+
+        it "is TRUE if there is only one previous response with a value of one" do
+          init_instrument_and_response_set_pt1
+          take_survey(survey_pt1, @response_set_pt1) do |r|
+            r.yes "PARTICIPANT_VERIF.RESP_PCARE"
+          end
+          run_populator
+          assert_response_value(@response_set_pt1, "prepopulated_resp_pcare_equals_one_in_previous_survey", "TRUE")
+        end
+
+        it "is TRUE if there is any one previous response with a value of one" do
+          init_instrument_and_response_set_pt1
+          take_survey(survey_pt1, @response_set_pt1) do |r|
+            r.dont_know "PARTICIPANT_VERIF.RESP_PCARE"
+          end
+
+          take_survey(survey_pt1, @response_set_pt1) do |r|
+            r.yes "PARTICIPANT_VERIF.RESP_PCARE"
+          end
+
+          run_populator
+          assert_response_value(@response_set_pt1, "prepopulated_resp_pcare_equals_one_in_previous_survey", "TRUE")
+        end
+      end
+
+      describe "prepopulated_pcare_rel_previously_collected" do
+
+        it "is FALSE if there is no previous response for PCARE_REL" do
+          run_populator
+          assert_response_value(@response_set_pt1, "prepopulated_pcare_rel_previously_collected", "FALSE")
+        end
+
+        it "is TRUE if there is a previous response for PCARE_REL" do
+          init_instrument_and_response_set_pt1
+          take_survey(survey_pt1, @response_set_pt1) do |r|
+            r.a "PARTICIPANT_VERIF.PCARE_REL", mock(NcsCode, :local_code => 1)
+          end
+          run_populator
+          assert_response_value(@response_set_pt1, "prepopulated_pcare_rel_previously_collected", "TRUE")
+        end
+
+      end
+
+      describe "prepopulated_ocare_child_previously_collected_and_equals_one" do
+        it "is FALSE if there is no previous response" do
+          run_populator
+          assert_response_value(@response_set_pt1, "prepopulated_ocare_child_previously_collected_and_equals_one", "FALSE")
+        end
+
+        it "is TRUE if there is any one previous response with a value of one" do
+          init_instrument_and_response_set_pt1
+          take_survey(survey_pt1, @response_set_pt1) do |r|
+            r.dont_know "PARTICIPANT_VERIF.OCARE_CHILD"
+          end
+
+          take_survey(survey_pt1, @response_set_pt1) do |r|
+            r.yes "PARTICIPANT_VERIF.OCARE_CHILD"
+          end
+          run_populator
+          assert_response_value(@response_set_pt1, "prepopulated_ocare_child_previously_collected_and_equals_one", "TRUE")
+        end
+      end
+
+      describe "prepopulated_ocare_child_equal_one_and_other_caregiver_name_previously_collected" do
+
+        it "is FALSE if the person has NOT previously responded OCARE_CHILD = 1 && other caregiver name not collected" do
+          Person.any_instance.stub(:first_name).and_return(nil)
+          Person.any_instance.stub(:last_name).and_return(nil)
+
+          init_instrument_and_response_set_pt1
+          take_survey(survey_pt1, @response_set_pt1) do |r|
+            r.yes "PARTICIPANT_VERIF.OCARE_CHILD"
+          end
+
+          run_populator
+          assert_response_value(@response_set_pt1, "prepopulated_ocare_child_equal_one_and_other_caregiver_name_previously_collected", "FALSE")
+        end
+
+        it "is FALSE if the person has NOT previously responded OCARE_CHILD = 1 && other caregiver name not valid" do
+          Person.any_instance.stub(:first_name).and_return(nil)
+          Person.any_instance.stub(:last_name).and_return(nil)
+
+          init_instrument_and_response_set_pt1
+          take_survey(survey_pt1, @response_set_pt1) do |r|
+            r.yes "PARTICIPANT_VERIF.OCARE_CHILD"
+            r.dont_know "PARTICIPANT_VERIF.O_FNAME"
+            r.dont_know "PARTICIPANT_VERIF.O_MNAME"
+            r.dont_know "PARTICIPANT_VERIF.O_LNAME"
+          end
+
+          run_populator
+          assert_response_value(@response_set_pt1, "prepopulated_ocare_child_equal_one_and_other_caregiver_name_previously_collected", "FALSE")
+        end
+
+        it "is TRUE if the person has previously responded OCARE_CHILD = 1 && other caregiver name collected" do
+          Person.any_instance.stub(:first_name).and_return(nil)
+          Person.any_instance.stub(:last_name).and_return(nil)
+
+          init_instrument_and_response_set_pt1
+          take_survey(survey_pt1, @response_set_pt1) do |r|
+            r.yes "PARTICIPANT_VERIF.OCARE_CHILD"
+            r.a "PARTICIPANT_VERIF.O_FNAME", :value => "ofname"
+            r.a "PARTICIPANT_VERIF.O_MNAME", :value => "omname"
+            r.a "PARTICIPANT_VERIF.O_LNAME", :value => "olname"
+          end
+
+          run_populator
+          assert_response_value(@response_set_pt1, "prepopulated_ocare_child_equal_one_and_other_caregiver_name_previously_collected", "TRUE")
+        end
+
+      end
+
+      describe "prepopulated_ocare_rel_previously_collected" do
+
+        it "is FALSE if there is no previous response for OCARE_REL" do
+          run_populator
+          assert_response_value(@response_set_pt1, "prepopulated_ocare_rel_previously_collected", "FALSE")
+        end
+
+        it "is TRUE if there is a previous response for OCARE_REL" do
+          init_instrument_and_response_set_pt1
+          take_survey(survey_pt1, @response_set_pt1) do |r|
+            r.a "PARTICIPANT_VERIF.OCARE_REL", mock(NcsCode, :local_code => 1)
+          end
+          run_populator
+          assert_response_value(@response_set_pt1, "prepopulated_ocare_rel_previously_collected", "TRUE")
+        end
+
+      end
+
+      describe "prepopulated_child_time_previously_collected" do
+
+        it "is FALSE if there is no previous response for CHILD_TIME" do
+          run_populator
+          assert_response_value(@response_set_pt1, "prepopulated_child_time_previously_collected", "FALSE")
+        end
+
+        it "is TRUE if there is a previous response for CHILD_TIME" do
+          init_instrument_and_response_set_pt1
+          take_survey(survey_pt1, @response_set_pt1) do |r|
+            r.a "PARTICIPANT_VERIF.CHILD_TIME", mock(NcsCode, :local_code => 1)
+          end
+          run_populator
+          assert_response_value(@response_set_pt1, "prepopulated_child_time_previously_collected", "TRUE")
+        end
+
+      end
+
+      describe "prepopulated_child_secondary_address_variables_previously_collected" do
+
+        it "is FALSE if there is no previous response for S_ADDRESS_1" do
+          run_populator
+          assert_response_value(@response_set_pt1, "prepopulated_child_secondary_address_variables_previously_collected", "FALSE")
+        end
+
+        it "is TRUE if there is a previous response for S_ADDRESS_1" do
+          init_instrument_and_response_set_pt1
+          take_survey(survey_pt1, @response_set_pt1) do |r|
+            r.a "PARTICIPANT_VERIF.S_ADDRESS_1", :value => "caddr1"
+          end
+          run_populator
+          assert_response_value(@response_set_pt1, "prepopulated_child_secondary_address_variables_previously_collected", "TRUE")
+        end
+
+      end
+
+      describe "prepopulated_sa_phone_previously_collected" do
+
+        it "is FALSE if there is no previous response for SA_PHONE" do
+          run_populator
+          assert_response_value(@response_set_pt1, "prepopulated_sa_phone_previously_collected", "FALSE")
+        end
+
+        it "is TRUE if there is a previous response for SA_PHONE" do
+          init_instrument_and_response_set_pt1
+          take_survey(survey_pt1, @response_set_pt1) do |r|
+            r.a "PARTICIPANT_VERIF.SA_PHONE", :value => "867-5309"
+          end
+          run_populator
+          assert_response_value(@response_set_pt1, "prepopulated_sa_phone_previously_collected", "TRUE")
+        end
+
+      end
+
+      describe "prepopulated_resp_relationship_previously_collected" do
+
+        it "is FALSE if there is no previous RESP_REL_NEW response" do
+          run_populator
+          assert_response_value(@response_set_pt1, "prepopulated_resp_relationship_previously_collected", "FALSE")
+        end
+
+        it "is TRUE if RESP_REL_NEW is 1..12" do
+          init_instrument_and_response_set_pt1
+          take_survey(survey_pt1, @response_set_pt1) do |r|
+            r.a "PARTICIPANT_VERIF.RESP_REL_NEW", mock(NcsCode, :local_code => 1)
+          end
+          run_populator
+          assert_response_value(@response_set_pt1, "prepopulated_resp_relationship_previously_collected", "TRUE")
+        end
+
+        it "is FALSE if RESP_REL_NEW is not 1..12" do
+          init_instrument_and_response_set_pt1
+          take_survey(survey_pt1, @response_set_pt1) do |r|
+            r.a "PARTICIPANT_VERIF.RESP_REL_NEW", mock(NcsCode, :local_code => -2)
+          end
+          run_populator
+          assert_response_value(@response_set_pt1, "prepopulated_resp_relationship_previously_collected", "FALSE")
+        end
+
+      end
     end
 
     context "with participant verification instrument part two" do
@@ -424,254 +698,6 @@ module ResponseSetPrepopulation
 
           ParticipantVerification.new(@response_set_pt2_second_child).run
           assert_response_value(@response_set_pt2_second_child, "prepopulated_first_child", "FALSE")
-        end
-
-      end
-
-      describe "prepopulated_resp_guard_previously_collected" do
-
-        it "is FALSE if there is no previous response for RESP_GUARD" do
-          run_populator
-          assert_response_value(@response_set_pt2, "prepopulated_resp_guard_previously_collected", "FALSE")
-        end
-
-        it "is TRUE if there is a previous response for RESP_GUARD" do
-          init_instrument_and_response_set_pt2
-          take_survey(survey_pt2, @response_set_pt2) do |r|
-            r.yes "PARTICIPANT_VERIF.RESP_GUARD"
-          end
-          run_populator
-          assert_response_value(@response_set_pt2, "prepopulated_resp_guard_previously_collected", "TRUE")
-        end
-
-      end
-
-      describe "prepopulated_should_show_resp_pcare" do
-
-        it "is TRUE if there is no response for RESP_PCARE" do
-          run_populator
-          assert_response_value(@response_set_pt2, "prepopulated_should_show_resp_pcare", "TRUE")
-        end
-
-        it "is TRUE if the person has responded refused previously" do
-          Person.any_instance.stub(:sex_code).and_return(-4)
-
-          init_instrument_and_response_set_pt2
-          take_survey(survey_pt2, @response_set_pt2) do |r|
-            r.refused "PARTICIPANT_VERIF.RESP_PCARE"
-          end
-
-          run_populator
-          assert_response_value(@response_set_pt2, "prepopulated_should_show_resp_pcare", "TRUE")
-        end
-
-        it "is TRUE if the person has responded don't know previously" do
-          Person.any_instance.stub(:sex_code).and_return(-4)
-
-          init_instrument_and_response_set_pt2
-          take_survey(survey_pt2, @response_set_pt2) do |r|
-            r.dont_know "PARTICIPANT_VERIF.RESP_PCARE"
-          end
-          run_populator
-          assert_response_value(@response_set_pt2, "prepopulated_should_show_resp_pcare", "TRUE")
-        end
-
-        it "is FALSE if there is a valid response for RESP_PCARE" do
-          init_instrument_and_response_set_pt2
-          take_survey(survey_pt2, @response_set_pt2) do |r|
-            r.yes "PARTICIPANT_VERIF.RESP_PCARE"
-          end
-          run_populator
-          assert_response_value(@response_set_pt2, "prepopulated_should_show_resp_pcare", "FALSE")
-        end
-
-      end
-
-      describe "prepopulated_resp_pcare_equals_one_in_previous_survey" do
-        it "is FALSE if there is no previous response" do
-          run_populator
-          assert_response_value(@response_set_pt2, "prepopulated_resp_pcare_equals_one_in_previous_survey", "FALSE")
-        end
-
-        it "is TRUE if there is only one previous response with a value of one" do
-          init_instrument_and_response_set_pt2
-          take_survey(survey_pt2, @response_set_pt2) do |r|
-            r.yes "PARTICIPANT_VERIF.RESP_PCARE"
-          end
-          run_populator
-          assert_response_value(@response_set_pt2, "prepopulated_resp_pcare_equals_one_in_previous_survey", "TRUE")
-        end
-
-        it "is TRUE if there is any one previous response with a value of one" do
-          init_instrument_and_response_set_pt2
-          take_survey(survey_pt2, @response_set_pt2) do |r|
-            r.dont_know "PARTICIPANT_VERIF.RESP_PCARE"
-          end
-
-          take_survey(survey_pt2, @response_set_pt2) do |r|
-            r.yes "PARTICIPANT_VERIF.RESP_PCARE"
-          end
-
-          run_populator
-          assert_response_value(@response_set_pt2, "prepopulated_resp_pcare_equals_one_in_previous_survey", "TRUE")
-        end
-      end
-
-      describe "prepopulated_pcare_rel_previously_collected" do
-
-        it "is FALSE if there is no previous response for PCARE_REL" do
-          run_populator
-          assert_response_value(@response_set_pt2, "prepopulated_pcare_rel_previously_collected", "FALSE")
-        end
-
-        it "is TRUE if there is a previous response for PCARE_REL" do
-          init_instrument_and_response_set_pt2
-          take_survey(survey_pt2, @response_set_pt2) do |r|
-            r.a "PARTICIPANT_VERIF.PCARE_REL", mock(NcsCode, :local_code => 1)
-          end
-          run_populator
-          assert_response_value(@response_set_pt2, "prepopulated_pcare_rel_previously_collected", "TRUE")
-        end
-
-      end
-
-      describe "prepopulated_ocare_child_previously_collected_and_equals_one" do
-        it "is FALSE if there is no previous response" do
-          run_populator
-          assert_response_value(@response_set_pt2, "prepopulated_ocare_child_previously_collected_and_equals_one", "FALSE")
-        end
-
-        it "is TRUE if there is any one previous response with a value of one" do
-          init_instrument_and_response_set_pt2
-          take_survey(survey_pt2, @response_set_pt2) do |r|
-            r.dont_know "PARTICIPANT_VERIF.OCARE_CHILD"
-          end
-
-          take_survey(survey_pt2, @response_set_pt2) do |r|
-            r.yes "PARTICIPANT_VERIF.OCARE_CHILD"
-          end
-          run_populator
-          assert_response_value(@response_set_pt2, "prepopulated_ocare_child_previously_collected_and_equals_one", "TRUE")
-        end
-      end
-
-      describe "prepopulated_ocare_child_equal_one_and_other_caregiver_name_previously_collected" do
-
-        it "is FALSE if the person has NOT previously responded OCARE_CHILD = 1 && other caregiver name not collected" do
-          Person.any_instance.stub(:first_name).and_return(nil)
-          Person.any_instance.stub(:last_name).and_return(nil)
-
-          init_instrument_and_response_set_pt2
-          take_survey(survey_pt2, @response_set_pt2) do |r|
-            r.yes "PARTICIPANT_VERIF.OCARE_CHILD"
-          end
-
-          run_populator
-          assert_response_value(@response_set_pt2, "prepopulated_ocare_child_equal_one_and_other_caregiver_name_previously_collected", "FALSE")
-        end
-
-        it "is FALSE if the person has NOT previously responded OCARE_CHILD = 1 && other caregiver name not valid" do
-          Person.any_instance.stub(:first_name).and_return(nil)
-          Person.any_instance.stub(:last_name).and_return(nil)
-
-          init_instrument_and_response_set_pt2
-          take_survey(survey_pt2, @response_set_pt2) do |r|
-            r.yes "PARTICIPANT_VERIF.OCARE_CHILD"
-            r.dont_know "PARTICIPANT_VERIF.O_FNAME"
-            r.dont_know "PARTICIPANT_VERIF.O_MNAME"
-            r.dont_know "PARTICIPANT_VERIF.O_LNAME"
-          end
-
-          run_populator
-          assert_response_value(@response_set_pt2, "prepopulated_ocare_child_equal_one_and_other_caregiver_name_previously_collected", "FALSE")
-        end
-
-        it "is TRUE if the person has previously responded OCARE_CHILD = 1 && other caregiver name collected" do
-          Person.any_instance.stub(:first_name).and_return(nil)
-          Person.any_instance.stub(:last_name).and_return(nil)
-
-          init_instrument_and_response_set_pt2
-          take_survey(survey_pt2, @response_set_pt2) do |r|
-            r.yes "PARTICIPANT_VERIF.OCARE_CHILD"
-            r.a "PARTICIPANT_VERIF.O_FNAME", :value => "ofname"
-            r.a "PARTICIPANT_VERIF.O_MNAME", :value => "omname"
-            r.a "PARTICIPANT_VERIF.O_LNAME", :value => "olname"
-          end
-
-          run_populator
-          assert_response_value(@response_set_pt2, "prepopulated_ocare_child_equal_one_and_other_caregiver_name_previously_collected", "TRUE")
-        end
-
-      end
-
-      describe "prepopulated_ocare_rel_previously_collected" do
-
-        it "is FALSE if there is no previous response for OCARE_REL" do
-          run_populator
-          assert_response_value(@response_set_pt2, "prepopulated_ocare_rel_previously_collected", "FALSE")
-        end
-
-        it "is TRUE if there is a previous response for OCARE_REL" do
-          init_instrument_and_response_set_pt2
-          take_survey(survey_pt2, @response_set_pt2) do |r|
-            r.a "PARTICIPANT_VERIF.OCARE_REL", mock(NcsCode, :local_code => 1)
-          end
-          run_populator
-          assert_response_value(@response_set_pt2, "prepopulated_ocare_rel_previously_collected", "TRUE")
-        end
-
-      end
-
-      describe "prepopulated_child_time_previously_collected" do
-
-        it "is FALSE if there is no previous response for CHILD_TIME" do
-          run_populator
-          assert_response_value(@response_set_pt2, "prepopulated_child_time_previously_collected", "FALSE")
-        end
-
-        it "is TRUE if there is a previous response for CHILD_TIME" do
-          init_instrument_and_response_set_pt2
-          take_survey(survey_pt2, @response_set_pt2) do |r|
-            r.a "PARTICIPANT_VERIF.CHILD_TIME", mock(NcsCode, :local_code => 1)
-          end
-          run_populator
-          assert_response_value(@response_set_pt2, "prepopulated_child_time_previously_collected", "TRUE")
-        end
-
-      end
-
-      describe "prepopulated_child_secondary_address_variables_previously_collected" do
-
-        it "is FALSE if there is no previous response for S_ADDRESS_1" do
-          run_populator
-          assert_response_value(@response_set_pt2, "prepopulated_child_secondary_address_variables_previously_collected", "FALSE")
-        end
-
-        it "is TRUE if there is a previous response for S_ADDRESS_1" do
-          init_instrument_and_response_set_pt2
-          take_survey(survey_pt2, @response_set_pt2) do |r|
-            r.a "PARTICIPANT_VERIF.S_ADDRESS_1", :value => "caddr1"
-          end
-          run_populator
-          assert_response_value(@response_set_pt2, "prepopulated_child_secondary_address_variables_previously_collected", "TRUE")
-        end
-
-      end
-
-      describe "prepopulated_sa_phone_previously_collected" do
-
-        it "is FALSE if there is no previous response for SA_PHONE" do
-          run_populator
-          assert_response_value(@response_set_pt2, "prepopulated_sa_phone_previously_collected", "FALSE")
-        end
-
-        it "is TRUE if there is a previous response for SA_PHONE" do
-          init_instrument_and_response_set_pt2
-          take_survey(survey_pt2, @response_set_pt2) do |r|
-            r.a "PARTICIPANT_VERIF.SA_PHONE", :value => "867-5309"
-          end
-          run_populator
-          assert_response_value(@response_set_pt2, "prepopulated_sa_phone_previously_collected", "TRUE")
         end
 
       end
