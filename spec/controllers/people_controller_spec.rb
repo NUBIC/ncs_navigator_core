@@ -140,16 +140,29 @@ describe PeopleController do
     end
 
     describe "GET new_child" do
+      let(:child_participant) { Factory(:participant, :p_type_code => 6) }
+      let(:participant) { Factory(:participant) }
+      let(:contact_link) { Factory(:contact_link) }
+
       it "raises exception when no participant is given" do
         expect do
           get :new_child, :participant_id => nil
         end.to raise_error(ActiveRecord::RecordNotFound)
       end
 
-      it "raises exception when no contact_link is given" do
-        expect do
-          get :new_child, :contact_link_id => nil, :participant => Factory(:participant)
-        end.to raise_error(ActiveRecord::RecordNotFound)
+      it "prevents you from creating a child participant on a child person" do
+        get :new_child, :participant_id => child_participant
+        response.should redirect_to(participant_path(child_participant))
+      end
+
+      it "sets @contact_link to the given contact_link parameter, if present" do
+        get :new_child, :participant_id => participant, :contact_link_id => contact_link
+        assigns(:contact_link).should == contact_link
+      end
+
+      it "does NOT set @contact_link when no contact_link parameter is present" do
+        get :new_child, :participant_id => participant, :contact_link_id => nil
+        assigns(:contact_link).should be_nil
       end
     end
 
@@ -164,6 +177,12 @@ describe PeopleController do
       before do
         mother_participant.person = mother
         mother_participant.save!
+      end
+
+      it "redirects to the participant path if a contact_link is not specified" do
+        post :create_child, :participant_id => mother_participant.id, :contact_link_id => nil, :relationship_code => '8',
+             :person => { :first_name => fname, :last_name => lname, :sex_code => "1",  }
+        response.should redirect_to(participant_path(mother_participant))
       end
 
       it "creates a child person and participant record associated with the mother participant" do
