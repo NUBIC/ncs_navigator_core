@@ -148,7 +148,7 @@ class PeopleController < ApplicationController
     else
       # contact_link is only used in determining re-direct after action
       @contact_link = ContactLink.find(params[:contact_link_id]) if params[:contact_link_id]
-      @relationship_code = '8'
+      @relationship_code = '8'  # From ncs_codes table: PERSON_PARTCPNT_RELTNSHP_CL1 | Child | 8
       respond_to do |format|
         format.html # new.html.haml
         format.json  { render :json => @person }
