@@ -4,7 +4,7 @@
     = render "shared/full_error_messages", :object => f.object
 
     = hidden_field_tag :participant_id, @participant.id
-    = hidden_field_tag :contact_link_id, @contact_link.id
+    = hidden_field_tag :contact_link_id, @contact_link.id if @contact_link # only used in determining re-direct after action
 
     = render "shared/ncs_code_select", { :f => f, :code => :psu_code, :label_text => "PSU", :default_value => @psu_code }
 
