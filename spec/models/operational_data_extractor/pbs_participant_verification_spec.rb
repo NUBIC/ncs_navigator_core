@@ -60,6 +60,46 @@ describe OperationalDataExtractor::PbsParticipantVerification do
       child.person_dob.should be_blank
     end
 
+    it "does not throw an error if there is a blank answer to 'CHILD_DOB'" do
+      response_set, instrument = prepare_instrument(@person, @child_participant, survey)
 
+      respond(response_set, survey) do |r|
+        r.answer "CHILD_DOB", "date", :value => ""
+      end
+
+      response_set.complete!
+      response_set.save!
+      response_set.responses.size.should == 1
+
+      mother = Person.find(@person.id)
+      participant = mother.participant
+      participant.participant_person_links.size.should == 2
+      participant.children.should_not be_nil
+
+      child = participant.children.first
+      child.should == @child_participant.person
+      child.person_dob.should == nil
+    end
+
+    it "does not throw an error if 'CHILD_DOB' is refused" do
+      response_set, instrument = prepare_instrument(@person, @child_participant, survey)
+
+      respond(response_set, survey) do |r|
+        r.answer "CHILD_DOB", "neg_1"
+      end
+
+      response_set.complete!
+      response_set.save!
+      response_set.responses.size.should == 1
+
+      mother = Person.find(@person.id)
+      participant = mother.participant
+      participant.participant_person_links.size.should == 2
+      participant.children.should_not be_nil
+
+      child = participant.children.first
+      child.should == @child_participant.person
+      child.person_dob.should == nil
+    end
   end
 end
