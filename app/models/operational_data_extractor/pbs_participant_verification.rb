@@ -13,10 +13,10 @@ module OperationalDataExtractor
     def extract_data
       if child
         if r = response_set.responses.detect{|r| r.question.reference_identifier == 'CHILD_DOB'}
-          if value = response_value(r)
-            child.person_dob = value
-            child.save!
-          end
+          value = response_value(r)
+          return if value.blank? || !value.is_a?(String)
+          child.person_dob = value
+          child.save!
         end
       end
     end
