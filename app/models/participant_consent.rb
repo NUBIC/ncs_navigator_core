@@ -253,7 +253,7 @@ class ParticipantConsent < ActiveRecord::Base
 
     respond(rs) do |r|
       r.using_data_export_identifiers do |ra|
-        set_answer(ra, 'consent_type', withdrawn? ? '3' : '1')
+        set_answer(ra, 'consent_type', withdrawn? ? '3' : (reconsent? ? '2' : '1'))
         set_answer(ra, 'consent_form_type_code')
         set_answer(ra, 'consent_given_code')
         set_answer_value(ra, 'consent_date')
