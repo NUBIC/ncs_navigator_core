@@ -136,6 +136,7 @@ survey "IRB_CON_Informed_Consent", :default_mandatory => false, :instrument_type
       a_17 "SCARED/AFRAID"
       a_18 "NO REASON"
       a_neg_5 "OTHER"
+      a_neg_3 "LEGITIMATE SKIP"
       dependency :rule => "A or B"
       condition_A :q_consent_type, "==", :a_3
       condition_B :q_consent_given_code, "==", :a_2
@@ -154,6 +155,7 @@ survey "IRB_CON_Informed_Consent", :default_mandatory => false, :instrument_type
       a_1 "EMANCIPATED MINOR"
       a_2 "ADULT AT AGE OF MAJORITY OR OLDER"
       a_3 "PARENT OR LEGAL GUARDIAN OF MINOR"
+      a_neg_7 "NOT APPLICABLE"
       dependency :rule => "A or B"
       condition_A :q_consent_type, "==", :a_3
       condition_B :q_consent_given_code, "==", :a_2
