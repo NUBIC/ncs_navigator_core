@@ -27,7 +27,6 @@ module ResponseSetPrepopulation
         "prepopulated_child_time_previously_collected",
         "prepopulated_child_primary_address_variables_previously_collected",
         "prepopulated_pa_phone_previously_collected",
-        "prepopulated_should_show_secondary_address_questions",
         "prepopulated_child_secondary_address_variables_previously_collected",
         "prepopulated_sa_phone_previously_collected",
         "prepopulated_resp_relationship_previously_collected"
@@ -79,8 +78,6 @@ module ResponseSetPrepopulation
                     child_primary_address_variables_previously_collected?(question)
                   when "prepopulated_pa_phone_previously_collected"
                     pa_phone_previously_collected?(question)
-                  when "prepopulated_should_show_secondary_address_questions"
-                    should_show_secondary_address_questions?(question)
                   when "prepopulated_child_secondary_address_variables_previously_collected"
                     child_secondary_address_variables_previously_collected?(question)
                   when "prepopulated_sa_phone_previously_collected"
@@ -341,9 +338,6 @@ module ResponseSetPrepopulation
     #   - GO TO TIME_STAMP_PV_ET.
     #     - IF CHILD_NUM > 1, AND CHILD_QNUM < CHILD_NUM, GO TO SAME_CONTACT_MULT_CHILD.
     #   - OTHERWISE, GO TO PV059.
-    def should_show_secondary_address_questions?(question)
-      # TODO: determine what this needs to return
-    end
 
     # PROGRAMMER INSTRUCTIONS:
     #   - IF CHILD SECONDARY ADDRESS VARIABLES = -7, AND
