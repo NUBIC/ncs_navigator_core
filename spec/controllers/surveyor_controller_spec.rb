@@ -13,6 +13,40 @@ describe SurveyorController do
     login(user_login)
   end
 
+  describe "#determine_current_event" do
+    it "returns nil if the given event is nil" do
+      controller.determine_current_event(nil).should be_nil
+    end
+
+    it "returns the event if only one event exists for this contact" do
+      event = Factory(:event)
+      Factory(:contact_link, :event => event)
+      controller.determine_current_event(event).should == event
+    end
+
+    it "returns the most recent event associated with a contact" do
+      contact = Factory(:contact)
+      earlier_event = Factory(:event, :event_start_date => '2012-01-01')
+      Factory(:contact_link, :event => earlier_event, :contact => contact)
+
+      later_event = Factory(:event, :event_start_date => '2012-12-01')
+      Factory(:contact_link, :event => later_event, :contact => contact)
+      controller.determine_current_event(earlier_event).should == later_event
+      controller.determine_current_event(later_event).should == later_event
+    end
+  end
+
+  describe "#determine_redirect" do
+    let(:participant) { Factory(:participant) }
+    let(:response_set) { Factory(:response_set, :participant => participant) }
+    let(:event) { Factory(:event, :participant => participant) }
+
+    context "when the event is nil" do
+      it "returns the participant_path " do
+        controller.determine_redirect(response_set, nil).should == "/participants/#{participant.id}"
+      end
+    end
+  end
 
   describe "GET show" do
 

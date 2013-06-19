@@ -45,7 +45,9 @@ class SurveyorController < ApplicationController
   # response set and return to the participant page
   # Otherwise just go to the decision page for the most recent contact link.
   def determine_redirect(response_set, event)
-    if response_set.instrument_associated?
+    if event.nil?
+      participant_path(response_set.participant)
+    elsif response_set.instrument_associated?
       edit_instrument_contact_link_path(most_recent_contact_link)
     elsif event.closed?
       participant_path(response_set.participant)
@@ -139,8 +141,12 @@ class SurveyorController < ApplicationController
   # or done with another event at the same time. If in consort with
   # another event get the most recent event associated with that contact
   # filtering out the informed consent events.
+  # If given event param is nil return nil
   # @see Event#chronological to see how ordering is determined
+  # @param [Event]
+  # @return [Event]
   def determine_current_event(event)
+    return nil if event.nil?
     contact_ids = event.contact_links.map(&:contact_id).uniq
     events = Event.joins(:contact_links).where("contact_links.contact_id in (?)", contact_ids).chronological
     if events.size > 1

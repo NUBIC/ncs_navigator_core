@@ -24,4 +24,16 @@ module SurveyorHelper
     "#{q.text_for(nil, context, locale)}"
   end
 
+  def no_event_section_menu_message(response_set)
+    rs_type = "Survey"
+    if response_set.try(:non_interview_report_associated?)
+      rs_type = "Non Interview Report"
+    elsif response_set.try(:participant_consent_associated?)
+      rs_type = "Participant Consent"
+    elsif response_set.try(:instrument_associated?)
+      rs_type = "Instrument"
+    end
+    "No Event associated with this #{rs_type}."
+  end
+
 end
