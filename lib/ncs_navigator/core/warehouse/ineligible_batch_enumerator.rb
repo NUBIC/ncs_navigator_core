@@ -11,7 +11,11 @@ module NcsNavigator::Core::Warehouse
 
     produce_records(
       :ineligible_batches,
-      :query => "SELECT * FROM ineligible_batches"
+      :query => <<-SQL
+        SELECT p.provider_id AS provider_public_id, ib.*
+        FROM   ineligible_batches ib, providers p
+        WHERE  ib.provider_id = p.id
+      SQL
     ) do |row, meta|
       result = []
       row.people_count.times do |idx|
@@ -46,7 +50,7 @@ module NcsNavigator::Core::Warehouse
             lpp.is_active = -4
             lpp.person_id = public_id
             lpp.person_provider_id = public_id
-            lpp.provider_id = row.provider_id
+            lpp.provider_id = row.provider_public_id
             lpp.prov_intro_outcome = row.provider_intro_outcome_code
             lpp.prov_intro_outcome_oth = row.provider_intro_outcome_other
             lpp.psu_id = row.psu_code
@@ -67,7 +71,7 @@ module NcsNavigator::Core::Warehouse
             :ineligible_by => row.ineligible_by_code,
             :person_id => public_id,
             :pregnancy_eligible => row.pregnancy_eligible_code,
-            :provider_id => row.provider_id,
+            :provider_id => row.provider_public_id,
             :psu_id => row.psu_code,
             :sampled_persons_inelig_id => public_id
           )
