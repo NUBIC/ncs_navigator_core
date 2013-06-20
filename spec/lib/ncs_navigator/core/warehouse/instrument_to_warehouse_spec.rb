@@ -772,7 +772,7 @@ module NcsNavigator::Core::Warehouse
           }
 
           create_response_for(extra_info_q) { |r|
-            r.answer = annotated_q.answers.first
+            r.answer = extra_info_q.answers.first
             r.string_value = 'foo'
           }
         end
