@@ -1,4 +1,6 @@
 class Api::EventsController < ApiController
+  permit *Role::ALL_ROLES
+
   def index
     range = params[:scheduled_date]
     codes = params[:types].try(:map, &:to_i)
