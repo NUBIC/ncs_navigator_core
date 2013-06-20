@@ -10,7 +10,16 @@ class SurveyorController < ApplicationController
   # Overridden from Surveyor::SurveyorControllerMethods
   # to handle Operational Data Extraction and to determine
   # whether or not this is a part of a multi-part survey
+  # if no participant, person url is specified for redirect
   def surveyor_finish
+    if @response_set.participant
+      finish_off_participant
+    else
+      @response_set.person
+    end
+  end
+
+  def finish_off_participant
     # sets @event and @participant
     set_activity_plan_for_participant
 
