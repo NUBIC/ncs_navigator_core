@@ -49,7 +49,6 @@ Around do |scenario, block|
 end
 
 Given /^an authenticated user with a role of "([^"]*)"$/ do |role|
-
   config = NcsNavigatorCore.configuration
   config.suite_configuration.core["with_specimens"] = 'true'
 
@@ -74,5 +73,16 @@ Given /^an authenticated user with a role of "([^"]*)"$/ do |role|
       And I press "Log in"
     }
   end
+end
 
+Given /^an authenticated user not in the NCSNavigator portal$/ do
+  steps %Q{
+    Given I log in as "no_portal"
+  }
+end
+
+Given /^an authenticated user with no roles$/ do
+  steps %Q{
+    Given I log in as "no_roles"
+  }
 end
