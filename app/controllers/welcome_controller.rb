@@ -94,7 +94,7 @@ class WelcomeController < ApplicationController
     end
 
     def create_pregnancy_screener_event_record
-      dates = create_screener_event_record(NcsCode.pregnancy_screener)
+      dates = create_screener_activity_in_psc(NcsCode.pregnancy_screener)
       create_screener_event_record(NcsCode.pregnancy_screener, dates) unless dates.empty?
     end
 
