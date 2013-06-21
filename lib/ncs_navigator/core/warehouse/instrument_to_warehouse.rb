@@ -334,6 +334,7 @@ module NcsNavigator::Core::Warehouse
         create_base_record(instrument, wh_config, serial).tap do |record|
           apply_response_values(record)
           set_missing_values(record)
+          transform_exceptional_dts(record)
         end
       end
 
@@ -402,6 +403,48 @@ module NcsNavigator::Core::Warehouse
         end
       end
       private :set_missing_values
+
+      # For some questions that should really be MDES-coded dates (or times),
+      # we may receive values that aren't dates or times.  This occurs when
+      # selecting something like "Invalid" (-1) or "Don't know" (-2).  These
+      # need to be coded appropriately.  We parameterize coding on the format
+      # validation regex (which is present for all such fields).
+      #
+      # VERY IMPORTANT NOTE: YOU MUST KEEP THE REGEXES IN SYNC WITH THE
+      # WAREHOUSE.  That is, if you change the format regexes in the generated
+      # warehouse models, update them here too.
+      #
+      # In the future, we will handle more granular special-case values: for
+      # example, MDES specifies dates like 2009-01-92, which is interpreted as
+      # "January 2009 and I don't know the day".  This transformation process
+      # is transparent to that requirement, though: when the frontend supports
+      # such entry, the incoming value (from Surveyor) will be valid, and
+      # there will be no need for these transformations.
+      dt_code = lambda { |mask, v| mask.gsub('#', v.to_s.sub('-', '')) }
+
+      DT_TRANSFORMS = {
+        # Suggests -x => [-x, 9x:9x].
+        /^([0-9][0-9]:[0-9][0-9])?$/ => lambda { |val| [val, dt_code['9#:9#', val]] },
+
+        # Suggests -x => [-x, 9xxx-9x-9x].
+        /^([0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9])?$/ => lambda { |val| [val, dt_code['9###-9#-9#', val]] },
+      }
+
+      def transform_exceptional_dts(record)
+        record.class.properties.each do |variable|
+          if (format = variable.options[:format])
+            candidates = DT_TRANSFORMS[format]
+
+            if candidates
+              variable_name = variable.name
+              original_value = record.send(variable_name)
+
+              set_first_valid(record, variable_name, candidates.call(original_value))
+            end
+          end
+        end
+      end
+      private :transform_exceptional_dts
 
       def set_first_valid(record, variable_name, possible_values)
         record.send("#{variable_name}=", possible_values.shift)

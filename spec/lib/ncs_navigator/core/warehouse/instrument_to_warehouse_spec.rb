@@ -761,7 +761,7 @@ module NcsNavigator::Core::Warehouse
           }
 
           create_response_for(extra_info_q) { |r|
-            r.answer = annotated_q.answers.first
+            r.answer = extra_info_q.answers.first
             r.string_value = 'foo'
           }
         end
@@ -772,9 +772,117 @@ module NcsNavigator::Core::Warehouse
       end
 
       describe 'coding in date and time fields' do
-        it 'works for time-formatted questions'
-        it 'works for date-formatted questions'
-        it 'works for timestamp-formatted questions'
+        include NcsNavigator::Core::Surveyor::SurveyTaker
+
+        let(:primary) { records.find { |rec| rec.class.mdes_table_name == 'spec_blood_2' } }
+        let(:questions_dsl) {
+          <<-DSL
+            q_TIME_STAMP_2 "INSERT DATE/TIME STAMP", :data_export_identifier=>"SPEC_BLOOD_2.TIME_STAMP_2"
+            a_timestamp :datetime, :custom_class => "datetime"
+
+            q_LAST_DATE_EAT "LAST TIME ATE OR DRANK - DATE",
+            :data_export_identifier=>"SPEC_BLOOD_2.LAST_DATE_EAT",
+            :pick => :one
+            a_date "DATE", :date, :custom_class => "date"
+            a_neg_1 "REFUSED"
+            a_neg_2 "DON'T KNOW"
+
+            q_LAST_TIME_EAT "LAST TIME ATE OR DRANK - TIME",
+            :pick => :one,
+            :data_export_identifier=>"SPEC_BLOOD_2.LAST_TIME_EAT"
+            a_time "HH:MM", :time, :custom_class => "12hr_time"
+            a_neg_1 "REFUSED"
+            a_neg_2 "DON'T KNOW"
+          DSL
+        }
+
+        describe 'on time-formatted questions' do
+          it 'passes HH:MM through' do
+            respond(response_set) do |r|
+              r.answer 'LAST_TIME_EAT', 'time', :value => '12:34'
+            end
+
+            response_set.save!
+
+            primary.last_time_eat.should == '12:34'
+          end
+
+          it 'passes 12:92 through' do
+            pending "Surveyor does not handle MDES date/time coding"
+
+            respond(response_set) do |r|
+              r.answer 'LAST_TIME_EAT', 'time', :value => '12:92'
+            end
+
+            response_set.save!
+
+            primary.last_time_eat.should == '12:92'
+          end
+
+          it 'transforms -2 into 92:92' do
+            respond(response_set) do |r|
+              r.answer 'LAST_TIME_EAT', 'neg_2'
+            end
+
+            response_set.save!
+
+            primary.last_time_eat.should == '92:92'
+          end
+
+          it 'transforms -1 into 91:91' do
+            respond(response_set) do |r|
+              r.answer 'LAST_TIME_EAT', 'neg_1'
+            end
+
+            response_set.save!
+
+            primary.last_time_eat.should == '91:91'
+          end
+        end
+
+        describe 'on date-formatted questions' do
+          it 'passes YYYY-MM-DD through' do
+            respond(response_set) do |r|
+              r.answer 'LAST_DATE_EAT', 'date', :value => '2001-01-01'
+            end
+
+            response_set.save!
+
+            primary.last_date_eat.should == '2001-01-01'
+          end
+
+          it 'passes 2009-01-92 through' do
+            pending "Surveyor does not handle MDES date/time coding"
+
+            respond(response_set) do |r|
+              r.answer 'LAST_DATE_EAT', 'date', :value => '2009-01-92'
+            end
+
+            response_set.save!
+
+            primary.last_date_eat.should == '2009-01-92'
+          end
+
+          it 'transforms -2 into 9222-92-92' do
+            respond(response_set) do |r|
+              r.answer 'LAST_DATE_EAT', 'neg_2'
+            end
+
+            response_set.save!
+
+            primary.last_date_eat.should == '9222-92-92'
+          end
+        end
+
+        it 'works for timestamp-formatted questions' do
+          respond(response_set) do |r|
+            r.answer 'TIME_STAMP_2', 'timestamp', :value => '2000-01-01T12:34:56'
+          end
+
+          response_set.save!
+
+          primary.time_stamp_2.should == '2000-01-01T12:34:56'
+        end
       end
     end
 
