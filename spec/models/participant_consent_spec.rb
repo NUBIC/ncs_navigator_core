@@ -348,6 +348,18 @@ describe ParticipantConsent do
           it "returns the first chronological event" do
             participant_consent.consent_event.should == event1
           end
+
+          describe "and one of those events has a nil event start date" do
+            let(:event3) { Factory(:event, :event_type_code => Event.informed_consent_code, :event_start_date => nil) }
+            before do
+              Factory(:contact_link, :event => event3, :contact => contact)
+            end
+
+            it "returns the first chronological event" do
+              participant_consent.consent_event.should == event1
+            end
+          end
+
         end
       end
     end
