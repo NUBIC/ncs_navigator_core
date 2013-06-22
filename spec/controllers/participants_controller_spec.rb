@@ -57,6 +57,7 @@ describe ParticipantsController do
       let!(:p1) { Factory(:participant, :id => 9000, :p_id => '4500', :person => Factory(:person, :person_id => 'A')) }
       let!(:p2) { Factory(:participant, :id => 6000, :p_id => '9000', :person => Factory(:person, :person_id => 'B')) }
       let!(:p3) { Factory(:participant, :id => 3000, :p_id => '1500', :person => Factory(:person, :person_id => 'C')) }
+      let!(:p4) { Factory(:participant, :id => 8000, :p_id => '3000_abc', :person => Factory(:person, :person_id => 'D'))}
 
       before do
         InstrumentPlan.stub!(:from_schedule).and_return(InstrumentPlan.new)
@@ -78,6 +79,12 @@ describe ParticipantsController do
         get :show, :id => 'B'
 
         assigns[:participant].should == p2
+      end
+
+      it 'resolves participant 3000_abc' do
+        get :show, :id => '3000_abc'
+
+        assigns[:participant].should == p4
       end
 
       describe 'when the ID cannot be resolved' do
