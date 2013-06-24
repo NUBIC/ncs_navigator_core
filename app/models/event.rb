@@ -31,7 +31,6 @@
 #  updated_at                         :datetime
 #
 
-
 # An Event is a set of one or more scheduled or unscheduled, partially executed or completely executed
 # data collection activities with a single subject. The subject may be a Household or a Participant.
 # All activities in an Event have the same subject.
@@ -409,7 +408,6 @@ class Event < ActiveRecord::Base
     return nil if EVENT_WINDOW[intensity][self.event_type_code].nil?
     birth_date + EVENT_WINDOW[intensity][self.event_type_code][at]
   end
-
 
   # @return nil or Person
   def child_dob
@@ -1093,7 +1091,6 @@ class Event < ActiveRecord::Base
     return nil if part.blank?
     part.gsub(label_marker, "")
   end
-
 
   ##
   # If this event has an associated Informed Consent Event
