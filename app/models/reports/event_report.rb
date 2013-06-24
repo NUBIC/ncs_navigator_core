@@ -109,7 +109,7 @@ module Reports
     def resolve_events(activities)
       ideal_dates = activities.map(&:ideal_date).uniq
 
-      Event.where(:psc_ideal_date => ideal_dates).each_with_object([]) do |e, arr|
+      Event.with_person.where(:psc_ideal_date => ideal_dates).each_with_object([]) do |e, arr|
         matches = activities.select { |a| e.implied_by?(a) }
 
         unless matches.empty?
