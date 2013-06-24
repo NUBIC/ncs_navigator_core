@@ -159,7 +159,6 @@ describe Event do
       e.event_start_time.should be_nil
     end
 
-
     it "takes a string" do
       e = Factory(:event)
       e.event_start_time = '00:00'
