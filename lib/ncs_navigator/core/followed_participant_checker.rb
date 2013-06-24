@@ -37,6 +37,10 @@ module NcsNavigator::Core
         csv = Rails.application.csv_impl.new(csv_io, :headers => true, :header_converters => :symbol)
         rows = csv.read
 
+        unless csv.headers.include?(:p_id)
+          fail "#{@csv_filename} has no p_id column"
+        end
+
         intensity_expected = csv.headers.include?(:intensity)
 
         rows.collect { |row|

@@ -30,6 +30,7 @@ module ResponseSetPrepopulation
         "prepopulated_should_show_secondary_address_questions",
         "prepopulated_child_secondary_address_variables_previously_collected",
         "prepopulated_sa_phone_previously_collected",
+        "prepopulated_resp_relationship_previously_collected"
       ]
     end
 
@@ -84,6 +85,8 @@ module ResponseSetPrepopulation
                     child_secondary_address_variables_previously_collected?(question)
                   when "prepopulated_sa_phone_previously_collected"
                     sa_phone_previously_collected?(question)
+                  when "prepopulated_resp_relationship_previously_collected"
+                    resp_relationship_previously_collected?(question)
                   else
                     nil
                   end
@@ -364,6 +367,10 @@ module ResponseSetPrepopulation
     #   - OTHERWISE, GO TO SA_PHONE.
     def sa_phone_previously_collected?(question)
       answer_for(question, valid_response_exists?("PARTICIPANT_VERIF.SA_PHONE"))
+    end
+
+    def resp_relationship_previously_collected?(question)
+      answer_for(question, valid_response_exists?("PARTICIPANT_VERIF.RESP_REL_NEW"))
     end
   end
 end

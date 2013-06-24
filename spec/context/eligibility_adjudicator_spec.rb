@@ -6,7 +6,7 @@ describe EligibilityAdjudicator do
 
   context "person having taken screener" do
 
-    before :all do
+    before do
       father =      Factory(:person)
       grandparent = Factory(:person)
       @participant = Factory(:participant)
@@ -17,7 +17,7 @@ describe EligibilityAdjudicator do
       Factory(:participant_person_link, :person => grandparent,:participant => @participant, :relationship_code => 10)
       Factory(:ppg_detail, :participant => @participant)
       consent = Factory(:participant_consent, :participant => @participant)
-      Factory(:participant_consent_sample, :participant => @participant, :participant_consent => consent)
+      Factory(:participant_consent_sample, :participant_consent => consent)
       @person.participant = @participant
       @person.save!
       screener_survey = Factory(:survey, :title => "INS_QUE_PBSamplingScreen_INT_PBS_M3.0_V1.0")

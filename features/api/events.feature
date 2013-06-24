@@ -21,12 +21,40 @@ Feature: Event search API
 
     Then the response status is 400
 
-  Scenario: GET /api/v1/events satisfies its schema
+  Scenario: GET /api/v1/events requires a date range
     Given an authenticated user
 
     When I GET /api/v1/events with
       | header:X-Client-ID | foo |
       | types[]            | 10  |
 
+    Then the response status is 400
+
+  Scenario: GET /api/v1/events satisfies its response schema
+    Given an authenticated user
+
+    When I GET /api/v1/events with
+      | header:X-Client-ID | foo                     |
+      | types[]            | 10                      |
+      | scheduled_date     | [2005-07-01,2005-07-30] |
+
     Then the response status is 200
     And the response body satisfies the event search schema
+
+  Scenario: GET /api/v1/events returns 403 for users with no NCS roles
+    Given I log in as "no_roles"
+
+    When I GET /api/v1/events with
+      | header:X-Client-ID | foo |
+      | types[]            | 10  |
+
+    Then the response status is 403
+
+  Scenario: GET /api/v1/events returns 403 for users not in the correct portal
+    Given I log in as "no_portal"
+
+    When I GET /api/v1/events with
+      | header:X-Client-ID | foo |
+      | types[]            | 10  |
+
+    Then the response status is 403

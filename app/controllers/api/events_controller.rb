@@ -1,4 +1,6 @@
 class Api::EventsController < ApiController
+  permit *Role::ALL_ROLES
+
   def index
     range = params[:scheduled_date]
     codes = params[:types].try(:map, &:to_i)
@@ -12,9 +14,5 @@ class Api::EventsController < ApiController
     rescue Reports::ScopeTooBroadError
       render :nothing => true, :status => :bad_request
     end
-  end
-
-  def default_serializer_options
-    { root: false }
   end
 end

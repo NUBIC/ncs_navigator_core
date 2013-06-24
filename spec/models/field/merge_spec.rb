@@ -141,9 +141,9 @@ module Field
       let(:set) { subject.question_response_sets.values.first }
       let(:uuid) { 'foo' }
       let(:q) { Factory(:question) }
-      let(:a) { Factory(:answer) }
-      let(:a2) { Factory(:answer) }
-      let(:a3) { Factory(:answer) }
+      let(:a) { Factory(:answer, :question => q) }
+      let(:a2) { Factory(:answer, :question => q) }
+      let(:a3) { Factory(:answer, :question => q) }
 
       def new_qrs(*responses)
         Field::QuestionResponseSet.new(*responses)

@@ -22,7 +22,7 @@ module NcsNavigator::Core::Mdes
       [
         VersionMigrations::TwoZeroToTwoOne.new(options),
         VersionMigrations::TwoOneToTwoTwo.new(options),
-        VersionMigrations::TwoTwoToThreeOne.new(options),
+        VersionMigrations::Basic.new('2.2', '3.1', options),
         VersionMigrations::ThreeZeroToThreeTwo.new(options)
       ]
     end
