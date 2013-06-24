@@ -10,6 +10,7 @@
 //= require 'additional-methods'
 //= require core
 //= require form_validation
+//= require survey_validation
 //= require pbs_lists
 //= require consent
 //= require event
