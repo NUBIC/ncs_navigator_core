@@ -159,7 +159,6 @@ describe Event do
       e.event_start_time.should be_nil
     end
 
-
     it "takes a string" do
       e = Factory(:event)
       e.event_start_time = '00:00'
@@ -786,30 +785,50 @@ describe Event do
 
   describe '#implied_by?' do
     let(:event) { Event.new }
+    let(:participant) { Factory(:participant) }
+    let(:person) { Factory(:person, :person_id => 'foo-bar-baz') }
 
     before do
       event.psc_ideal_date = '2000-01-01'
       event.stub!(:label => 'foo_bar')
+      Factory(:participant_person_link, :participant => participant, :person => person, :relationship_code => 1)
+      event.participant = participant
     end
 
-    describe 'given an event label and ideal date' do
-      it "returns true if its label and ideal date match what's given" do
-        event.implied_by?('foo_bar', '2000-01-01').should be_true
+    describe 'given an event label, ideal date, and person ID' do
+      it "returns true if its label, ideal date, and participant's self-linked person ID match what's given" do
+        event.implied_by?('foo_bar', '2000-01-01', 'foo-bar-baz').should be_true
       end
 
       it "returns false if its label does not match" do
-        event.implied_by?('baz', '2000-01-01').should be_false
+        event.implied_by?('baz', '2000-01-01', 'foo-bar-baz').should be_false
       end
 
       it "returns false if its ideal date does not match" do
-        event.implied_by?('foo_bar', '1999-12-31').should be_false
+        event.implied_by?('foo_bar', '1999-12-31', 'foo-bar-baz').should be_false
+      end
+
+      it "returns false if its participant's self-linked person ID does not match" do
+        event.implied_by?('foo_bar', '2000-01-01', 'qux-baz-foo').should be_false
+      end
+
+      it 'returns false if the event is not associated with a participant' do
+        event.participant = nil
+
+        event.implied_by?('foo_bar', '2000-01-01', 'foo-bar-baz').should be_false
+      end
+
+      it "returns false if the event's participant does not have a person" do
+        ParticipantPersonLink.delete_all
+
+        event.implied_by?('foo_bar', '2000-01-01', 'foo-bar-baz').should be_false
       end
     end
 
     describe 'given a Psc::ScheduledActivity' do
-      let(:sa) { Psc::ScheduledActivity.new(:ideal_date => '2000-01-01', :labels => 'event:foo_bar') }
+      let(:sa) { Psc::ScheduledActivity.new(:ideal_date => '2000-01-01', :labels => 'event:foo_bar', :person_id => 'foo-bar-baz') }
 
-      it "returns true if its label and ideal date match the activity" do
+      it "returns true if its label, ideal date, and participant's self-linked person ID match the activity" do
         event.implied_by?(sa).should be_true
       end
 
@@ -821,6 +840,12 @@ describe Event do
 
       it "returns false if its ideal date does not match" do
         sa.ideal_date = '1999-12-31'
+
+        event.implied_by?(sa).should be_false
+      end
+
+      it "returns false if its participant's self-linked person ID does not match" do
+        sa.person_id = 'qux-baz-foo'
 
         event.implied_by?(sa).should be_false
       end
