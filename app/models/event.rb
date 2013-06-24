@@ -780,19 +780,40 @@ class Event < ActiveRecord::Base
   # matches the event_type and psc_ideal_date
   # @param[ScheduledActivity]
   # @return[boolean]
+
+  ##
+  # Returns true iff:
+  #
+  # - one of the scheduled activity's labels matches this event's type
+  # - the scheduled activity's ideal date matches this event's {#psc_ideal_date}
+  # - the scheduled activity's subject ID matches this event's participant's
+  #   person ID (via the participant's self-link)
   def matches_activity(scheduled_activity)
     label = Event.parse_label(scheduled_activity.labels)
     implied_by?(label, scheduled_activity.ideal_date)
   end
 
+  ##
+  # For backwards compatibility reasons, #implied_by? has the following forms:
+  #
+  # implied_by?(event_label, ideal_date, person_id)
+  # implied_by?(activity)
   def implied_by?(*args)
+    person_id = participant.try(:person).try(:person_id)
+
+    return false unless person_id
+
     if args.length == 1
       activity = args.first
-      self.label == activity.event_label.try(:content) && psc_ideal_date.to_s == activity.ideal_date
-    elsif args.length == 2
-      self.label == args.first && psc_ideal_date.to_s == args.second
+      self.label == activity.event_label.try(:content) &&
+        psc_ideal_date.to_s == activity.ideal_date &&
+        person_id == activity.person_id
+    elsif args.length == 3
+      self.label == args.first &&
+        psc_ideal_date.to_s == args.second &&
+        person_id == args.third
     else
-      raise ArgumentError, "wrong number of arguments (#{args.length} for 1 or 2)"
+      raise ArgumentError, "wrong number of arguments (#{args.length} for 1 or 3)"
     end
   end
 
