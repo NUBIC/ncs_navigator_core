@@ -51,70 +51,72 @@ class WelcomeController < ApplicationController
 
   def start_pregnancy_screener_instrument
     person = Person.create(:psu_code => @psu_code)
-    participant = Participant.create(:psu_code => @psu_code)
-    participant.person = person
-    household = HouseholdUnit.create!
-    HouseholdPersonLink.create!(:person => person, :household_unit => household)
-    participant.save!
+    resp = prepare_for_screener(person)
 
-    resp = psc.assign_subject(participant)
     if resp && resp.status.to_i < 299
-      create_pregnancy_screener_event_record(participant)
+      create_pregnancy_screener_event_record
       redirect_to new_person_contact_path(person)
     else
-      destroy_participant_and_redirect(participant, person, resp)
+      destroy_participant_and_redirect(@participant, person, resp)
     end
   end
 
   def start_pbs_eligibility_screener_instrument
     person = Person.find(params[:person_id])
+    resp = prepare_for_screener(person)
+
     if person.sampled_ineligible?
       flash[:warning] = "Person is ineligible - cannot start eligibility screener"
       redirect_to request.referer
     else
-      participant = Participant.create(:psu_code => @psu_code)
-      participant.person = person
-      household = HouseholdUnit.create!
-      HouseholdPersonLink.create!(:person => person, :household_unit => household)
-      participant.save!
-      resp = psc.assign_subject(participant)
       if resp && resp.status.to_i < 299
-        create_pbs_eligibility_screener_event_record(participant)
+        create_pbs_eligibility_screener_event_record
         redirect_to new_person_contact_path(person)
       else
-        destroy_participant_and_redirect(participant, person, resp, false)
+        destroy_participant_and_redirect(@participant, person, resp, false)
       end
     end
   end
 
   private
 
-    def create_pbs_eligibility_screener_event_record(participant)
-      create_screener_event_record(participant, NcsCode.pbs_eligibility_screener)
+    def prepare_for_screener(person)
+      person.find_or_create_household_unit
+      @participant = Participant.create(:psu_code => @psu_code)
+      @participant.person = person
+      @participant.save!
+      psc.assign_subject(@participant)
     end
 
-    def create_pregnancy_screener_event_record(participant)
-      create_screener_event_record(participant, NcsCode.pregnancy_screener)
+    def create_pbs_eligibility_screener_event_record
+      dates = create_screener_activity_in_psc(NcsCode.pbs_eligibility_screener)
+      create_screener_event_record(NcsCode.pbs_eligibility_screener, dates) unless dates.empty?
     end
 
-    def create_screener_event_record(participant, event_type)
-      if activity_plan = psc.build_activity_plan(participant)
-        dates = []
+    def create_pregnancy_screener_event_record
+      dates = create_screener_activity_in_psc(NcsCode.pregnancy_screener)
+      create_screener_event_record(NcsCode.pregnancy_screener, dates) unless dates.empty?
+    end
+
+    def create_screener_activity_in_psc(event_type)
+      dates = []
+      if activity_plan = psc.build_activity_plan(@participant)
         # get dates for scheduled pbs_eligibility_screener activity for participant
         activity_plan.scheduled_activities.each do |a|
           code = NcsCode.find_event_by_lbl(a.event)
           dates << a.ideal_date if code == event_type
         end
-        # create a placeholder event for each date
-        dates.uniq.each do |dt|
-          Event.create( :participant => participant, :psu_code => participant.psu_code,
-                        :event_start_date => dt, :event_type => event_type)
-
-        end
       end
+      dates
     end
 
-
+    def create_screener_event_record(event_type, dates)
+      # create a placeholder event for each date
+      dates.uniq.each do |dt|
+        Event.create( :participant => @participant, :psu_code => @participant.psu_code,
+                      :event_start_date => dt, :event_type => event_type)
+      end
+    end
 
     def destroy_participant_and_redirect(participant, person, resp, destroy_person = true)
       ppl = participant.participant_person_links.where(:relationship_code => 1).first

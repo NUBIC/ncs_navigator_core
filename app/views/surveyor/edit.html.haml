@@ -10,7 +10,10 @@
     = render '/surveyor/section_menu' # unless @sections.size < 3
 
     .survey_header
-      = "#{@response_set.survey.description} for #{@response_set.participant.person.to_s}"
+      - if @response_set.participant
+        = "#{@response_set.survey.description} for #{@response_set.participant.person.to_s}"
+      - else
+        = "#{@response_set.survey.description} for #{@response_set.person.to_s}"
       .event
         = @event.to_s
 
