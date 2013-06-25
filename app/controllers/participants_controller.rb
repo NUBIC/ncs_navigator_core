@@ -448,11 +448,21 @@ class ParticipantsController < ApplicationController
 
     def load_participant
       return unless params[:id]
-      @participant =
-        Participant.find_by_id(params[:id]) ||
-        Participant.find_by_p_id(params[:id]) ||
-        Person.includes(:participant_person_links => :participant).where(:person_id => params[:id]).first.try(:participant) ||
-        raise(ActiveRecord::RecordNotFound, "Couldn't find Participant with id=#{params[:id]} or p_id=#{params[:id]} or self person_id=#{params[:id]}")
+      
+      @participant = 
+        if params[:id] =~ /\A\d+\Z/
+          begin
+            Participant.find(params[:id])
+          rescue ActiveRecord::RecordNotFound
+            nil
+          end
+        end
+
+      @participant = @participant ||
+          Participant.find_by_p_id(params[:id]) ||
+          Person.includes(:participant_person_links => :participant).where(:person_id => params[:id]).first.try(:participant)
+
+      raise(ActiveRecord::RecordNotFound, "Couldn't find Participant with id=#{params[:id]} or p_id=#{params[:id]} or self person_id=#{params[:id]}") unless @participant
     end
 
 end

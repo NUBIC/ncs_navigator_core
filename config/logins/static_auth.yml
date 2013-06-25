@@ -11,7 +11,7 @@ users:
       staff_id: test_user
     portals:
       - NCSNavigator:
-        - staff
+        - Field Staff
     last_name: Usr
     email: t-usr@dev.null
     first_name: T.
@@ -22,7 +22,7 @@ users:
       staff_id: staff_user
     portals:
       - NCSNavigator:
-        - staff_user
+        - Field Staff
     last_name: Usr
     email: staff_user@dev.null
     first_name: staff
@@ -48,3 +48,12 @@ users:
     last_name: Usr
     email: spec_proc@dev.null
     first_name: specimen
+
+  no_portal:
+    password: no_portal
+    portals: []
+
+  no_roles:
+    password: no_roles
+    portals:
+      - NCSNavigator
