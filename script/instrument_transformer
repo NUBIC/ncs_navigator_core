@@ -9,7 +9,6 @@ unless config_file && File.exist?(config_file)
 end
 
 config = NcsNavigator::Warehouse::Configuration.from_file(ARGV[0])
-config.soft_validations = ARGV.include?('--soft_validations')
 config.shell.say "Initializing Warehouse API..."
 ts = NcsNavigator::Warehouse::TransformStatus.new
 transformer = NcsNavigator::Warehouse::Transformers::EnumTransformer.new(
