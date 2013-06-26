@@ -577,7 +577,14 @@ describe PatientStudyCalendar do
             sss.activity_name.should == "Low-Intensity Interview"
             sss.current_state.should == Psc::ScheduledActivity::SCHEDULED
           end
-
+        end
+        it 'returns occurred scheduled activities' do
+          VCR.use_cassette('psc/janedoe_canceled_activities') do
+            subject_occurred_statuses = subject.scheduled_activities(@participant, [Psc::ScheduledActivity::OCCURRED])
+            subject_occurred_statuses.size.should == 1
+            sss = subject_occurred_statuses.first
+            sss.current_state.should == Psc::ScheduledActivity::OCCURRED
+          end
         end
       end
 
