@@ -35,7 +35,8 @@
         %p
           %span{ :class => "date_label" }
             = label_tag :staff_id, "Who Made Contact?"
-          = select_tag :staff_id, options_for_select(@staff_list, :selected => @current_staff_id), :class => "required"
+          - selected = @contact_link.try(:staff_id) || @current_staff_id
+          = select_tag :staff_id, options_for_select(@staff_list, :selected => selected), :class => "required"
 
       .person_contacted
         Who did you contact?
