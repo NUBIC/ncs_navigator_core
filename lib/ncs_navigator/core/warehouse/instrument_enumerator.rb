@@ -41,7 +41,7 @@ module NcsNavigator::Core::Warehouse
       Instrument.find_each(:batch_size => 5) do |ins|
         progress.increment_instruments
 
-        unless ins.enumerable_to_warehouse?
+        unless @wh_config.soft_validations || ins.enumerable_to_warehouse?
           log.info "Skipping ResponseSets for Instrument #{ins.instrument_id.inspect} (#{ins.id})."
           next
         end
