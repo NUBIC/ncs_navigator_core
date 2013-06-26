@@ -12,7 +12,7 @@
     = f.label :contact_date_date, "Date"
     = f.text_field :contact_date_date, :class => "required datepicker"
 
-  - if @staff_list
+  - unless @staff_list.blank?
     %p
       %span{ :class => "date_label" }
         = label_tag :staff_id, "Who Made Contact?"

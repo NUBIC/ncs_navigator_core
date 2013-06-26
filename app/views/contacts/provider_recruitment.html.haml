@@ -31,7 +31,7 @@
           = f.label :contact_end_time, "Contact End Time"
         = f.text_field :contact_end_time, :class => "required timepicker"
 
-      - if @staff_list
+      - unless @staff_list.blank?
         %p
           %span{ :class => "date_label" }
             = label_tag :staff_id, "Who Made Contact?"
