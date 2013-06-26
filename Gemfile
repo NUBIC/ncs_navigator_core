@@ -74,7 +74,7 @@ group :staging, :production do
   gem 'therubyracer'
 end
 
-gem 'ncs_mdes_warehouse', '~> 0.13', '>= 0.13.1'
+gem 'ncs_mdes_warehouse', '0.15.0.pre3'
 gem 'aker-cas_cli', '~> 1.0', :require => false
 gem 'dm-ar-finders', '~> 1.2.0'
 
