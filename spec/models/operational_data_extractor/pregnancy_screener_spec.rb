@@ -109,6 +109,42 @@ describe OperationalDataExtractor::PregnancyScreener do
     address.address_rank_code.should == 1
   end
 
+  # https://code.bioinformatics.northwestern.edu/issues/issues/show/4448
+  it "does not set the state if the instrument response value is not in the state code list" do
+    dunno_state = NcsCode.for_list_name_and_local_code("STATE_CL2", -2) # Don't Know
+
+    person = Factory(:person)
+    person.addresses.size.should == 0
+
+    participant = Factory(:participant)
+    participant.person = person
+    participant.save!
+    survey = create_pregnancy_screener_survey_with_address_operational_data
+    response_set, instrument = prepare_instrument(person, participant, survey)
+    response_set.save!
+
+    take_survey(survey, response_set) do |r|
+      r.a "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.ADDRESS_1", '123 Easy St.'
+      r.a "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.ADDRESS_2", ''
+      r.a "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.UNIT", ''
+      r.a "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.CITY", 'Chicago'
+      r.a "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.STATE", dunno_state
+      r.a "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.ZIP", '65432'
+      r.a "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.ZIP4", '1234'
+    end
+
+    response_set.responses.reload
+    response_set.responses.size.should == 7
+
+    OperationalDataExtractor::PregnancyScreener.new(response_set).extract_data
+
+    person = Person.find(person.id)
+    person.addresses.size.should == 1
+    address = person.addresses.first
+    address.state.local_code.should == -4
+    address.to_s.should == "123 Easy St. Chicago 65432-1234"
+  end
+
   it "extracts mail address operational data from the survey responses" do
 
     state = NcsCode.for_list_name_and_local_code("STATE_CL1", 14)
