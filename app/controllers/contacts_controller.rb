@@ -79,6 +79,8 @@ class ContactsController < ApplicationController
 
     respond_to do |format|
       if @contact.update_attributes(params[:contact])
+        # handle updates to the staff_id for the contact_link record
+        update_staff_for_contact_link
         format.html { post_update_redirect_path(@contact_link)}
         format.json { render :json => @contact }
       else
@@ -231,26 +233,41 @@ class ContactsController < ApplicationController
     def set_staff_list
       @current_staff_id = current_staff_id
       begin
-        if usrs = NcsNavigator::Authorization::Core::Authority.new.find_users
-          @staff_list = usrs.map{ |u| [u.full_name, u.identifiers[:staff_id]] }
-        end
+        set_staff_list_from_authority
       rescue
         # NOOP - will not show proxy list and will default to current logged in user
+      end
+    end
+
+    def set_staff_list_from_authority
+      if usrs = NcsNavigator::Authorization::Core::Authority.new.find_users
+        @staff_list = usrs.map{ |u| [u.full_name, u.identifiers[:staff_id]] }
+      end
+    end
+
+    def determine_staff
+      params["staff_id"].blank? ? current_staff_id : params["staff_id"]
+    end
+
+    ##
+    # Handles updates to the staff_id for the contact_link
+    # record associated with this contact
+    def update_staff_for_contact_link
+      staff_id = determine_staff
+      if @contact_link.staff_id != staff_id
+        @contact_link.update_attribute(:staff_id, staff_id)
       end
     end
 
     def find_or_create_contact_link
       link = ContactLink.where("contact_id = ? AND person_id = ? AND event_id = ?",
                                 @contact, @person, @event).first
-
-      staff_id = params["staff_id"].blank? ? current_staff_id : params["staff_id"]
-
       if link.blank?
         link = ContactLink.create!(:contact => @contact,
                                   :person => @person,
                                   :event => @event,
                                   :provider => @provider,
-                                  :staff_id => staff_id,
+                                  :staff_id => determine_staff,
                                   :psu_code => NcsNavigatorCore.psu_code)
       end
       link
