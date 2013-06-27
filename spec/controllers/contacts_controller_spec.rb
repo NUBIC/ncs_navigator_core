@@ -21,6 +21,9 @@ describe ContactsController do
     before(:each) do
       login(user_login)
       @person = Factory(:person)
+      # this removes the call to Ops to get staff members
+      # if you need to get the staff list, update this
+      controller.stub(:set_staff_list_from_authority => true)
     end
 
     context "for a new person" do
@@ -249,12 +252,14 @@ describe ContactsController do
           )
         end
 
-        def valid_attributes(contact_link, person = @person)
-          {
+        def valid_attributes(contact_link, staff_id = nil)
+          hsh = {
             "person_id" => contact_link.person.id,
             "contact_link_id" => contact_link.id,
             "id" => contact_link.contact.id
           }
+          hsh["staff_id"] = staff_id unless staff_id.nil?
+          hsh
         end
 
         it "redirects to the contact link's decision page when linked to an event but not to a provider" do
@@ -275,6 +280,14 @@ describe ContactsController do
           post :update, valid_attributes(@contact_link_no_part)
           response.should redirect_to(contact_links_path)
         end
+
+        it "updates the staff_id attribute if given" do
+          @contact_link.staff_id.should_not == "asdf" # sanity check
+          post :update, valid_attributes(@contact_link, "asdf")
+          updated_contact_link = ContactLink.find @contact_link.id
+          updated_contact_link.staff_id.should == "asdf"
+        end
+
       end
     end
 

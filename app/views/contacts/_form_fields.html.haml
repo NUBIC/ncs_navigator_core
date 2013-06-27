@@ -13,6 +13,16 @@
     = f.text_field :contact_date_date, :class => "required datepicker"
 
   %p
+    - if @staff_list.blank?
+      Could not load staff list. Using logged in staff member as person who made contact.
+    - else
+      %span{ :class => "date_label" }
+        = label_tag :staff_id, "Who Made Contact?"
+      %br
+      - selected = @contact_link.try(:staff_id) || @current_staff_id
+      = select_tag :staff_id, options_for_select(@staff_list, :selected => selected), :class => "required"
+
+  %p
     = f.label :contact_start_time, "Start Time"
     = f.text_field :contact_start_time, :class => "timepicker"
 
