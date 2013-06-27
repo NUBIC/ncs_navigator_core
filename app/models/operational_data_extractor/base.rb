@@ -302,11 +302,34 @@ module OperationalDataExtractor
       @other_institution_type ||= NcsCode.for_list_name_and_local_code('ORGANIZATION_TYPE_CL1', -5)
     end
 
+    ##
+    # Some instruments use code lists that differ from the
+    # code list used for an attribute on the Operational Data
+    # record. cf.https://code.bioinformatics.northwestern.edu/issues/issues/show/4448
+    # This method checks that value is in code list
+    # @return[Boolean]
+    def legal_ncs_code_list_value?(obj, attribute, value)
+      is_legal = true
+      cls = obj.class
+      if cls.respond_to?(:ncs_coded_attributes)
+        attr_sym = attribute.to_sym
+        if nca = cls.ncs_coded_attributes.select{|nca| nca == attr_sym}[attr_sym]
+          legal_values = nca.code_list.collect(&:local_code)
+          is_legal = legal_values.include?(value)
+        end
+      end
+      is_legal
+    end
+    private :legal_ncs_code_list_value?
+
     def set_value(obj, attribute, value)
       if value.blank?
         log_error(obj, "#{attribute} not set because value is blank.")
       elsif attribute.include?('_code')
-        obj.send("#{attribute}=", value)
+
+        if legal_ncs_code_list_value?(obj, attribute, value)
+          obj.send("#{attribute}=", value)
+        end
       else
         validate_and_set(obj, attribute, value)
       end
@@ -709,6 +732,10 @@ module OperationalDataExtractor
     def address_attribute_value_pairs(map)
       map.each do |key, attribute|
         value = value_by_key(key)
+        if attribute == "state_code"
+          # validate code is in code list for NcsCodedAttribute for state
+          value = nil if value.to_i < 0
+        end
         yield [attribute, value]
       end
     end
