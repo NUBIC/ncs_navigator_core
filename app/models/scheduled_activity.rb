@@ -155,19 +155,31 @@ class ScheduledActivity
     @activity_name == "Withdrawal"
   end
 
-  ##
-  # True if the activity is a consent activity, but is not a child consent activity
-  # and is not a part of the Informed Consent Epoch
-  # @return [Boolean]
-  def cancelable_consent_activity?
-    skippable_segments = [
+  def skippable_consent_segments
+    [
       PatientStudyCalendar::INFORMED_CONSENT_GENERAL_CONSENT,
       PatientStudyCalendar::INFORMED_CONSENT_CHILD_CONSENT_BIRTH,
       PatientStudyCalendar::INFORMED_CONSENT_CHILD_CONSENT_SIX_MONTHS,
       PatientStudyCalendar::INFORMED_CONSENT_WITHDRAWAL,
       PatientStudyCalendar::INFORMED_CONSENT_RECONSENT,
     ]
-    consent_activity? && !child_consent? && !skippable_segments.include?(study_segment)
+  end
+  private :skippable_consent_segments
+
+  ##
+  # True if the activity is a consent activity, but is not a child consent activity
+  # and is not a part of the Informed Consent Epoch
+  # @return [Boolean]
+  def cancelable_consent_activity?
+    consent_activity? && !child_consent? && !skippable_consent_segments.include?(study_segment)
+  end
+
+  ##
+  # True if the activity is a child consent activity
+  # and is not a part of the Informed Consent Epoch
+  # @return [Boolean]
+  def cancelable_child_consent_activity?
+    consent_activity? && child_consent? && !skippable_consent_segments.include?(study_segment)
   end
 
   ##

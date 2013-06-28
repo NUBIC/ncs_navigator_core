@@ -129,7 +129,7 @@ class SurveyorController < ApplicationController
   def set_activity_plan_for_participant
     core_participant = @response_set.participant
     if core_participant
-      if core_participant.p_type_code == 6
+      if core_participant.child_participant?
         @participant = core_participant.mother.participant
       else
         @participant = core_participant

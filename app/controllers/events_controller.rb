@@ -135,8 +135,13 @@ class EventsController < ApplicationController
     mark_activity_occurred(event, participant)
 
     # For a consent event if the participant has consented, cancel all upcoming consent activities in PSC.
-    if event.consent_event? && participant.try(:consented?)
-      cancel_scheduled_consents_for_consented_participant(participant)
+    if event.consent_event?
+      if participant.try(:consented?)
+        cancel_scheduled_consents_for_consented_participant(participant)
+      end
+      if !participant.child_participant? && participant.has_child_consented?
+        cancel_scheduled_consents_for_child_participant(participant)
+      end
     end
 
     # If necessary, update associated event information
@@ -220,6 +225,20 @@ class EventsController < ApplicationController
     end
   end
   private :cancel_scheduled_consents_for_consented_participant
+
+  ##
+  # For all scheduled activities for the given participant's children,
+  # cancel those that are consent activities for the child
+  # @param [Participant]
+  def cancel_scheduled_consents_for_child_participant(participant)
+    psc.scheduled_activities(participant).each do |a|
+      if a.cancelable_child_consent_activity?
+        psc.update_activity_state(a.activity_id, participant, Psc::ScheduledActivity::CANCELED, Date.parse(a.ideal_date),
+          "Consent activity cancelled as the Child of Participant [#{participant.p_id}] has already consented.")
+      end
+    end
+  end
+  private :cancel_scheduled_consents_for_child_participant
 
   ##
   # Determine the disposition group to be used from the contact type or instrument taken

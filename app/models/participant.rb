@@ -744,6 +744,19 @@ class Participant < ActiveRecord::Base
   end
   private :child_consented?
 
+  def has_child_consented?
+    return false if child_participant?
+    return false if children.blank?
+    result = false
+    children.each do |c|
+      if child_participant = c.participant
+        result = child_participant.consented_birth_to_six_months? || child_participant.consented_six_months_to_age_of_majority?
+      end
+      break if result
+    end
+    result
+  end
+
   ##
   # Returns true if a participant_consent record exists for the given consent type
   # and consent_given_code is true and consent_withdraw_code is not true.
