@@ -194,24 +194,24 @@ module ResponseSetPrepopulation
           init_common_vars
         end
 
-        it "should be TRUE when valid answers to NUM_HH exist" do
+        it "should be FALSE when valid answers to NUM_HH exist" do
           take_num_hh_surveys("24M", true)
+          run_populator
+          get_response_as_string(@response_set,
+                      "prepopulated_should_show_num_hh_group").should == "FALSE"
+        end
+
+        it "should be TRUE when only invalid answers to NUM_HH exist" do
+          take_num_hh_surveys("24M", false)
           run_populator
           get_response_as_string(@response_set,
                       "prepopulated_should_show_num_hh_group").should == "TRUE"
         end
 
-        it "should be FALSE when only invalid answers to NUM_HH exist" do
-          take_num_hh_surveys("24M", false)
+        it "should be TRUE when no responses to NUM_HH exist" do
           run_populator
           get_response_as_string(@response_set,
-                      "prepopulated_should_show_num_hh_group").should == "FALSE"
-        end
-
-        it "should be FALSE when no responses to NUM_HH exist" do
-          run_populator
-          get_response_as_string(@response_set,
-                      "prepopulated_should_show_num_hh_group").should == "FALSE"
+                      "prepopulated_should_show_num_hh_group").should == "TRUE"
         end
       end
 
@@ -224,24 +224,24 @@ module ResponseSetPrepopulation
           init_common_vars
         end
 
-        it "should be TRUE when valid answers to NUM_HH exist" do
+        it "should be FALSE when valid answers to NUM_HH exist" do
           take_num_hh_surveys("18M", true)
+          run_populator
+          get_response_as_string(@response_set,
+                      "prepopulated_should_show_num_hh_group").should == "FALSE"
+        end
+
+        it "should be TRUE when only invalid answers to NUM_HH exist" do
+          take_num_hh_surveys("18M", false)
           run_populator
           get_response_as_string(@response_set,
                       "prepopulated_should_show_num_hh_group").should == "TRUE"
         end
 
-        it "should be FALSE when only invalid answers to NUM_HH exist" do
-          take_num_hh_surveys("18M", false)
+        it "should be TRUE when no responses to NUM_HH exist" do
           run_populator
           get_response_as_string(@response_set,
-                      "prepopulated_should_show_num_hh_group").should == "FALSE"
-        end
-
-        it "should be FALSE when no responses to NUM_HH exist" do
-          run_populator
-          get_response_as_string(@response_set,
-                      "prepopulated_should_show_num_hh_group").should == "FALSE"
+                      "prepopulated_should_show_num_hh_group").should == "TRUE"
         end
       end
 
