@@ -61,7 +61,7 @@ describe ContactsController do
           end
 
           it "assigns a new event as @event" do
-            get :new, :person_id => @person.id
+            get :new, :person_id => @person.id, :event_id => @event.id
             assigns[:event].should == @event
             assigns[:event].event_type.should == @preg_screen_event
           end
@@ -73,9 +73,9 @@ describe ContactsController do
             Contact.stub(:new).and_return(mock_contact)
           end
 
-          it "raises an exception" do
+          it "succeeds as an eventless contact" do
             person = Factory(:person)
-            expect { get :new, :person_id => person.id }.to raise_error
+            expect { get :new, :person_id => person.id }.to_not raise_error
           end
         end
       end
@@ -329,7 +329,7 @@ describe ContactsController do
         end
 
         it "assigns a new event as @event" do
-          get :new, :person_id => @person.id
+          get :new, :person_id => @person.id, :event_id => @event33.id
           assigns[:event].should == @event33
           assigns[:event].event_type.local_code.should == 33
         end
@@ -340,7 +340,7 @@ describe ContactsController do
 
             Event.stub(:schedule_and_create_placeholder).and_return(nil)
 
-            get :new, :person_id => @person.id, :event_type_id => NcsCode.low_intensity_data_collection.id
+            get :new, :person_id => @person.id, :event_id => @event33.id, :event_type_id => NcsCode.low_intensity_data_collection.id
             assigns[:event].event_type.local_code.should == NcsCode.low_intensity_data_collection.local_code
           end
         end

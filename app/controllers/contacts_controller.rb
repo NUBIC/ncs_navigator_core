@@ -17,11 +17,12 @@ class ContactsController < ApplicationController
                              :psu_code => NcsNavigatorCore.psu_code,
                              :contact_date_date => Date.today,
                              :contact_start_time => Time.now.strftime("%H:%M"))
-
-    @event = event_for_person
-    @requires_consent = (@person.participant &&
-                            (@person.participant.consented? == false) &&
-                            !@event.screener_event?)
+    if params[:event_id]
+      @event = event_for_person
+      @requires_consent = (@person.participant &&
+                              (@person.participant.consented? == false) &&
+                              !@event.screener_event?)
+    end
 
     respond_to do |format|
       format.html # new.html.haml
@@ -35,13 +36,17 @@ class ContactsController < ApplicationController
     @person  = Person.find(params[:person_id])
     @contact = Contact.start(@person, params[:contact])
 
-    @event = event_for_person
+    @event = event_for_person unless params[:event_id]  # possibly eventless contacts under #3285
 
     respond_to do |format|
       if @contact.save
         link = find_or_create_contact_link
+        if @event
+          format.html { redirect_to(select_instrument_contact_link_path(link.id), :notice => 'Contact was successfully created.') }
+        else
+          format.html { redirect_to(@person, :notice => 'Contact was successfully created.') }
+        end
 
-        format.html { redirect_to(select_instrument_contact_link_path(link.id), :notice => 'Contact was successfully created.') }
         format.json { render :json => @contact }
       else
         format.html { render :action => "new" }
@@ -220,9 +225,6 @@ class ContactsController < ApplicationController
           participant.events.reload
         end
         participant.pending_events.first
-      else
-        # TODO: be able to create a Contact without an Event - Task #3285
-        raise "No Event identifier provided or Participant found for Contact"
       end
     end
 
