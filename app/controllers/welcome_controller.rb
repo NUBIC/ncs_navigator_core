@@ -78,14 +78,48 @@ class WelcomeController < ApplicationController
     end
   end
 
+# Restarting screener for ineligible
+# - find Person record
+# - remove old screener data
+# - create and prepare new participant for person
+# - find PSC screener activities
+# - update `occurred` activities to be `scheduled`
+# - create screener Event for cases with a psc_ideal_date matching the ideal date of the former
+  def restart_screener_for_ineligible
+    @response_set = ResponseSet.where(access_code: params[:response_set_code]).first
+    @person = @response_set.person
+    event_type = @response_set.event.event_type
+
+    remove_old_screener_data
+    prepare_for_screener(@person, false) #false since subject(person) is already in psc
+
+    dates = find_and_reactivate_screener_activities
+    create_screener_event_record(event_type, dates)
+    redirect_to new_person_contact_path(@person)
+  end
+
   private
 
-    def prepare_for_screener(person)
+    def find_and_reactivate_screener_activities
+      activities = psc.scheduled_activities(@participant, [Psc::ScheduledActivity::OCCURRED])
+      activities.each_with_object([]) do |a, dates|
+        psc.update_activity_state(a.activity_id, @participant, Psc::ScheduledActivity::SCHEDULED, Date.parse(a.ideal_date))
+        dates << a.ideal_date
+      end
+    end
+
+    def remove_old_screener_data
+      to_delete = [@response_set.contact.contact_links, @response_set.contact,
+          @response_set, @response_set.instrument, @response_set.event]
+      to_delete.flatten.compact.map(&:destroy)
+    end
+
+    def prepare_for_screener(person, assign_subject = true)
       person.find_or_create_household_unit
       @participant = Participant.create(:psu_code => @psu_code)
       @participant.person = person
       @participant.save!
-      psc.assign_subject(@participant)
+      psc.assign_subject(@participant) if assign_subject
     end
 
     def create_pbs_eligibility_screener_event_record

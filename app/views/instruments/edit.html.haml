@@ -11,10 +11,7 @@
         Instrument
       - @instrument.response_sets.each do |rs|
         .survey
-          = link_to "Edit Instrument Responses",
-            surveyor.edit_my_survey_path(:survey_code => rs.survey.access_code, :response_set_code => rs.access_code),
-            :class => "edit_link icon_link",
-            :title => rs.survey.title
+          = determine_links_for_editing(@instrument, rs)
 
       = fields_for @instrument do |instrument|
         = render "form_fields", { :f => instrument }
