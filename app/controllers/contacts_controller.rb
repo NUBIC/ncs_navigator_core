@@ -45,8 +45,6 @@ class ContactsController < ApplicationController
         else
           format.html { redirect_to(@person, :notice => 'Contact was successfully created.') }
         end
-
-        format.html { redirect_to(select_instrument_contact_link_path(link), :notice => 'Contact was successfully created.') }
         format.json { render :json => @contact }
       else
         format.html { render :action => "new" }
