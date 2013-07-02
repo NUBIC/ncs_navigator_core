@@ -126,23 +126,13 @@ class EventsController < ApplicationController
   #
   # #update_participant_state alters the participant record
   # and therefore is returned from this method
-  # Provider Recruitment Events also return nil
+  # Provider Recruitment Events return nil
   #
   # @see #update_participant_state
   # @return [Participant]
   def post_update_event_actions(event, participant)
     # Update PSC activities
     mark_activity_occurred(event, participant)
-
-    # For a consent event if the participant has consented, cancel all upcoming consent activities in PSC.
-    if event.consent_event?
-      if participant.try(:consented?)
-        cancel_scheduled_consents_for_consented_participant(participant)
-      end
-      if !participant.child_participant? && participant.has_child_consented?
-        cancel_scheduled_consents_for_child_participant(participant)
-      end
-    end
 
     # If necessary, update associated event information
     event.update_associated_informed_consent_event
@@ -151,8 +141,13 @@ class EventsController < ApplicationController
     if event.provider_recruitment_event?
       nil
     else
-      update_participant_state(event, participant)
+      participant = update_participant_state(event, participant)
     end
+
+    # After advancing the participant, cancel consent activities
+    cancel_upcoming_consent_activities_for_consented_participants(event, participant)
+
+    event.provider_recruitment_event? ? nil : participant
   end
   private :post_update_event_actions
 
@@ -187,6 +182,28 @@ class EventsController < ApplicationController
     participant
   end
   private :update_participant_state
+
+  ##
+  # If the participant (or child participant) has already consented, cancel those
+  # consent activities that are associated with future events
+  def cancel_upcoming_consent_activities_for_consented_participants(event, participant)
+    # For an consent event where the participant has consented, cancel all upcoming consent activities in PSC.
+    if event.consent_event?
+      if participant.try(:consented?)
+        cancel_scheduled_consents_for_consented_participant(participant)
+      end
+    end
+
+    # For an event where the participant can consent a child, cancel all upcoming child consent activities in PSC
+    # if the child has been consented
+    if event.consent_event? || event.pv1? || event.pv2?
+      if !participant.child_participant? && participant.has_child_consented?
+        cancel_scheduled_consents_for_child_participant(participant)
+      end
+    end
+
+  end
+  private :cancel_upcoming_consent_activities_for_consented_participants
 
   ##
   # Updates activities associated with this event
