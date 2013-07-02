@@ -204,7 +204,7 @@ class Participant < ActiveRecord::Base
     end
 
     event :follow do
-      transition [:converted_high_intensity, :in_high_intensity_arm, :pre_pregnancy, :following_high_intensity] => :following_high_intensity
+      transition [:parenthood, :converted_high_intensity, :in_high_intensity_arm, :pre_pregnancy, :following_high_intensity] => :following_high_intensity
     end
 
     event :impregnate do
@@ -228,7 +228,7 @@ class Participant < ActiveRecord::Base
     end
 
     event :birth_event do
-      transition [:in_high_intensity_arm, :pregnancy_one, :pregnancy_two, :ready_for_birth] => :parenthood
+      transition [:in_high_intensity_arm, :converted_high_intensity, :pregnancy_one, :pregnancy_two, :ready_for_birth] => :parenthood
     end
 
     event :birth_cohort do
