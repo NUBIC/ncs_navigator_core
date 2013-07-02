@@ -308,26 +308,25 @@ module OperationalDataExtractor
     # record. cf.https://code.bioinformatics.northwestern.edu/issues/issues/show/4448
     # This method checks that value is in code list
     # @return[Boolean]
-    def legal_ncs_code_list_value?(obj, attribute, value)
+    def legal_ncs_code_list_value_for_attribute_of_class?(obj, attribute, value)
       is_legal = true
       cls = obj.class
       if cls.respond_to?(:ncs_coded_attributes)
-        attr_sym = attribute.to_sym
-        if nca = cls.ncs_coded_attributes.select{|nca| nca == attr_sym}[attr_sym]
+        if nca = cls.ncs_coded_attributes.select{|nca| nca == attribute.to_sym}[attribute.to_sym]
           legal_values = nca.code_list.collect(&:local_code)
           is_legal = legal_values.include?(value)
         end
       end
       is_legal
     end
-    private :legal_ncs_code_list_value?
+    private :legal_ncs_code_list_value_for_attribute_of_class?
 
     def set_value(obj, attribute, value)
       if value.blank?
         log_error(obj, "#{attribute} not set because value is blank.")
       elsif attribute.include?('_code')
 
-        if legal_ncs_code_list_value?(obj, attribute, value)
+        if legal_ncs_code_list_value_for_attribute_of_class?(obj, attribute, value)
           obj.send("#{attribute}=", value)
         end
       else
