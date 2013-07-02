@@ -17,7 +17,7 @@ gem 'haml', '~> 3.1'
 gem 'jsv.rb'
 gem 'lograge'
 gem 'pg'
-gem 'ncs_navigator_authority'
+gem 'ncs_navigator_authority', '~> 1.2'
 
 gem 'exception_notification', :require => 'exception_notifier'
 gem 'paper_trail', '~> 2'
