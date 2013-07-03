@@ -108,7 +108,8 @@ class ContactLinksController < ApplicationController
       @activity_plan = psc.build_activity_plan(@participant)
       @activities_for_event = @activity_plan.activities_for_event(@event)
       @scheduled_activities = @activity_plan.scheduled_activities_for_event(@event)
-      @current_activity = @activity_plan.current_scheduled_activity(@event, @response_sets.try(:first))
+      @current_activity     = @activity_plan.current_scheduled_activity(@event, @response_sets.try(:first))
+      @saq_activities       = @activities_for_event.find_all { |activity| activity.activity_name =~ /SAQ$/ }
     end
   end
 
