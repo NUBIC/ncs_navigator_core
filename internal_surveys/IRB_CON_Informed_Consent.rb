@@ -32,8 +32,7 @@ survey "IRB_CON_Informed_Consent", :instrument_type => "-5", :description => "In
       a_2 "NO"
 
     q_consent_date "Consent Date",
-      :data_export_identifier => "consent_date",
-      :is_mandatory => true, :custom_class => "mandatory"
+      :data_export_identifier => "consent_date"
       a_consent_date :string, :custom_class => "date"
 
     q_consent_version "Consent Version",
@@ -141,8 +140,7 @@ survey "IRB_CON_Informed_Consent", :instrument_type => "-5", :description => "In
       condition_B :q_consent_given_code, "==", :a_2
 
     q_consent_withdraw_date "Consent Withdraw Date",
-      :data_export_identifier => "consent_withdraw_date",
-      :is_mandatory => true, :custom_class => "mandatory"
+      :data_export_identifier => "consent_withdraw_date"
       a_consent_withdraw_date :string, :custom_class => "date"
       dependency :rule => "A or B"
       condition_A :q_consent_type, "==", :a_3
