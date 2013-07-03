@@ -12,10 +12,10 @@
   %span{:class => 'participant_data_point'}
     Date of Birth:
     = blank_safe(person.person_dob)
-
-  %span{:class => 'participant_data_point'}
-    SSU/TSU:
-    = "#{blank_safe(participant.ssu)}/#{blank_safe(participant.tsu)}"
+  - if participant
+    %span{:class => 'participant_data_point'}
+      SSU/TSU:
+      = "#{blank_safe(participant.ssu)}/#{blank_safe(participant.tsu)}"
   = # TODO: Add Special Considerations here
 = # TODO: If Mother participant -- links to chid(ren) participants.
 = # If child, then link to primary caregivers?? (this is a placeholder for now until requirements confirmed with WROC)
