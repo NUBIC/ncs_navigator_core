@@ -52,7 +52,7 @@ module OperationalDataExtractor
       end
 
       # Set values on the ParticipantConsentSamples
-      create_participant_consent_sample_records(data_export_identifier_indexed_responses, consent)
+      create_or_update_participant_consent_sample_records(data_export_identifier_indexed_responses, consent)
 
       update_enrollment_status(consent)
 
@@ -68,21 +68,26 @@ module OperationalDataExtractor
     # create ParticipantConsentSample records associated with the given ParticipantConsent.
     # @param data_export_identifier_indexed_responses [Hash]
     # @param consent [ParticipantConsent]
-    def create_participant_consent_sample_records(data_export_identifier_indexed_responses, consent)
+    def create_or_update_participant_consent_sample_records(data_export_identifier_indexed_responses, consent)
       if create_samples_response = data_export_identifier_indexed_responses['collect_specimen_consent']
         if response_value(create_samples_response).to_i == NcsCode::YES
           ParticipantConsentSample::SAMPLE_CONSENT_TYPE_CODES.each do |code|
             if r = data_export_identifier_indexed_responses["sample_consent_given_code_#{code}"]
               if value = response_value(r)
-                consent.participant_consent_samples.create(
-                  :sample_consent_type_code => code, :sample_consent_given_code => value)
+                psc = consent.participant_consent_samples.where(:sample_consent_type_code => code).first
+                if psc
+                  psc.update_attribute(:sample_consent_given_code, value)
+                else
+                  consent.participant_consent_samples.create(
+                    :sample_consent_type_code => code, :sample_consent_given_code => value)
+                end
               end
             end
           end
         end
       end
     end
-    private :create_participant_consent_sample_records
+    private :create_or_update_participant_consent_sample_records
 
     ##
     # Either enroll or unenroll the participant based on the
