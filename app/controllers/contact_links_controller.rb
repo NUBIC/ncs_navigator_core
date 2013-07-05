@@ -91,7 +91,7 @@ class ContactLinksController < ApplicationController
       @activities_for_event = @activity_plan.activities_for_event(@event)
       @current_activity     = @activities_for_event.detect { |a| a.scheduled? }
       @scheduled_activities = @activity_plan.scheduled_activities_for_event(@event)
-      @saq_activities       = @activities_for_event.find_all { |activity| activity.activity_name =~ /SAQ$/ }
+      @saq_activities       = @activities_for_event.find_all { |activity| activity.saq_activity? }
     end
   end
 
@@ -109,7 +109,7 @@ class ContactLinksController < ApplicationController
       @activities_for_event = @activity_plan.activities_for_event(@event)
       @scheduled_activities = @activity_plan.scheduled_activities_for_event(@event)
       @current_activity     = @activity_plan.current_scheduled_activity(@event, @response_sets.try(:first))
-      @saq_activities       = @activities_for_event.find_all { |activity| activity.activity_name =~ /SAQ$/ }
+      @saq_activities       = @activities_for_event.find_all { |activity| activity.saq_activity? }
     end
   end
 
@@ -162,10 +162,7 @@ class ContactLinksController < ApplicationController
     participant  = person.participant if person
     event        = @contact_link.event
     if event && participant
-      activity_plan        = psc.build_activity_plan(participant)
-      occurred_activities  = activity_plan.occurred_activities_for_event(event)
-      saq_activity         = occurred_activities.find_all{|activity| activity.activity_name =~ /SAQ$/}.first
-      if saq_activity
+      if saq_activity = determine_saq_activity(participant, event)
         survey = Survey.most_recent_for_access_code(Survey.to_normalized_string(saq_activity.instrument))
         if survey
           rescheduled_activity(saq_activity)
@@ -186,6 +183,16 @@ class ContactLinksController < ApplicationController
       redirect_to(decision_page_contact_link_path(@contact_link))
     end
   end
+
+  def determine_saq_activity(participant, event)
+    activity_plan = psc.build_activity_plan(participant)
+    saq_activity  = activity_plan.activities_for_event(event).detect do |a|
+      # check that this is a SAQ activity and matches the survey title param if present
+      a.saq_activity? && (!params[:survey_title].blank? && (a.instrument == params[:survey_title].downcase))
+    end
+    saq_activity
+  end
+  private :determine_saq_activity
 
   def update_psc_for_activity
     @contact_link = ContactLink.find(params[:contact_link_id])
