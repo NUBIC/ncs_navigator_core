@@ -173,7 +173,7 @@ module NcsNavigator::Core
 
           it 'is an error' do
             expect_import_to_have_error(
-              /Error on row 2. Contact for new event \(event type 15 -> 14\) but no event start date./
+              /Error on row 3. Contact for new event \(event type 15 -> 14\) but no event start date./
             )
           end
 
@@ -203,7 +203,7 @@ module NcsNavigator::Core
 
           it 'is an error' do
             expect_import_to_have_error(
-              /Error on row 2. Contact for new event \(participant #{exemplar_participant.p_id} -> another\) but no event start date./
+              /Error on row 3. Contact for new event \(participant #{exemplar_participant.p_id} -> another\) but no event start date./
             )
           end
 
@@ -381,7 +381,7 @@ module NcsNavigator::Core
               make_a_csv create_csv_row_text(coded_attribute => bad_value)
 
               expect_import_to_have_error(
-                /Error on row 1. Unknown code value for #{model}##{coded_attribute}: #{bad_value}/
+                /Error on row 2. Unknown code value for #{model}##{coded_attribute}: #{bad_value}/
               )
             end
           end
@@ -425,7 +425,7 @@ module NcsNavigator::Core
 
             it 'reports an error' do
               expect_import_to_have_error(
-                /Error on row 1. Hilo change to hi but already hi./
+                /Error on row 2. Hilo change to hi but already hi./
               )
             end
           end
@@ -462,7 +462,7 @@ module NcsNavigator::Core
 
             it 'reports an error' do
               expect_import_to_have_error(
-                /Error on row 1. Hilo change to lo but already lo./
+                /Error on row 2. Hilo change to lo but already lo./
               )
             end
           end
@@ -473,7 +473,7 @@ module NcsNavigator::Core
         it 'fails for an unknown participant' do
           make_a_csv create_csv_row_text(:participant_id => 'No')
 
-          expect_import_to_have_error /Error on row 1. Unknown participant "No"/
+          expect_import_to_have_error /Error on row 2. Unknown participant "No"/
         end
 
         it 'fails for a child participant' do
@@ -481,14 +481,14 @@ module NcsNavigator::Core
 
           make_a_csv create_csv_row_text(:participant_id => child.p_id)
 
-          expect_import_to_have_error /Error on row 1. Cannot record a contact for a child participant \("kiddo"\)\./
+          expect_import_to_have_error /Error on row 2. Cannot record a contact for a child participant \("kiddo"\)\./
         end
 
         describe 'for event' do
           it 'does not accept a record which does not pass AR validations' do
             make_a_csv create_csv_row_text(:event_start_time => 'top-o-the-morn')
 
-            expect_import_to_have_error /Error on row 1. Invalid Event: Event start time is invalid/
+            expect_import_to_have_error /Error on row 2. Invalid Event: Event start time is invalid/
           end
         end
 
@@ -496,7 +496,7 @@ module NcsNavigator::Core
           it 'does not accept a record which does not pass AR validations' do
             make_a_csv create_csv_row_text(:contact_start_time => 'top-o-the-morn')
 
-            expect_import_to_have_error /Error on row 1. Invalid Contact: Contact start time is invalid/
+            expect_import_to_have_error /Error on row 2. Invalid Contact: Contact start time is invalid/
           end
         end
 
@@ -504,7 +504,7 @@ module NcsNavigator::Core
           it 'does not accept a record which does not pass AR validations' do
             make_a_csv create_csv_row_text(:staff_id => nil)
 
-            expect_import_to_have_error /Error on row 1. Invalid ContactLink: Staff can't be blank./
+            expect_import_to_have_error /Error on row 2. Invalid ContactLink: Staff can't be blank./
           end
         end
 
@@ -513,7 +513,7 @@ module NcsNavigator::Core
             make_a_csv(
               create_csv_row_text(:contact_start_time => 'top-o-the-morn', :event_start_time => 'dusk')
             )
-            expect_import_to_have_error /Error on row 1. Invalid Event. Event start time is invalid.*Contact start time is invalid/m
+            expect_import_to_have_error /Error on row 2. Invalid Event. Event start time is invalid.*Contact start time is invalid/m
           end
         end
 
@@ -523,7 +523,7 @@ module NcsNavigator::Core
               create_csv_row_text(:contact_start_time => 'top-o-the-morn'),
               create_csv_row_text(:event_start_time => 'dusk')
             )
-            expect_import_to_have_error /Error on row 1. Invalid Contact. Contact start time is invalid.*Error on row 2. Invalid Event: Event start time is invalid/m
+            expect_import_to_have_error /Error on row 2. Invalid Contact: Contact start time is invalid.*Error on row 2. Invalid Contact: Contact start time is invalid/m
           end
         end
 
@@ -532,7 +532,7 @@ module NcsNavigator::Core
             ParticipantPersonLink.stub!(:create!).and_raise "I refuse"
             make_a_csv create_csv_row_text(:person_id => 'a new one', :relationship => '5')
 
-            expect_import_to_have_error /Error on row 1. RuntimeError: I refuse.*record_of_contact_importer/m
+            expect_import_to_have_error /Error on row 2. RuntimeError: I refuse.*record_of_contact_importer/m
           end
         end
       end

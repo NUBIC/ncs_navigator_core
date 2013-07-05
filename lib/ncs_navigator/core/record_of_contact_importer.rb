@@ -78,7 +78,8 @@ class NcsNavigator::Core::RecordOfContactImporter
   end
 
   def add_error(row_index, message)
-    @errors << Error.new(row_index + 1, message)
+    @errors << Error.new(row_index + 2, message)
+    puts "\n#{row_index + 2} :: #{message}"
   end
 
   def save_or_report_problems(instance, row_index)
@@ -87,6 +88,7 @@ class NcsNavigator::Core::RecordOfContactImporter
     else
       instance.errors.full_messages.each do |message|
         add_error(row_index, "Invalid #{instance.class}: #{message}.")
+        add_error(row_index, "Invalid #{instance.class}: #{message}. Record data: #{instance.inspect}")
       end
     end
   end
