@@ -148,7 +148,7 @@ module ResponseSetPrepopulation
       describe "prepopulated_person_dob_previously_collected" do
 
         it "is TRUE if the person has a valid dob" do
-          person.stub(:person_dob_date).and_return(Date.new(2001,1,1))
+          person.update_attribute(:person_dob_date, Date.new(2001,1,1))
 
           run_populator
           assert_response_value(@response_set_pt1, "prepopulated_person_dob_previously_collected", "TRUE")
@@ -186,10 +186,10 @@ module ResponseSetPrepopulation
 
         it "is FALSE if the person has no dob and has not responded previously" do
           init_instrument_and_response_set_pt1
-          person.stub(:person_dob_date).and_return(nil)
+          person.update_attribute(:person_dob_date, nil)
 
           run_populator
-          assert_response_value(@response_set_pt1, "prepopulated_person_dob_previously_collected", "TRUE")
+          assert_response_value(@response_set_pt1, "prepopulated_person_dob_previously_collected", "FALSE")
         end
 
       end
