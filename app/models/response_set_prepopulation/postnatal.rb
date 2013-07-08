@@ -57,7 +57,7 @@ module ResponseSetPrepopulation
               answer_for(question,
                          was_answer_to_mult_child_yes?("TWELVE_MTH_MOTHER"))
             when "prepopulated_should_show_num_hh_group"
-              answer_for(question, was_household_number_collected?)
+              ans = answer_for(question, was_household_number_not_collected?)
             when "prepopulated_is_valid_work_name_provided"
               answer_for(question, was_work_name_collected?)
             when "prepopulated_is_valid_work_address_provided"
@@ -146,8 +146,8 @@ module ResponseSetPrepopulation
         }
     end
 
-    def was_household_number_collected?
-      check_multiple_surveys_for_response("NUM_HH")
+    def was_household_number_not_collected?
+      !check_multiple_surveys_for_response("NUM_HH")
     end
 
     def was_work_name_collected?
