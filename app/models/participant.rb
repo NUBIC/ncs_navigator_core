@@ -1404,11 +1404,7 @@ class Participant < ActiveRecord::Base
       elsif postnatal?
         PatientStudyCalendar::LOW_INTENSITY_POSTNATAL
       elsif pregnant?
-        if due_date && !due_date_is_greater_than_follow_up_interval(most_recent_contact_date)
-          PatientStudyCalendar::LOW_INTENSITY_BIRTH_VISIT_INTERVIEW
-        else
-          lo_intensity_follow_up
-        end
+        PatientStudyCalendar::LOW_INTENSITY_BIRTH_VISIT_INTERVIEW
       elsif following_low_intensity?
         lo_intensity_follow_up
       elsif eligible_for_low_intensity_follow_up?
