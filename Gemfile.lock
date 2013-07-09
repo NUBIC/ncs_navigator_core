@@ -178,6 +178,8 @@ GEM
       rack (~> 1.1)
     faraday-stack (0.1.5)
       faraday (>= 0.6, < 0.8)
+    faraday_middleware (0.9.0)
+      faraday (>= 0.7.4, < 0.9)
     fastercsv (1.5.5)
     ffi (1.0.11)
     foreigner (1.1.6)
@@ -283,10 +285,10 @@ GEM
       rubyzip (~> 0.9.4)
       thor (~> 0.14.6)
       treetop
-    ncs_navigator_authority (1.1.1)
+    ncs_navigator_authority (1.2.0)
       aker (~> 3.0)
       faraday (~> 0.7.5)
-      faraday-stack (~> 0.1.3)
+      faraday_middleware
       ncs_navigator_configuration (~> 0.2)
     ncs_navigator_configuration (0.4.0)
       fastercsv (~> 1.5)
@@ -319,6 +321,9 @@ GEM
       coderay (~> 1.0.5)
       method_source (~> 0.8)
       slop (~> 3.4)
+    pry-debugger (0.2.2)
+      debugger (~> 1.3)
+      pry (~> 0.9.10)
     psc (0.0.2)
       activesupport (>= 2.3)
       builder (>= 2.1.2)
@@ -514,13 +519,14 @@ DEPENDENCIES
   mustache
   ncs_mdes (>= 0.11.0)
   ncs_mdes_warehouse (~> 0.13, >= 0.13.1)
-  ncs_navigator_authority
+  ncs_navigator_authority (~> 1.2)
   ncs_navigator_configuration (~> 0.4)
   paper_trail (~> 2)
   perftools.rb
   pg
   pickle
   pry
+  pry-debugger
   psc
   rack-test
   rails (= 3.2.13)

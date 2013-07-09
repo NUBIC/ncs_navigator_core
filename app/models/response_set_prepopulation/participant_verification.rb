@@ -27,7 +27,6 @@ module ResponseSetPrepopulation
         "prepopulated_child_time_previously_collected",
         "prepopulated_child_primary_address_variables_previously_collected",
         "prepopulated_pa_phone_previously_collected",
-        "prepopulated_should_show_secondary_address_questions",
         "prepopulated_child_secondary_address_variables_previously_collected",
         "prepopulated_sa_phone_previously_collected",
         "prepopulated_resp_relationship_previously_collected"
@@ -79,8 +78,6 @@ module ResponseSetPrepopulation
                     child_primary_address_variables_previously_collected?(question)
                   when "prepopulated_pa_phone_previously_collected"
                     pa_phone_previously_collected?(question)
-                  when "prepopulated_should_show_secondary_address_questions"
-                    should_show_secondary_address_questions?(question)
                   when "prepopulated_child_secondary_address_variables_previously_collected"
                     child_secondary_address_variables_previously_collected?(question)
                   when "prepopulated_sa_phone_previously_collected"
@@ -170,9 +167,10 @@ module ResponseSetPrepopulation
       ri = false
       if person.person_dob_date
         ri = true
-      else
-        most_recent_response = person.responses_for("PARTICIPANT_VERIF.PERSON_DOB").last
+      elsif most_recent_response = person.responses_for("PARTICIPANT_VERIF.PERSON_DOB").last
         ri = true unless %w(neg_1 neg_2).include?(most_recent_response.try(:answer).try(:reference_identifier).to_s)
+      elsif person.person_dob_date.nil?
+        ri = false
       end
       answer_for(question, ri)
     end
@@ -341,9 +339,6 @@ module ResponseSetPrepopulation
     #   - GO TO TIME_STAMP_PV_ET.
     #     - IF CHILD_NUM > 1, AND CHILD_QNUM < CHILD_NUM, GO TO SAME_CONTACT_MULT_CHILD.
     #   - OTHERWISE, GO TO PV059.
-    def should_show_secondary_address_questions?(question)
-      # TODO: determine what this needs to return
-    end
 
     # PROGRAMMER INSTRUCTIONS:
     #   - IF CHILD SECONDARY ADDRESS VARIABLES = -7, AND

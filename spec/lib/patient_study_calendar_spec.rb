@@ -85,7 +85,7 @@ describe PatientStudyCalendar do
   it "gets the segments for the study" do
     use_template_snapshot_cassette do
       segments = subject.segments
-      segments.size.should == 19
+      segments.size.should == 20
       segments.first.attr('name').should == "Pregnancy Screener"
     end
   end
@@ -577,7 +577,14 @@ describe PatientStudyCalendar do
             sss.activity_name.should == "Low-Intensity Interview"
             sss.current_state.should == Psc::ScheduledActivity::SCHEDULED
           end
-
+        end
+        it 'returns occurred scheduled activities' do
+          VCR.use_cassette('psc/janedoe_canceled_activities') do
+            subject_occurred_statuses = subject.scheduled_activities(@participant, [Psc::ScheduledActivity::OCCURRED])
+            subject_occurred_statuses.size.should == 1
+            sss = subject_occurred_statuses.first
+            sss.current_state.should == Psc::ScheduledActivity::OCCURRED
+          end
         end
       end
 

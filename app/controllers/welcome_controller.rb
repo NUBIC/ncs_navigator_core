@@ -51,70 +51,106 @@ class WelcomeController < ApplicationController
 
   def start_pregnancy_screener_instrument
     person = Person.create(:psu_code => @psu_code)
-    participant = Participant.create(:psu_code => @psu_code)
-    participant.person = person
-    household = HouseholdUnit.create!
-    HouseholdPersonLink.create!(:person => person, :household_unit => household)
-    participant.save!
+    resp = prepare_for_screener(person)
 
-    resp = psc.assign_subject(participant)
     if resp && resp.status.to_i < 299
-      create_pregnancy_screener_event_record(participant)
+      create_pregnancy_screener_event_record
       redirect_to new_person_contact_path(person)
     else
-      destroy_participant_and_redirect(participant, person, resp)
+      destroy_participant_and_redirect(@participant, person, resp)
     end
   end
 
   def start_pbs_eligibility_screener_instrument
     person = Person.find(params[:person_id])
+    resp = prepare_for_screener(person)
+
     if person.sampled_ineligible?
       flash[:warning] = "Person is ineligible - cannot start eligibility screener"
       redirect_to request.referer
     else
-      participant = Participant.create(:psu_code => @psu_code)
-      participant.person = person
-      household = HouseholdUnit.create!
-      HouseholdPersonLink.create!(:person => person, :household_unit => household)
-      participant.save!
-      resp = psc.assign_subject(participant)
       if resp && resp.status.to_i < 299
-        create_pbs_eligibility_screener_event_record(participant)
+        create_pbs_eligibility_screener_event_record
         redirect_to new_person_contact_path(person)
       else
-        destroy_participant_and_redirect(participant, person, resp, false)
+        destroy_participant_and_redirect(@participant, person, resp, false)
       end
     end
   end
 
+# Restarting screener for ineligible
+# - find Person record
+# - remove old screener data
+# - create and prepare new participant for person
+# - find PSC screener activities
+# - update `occurred` activities to be `scheduled`
+# - create screener Event for cases with a psc_ideal_date matching the ideal date of the former
+  def restart_screener_for_ineligible
+    @response_set = ResponseSet.where(access_code: params[:response_set_code]).first
+    @person = @response_set.person
+    event_type = @response_set.event.event_type
+
+    remove_old_screener_data
+    prepare_for_screener(@person, false) #false since subject(person) is already in psc
+
+    dates = find_and_reactivate_screener_activities
+    create_screener_event_record(event_type, dates)
+    redirect_to new_person_contact_path(@person)
+  end
+
   private
 
-    def create_pbs_eligibility_screener_event_record(participant)
-      create_screener_event_record(participant, NcsCode.pbs_eligibility_screener)
+    def find_and_reactivate_screener_activities
+      activities = psc.scheduled_activities(@participant, [Psc::ScheduledActivity::OCCURRED])
+      activities.each_with_object([]) do |a, dates|
+        psc.update_activity_state(a.activity_id, @participant, Psc::ScheduledActivity::SCHEDULED, Date.parse(a.ideal_date))
+        dates << a.ideal_date
+      end
     end
 
-    def create_pregnancy_screener_event_record(participant)
-      create_screener_event_record(participant, NcsCode.pregnancy_screener)
+    def remove_old_screener_data
+      to_delete = [@response_set.contact.contact_links, @response_set.contact,
+          @response_set, @response_set.instrument, @response_set.event]
+      to_delete.flatten.compact.map(&:destroy)
     end
 
-    def create_screener_event_record(participant, event_type)
-      if activity_plan = psc.build_activity_plan(participant)
-        dates = []
+    def prepare_for_screener(person, assign_subject = true)
+      person.find_or_create_household_unit
+      @participant = Participant.create(:psu_code => @psu_code)
+      @participant.person = person
+      @participant.save!
+      psc.assign_subject(@participant) if assign_subject
+    end
+
+    def create_pbs_eligibility_screener_event_record
+      dates = create_screener_activity_in_psc(NcsCode.pbs_eligibility_screener)
+      create_screener_event_record(NcsCode.pbs_eligibility_screener, dates) unless dates.empty?
+    end
+
+    def create_pregnancy_screener_event_record
+      dates = create_screener_activity_in_psc(NcsCode.pregnancy_screener)
+      create_screener_event_record(NcsCode.pregnancy_screener, dates) unless dates.empty?
+    end
+
+    def create_screener_activity_in_psc(event_type)
+      dates = []
+      if activity_plan = psc.build_activity_plan(@participant)
         # get dates for scheduled pbs_eligibility_screener activity for participant
         activity_plan.scheduled_activities.each do |a|
           code = NcsCode.find_event_by_lbl(a.event)
           dates << a.ideal_date if code == event_type
         end
-        # create a placeholder event for each date
-        dates.uniq.each do |dt|
-          Event.create( :participant => participant, :psu_code => participant.psu_code,
-                        :event_start_date => dt, :event_type => event_type)
-
-        end
       end
+      dates
     end
 
-
+    def create_screener_event_record(event_type, dates)
+      # create a placeholder event for each date
+      dates.uniq.each do |dt|
+        Event.create( :participant => @participant, :psu_code => @participant.psu_code,
+                      :event_start_date => dt, :event_type => event_type)
+      end
+    end
 
     def destroy_participant_and_redirect(participant, person, resp, destroy_person = true)
       ppl = participant.participant_person_links.where(:relationship_code => 1).first

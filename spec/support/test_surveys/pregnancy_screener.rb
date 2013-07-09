@@ -207,6 +207,7 @@ module PregnancyScreener
     q = Factory(:question, :reference_identifier => "STATE", :data_export_identifier => "PREG_SCREEN_HI_2.STATE", :survey_section_id => survey_section.id)
     a = Factory(:answer, :question_id => q.id, :text => "IL", :response_class => "answer", :reference_identifier => "14")
     a = Factory(:answer, :question_id => q.id, :text => "MI", :response_class => "answer", :reference_identifier => "23")
+    a = Factory(:answer, :question_id => q.id, :text => "Don't Know", :response_class => "answer", :reference_identifier => "neg_2")
     # Zip
     q = Factory(:question, :reference_identifier => "ZIP", :data_export_identifier => "PREG_SCREEN_HI_2.ZIP", :survey_section_id => survey_section.id)
     a = Factory(:answer, :question_id => q.id, :text => "Zip", :response_class => "string")
