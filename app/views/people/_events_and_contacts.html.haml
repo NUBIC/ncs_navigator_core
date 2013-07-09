@@ -52,8 +52,8 @@
                 = " - "
                 = blank_safe(event.event_end_date)
               %span.relationship
-                -if @person != event.participant.person
-                  = @person.relationship_to_person_via_participant(event.participant.person)
+                - if @person != contact_link.person
+                  = @person.relationship_to_person_via_participant(contact_link.person)
               %div
                 Window:
                 = render :partial => "events/event_window", :locals => {:event => event}
