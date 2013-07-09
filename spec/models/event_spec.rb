@@ -567,52 +567,86 @@ describe Event do
         end
       end
 
-      it "cancels events for phase2 activities if configured to do so" do
-        NcsNavigatorCore.with_specimens?.should be_false
-        NcsNavigatorCore.expanded_phase_two?.should be_false
+      context "using schedule_and_create_phase2_placeholder participant" do
+        let(:date) { Date.today }
+        let(:part) { Factory(:high_intensity_pregnancy_one_participant) }
+        let(:pers) { Factory(:person) }
 
-        PatientStudyCalendar.stub!(:extract_scheduled_study_segment_identifier).
-          and_return("f6abc107-a24e-4169-a260-d407fe816910")
-        psc.stub!(:template_snapshot).and_return(Nokogiri::XML(File.read(
-              File.expand_path('../../fixtures/psc/current_hilo_template_snapshot.xml', __FILE__))))
-
-        date = Date.today
-        part = Factory(:high_intensity_pregnancy_one_participant)
-        part.person = Factory(:person)
-        event = Factory(:event, :participant => part,
-                                :event_start_date => date, :event_end_date => date,
-                                :event_type => NcsCode.pregnancy_screener)
-        part.events << event
-        part.stub!(:eligible?).and_return(true)
-
-        Factory(:contact_link, :event => event, :person => part.person,
-                               :contact => Factory(:contact, :contact_date_date => date))
-
-        part.next_scheduled_event.event.
-          should == PatientStudyCalendar::HIGH_INTENSITY_PREGNANCY_VISIT_1
-
-        phase2person = Factory(:person,
+        let(:phase2person) { Factory(:person,
           :first_name => "Francesca", :last_name => "Zupicich", :person_dob => '1980-02-14',
-          :person_id => "placeholder_phase2_participant")
+          :person_id => "placeholder_phase2_participant") }
 
-        VCR.use_cassette('psc/schedule_and_create_phase2_placeholder') do
+        before do
+          NcsNavigatorCore.with_specimens?.should be_false
+          NcsNavigatorCore.expanded_phase_two?.should be_false
 
-          part.person = phase2person
-          part.save!
+          PatientStudyCalendar.stub!(:extract_scheduled_study_segment_identifier).
+            and_return("f6abc107-a24e-4169-a260-d407fe816910")
+          psc.stub!(:template_snapshot).and_return(Nokogiri::XML(File.read(
+                File.expand_path('../../fixtures/psc/current_hilo_template_snapshot.xml', __FILE__))))
 
-          Event.schedule_and_create_placeholder(psc, part, "2012-08-09")
+          part.person = pers
 
-          subject_schedule = psc.scheduled_activities(part)
-          subject_schedule.size.should == 5
+          # create a pregnancy screener
+          event = Factory(:event, :participant => part,
+                                  :event_start_date => date, :event_end_date => date,
+                                  :event_type => NcsCode.pregnancy_screener)
+          part.events << event
+          part.stub!(:eligible?).and_return(true)
 
-          subject_schedule.each do |s|
-            s.study_segment.should == "HI-Intensity: Pregnancy Visit 1"
-            s.ideal_date.should == "2012-08-09"
-            s.should be_open
-          end
+          Factory(:contact_link, :event => event, :person => part.person,
+                                 :contact => Factory(:contact, :contact_date_date => date))
 
+          part.next_scheduled_event.event.
+            should == PatientStudyCalendar::HIGH_INTENSITY_PREGNANCY_VISIT_1
         end
 
+        it "does not create a placeholder record for a non repeatable event" do
+          VCR.use_cassette('psc/schedule_and_create_phase2_placeholder') do
+
+            non_repeatable_event = Factory(:event, :participant => part,
+                                    :event_start_date => date, :event_end_date => date,
+                                    :event_type_code => Event.pv1_code)
+            part.events << non_repeatable_event
+            part.person = phase2person
+            part.save!
+
+            part.events.where(:event_type_code => Event.pv1_code).count.should == 1
+
+            psc.should_receive(:cancel_activities_for_study_segment).once
+            Event.should_receive(:create_placeholder_record).once
+
+            Event.schedule_and_create_placeholder(psc, part, "2012-08-09")
+            part.events.reload
+            part.events.where(:event_type_code => Event.pv1_code).count.should == 1
+          end
+        end
+
+        it "cancels events for phase2 activities if configured to do so" do
+
+          VCR.use_cassette('psc/schedule_and_create_phase2_placeholder') do
+
+            part.person = phase2person
+            part.save!
+
+            # test that message received must be before the call stack that
+            # will send this message
+            psc.should_receive(:cancel_collection_instruments)
+            Event.should_receive(:create_placeholder_record).twice
+
+            Event.schedule_and_create_placeholder(psc, part, "2012-08-09")
+
+            subject_schedule = psc.scheduled_activities(part)
+            subject_schedule.size.should == 5
+
+            subject_schedule.each do |s|
+              s.study_segment.should == "HI-Intensity: Pregnancy Visit 1"
+              s.ideal_date.should == "2012-08-09"
+              s.should be_open
+            end
+
+          end
+        end
       end
 
     end
