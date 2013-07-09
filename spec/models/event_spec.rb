@@ -613,7 +613,7 @@ describe Event do
 
             part.events.where(:event_type_code => Event.pv1_code).count.should == 1
 
-            psc.should_receive(:cancel_activities_for_study_segment).once
+            Event.should_receive(:cancel_activities_for_duplicate_events).once
             Event.should_receive(:create_placeholder_record).once
 
             Event.schedule_and_create_placeholder(psc, part, "2012-08-09")
