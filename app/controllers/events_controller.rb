@@ -25,7 +25,7 @@ class EventsController < ApplicationController
       set_suggested_values_for_event
     end
     @close = params[:close]
-    set_disposition_group
+    @disposition_group = nil
   end
 
   # PUT /events/1
