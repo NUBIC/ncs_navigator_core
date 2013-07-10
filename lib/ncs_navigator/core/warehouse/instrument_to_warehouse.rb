@@ -428,6 +428,9 @@ module NcsNavigator::Core::Warehouse
         # Suggests -x => [-x, 9x:9x].
         /^([0-9][0-9]:[0-9][0-9])?$/ => lambda { |val| [val, dt_code['9#:9#', val]] },
 
+        # Suggests -x => [-x, 9xxx-9x].
+        /^([0-9][0-9][0-9][0-9]-[0-9][0-9])?$/ => lambda { |val| [val, dt_code['9###-9#', val]] },
+
         # Suggests -x => [-x, 9xxx-9x-9x].
         /^([0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9])?$/ => lambda { |val| [val, dt_code['9###-9#-9#', val]] },
       }

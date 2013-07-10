@@ -785,7 +785,9 @@ module NcsNavigator::Core::Warehouse
       describe 'coding in date and time fields' do
         include NcsNavigator::Core::Surveyor::SurveyTaker
 
-        let(:primary) { records.find { |rec| rec.class.mdes_table_name == 'spec_blood_2' } }
+        let(:sb2) { records.find { |rec| rec.class.mdes_table_name == 'spec_blood_2' } }
+        let(:bv2) { records.find { |rec| rec.class.mdes_table_name == 'birth_visit_2' } }
+
         let(:questions_dsl) {
           <<-DSL
             q_TIME_STAMP_2 "INSERT DATE/TIME STAMP", :data_export_identifier=>"SPEC_BLOOD_2.TIME_STAMP_2"
@@ -804,6 +806,13 @@ module NcsNavigator::Core::Warehouse
             a_time "HH:MM", :time, :custom_class => "12hr_time"
             a_neg_1 "REFUSED"
             a_neg_2 "DON'T KNOW"
+
+            q_DATE_MOVE "When will you move?",
+            :pick=>:one,
+            :data_export_identifier=>"BIRTH_VISIT_2.DATE_MOVE"
+            a_date "Date", :string, :custom_class => "four_digit_year_hyphen_two_digit_month"
+            a_neg_1 "Refused"
+            a_neg_2 "Don't know"
           DSL
         }
 
@@ -815,7 +824,7 @@ module NcsNavigator::Core::Warehouse
 
             response_set.save!
 
-            primary.last_time_eat.should == '12:34'
+            sb2.last_time_eat.should == '12:34'
           end
 
           it 'passes 12:92 through' do
@@ -827,7 +836,7 @@ module NcsNavigator::Core::Warehouse
 
             response_set.save!
 
-            primary.last_time_eat.should == '12:92'
+            sb2.last_time_eat.should == '12:92'
           end
 
           it 'transforms -2 into 92:92' do
@@ -837,7 +846,7 @@ module NcsNavigator::Core::Warehouse
 
             response_set.save!
 
-            primary.last_time_eat.should == '92:92'
+            sb2.last_time_eat.should == '92:92'
           end
 
           it 'transforms -1 into 91:91' do
@@ -847,11 +856,43 @@ module NcsNavigator::Core::Warehouse
 
             response_set.save!
 
-            primary.last_time_eat.should == '91:91'
+            sb2.last_time_eat.should == '91:91'
           end
         end
 
         describe 'on date-formatted questions' do
+          it 'passes YYYY-MM through' do
+            respond(response_set) do |r|
+              r.answer 'DATE_MOVE', 'date', :value => '2001-01'
+            end
+
+            response_set.save!
+
+            bv2.date_move.should == '2001-01'
+          end
+
+          it 'transforms -2 into 9222-92' do
+            respond(response_set) do |r|
+              r.answer 'DATE_MOVE', 'neg_2'
+            end
+
+            response_set.save!
+
+            bv2.date_move.should == '9222-92'
+          end
+
+          it 'passes 2009-92 through' do
+            pending "Surveyor does not handle MDES date/time coding"
+
+            respond(response_set) do |r|
+              r.answer 'DATE_MOVE', 'date', :value => '2009-92'
+            end
+
+            response_set.save!
+
+            bv2.date_move.should == '2009-92'
+          end
+
           it 'passes YYYY-MM-DD through' do
             respond(response_set) do |r|
               r.answer 'LAST_DATE_EAT', 'date', :value => '2001-01-01'
@@ -859,7 +900,7 @@ module NcsNavigator::Core::Warehouse
 
             response_set.save!
 
-            primary.last_date_eat.should == '2001-01-01'
+            sb2.last_date_eat.should == '2001-01-01'
           end
 
           it 'passes 2009-01-92 through' do
@@ -871,7 +912,7 @@ module NcsNavigator::Core::Warehouse
 
             response_set.save!
 
-            primary.last_date_eat.should == '2009-01-92'
+            sb2.last_date_eat.should == '2009-01-92'
           end
 
           it 'transforms -2 into 9222-92-92' do
@@ -881,7 +922,7 @@ module NcsNavigator::Core::Warehouse
 
             response_set.save!
 
-            primary.last_date_eat.should == '9222-92-92'
+            sb2.last_date_eat.should == '9222-92-92'
           end
         end
 
@@ -892,7 +933,7 @@ module NcsNavigator::Core::Warehouse
 
           response_set.save!
 
-          primary.time_stamp_2.should == '2000-01-01T12:34:56'
+          sb2.time_stamp_2.should == '2000-01-01T12:34:56'
         end
       end
     end
