@@ -4,10 +4,10 @@
 
   = render "shared/ncs_code_select", { :f => f, :code => :event_type_code, :label_text => "Event Type", :other => :event_type_other, :help_text => "events/event_event_type_tooltip", :html_attrs => { :disabled => 'disabled' } }
 
-  = render "shared/ncs_code_select", { :f => f, :code => :event_disposition_category_code, :label_text => "Disposition Category" }
-  = render "shared/disposition_code", { :f => f, :code => :event_disposition, :notify_marker => true }
+  = render "shared/ncs_code_select", { :f => f, :code => :event_disposition_category_code, :label_text => "Disposition Category", :html_attrs => { :class => 'not_required' }, :include_missing_in_error => true }
+  = render "shared/disposition_code", { :f => f, :code => :event_disposition, :notify_marker => true, :html_attrs => { :class => 'not_required important_field' } }
 
-  = render "shared/ncs_code_select", { :f => f, :code => :event_breakoff_code, :label_text => "Breakoff", :help_text => "events/event_breakoff_tooltip" }
+  = render "shared/ncs_code_select", { :f => f, :code => :event_breakoff_code, :label_text => "Breakoff", :help_text => "events/event_breakoff_tooltip", :html_attrs => { :class => 'not_required' }, :include_missing_in_error => true }
 
   %p
     = f.label :event_repeat_key, "Repeat Key"
@@ -43,7 +43,7 @@
     %br
     = f.text_field :event_end_time, :class => "timepicker", :disabled => true
 
-  = render "shared/ncs_code_select", { :f => f, :code => :event_incentive_type_code, :label_text => "Incentive Type", :help_text => "events/event_incentive_type_tooltip" }
+  = render "shared/ncs_code_select", { :f => f, :code => :event_incentive_type_code, :label_text => "Incentive Type", :help_text => "events/event_incentive_type_tooltip", :html_attrs => { :class => 'not_required' }, :include_missing_in_error => true }
 
   %p
     = f.label :event_incentive_cash, "Incentive (Cash)"
