@@ -4,6 +4,7 @@
 - help_text ||= nil
 - notify_marker ||= nil
 - html_attrs ||= { :class => "required" }
+- include_missing_in_error ||= false
 - model_class ||= nil
 
 - html_attrs[:disabled] = "disabled" if code.to_s == "psu_code"
@@ -18,7 +19,7 @@
     = render help_text
   - f.object.send("#{code}=", default_value) if default_value
   %p{ :class => 'ncs_select' }
-    - ncs_code = NcsCode.ncs_code_lookup(code, :model_class => model_class)
+    - ncs_code = NcsCode.ncs_code_lookup(code, { :model_class => model_class, :include_missing_in_error => include_missing_in_error })
     = f.select(code, ncs_code, { :include_blank => "-- Select #{label_text} --" }, html_attrs)
     - if other
       %p.other_field
