@@ -31,6 +31,28 @@ describe OperationalDataExtractor::Base do
 
   end
 
+  describe "legal_ncs_code_list_value_for_attribute_of_class?" do
+    context "invalid codes" do
+      it "returns false" do
+        OperationalDataExtractor::Base.
+          legal_ncs_code_list_value_for_attribute_of_class?(Person,
+                                                            "ethnic_group",
+                                                            -2).should be_false
+      end
+    end
+
+    context "valid codes" do
+      it "returns true" do
+        [-6,-4,-1,1,2].each do |code| #ETHNICITY_CL1
+        OperationalDataExtractor::Base.
+          legal_ncs_code_list_value_for_attribute_of_class?(Person,
+                                                            "ethnic_group",
+                                                            code).should be_true
+          end
+      end
+    end
+  end
+
   describe "determining the proper data extractor to use" do
     let(:person) { Factory(:person) }
     let(:participant) { Factory(:participant) }
