@@ -84,8 +84,8 @@ module ResponseSetPrepopulation
     end
 
     def is_response_to_mold_question_yes?
-      get_last_response_as_string(
-                            "EIGHTEEN_MTH_MOTHER_2.MOLD") == NcsCode::YES.to_s
+      d_identifiers = %w(EIGHTEEN_MTH_MOTHER_3.MOLD EIGHTEEN_MTH_MOTHER_2.MOLD)
+      d_identifiers.any?{|d_identifier| get_last_response_as_string(d_identifier) == NcsCode::YES.to_s}
     end
 
     def were_there_no_prenatal_events?

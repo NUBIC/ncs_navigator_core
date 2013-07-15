@@ -663,6 +663,56 @@ module ResponseSetPrepopulation
         end
       end
 
+    context "for 18MM v3.x prepopulators"
+      describe "prepopulated_should_show_upper_arm_length" do
+        before(:each) do
+          @survey = create_generic_true_false_prepopulator_survey(
+              "INS_QUE_18MMother_INT_EHPBHI_M3.1_V3.0_EIGHTEEN_MTH_MOTHER_MOLD",
+              "prepopulated_should_show_room_mold_child")
+          init_common_vars
+        end
+
+        it "should be TRUE if response to MOLD question was YES" do
+          prepare_and_take_survey("EIGHTEEN_MTH_MOTHER_3.MOLD", 1,
+                      :create_18mm_v3_survey_part_three_for_mold_prepopulators)
+          run_populator
+          get_response_as_string(@response_set,
+                        "prepopulated_should_show_room_mold_child"
+                      ).should == "TRUE"
+        end
+        it "should be FALSE if response to MOLD question was NO" do
+          prepare_and_take_survey("EIGHTEEN_MTH_MOTHER_3.MOLD", 2,
+                      :create_18mm_v3_survey_part_three_for_mold_prepopulators)
+          run_populator
+          get_response_as_string(@response_set,
+                        "prepopulated_should_show_room_mold_child"
+                      ).should == "FALSE"
+        end
+
+        it "should be FALSE if response to MOLD question was REFUSED" do
+          prepare_and_take_survey("EIGHTEEN_MTH_MOTHER_3.MOLD", "neg_1",
+                      :create_18mm_v3_survey_part_three_for_mold_prepopulators)
+          run_populator
+          get_response_as_string(@response_set,
+                        "prepopulated_should_show_room_mold_child"
+                      ).should == "FALSE"
+        end
+        it "should be FALSE if response to MOLD question was REFUSED" do
+          prepare_and_take_survey("EIGHTEEN_MTH_MOTHER_3.MOLD", "neg_2",
+                      :create_18mm_v3_survey_part_three_for_mold_prepopulators)
+          run_populator
+          get_response_as_string(@response_set,
+                        "prepopulated_should_show_room_mold_child"
+                      ).should == "FALSE"
+        end
+        it "should be FALSE if 18MM part 3 survey was not completed" do
+          run_populator
+          get_response_as_string(@response_set,
+                        "prepopulated_should_show_room_mold_child"
+                      ).should == "FALSE"
+        end
+      end
+
     context "for 30M M3.1 prepopulators"
       describe "prepopulated_is_child_num_gt_or_eq_one_for_first_child" do
         before(:each) do

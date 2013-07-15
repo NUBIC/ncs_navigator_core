@@ -235,6 +235,28 @@ module PostNatal
     survey
   end
 
+  def create_18mm_v3_survey_part_three_for_mold_prepopulators
+    survey = Factory(:survey,
+                     title: "INS_QUE_18Month_INT_EHPBHILIPBS_M3.1_V3.0_PART_TWO",
+                     access_code: "ins_que_18mmother_int_ehpbhi_m3_1_V3_0_part_two")
+    survey_section = Factory(:survey_section, :survey_id => survey.id)
+    q = Factory(:question,
+                :text => "In the last 6 months, have you seen any mold or mildew on walls or other surfaces, other than the shower or bathtub,
+    inside your home?",
+                :reference_identifier => "MOLD",
+                :data_export_identifier => "EIGHTEEN_MTH_MOTHER_3.MOLD",
+                :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :reference_identifier => "1",
+                :text => "YES", :response_class => "answer")
+    a = Factory(:answer, :question_id => q.id, :reference_identifier => "2",
+                :text => "NO", :response_class => "answer")
+    a = Factory(:answer, :question_id => q.id, :text => "REFUSED",
+                :response_class => "answer", :reference_identifier => "neg_1")
+    a = Factory(:answer, :question_id => q.id, :text => "DON'T KNOW",
+                :response_class => "answer", :reference_identifier => "neg_2")
+    survey
+  end
+
   def create_pm_child_anthr_survey_for_6_month_event
     survey = Factory(:survey,
                      :title => "INS_PM_ChildAnthro_DCI_EHPBHI_M3.1_V1.0",
