@@ -27,6 +27,7 @@ module NcsNavigator::Core::Mdes
     # @option options :pattern [Array<Fixnum>]
     def initialize(options={})
       @pattern = options.delete(:pattern) || DEFAULT_PATTERN
+      @psu = options.delete(:psu) || nil
 
       unless options.empty?
         fail "Unknown option#{'s' if options.size != 1} #{options.keys.map(&:inspect).join(', ')}."
@@ -51,12 +52,18 @@ module NcsNavigator::Core::Mdes
     private
 
     def new_id
-      @pattern.collect { |segment_length|
+      id = @pattern.collect { |segment_length|
         to_chars(
           prng.rand(CHARS.size ** segment_length),
           segment_length
         )
       }.join('-')
+      # prefix the last three digits of the psu + an underscore to the id
+      if @psu && @psu.length >= 3
+        last_three_digits = @psu[(@psu.length - 3), @psu.length]
+        id = "#{last_three_digits}_#{id}"
+      end
+      id
     end
 
     def to_chars(i, size)
