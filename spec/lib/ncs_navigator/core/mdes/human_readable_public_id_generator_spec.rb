@@ -49,6 +49,30 @@ module NcsNavigator::Core::Mdes
           (0..99).collect { generator.generate }.uniq.size.should == 100
         end
       end
+
+      describe 'with :psu' do
+
+        describe "given a valid psu" do
+          let(:psu) { NcsNavigatorCore.psu }
+          let(:options) { { :psu => psu } }
+
+          it "prepends the last three characters of the PSU plus an underscore to the ID" do
+            last_three_digits = psu[(psu.length - 3), psu.length]
+            generator.generate.should =~
+              /^#{last_three_digits}_#{expected_char_class}{3}-#{expected_char_class}{2}-#{expected_char_class}{4}$/
+          end
+        end
+
+        describe "given nil" do
+          let(:options) { { :psu => nil } }
+
+          it "does not affect the id generation" do
+            generator.generate.should =~
+              /^#{expected_char_class}{3}-#{expected_char_class}{2}-#{expected_char_class}{4}$/
+          end
+        end
+
+      end
     end
 
     describe 'use in an MdesRecord' do
