@@ -1,20 +1,23 @@
 # This comes straight from railscasts.com
 # http://railscasts.com/episodes/88-dynamic-select-menus-revised
 jQuery ->
-  dispositions = $('#event_event_disposition').html()
-  console.log(dispositions)
 
+  # get all select list options for event dispositions
+  event_dispositions = $('#event_event_disposition').html()
+
+  # on change filter the event dispositions to those in the
+  # selected event category
   $('#event_event_disposition_category_code').change ->
-    filter_dispositions()
+    filter_event_dispositions()
 
-  filter_dispositions = ->
+  filter_event_dispositions = ->
     category = $('#event_event_disposition_category_code :selected').text()
     console.log(category)
 
-    options = $(dispositions).filter(category_filter(category)).html()
-    console.log(options)
+    filter_text = event_filter_text(category)
+    options = $(event_dispositions).filter(category_filter(category)).html()
     if options
-      $('#event_event_disposition').html(options)
+      $('#event_event_disposition').html("<optgroup label=\"" + filter_text + "\">" + options + "<\optgroup>")
     else
       $('#event_event_disposition').empty()
 
@@ -27,6 +30,12 @@ jQuery ->
   # WARNING: if the .xsd or Disposition Category text changes
   #          in MDES versions this will need to be updated
   category_filter = (category) ->
+    filter = event_filter_text(category)
+    optgroup_filter = "optgroup[label=\"#{filter}\"]"
+    console.log(optgroup_filter)
+    return optgroup_filter
+
+  event_filter_text = (category) ->
     switch(category)
       when "General Study Visits (including CASI SAQs)"
         filter = "General Study Visit Event"
@@ -46,11 +55,57 @@ jQuery ->
         filter = "Telephone Interview Event"
       else
         filter = category
+    return filter
 
+  # Similar to the DispositionMapper.determine_category_from_contact_type
+  # method, this filter determines the disposition category based on the
+  # contact type
+  contact_mode_filter = (contact_type_val) ->
+    filter = contact_filter_text(contact_type_val)
     optgroup_filter = "optgroup[label=\"#{filter}\"]"
     console.log(optgroup_filter)
     return optgroup_filter
 
+  contact_filter_text = (contact_type_val) ->
+    console.log("calling contact_filter_text")
+    console.log(contact_type_val)
+    switch(contact_type_val)
+      when "1","4","6"
+        filter = "General Study Visit Event"
+      when "2"
+        filter = "Mailed Back SAQ Event"
+      when "3","5"
+        filter = "Telephone Interview Event"
+      else
+        filter = "General Study Visit Event"
+    console.log(filter)
+    return filter
+
+  # get all select list options for contact dispositions
+  contact_dispositions = $('#contact_contact_disposition').html()
+
+  # on change filter the contact dispositions to those in the
+  # selected contact mode
+  $('#contact_contact_type_code').change ->
+    filter_contact_dispositions()
+
+  filter_contact_dispositions = ->
+    contact_type_val = $('#contact_contact_type_code :selected').val()
+    console.log(contact_type_val)
+
+    filter_text = contact_filter_text(contact_type_val)
+    options = $(contact_dispositions).filter(contact_mode_filter(contact_type_val)).html()
+    if options
+      $('#contact_contact_disposition').html("<optgroup label=\"" + filter_text + "\">" + options + "<\optgroup>")
+    else
+      $('#contact_contact_disposition').empty()
+
+  filter_dispositions = ->
+    # determine which page we are on
+    if $('#event_event_disposition').length > 0
+      filter_event_dispositions()
+    if $('#contact_contact_disposition').length > 0
+      filter_contact_dispositions()
 
   # on page load filter dispositions
   filter_dispositions()

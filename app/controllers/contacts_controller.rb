@@ -67,7 +67,7 @@ class ContactsController < ApplicationController
       redirect_to(select_instrument_contact_link_path(find_or_create_contact_link.id))
     else
       @event = @contact_link.event
-      set_disposition_group
+      @disposition_group = nil
     end
   end
 
@@ -84,7 +84,7 @@ class ContactsController < ApplicationController
         format.html { post_update_redirect_path(@contact_link)}
         format.json { render :json => @contact }
       else
-        set_disposition_group
+        @disposition_group = nil
         format.html { render :action => "edit" }
         format.json { render :json => @contact.errors }
       end
@@ -273,15 +273,5 @@ class ContactsController < ApplicationController
       link
     end
 
-    ##
-    # Determine the disposition group to be used from the contact type or instrument taken
-    def set_disposition_group
-      @disposition_group = nil
-      if @event
-        set_disposition_group_for_event
-      else
-        set_disposition_group_for_contact_link
-      end
-    end
 
 end
