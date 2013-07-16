@@ -34,6 +34,59 @@ describe DispositionMapper do
 
   end
 
+  describe "#determine_event" do
+
+    describe "when given 'INS_QUE_PregScreen_'" do
+      it "returns PREGNANCY_SCREENER_EVENT" do
+        DispositionMapper.determine_event('INS_QUE_PregScreen_').should ==
+          DispositionMapper::PREGNANCY_SCREENER_EVENT
+      end
+    end
+
+    describe "when given 'Telephone'" do
+      it "returns TELEPHONE_INTERVIEW_EVENT" do
+        DispositionMapper.determine_event('Telephone').should ==
+          DispositionMapper::TELEPHONE_INTERVIEW_EVENT
+      end
+    end
+
+    describe "when given 'Text Message'" do
+      it "returns TELEPHONE_INTERVIEW_EVENT" do
+        DispositionMapper.determine_event('Text Message').should ==
+          DispositionMapper::TELEPHONE_INTERVIEW_EVENT
+      end
+    end
+
+    describe "when given 'Mail'" do
+      it "returns MAILED_BACK_SAQ_EVENT" do
+        DispositionMapper.determine_event('Mail').should ==
+          DispositionMapper::MAILED_BACK_SAQ_EVENT
+      end
+    end
+
+    describe "when given 'Some_SAQ_'" do
+      it "returns MAILED_BACK_SAQ_EVENT" do
+        DispositionMapper.determine_event('Some_SAQ_').should ==
+          DispositionMapper::MAILED_BACK_SAQ_EVENT
+      end
+    end
+
+    describe "when given 'Some_HHEnum_'" do
+      it "returns HOUSEHOLD_ENUMERATION_EVENT" do
+        DispositionMapper.determine_event('Some_HHEnum_').should ==
+          DispositionMapper::HOUSEHOLD_ENUMERATION_EVENT
+      end
+    end
+
+    describe "when given 'anything else'" do
+      it "returns GENERAL_STUDY_VISIT_EVENT" do
+        DispositionMapper.determine_event('anything else').should ==
+          DispositionMapper::GENERAL_STUDY_VISIT_EVENT
+      end
+    end
+
+  end
+
   context "determining the event given a contact type" do
     it "handles Telephone" do
       grouped_options = DispositionMapper.get_grouped_options("Telephone")
