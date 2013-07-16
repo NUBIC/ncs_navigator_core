@@ -156,7 +156,7 @@ describe AppointmentSheet, :shared_test_data do
   end
 
   it "has a participant's public id" do
-    @sheet.participant_public_id.should  match(/^[a-z0-9]{3}-[a-z0-9]{2}-[a-z0-9]{4}/)
+    @sheet.participant_public_id.should  match(/[a-z0-9]{3}-[a-z0-9]{2}-[a-z0-9]{4}$/)
   end
 
   it "has the language the participant speaks" do

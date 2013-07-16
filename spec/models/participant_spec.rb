@@ -116,8 +116,8 @@ describe Participant do
     describe 'the public ID' do
       let(:pr) { Factory(:participant) }
 
-      it 'is a human-readable ID' do
-        pr.public_id.should =~ /^\w{3}-\w{2}-\w{4}$/
+      it 'is a human-readable ID prefixed by the last 3 digits of the PSU' do
+        pr.public_id.should =~ /^\w{3}_\w{3}-\w{2}-\w{4}$/
       end
 
       it 'is named p_id' do
