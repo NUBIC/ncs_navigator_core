@@ -105,65 +105,6 @@ describe ContactsController do
           end
         end
 
-        describe "disposition_group" do
-          let(:event) { Factory(:event, :event_type_code => Event.pregnancy_visit_1_code) }
-          let(:contact) { Factory(:contact, :contact_type_code => contact_type_code) }
-          let(:contact_link) { Factory(:contact_link, :contact => contact, :event => event) }
-
-          describe "when event determines disposition_group" do
-            let(:contact_type_code) { Contact::MAILING_CONTACT_CODE }
-            it "is Pregnancy Screener Event" do
-              get :edit, :id => contact.id, :contact_link_id => @contact_link.id
-              assigns[:disposition_group].should == "Pregnancy Screener Event"
-            end
-          end
-
-          describe "when contact_type is mail" do
-            let(:contact_type_code) { Contact::MAILING_CONTACT_CODE }
-            it "is Mail" do
-              get :edit, :id => contact.id, :contact_link_id => contact_link.id
-              assigns[:disposition_group].should == "Mail"
-            end
-          end
-
-          describe "when contact_type is telephone" do
-            let(:contact_type_code) { Contact::TELEPHONE_CONTACT_CODE }
-            it "is Telephone" do
-              get :edit, :id => contact.id, :contact_link_id => contact_link.id
-              assigns[:disposition_group].should == "Telephone"
-            end
-          end
-
-          describe "when contact_type is nil" do
-            let(:contact_type_code) { nil }
-            it "is DispositionMapper::GENERAL_STUDY_VISIT_EVENT" do
-              get :edit, :id => contact.id, :contact_link_id => contact_link.id
-              assigns[:disposition_group].should == DispositionMapper::GENERAL_STUDY_VISIT_EVENT
-            end
-
-            describe "and an instrument exists" do
-              let(:instrument) { Factory(:instrument, :survey => survey) }
-              let(:contact_link_w_instrument) { Factory(:contact_link, :contact => contact, :event => event, :instrument => instrument) }
-
-              describe "with a survey" do
-                let(:survey) { Factory(:survey, :title => "survey_title") }
-                it "is the survey title" do
-                  get :edit, :id => contact.id, :contact_link_id => contact_link_w_instrument.id
-                  assigns[:disposition_group].should == "survey_title"
-                end
-              end
-
-              describe "without a survey" do
-                let(:survey) { nil }
-                it "is DispositionMapper::GENERAL_STUDY_VISIT_EVENT" do
-                  get :edit, :id => contact.id, :contact_link_id => contact_link_w_instrument.id
-                  assigns[:disposition_group].should == DispositionMapper::GENERAL_STUDY_VISIT_EVENT
-                end
-              end
-            end
-
-          end
-        end
       end
 
       describe "GET edit with next_event param" do
