@@ -294,11 +294,8 @@ class PatientStudyCalendar
   #
   # @param [Participant,String]
   # @return [Array<ScheduledActivity>]
-  def scheduled_activities(participant)
-    build_scheduled_activities(
-      participant_activities(schedules(participant)),
-      Psc::ScheduledActivity::OPEN_STATES
-    )
+  def scheduled_activities(participant, activity_states = Psc::ScheduledActivity::OPEN_STATES)
+    build_scheduled_activities(participant_activities(schedules(participant)), activity_states)
   end
 
   ##

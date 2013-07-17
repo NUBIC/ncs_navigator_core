@@ -380,7 +380,11 @@ class ParticipantsController < ApplicationController
     if resp && resp.success?
       flash[:notice] = "#{event.to_s} for Participant was marked 'Out of Window'."
     else
-      flash[:warning] = "Could not scheduled next event after marking #{event.to_s} 'Out of Window'."
+      if @participant.pending_events.blank?
+        flash[:warning] = "Could not scheduled next event after marking #{event.to_s} 'Out of Window'."
+      else
+        flash[:notice] = "#{event.to_s} for Participant was marked 'Out of Window'."
+      end
     end
     redirect_to participant_path(@participant)
   end
@@ -448,8 +452,8 @@ class ParticipantsController < ApplicationController
 
     def load_participant
       return unless params[:id]
-      
-      @participant = 
+
+      @participant =
         if params[:id] =~ /\A\d+\Z/
           begin
             Participant.find(params[:id])

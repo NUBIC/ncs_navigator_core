@@ -97,19 +97,28 @@ describe Participant do
         end
 
         describe "participant is consented and known to be pregnant" do
-          it "schedules the LO-Intensity Birth Visit Interview the day after the due_date" do
+          before do
             participant.should be_in_pregnancy_probability_group
             participant.should be_known_to_be_pregnant
             participant.impregnate_low!
             lo_i_quex = Factory(:event, :participant => participant, :event_start_date => date, :event_end_date => Date.today,
                                 :event_type => NcsCode.for_list_name_and_local_code("EVENT_TYPE_CL1", 33))
             participant.events << lo_i_quex
+          end
 
+          it "schedules the LO-Intensity Birth Visit Interview the day after the due_date" do
             participant.stub!(:due_date).and_return { 150.days.since(date).to_date }
 
             participant.next_study_segment.should == PatientStudyCalendar::LOW_INTENSITY_BIRTH_VISIT_INTERVIEW
             participant.next_scheduled_event.event.should == participant.next_study_segment
             participant.next_scheduled_event.date.should == 151.days.since(date).to_date
+          end
+
+          context "the most recent contact date is after the due date" do
+            it "schedules the birth next" do
+              participant.stub!(:due_date).and_return { 6.days.since(date).to_date }
+              participant.next_study_segment.should == PatientStudyCalendar::LOW_INTENSITY_BIRTH_VISIT_INTERVIEW
+            end
           end
 
         end

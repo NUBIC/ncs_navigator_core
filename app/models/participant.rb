@@ -46,7 +46,7 @@ class Participant < ActiveRecord::Base
   include NcsNavigator::Core::ImportAware
 
   acts_as_mdes_record :public_id_field => :p_id,
-    :public_id_generator => NcsNavigator::Core::Mdes::HumanReadablePublicIdGenerator.new
+    :public_id_generator => NcsNavigator::Core::Mdes::HumanReadablePublicIdGenerator.new(:psu => NcsNavigatorCore.psu)
 
   ncs_coded_attribute :psu,                 'PSU_CL1'
   ncs_coded_attribute :p_type,              'PARTICIPANT_TYPE_CL1'
@@ -204,7 +204,7 @@ class Participant < ActiveRecord::Base
     end
 
     event :follow do
-      transition [:converted_high_intensity, :in_high_intensity_arm, :pre_pregnancy, :following_high_intensity] => :following_high_intensity
+      transition [:parenthood, :converted_high_intensity, :in_high_intensity_arm, :pre_pregnancy, :following_high_intensity] => :following_high_intensity
     end
 
     event :impregnate do
@@ -228,7 +228,7 @@ class Participant < ActiveRecord::Base
     end
 
     event :birth_event do
-      transition [:in_high_intensity_arm, :pregnancy_one, :pregnancy_two, :ready_for_birth] => :parenthood
+      transition [:in_high_intensity_arm, :converted_high_intensity, :pregnancy_one, :pregnancy_two, :ready_for_birth] => :parenthood
     end
 
     event :birth_cohort do
@@ -1404,11 +1404,7 @@ class Participant < ActiveRecord::Base
       elsif postnatal?
         PatientStudyCalendar::LOW_INTENSITY_POSTNATAL
       elsif pregnant?
-        if due_date && !due_date_is_greater_than_follow_up_interval(most_recent_contact_date)
-          PatientStudyCalendar::LOW_INTENSITY_BIRTH_VISIT_INTERVIEW
-        else
-          lo_intensity_follow_up
-        end
+        PatientStudyCalendar::LOW_INTENSITY_BIRTH_VISIT_INTERVIEW
       elsif following_low_intensity?
         lo_intensity_follow_up
       elsif eligible_for_low_intensity_follow_up?

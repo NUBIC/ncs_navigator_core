@@ -1008,28 +1008,32 @@ class Event < ActiveRecord::Base
         next if lbl.blank?
         code = NcsCode.find_event_by_lbl(lbl)
         if code
-          Event.create_placeholder_record(participant, dt, code.local_code, study_segment_identifier)
+          create_placeholder_records_for_participant(psc, participant, dt, code.local_code, study_segment_identifier)
           # do not cancel consent activities if this is a standalone consent event
           should_cancel_consent = false if code.local_code == Event.informed_consent_code
         else
           Rails.logger.warn("Cannot find event for MDES version '#{NcsNavigatorCore.mdes.version}' for psc activity label '#{lbl}'")
         end
       end
+
       # cancel all specimen/sample collection actiivites unless configured to do so
       unless NcsNavigatorCore.expanded_phase_two?
         psc.cancel_collection_instruments(participant, study_segment_identifier, date,
           "Not configured to run expanded phase 2 instruments.")
       end
+
       # cancel all activities without a matching MDES version instrument
       unless NcsNavigatorCore.mdes.version.blank?
         psc.cancel_non_matching_mdes_version_instruments(participant, study_segment_identifier, date,
           "Does not include an instrument for MDES version #{NcsNavigatorCore.mdes.version}.")
       end
+
       # do not cancel consent activities if informed consent - 10
       if participant.consented? && should_cancel_consent
         psc.cancel_consent_activities(participant, study_segment_identifier, date,
           "Participant has already consented.")
       end
+
       # cancel activities prior to data_collection_start_date
       if data_collection_start_date
         psc.cancel_activities_prior_to_date(participant, study_segment_identifier, date,
@@ -1043,6 +1047,49 @@ class Event < ActiveRecord::Base
     end
   end
 
+  ##
+  # Check that the event does not already exist (or if it does that the Event is repeatable)
+  # before creating the placeholder record.  If the event already does exist and is postnatal, cancel
+  # the activity in PSC.
+  # @param [PatientStudyCalendar]
+  # @param [Participant]
+  # @param [String] date
+  # @param [Integer] event_type_code
+  # @param [String] study_segment_identifier
+  def self.create_placeholder_records_for_participant(psc, participant, date, event_type_code, study_segment_identifier)
+    duplicate_event_codes = []
+    existing_event = participant.events.where(:event_type_code => event_type_code).first
+    if existing_event && !PARTICIPANT_REPEATABLE_EVENTS.include?(event_type_code)
+      # do not create Event for existing non-repeatable events
+      duplicate_event_codes << event_type_code
+    else
+      Event.create_placeholder_record(participant, date, event_type_code, study_segment_identifier)
+    end
+    Event.cancel_activities_for_duplicate_events(psc, duplicate_event_codes, participant, date) unless duplicate_event_codes.empty?
+  end
+
+  ##
+  # For those event codes that have been determined to exist and should not be duplicated,
+  # cancel those activities in PSC.
+  def self.cancel_activities_for_duplicate_events(psc, duplicate_event_codes, participant, date)
+    duplicate_event_codes.each do |code|
+      e = Event.new(:participant => participant, :psc_ideal_date => date, :event_type_code => code)
+      psc.activities_for_event(e).each do |a|
+        if e.matches_activity(a)
+          psc.update_activity_state(a.activity_id, participant,
+                            Psc::ScheduledActivity::CANCELED,
+                            a.date, "Event already exists for participant [#{participant.p_id}]")
+        end
+      end
+    end
+  end
+
+  ##
+  # Create an Event record for the participant with the given event_type_code.
+  # @param [Participant]
+  # @param [String] date
+  # @param [Integer] event_type_code
+  # @param [String] study_segment_identifier
   def self.create_placeholder_record(participant, date, event_type_code, study_segment_identifier)
     begin
       date = Date.parse(date)

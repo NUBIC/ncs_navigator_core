@@ -127,6 +127,50 @@ describe OperationalDataExtractor::InformedConsent do
         end
       end
 
+      it "updates ParticipantConsentSample records when updating response set" do
+
+        response_set = consent.response_set
+
+        take_survey(survey, response_set) do |r|
+          r.a "collect_specimen_consent", yes
+          r.a "sample_consent_given_code_1", yes21
+          r.a "sample_consent_given_code_2", no21
+          r.a "sample_consent_given_code_3", yes21
+        end
+
+        response_set.responses.reload
+        response_set.responses.size.should == 4
+
+        OperationalDataExtractor::InformedConsent.new(response_set).extract_data
+
+        consent = ParticipantConsent.find(consent_id)
+        consent.participant_consent_samples.size.should == 3
+
+        # Retake the survey
+        take_survey(survey, response_set) do |r|
+          r.a "collect_specimen_consent", yes
+          r.a "sample_consent_given_code_1", no21
+          r.a "sample_consent_given_code_2", yes21
+          r.a "sample_consent_given_code_3", no21
+        end
+
+        response_set.responses.reload
+
+        OperationalDataExtractor::InformedConsent.new(response_set).extract_data
+
+        # Ensure we do not create duplicate records for samples
+        consent = ParticipantConsent.find(consent_id)
+        consent.participant_consent_samples.size.should == 3
+
+        # Ensure we update associated sample records
+        [ [1, no21], [2, yes21], [3, no21] ].each do |code, val|
+          consent.participant_consent_samples.where(:sample_consent_type_code => code).all.each do |s|
+            s.sample_consent_given.should == val
+          end
+        end
+
+      end
+
       context "when consent given" do
         it "updates the enrollment status on the participant to true" do
           participant.should_not be_enrolled

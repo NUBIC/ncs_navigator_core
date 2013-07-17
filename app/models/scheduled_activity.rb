@@ -131,7 +131,7 @@ class ScheduledActivity
   # True if activity_name ends with SAQ
   # @return [Boolean]
   def saq_activity?
-    @activity_name.to_s.ends_with?("SAQ")
+    @activity_name.to_s =~ /SAQ$/
   end
 
   ##

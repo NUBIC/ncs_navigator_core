@@ -112,8 +112,8 @@ describe Person do
     describe 'the public ID' do
       let(:person) { Factory(:person) }
 
-      it 'is a human-readable ID with 12 ID chars' do
-        person.public_id.should =~ /^\w{4}-\w{4}-\w{4}$/
+      it 'is a human-readable ID with 12 ID chars prefixed by the last 3 digits of the PSU' do
+        person.public_id.should =~ /^\w{3}_\w{4}-\w{4}-\w{4}$/
       end
 
       it 'is named person_id' do
