@@ -30,7 +30,7 @@ module NcsNavigator::Core::Mdes
       @psu = options.delete(:psu) || nil
 
       unless options.empty?
-        fail "Unknown option#{'s' if options.size > 2} #{options.keys.map(&:inspect).join(', ')}."
+        fail "Unknown option#{'s' if options.size != 1} #{options.keys.map(&:inspect).join(', ')}."
       end
     end
 
