@@ -243,9 +243,9 @@ module ResponseSetPrepopulation
       has_answered_question?(question, "TRACING_INT.EMAIL_QUEST")
     end
 
-    # IF EVENT_TYPE = PBS PARTICIPANT ELIGIBILITY SCREENING, PREGNANCY VISIT 1, PREGNANCY VISIT 2, 6 MONTH, OR 12 MONTH
+    # IF EVENT_TYPE = PBS PARTICIPANT ELIGIBILITY SCREENING, PREGNANCY VISIT 1, PREGNANCY VISIT 2, 3 MONTH, 6 MONTH, 9 MONTH OR 12 MONTH
     def should_show_contact?(question)
-      ri = [34, 13, 15, 24, 27].include?(event.try(:event_type_code))
+      ri = [34, 13, 15, 23, 24, 26, 27].include?(event.try(:event_type_code))
       answer_for(question, ri)
     end
 
