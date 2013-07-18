@@ -4,7 +4,7 @@
 
 .page_section
   %h3
-    = switch_arm_message(@participant)
+    Switch Protocol Arm
 
   %p
     To move a Participant from one arm to another please do the following three steps in order.
@@ -19,22 +19,22 @@
   .switch_section
     %p
       %b Step 1. Cancel Pending Events
+    %p
+      Participant has
+      = @participant.pending_events.size
+      pending event(s)
+    %p
+      = @participant.pending_events.map(&:to_s).to_sentence
+    %p
+      Due Date is
+      = @participant.due_date
+    %p
+      Number of children is
+      = @participant.children.count
     - if @participant.pending_events.empty?
       %p
         Participant has no pending events.
     - else
-      %p
-        Participant has
-        = @participant.pending_events.size
-        pending event(s)
-      %p
-        = @participant.pending_events.map(&:to_s).to_sentence
-      %p
-        Due Date is
-        = @participant.due_date
-      %p
-        Number of children is
-        = @participant.children.count
       %div
         = form_for(@participant, :url => nullify_pending_events_participant_path(@participant, :redirect_to => switch_arm_participant_path(@participant))) do |f|
           = hidden_field_tag :reason, "Step 1 in Switching Arm for Participant"
@@ -47,17 +47,17 @@
   .switch_section
     %p
       %b Step 2. Switch Protocol Arm
+    %p
+      Participant is currently in the
+      = @participant.high_intensity? ? "High" : "Low"
+      Intensity Arm.
+    %p
+      Participant state is
+      = @participant.state
     - if @participant.high_intensity?
       %p
         Participant is already in the High Intensity Arm
     - else
-      %p
-        Participant is currently in the
-        = @participant.high_intensity? ? "High" : "Low"
-        Intensity Arm.
-      %p
-        Participant state is
-        = @participant.state
       %div
         = form_for(@participant, :url => process_arm_switch_participant_path(@participant)) do |f|
           %p
@@ -67,10 +67,10 @@
   .switch_section
     %p
       %b Step 3. Schedule Next Event in New Arm
+    %p
+      Participant next study segment is
+      = @participant.next_study_segment
     - if @participant.pending_events.empty?
-      %p
-        Participant next study segment is
-        = @participant.next_study_segment
       %div
         = form_for(@participant, :url => schedule_and_create_placeholder_participant_path(@participant, :redirect_to => participant_path(@participant))) do |f|
           %p
