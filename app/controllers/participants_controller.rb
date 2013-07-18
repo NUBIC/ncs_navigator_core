@@ -329,30 +329,62 @@ class ParticipantsController < ApplicationController
     end
   end
 
-  def edit_arm
+  ##
+  # Page to display Participant state and allow user to perform the three
+  # actions taken to move a Participant from one arm to another
+  def switch_arm
+    @person = @participant.person
+    Rails.logger.info("~~~ switch_arm")
+    Rails.logger.info("~~~ Participant p_id [#{@participant.p_id}]")
+    Rails.logger.info("~~~ Participant has #{@participant.pending_events.size} pending_events [#{@participant.pending_events.map(&:to_s).to_sentence}]")
+    Rails.logger.info("~~~ Due Date is #{@participant.due_date}")
+    Rails.logger.info("~~~ Number of children is #{@participant.children.count}")
+    Rails.logger.info("~~~ Participant is currently in the #{@participant.high_intensity? ? 'Hi' : 'Lo'} Intensity Arm.")
+    Rails.logger.info("~~~ Participant state is #{@participant.state}")
+    Rails.logger.info("~~~ Participant next study segment is #{@participant.next_study_segment}")
+    # mark_pending_event_activities_canceled(@participant)
+    # @participant.switch_arm
+    # resp = Event.schedule_and_create_placeholder(psc, @participant)
   end
 
-  def update_arm
-    mark_pending_event_activities_canceled(@participant)
+  def process_arm_switch
+    Rails.logger.info("~~~ process_arm_switch for p_id [#{@participant.p_id}]")
     if @participant.switch_arm
-
-      resp = Event.schedule_and_create_placeholder(psc, @participant)
-      if resp && resp.success?
-        if @participant.high_intensity
-          @notice = "Successfully added #{@participant.person} to High Intensity Arm"
-        else
-          @notice = "Successfully added #{@participant.person} to Low Intensity Arm"
-        end
-      else
-        @notice = "Switched arm but could not schedule next event [#{@participant.next_study_segment.inspect}]"
-      end
-
-      url = edit_participant_path(@participant)
-      url = params[:redirect_to] unless params[:redirect_to].blank?
-      redirect_to(url, :notice => @notice)
+      redirect_to(switch_arm_participant_path(@participant), :notice => "Successfully switched arm")
     else
+      Rails.logger.info("~~~ @participant.switch_arm call failed")
       render :action => "edit_arm"
     end
+  end
+
+  def schedule_and_create_placeholder
+    Rails.logger.info("~~~ schedule_and_create_placeholder")
+    Rails.logger.info("~~~ Participant p_id [#{@participant.p_id}]")
+    Rails.logger.info("~~~ Participant has #{@participant.pending_events.size} pending_events [#{@participant.pending_events.map(&:to_s).to_sentence}]")
+    Rails.logger.info("~~~ Participant is currently in the #{@participant.high_intensity? ? 'Hi' : 'Lo'} Intensity Arm.")
+    Rails.logger.info("~~~ Participant state is #{@participant.state}")
+    Rails.logger.info("~~~ Participant next study segment is #{@participant.next_study_segment}")
+
+    resp = Event.schedule_and_create_placeholder(psc, @participant)
+    if resp && resp.success?
+      Rails.logger.info("~~~ response from schedule_and_create_placeholder was successful")
+      arm = @participant.high_intensity? ? "High" : "Low"
+      @notice = "Successfully scheduled #{@participant.person} for next event in the #{arm} Intensity Arm"
+    else
+      if resp
+        Rails.logger.info("~~~ response from schedule_and_create_placeholder is nil")
+      else
+        Rails.logger.info("~~~ response from schedule_and_create_placeholder = #{resp.inspect}")
+      end
+      @notice = "Could not schedule next event [#{@participant.next_study_segment.inspect}] for Participant [#{@participant.p_id}]"
+    end
+
+    url = edit_participant_path(@participant)
+    url = params[:redirect_to] unless params[:redirect_to].blank?
+    redirect_to(url, :notice => @notice)
+  end
+
+  def edit_arm
   end
 
   def edit_ppg_status
@@ -402,6 +434,8 @@ class ParticipantsController < ApplicationController
   end
 
   def nullify_pending_events
+    Rails.logger.info("~~~ nullify_pending_events for p_id #{@participant.p_id}")
+    Rails.logger.info("~~~ Participant has #{@participant.pending_events.size} pending_events [#{@participant.pending_events.map(&:to_s).to_sentence}]")
     @participant.nullify_pending_events!(psc, params[:reason])
 
     url = participant_path(@participant)
