@@ -17,8 +17,9 @@ class ContactsController < ApplicationController
                              :psu_code => NcsNavigatorCore.psu_code,
                              :contact_date_date => Date.today,
                              :contact_start_time => Time.now.strftime("%H:%M"))
-    if params[:event_id]
-      @event = event_for_person
+    @event = event_for_person
+
+    if @event
       @requires_consent = (@person.participant &&
                               (@person.participant.consented? == false) &&
                               !@event.screener_event?)
@@ -36,7 +37,7 @@ class ContactsController < ApplicationController
     @person  = Person.find(params[:person_id])
     @contact = Contact.start(@person, params[:contact])
 
-    @event = event_for_person unless params[:event_id]  # possibly eventless contacts under #3285
+    @event = event_for_person
 
     respond_to do |format|
       if @contact.save
@@ -209,8 +210,18 @@ class ContactsController < ApplicationController
     ##
     # Find event by given event id or
     # determine next event from the person cf. next_event_for_person
+    #
+    # By the way:
+    # => 0
+    # ...so a nil event_id will result in calling `next_event_for_person`
+    #
+    # an event_id of -1 is used to indicate "eventless contact"
     def event_for_person
-      params[:event_id].to_i > 0 ? Event.find(params[:event_id]) : next_event_for_person
+      event = case params[:event_id].to_i
+        when -1 then nil
+        when  0 then next_event_for_person
+        else Event.find(params[:event_id])
+      end
     end
 
     ##

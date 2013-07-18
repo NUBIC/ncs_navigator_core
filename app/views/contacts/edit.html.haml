@@ -13,7 +13,10 @@
 
     = render "shared/custom_error_messages", :object => f.object
 
-    = render "contacts/form_fields", :f => f
+    - if @event.nil?
+      = render "contacts/form_fields_without_event", :f => f
+    - else
+      = render "contacts/form_fields_with_event", :f => f
 
     %p
       = f.submit "Submit", :disable_with => 'Submitting...'
