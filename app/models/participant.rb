@@ -155,7 +155,7 @@ class Participant < ActiveRecord::Base
     end
 
     event :enroll_in_high_intensity_arm do
-      transition [:in_pregnancy_probability_group, :pregnant_low, :following_low_intensity, :consented_low_intensity] => :moved_to_high_intensity_arm
+      transition [:in_pregnancy_probability_group, :pregnant_low, :postnatal, :following_low_intensity, :consented_low_intensity] => :moved_to_high_intensity_arm
     end
 
     event :start_in_high_intensity_arm do
