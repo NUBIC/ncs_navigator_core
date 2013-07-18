@@ -360,13 +360,13 @@ module ResponseSetPrepopulation
 
       describe "contacts" do
 
-        it "should show contact for tracing if EVENT_TYPE = PBS PARTICIPANT ELIGIBILITY SCREENING, PREGNANCY VISIT 1, PREGNANCY VISIT 2, 6 MONTH, OR 12 MONTH" do
+        it "should show contact for tracing if EVENT_TYPE = PBS PARTICIPANT ELIGIBILITY SCREENING, PREGNANCY VISIT 1, PREGNANCY VISIT 2, 3 MONTH, 6 MONTH, 9 MONTH OR 12 MONTH" do
           event = Factory(:event, :event_type_code => 13) # PV1
           run_populator(event)
           assert_response_value(@response_set, "prepopulated_should_show_contact_for_tracing", "TRUE")
         end
 
-        it "should NOT show contact for tracing if EVENT_TYPE is not PBS PARTICIPANT ELIGIBILITY SCREENING, PREGNANCY VISIT 1, PREGNANCY VISIT 2, 6 MONTH, OR 12 MONTH" do
+        it "should NOT show contact for tracing if EVENT_TYPE is not PBS PARTICIPANT ELIGIBILITY SCREENING, PREGNANCY VISIT 1, PREGNANCY VISIT 2, 3 MONTH, 6 MONTH, 9 MONTH OR 12 MONTH" do
           event = Factory(:event, :event_type_code => 18) # Birth
           run_populator(event)
           assert_response_value(@response_set, "prepopulated_should_show_contact_for_tracing", "FALSE")
