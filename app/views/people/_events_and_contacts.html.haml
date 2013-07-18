@@ -1,6 +1,6 @@
 .page_section
   .participant_contacts
-    %div= link_to "New Contact without Event", new_person_contact_path(@person),
+    %div= link_to "New Contact without Event", new_person_contact_path(@person, :event_id => -1),
       :class => "add_link icon_link", :title => "New Contact for #{blank_safe(@person.to_s)} without Event"
     - if @events_and_contact_links.blank?
       %div= "No events or contacts exist for #{blank_safe(@person.to_s)}."
