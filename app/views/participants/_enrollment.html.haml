@@ -1,19 +1,12 @@
 - redirection = "#{request.path}?#{request.query_string}"
-- if recruitment_strategy.two_tier_knowledgable?
+- if recruitment_strategy.two_tier_knowledgable? && @participant.low_intensity?
   .page_section
     .arm
       - if permit?(Role::FIELD_STAFF, Role::STAFF_SUPERVISOR)
         %b
           Switch Protocol Arm
         .high_intensity_invitation
-          = form_for(@participant, :url => update_arm_participant_path(@participant, :redirect_to => redirection)) do |f|
-            = render "shared/full_error_messages", :object => f.object
-            = f.hidden_field :high_intensity
-            %p
-              - if @participant.high_intensity?
-                = f.submit switch_arm_message(@participant)
-              - else
-                = f.submit switch_arm_message(@participant), :confirm => "Please confirm that participant is eligible for High Intensity - (i.e. in TSU)"
+          = link_to "Switch Protocol Arm", switch_arm_participant_path(@participant), :class => "fix_link icon_link"
 - if permit?(Role::SYSTEM_ADMINISTRATOR, Role::USER_ADMINISTRATOR, Role::STAFF_SUPERVISOR)
   .page_section
     .enrollment

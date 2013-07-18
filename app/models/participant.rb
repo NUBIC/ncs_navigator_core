@@ -155,7 +155,7 @@ class Participant < ActiveRecord::Base
     end
 
     event :enroll_in_high_intensity_arm do
-      transition [:in_pregnancy_probability_group, :pregnant_low, :following_low_intensity, :consented_low_intensity] => :moved_to_high_intensity_arm
+      transition [:in_pregnancy_probability_group, :pregnant_low, :postnatal, :following_low_intensity, :consented_low_intensity] => :moved_to_high_intensity_arm
     end
 
     event :start_in_high_intensity_arm do
@@ -1065,6 +1065,7 @@ class Participant < ActiveRecord::Base
   # Helper method to switch from lo intensity to hi intensity protocol and vice-versa
   # @return [true, false]
   def switch_arm(ensure_high_intensity = false)
+    Rails.logger.info("~~~ switch_arm p_id [#{self.p_id}]")
     val = ensure_high_intensity ? true : !self.high_intensity
     self.high_intensity = val
     self.save!
@@ -1572,12 +1573,15 @@ class Participant < ActiveRecord::Base
     # @see Participant#pending_events
     # @see ActiveRecord::Base#destroy
     def destroy_pending_events
+      Rails.logger.info("~~~ destroy_pending_events for p_id [#{self.p_id}]")
       pending_events.each do |e|
         e.destroy if e.contact_links.blank?
       end
     end
 
     def set_switch_arm_state(hi_intensity)
+      Rails.logger.info("~~~ set_switch_arm_state hi_intensity = #{hi_intensity}")
+      Rails.logger.info("~~~ current state = #{state}")
       case hi_intensity
       when true
         enroll_in_high_intensity_arm! if can_enroll_in_high_intensity_arm?
