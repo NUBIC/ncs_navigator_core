@@ -385,7 +385,15 @@ class Participant < ActiveRecord::Base
 
     if event && self.pending_events.blank?
       update_state_to_next_event(event)
-      Event.schedule_and_create_placeholder(psc, self)
+
+      # quick and dirty hack to not schedule the Child::Child segment
+      # if the Participant has performed the final known event in that
+      # segment - i.e. the 30 month event
+      if completed_30_month?
+        Rails.logger.info("Participant [#{self.p_id}] completed 30 month event - not scheduling any new segment in PSC")
+      else
+        Event.schedule_and_create_placeholder(psc, self)
+      end
     end
   end
 
@@ -499,6 +507,10 @@ class Participant < ActiveRecord::Base
   # @return [Boolean]
   def completed_event?(event_type)
     completed_events(event_type).count > 0
+  end
+
+  def completed_30_month?
+    completed_event?(NcsCode.for_list_name_and_local_code('EVENT_TYPE_CL1', 36))
   end
 
   ##

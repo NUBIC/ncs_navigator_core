@@ -377,10 +377,10 @@ class ParticipantsController < ApplicationController
   def process_mark_event_out_of_window
     event = Event.find(params[:event_id])
     resp = @participant.mark_event_out_of_window(psc, event)
-    if resp && resp.success?
+    if resp && (resp.respond_to?(:success?) && resp.success?)
       flash[:notice] = "#{event.to_s} for Participant was marked 'Out of Window'."
     else
-      if @participant.pending_events.blank?
+      if @participant.pending_events.blank? && !@participant.completed_30_month?
         flash[:warning] = "Could not scheduled next event after marking #{event.to_s} 'Out of Window'."
       else
         flash[:notice] = "#{event.to_s} for Participant was marked 'Out of Window'."
