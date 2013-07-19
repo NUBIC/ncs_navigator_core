@@ -8,16 +8,19 @@ jQuery ->
   # on change filter the event dispositions to those in the
   # selected event category
   $('#event_event_disposition_category_code').change ->
-    filter_event_dispositions()
+    filter_event_dispositions(true)
 
-  filter_event_dispositions = ->
+  filter_event_dispositions = (add_blank) ->
     category = $('#event_event_disposition_category_code :selected').text()
     console.log(category)
 
     filter_text = event_filter_text(category)
     options = $(event_dispositions).filter(category_filter(category)).html()
     if options
-      $('#event_event_disposition').html("<optgroup label=\"" + filter_text + "\">" + options + "<\optgroup>")
+      options_html = build_options_html(options, filter_text, add_blank)
+      $('#event_event_disposition').html(options_html)
+      if add_blank
+        $("#event_event_disposition option[value='']").attr('selected', 'selected');
     else
       $('#event_event_disposition').empty()
 
@@ -87,25 +90,35 @@ jQuery ->
   # on change filter the contact dispositions to those in the
   # selected contact mode
   $('#contact_contact_type_code').change ->
-    filter_contact_dispositions()
+    filter_contact_dispositions(true)
 
-  filter_contact_dispositions = ->
+  filter_contact_dispositions = (add_blank) ->
     contact_type_val = $('#contact_contact_type_code :selected').val()
     console.log(contact_type_val)
 
     filter_text = contact_filter_text(contact_type_val)
     options = $(contact_dispositions).filter(contact_mode_filter(contact_type_val)).html()
     if options
-      $('#contact_contact_disposition').html("<optgroup label=\"" + filter_text + "\">" + options + "<\optgroup>")
+      options_html = build_options_html(options, filter_text, add_blank)
+      $('#contact_contact_disposition').html(options_html)
+      if add_blank
+        $("#contact_contact_disposition option[value='']").attr('selected', 'selected');
     else
       $('#contact_contact_disposition').empty()
+
+  build_options_html = (options, filter_text, add_blank) ->
+    if add_blank
+      options_html = "<optgroup label=\"" + filter_text + "\"><option value=\"\">-- Select Disposition --</\option>#{options}</\optgroup>"
+    else
+      options_html = "<optgroup label=\"" + filter_text + "\">#{options}<\optgroup>"
+    return options_html
 
   filter_dispositions = ->
     # determine which page we are on
     if $('#event_event_disposition').length > 0
-      filter_event_dispositions()
+      filter_event_dispositions(false)
     if $('#contact_contact_disposition').length > 0
-      filter_contact_dispositions()
+      filter_contact_dispositions(false)
 
   # on page load filter dispositions
   filter_dispositions()
