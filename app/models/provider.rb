@@ -60,6 +60,7 @@ class Provider < ActiveRecord::Base
 
   has_many :provider_logistics
   has_many :non_interview_providers
+  has_many :pre_screening_performeds
 
   has_many :provider_roles
   has_many :pbs_provider_roles, :class_name => 'PbsProviderRole', :foreign_key => 'provider_id'
@@ -76,6 +77,7 @@ class Provider < ActiveRecord::Base
   accepts_nested_attributes_for :provider_logistics, :allow_destroy => true
   accepts_nested_attributes_for :provider_roles, :allow_destroy => true
   accepts_nested_attributes_for :pbs_provider_roles, :allow_destroy => true
+  accepts_nested_attributes_for :pre_screening_performeds, :allow_destroy => true
 
   validates :name_practice, :length => { :maximum => 100 }, :allow_blank => true
 
