@@ -412,6 +412,10 @@ module NcsNavigator::Core::Warehouse
         record.class.properties.each do |prop|
           name = prop.name
 
+          # These are assigned by ncs_mdes_warehouse's ApplyGlobalValuesFilter;
+          # see lib/ncs_navigator/warehouse/filters/apply_global_values_filter.rb:45-61.
+          next if name.to_s == 'psu_id' || name.to_s == 'recruit_type'
+
           if record.send(name).blank? && record.class.properties[name].required?
             set_first_valid(record, name, [-4])
           end
