@@ -3,7 +3,10 @@ module ResponseSetPrepopulation
     include OldAccessMethods
 
     def self.applies_to?(rs)
-      rs.survey.title.include?('_PBSamplingScreen_')
+      [
+        /_PBSamplingScreen_/,
+        /_PBSampScreenHosp_/
+      ].any?{ |regex| rs.survey.title =~ regex }
     end
 
     def self.reference_identifiers
