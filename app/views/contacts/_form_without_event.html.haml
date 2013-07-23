@@ -1,0 +1,8 @@
+.page_section
+  = form_for([person, contact], :html => {:autocomplete => "off"}) do |f|
+    = render "shared/custom_error_messages", :object => f.object
+
+    = render "contacts/form_fields_without_event", :f => f
+
+    %p
+      = f.submit "Save Contact", :disable_with => 'Submitting...'
