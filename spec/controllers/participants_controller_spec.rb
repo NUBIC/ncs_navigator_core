@@ -154,12 +154,12 @@ describe ParticipantsController do
       end
       it "selects 1 contact_link and 2 events related to the mother" do
         get :show, :id => @m_participant.id
-        assigns[:events_and_contacts].count.should == 3
+        assigns[:events_and_contact_links].count.should == 3
       end
 
       it "select mother's event with a contact_link related to the child" do
         get :show, :id => @c_participant.id
-        assigns[:events_and_contacts].first.should == @cl_ev
+        assigns[:events_and_contact_links].first.should == @cl_ev
       end
 
     end

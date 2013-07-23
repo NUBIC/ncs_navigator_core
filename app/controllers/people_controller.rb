@@ -21,10 +21,24 @@ class PeopleController < ApplicationController
     end
   end
 
+  def events_and_contact_links
+    rows = @person.events +
+           @person.contact_links
+    if @person && @participant
+      rows += @participant.events +
+              @person.contact_links.collect(&:event) +
+              @person.contact_links.select {|cl| cl.event.nil?}
+    end
+    rows.compact.uniq.flatten
+  end
+  private :events_and_contact_links
+
   # GET /people/1
   def show
-    @person = Person.find(params[:id])
+    @person = Person.includes(:contact_links, :events).find(params[:id])
     @participant = @person.participant
+    @events_and_contact_links = events_and_contact_links
+
     redirect_to participant_path(@participant) if @participant
   end
 

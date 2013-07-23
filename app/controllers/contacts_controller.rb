@@ -17,11 +17,13 @@ class ContactsController < ApplicationController
                              :psu_code => NcsNavigatorCore.psu_code,
                              :contact_date_date => Date.today,
                              :contact_start_time => Time.now.strftime("%H:%M"))
-
     @event = event_for_person
-    @requires_consent = (@person.participant &&
-                            (@person.participant.consented? == false) &&
-                            !@event.screener_event?)
+
+    if @event
+      @requires_consent = (@person.participant &&
+                              (@person.participant.consented? == false) &&
+                              !@event.screener_event?)
+    end
 
     respond_to do |format|
       format.html # new.html.haml
@@ -40,8 +42,12 @@ class ContactsController < ApplicationController
     respond_to do |format|
       if @contact.save
         link = find_or_create_contact_link
+        if @event
+          format.html { redirect_to(select_instrument_contact_link_path(link.id), :notice => 'Contact was successfully created.') }
+        else
+          format.html { redirect_to(@person, :notice => 'Contact was successfully created.') }
+        end
 
-        format.html { redirect_to(select_instrument_contact_link_path(link.id), :notice => 'Contact was successfully created.') }
         format.json { render :json => @contact }
       else
         format.html { render :action => "new" }
@@ -204,8 +210,18 @@ class ContactsController < ApplicationController
     ##
     # Find event by given event id or
     # determine next event from the person cf. next_event_for_person
+    #
+    # By the way:
+    # => 0
+    # ...so a nil event_id will result in calling `next_event_for_person`
+    #
+    # an event_id of -1 is used to indicate "eventless contact"
     def event_for_person
-      params[:event_id].to_i > 0 ? Event.find(params[:event_id]) : next_event_for_person
+      event = case params[:event_id].to_i
+        when -1 then nil
+        when  0 then next_event_for_person
+        else Event.find(params[:event_id])
+      end
     end
 
     ##
@@ -220,9 +236,6 @@ class ContactsController < ApplicationController
           participant.events.reload
         end
         participant.pending_events.first
-      else
-        # TODO: be able to create a Contact without an Event - Task #3285
-        raise "No Event identifier provided or Participant found for Contact"
       end
     end
 
