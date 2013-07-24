@@ -23,7 +23,7 @@ class PeopleController < ApplicationController
 
   def events_and_contact_links
     rows = @person.events +
-           @person.contact_links
+           @person.contact_links.select{ |cl| !@person.events.include?(cl.event) }
     if @person && @participant
       rows += @participant.events +
               @person.contact_links.collect(&:event) +
