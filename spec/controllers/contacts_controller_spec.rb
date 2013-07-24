@@ -57,10 +57,29 @@ describe ContactsController do
             assigns[:contact].should equal(mock_contact)
           end
 
-          it "assigns a new event as @event" do
-            get :new, :person_id => @person.id
-            assigns[:event].should == @event
-            assigns[:event].event_type.should == @preg_screen_event
+          context "@event assignemnt is based on params[:event_id]" do
+            it "an omitted event_id yields the next_event_for_person as a default" do
+              get :new, :person_id => @person.id
+              assigns[:event].should == @participant.pending_events.first
+              assigns[:event].event_type.should === @preg_screen_event
+            end
+
+            it "a nil event_id yields the next_event_for_person as a default" do
+              get :new, :person_id => @person.id, :event_id => nil
+              assigns[:event].should == @participant.pending_events.first
+              assigns[:event].event_type.should == @preg_screen_event
+            end
+            
+            it "a valid event_id yields that Event record" do
+              get :new, :person_id => @person.id, :event_id => @event.id
+              assigns[:event].should == @event
+              assigns[:event].event_type.should == @preg_screen_event
+            end
+
+            it "an event_id of -1 yields nil (an eventless contact - see #3285)" do
+              get :new, :person_id => @person.id, :event_id => -1
+              assigns[:event].should be_nil
+            end
           end
         end
 
@@ -70,9 +89,9 @@ describe ContactsController do
             Contact.stub(:new).and_return(mock_contact)
           end
 
-          it "raises an exception" do
+          it "succeeds as an eventless contact" do
             person = Factory(:person)
-            expect { get :new, :person_id => person.id }.to raise_error
+            expect { get :new, :person_id => person.id }.to_not raise_error
           end
         end
       end
@@ -111,6 +130,7 @@ describe ContactsController do
             let(:contact_type_code) { Contact::MAILING_CONTACT_CODE }
             it "is Pregnancy Screener Event" do
               get :edit, :id => contact.id, :contact_link_id => @contact_link.id
+              binding.pry
               assigns[:disposition_group].should == "Pregnancy Screener Event"
             end
           end
@@ -316,7 +336,7 @@ describe ContactsController do
         end
 
         it "assigns a new event as @event" do
-          get :new, :person_id => @person.id
+          get :new, :person_id => @person.id, :event_id => @event33.id
           assigns[:event].should == @event33
           assigns[:event].event_type.local_code.should == 33
         end
@@ -327,7 +347,7 @@ describe ContactsController do
 
             Event.stub(:schedule_and_create_placeholder).and_return(nil)
 
-            get :new, :person_id => @person.id, :event_type_id => NcsCode.low_intensity_data_collection.id
+            get :new, :person_id => @person.id, :event_id => @event33.id, :event_type_id => NcsCode.low_intensity_data_collection.id
             assigns[:event].event_type.local_code.should == NcsCode.low_intensity_data_collection.local_code
           end
         end

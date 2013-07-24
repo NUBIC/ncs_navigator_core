@@ -54,7 +54,7 @@ class ParticipantsController < ApplicationController
   def show
     @person = @participant.person
     @participant = @person.participant
-    @events_and_contacts = events_and_contact_links
+    @events_and_contact_links = events_and_contact_links
 
     @participant_activity_plan = psc.build_activity_plan(@participant)
 
