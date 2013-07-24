@@ -51,7 +51,9 @@ class EventsController < ApplicationController
         # TODO: remove some of the coupling between post_update_event_actions
         #       and redirect_path as the event type and participant eligibility
         #       are affecting the latter of the two methods.
-        participant = post_update_event_actions(@event, @event.participant)
+        if @event.participant
+          participant = post_update_event_actions(@event, @event.participant)
+        end
 
         format.html do
           if params[:commit] == "Continue" && @contact_link
