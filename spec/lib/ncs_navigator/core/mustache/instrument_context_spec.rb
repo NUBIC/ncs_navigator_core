@@ -10,6 +10,9 @@ module NcsNavigator::Core::Mustache
     let(:baby_fname) { "#{OperationalDataExtractor::Birth::BABY_NAME_PREFIX}.BABY_FNAME" }
     let(:baby_sex)   { "#{OperationalDataExtractor::Birth::BABY_NAME_PREFIX}.BABY_SEX" }
     let(:multiple)   { "#{OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX}.MULTIPLE" }
+    let(:g_fname) { "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_CHILD_PREFIX}.G_FNAME" }
+    let(:g_mname) { "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_CHILD_PREFIX}.G_MNAME" }
+    let(:g_lname) { "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_CHILD_PREFIX}.G_LNAME" }
 
     let(:multiple_gestation) { "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_2_INTERVIEW_PREFIX}.MULTIPLE_GESTATION" }
     let(:multiple_num) { "#{OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX}.MULTIPLE_NUM" }
@@ -339,6 +342,23 @@ module NcsNavigator::Core::Mustache
           instrument_context.single_birth?.should be_true
         end
 
+      end
+
+      describe ".are_you_or_is_guardian_name" do
+        let(:survey) { create_participant_verification_survey }
+
+        it "returns 'is guardian name' if one exists" do
+            take_survey(survey, rs) do |r|
+              r.a g_fname, 'Mary'
+              r.a g_mname, 'Tyler'
+              r.a g_lname, 'Moore'
+            end
+            instrument_context.are_you_or_is_guardian_name.should == 'is Mary Tyler Moore'
+        end
+
+        it "returns 'are you' if a guardian name does not exist" do
+          instrument_context.are_you_or_is_guardian_name.should == 'are you'
+        end
       end
 
       describe ".baby_sex_response" do
