@@ -9,7 +9,7 @@
   - participant = @contact_link.event.participant
   = link_to "New Child", new_child_people_path(:participant_id => participant.id, :contact_link_id => @contact_link.id),
     :class => "add_link icon_link", :confirm => "Are you certain you would like to create a new child record?"
-- elsif @event.participant.ineligible?
+- elsif @event.participant && @event.participant.ineligible?
   - if @event.participant.withdrawn? && @event.informed_consent?
     = render "activity_list", :initial_instrument_for_contact => initial_instrument_for_contact
   - else
