@@ -9,7 +9,7 @@
       .survey
         = rs.created_at.to_s(:db)
         = link_to rs.survey.title, surveyor.view_my_survey_path(:survey_code => rs.survey.access_code, :response_set_code => rs.access_code), :class => "show_link icon_link"
-        = link_to "Edit Instrument", edit_instrument_path(rs.instrument), :class => "edit_link icon_link"
+        = link_to "Edit Instrument", edit_instrument_path(rs.instrument), :class => "edit_link icon_link" if rs.instrument
 
     %p
       = link_to "Search for Responses", responses_for_person_path(@person), :class => "search_link icon_link"
