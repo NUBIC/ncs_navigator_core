@@ -106,6 +106,18 @@
         %td{ :colspan => '2' }
           = link_to_add_fields "Add Provider Logistic", :provider_logistics
 
+.pre_screening_performeds
+  - @preScreeningPerformedsTemplate = generate_nested_attributes_template(f, :pre_screening_performeds, 'providers/pre_screening_performeds')
+  %table{ :class => 'records pre_screening_performeds' }
+    %tbody.nested_records_pre_screening_performeds
+      = f.fields_for :pre_screening_performeds do |psp|
+        = render :partial => 'providers/pre_screening_performeds', :locals => { :f => psp }
+    %tfoot
+      %tr.row
+        %td{ :colspan => '2' }
+          = link_to_add_fields "Add Pre-Screening Performed", :pre_screening_performeds
+
+
 %p
   = f.label :provider_comment, "Comments on Provider"
   %br
@@ -123,4 +135,6 @@
       providerLogisticTemplate: '#{@providerLogisticsTemplate}' });
     pbsProviderRolesAttributesForm = new NCSCore.UI.PbsProviderRoleAssociation({
       pbsProviderRolesTemplate: '#{@pbsProviderRolesTemplate}' });
+    preScreeningPerformedsAttributesForm = new NCSCore.UI.PreScreeningPerformedAssociation({
+      preScreeningPerformedsTemplate: '#{@preScreeningPerformedsTemplate}' });
   });

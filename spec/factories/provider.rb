@@ -16,6 +16,15 @@ FactoryGirl.define do
     prov.name_practice              'name of provider'
   end
 
+  factory :pre_screening_performed do |psp|
+    psp.psu_code                   20000030
+    psp.association :provider, :factory => :provider
+    psp.pr_pregnancy_eligible_code     1
+    psp.pr_age_eligible_code     1
+    psp.pr_first_provider_visit_code     1
+    psp.pr_county_of_residence_code     1
+  end
+
   factory :provider_role do |pr|
     pr.psu_code                   20000030
     pr.association :provider, :factory => :provider

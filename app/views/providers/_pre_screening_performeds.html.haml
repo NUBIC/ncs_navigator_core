@@ -1,0 +1,9 @@
+%tr{ :class => "pre_screening_performed fields row" }
+  %td.select_col
+    = render "shared/inline_ncs_code_select", { :f => f, :code => :pr_pregnancy_eligible_code, :label_text => "Pregnancy", :inline => true }
+    = render "shared/inline_ncs_code_select", { :f => f, :code => :pr_age_eligible_code, :label_text => "Age", :inline => true }
+    = render "shared/inline_ncs_code_select", { :f => f, :code => :pr_first_provider_visit_code, :label_text => "First Provider Visit", :inline => true }
+    = render "shared/inline_ncs_code_select", { :f => f, :code => :pr_county_of_residence_code, :label_text => "County", :inline => true }
+
+  %td.remove_col
+    = link_to_remove_fields 'Remove', f, :pre_screening_performeds
