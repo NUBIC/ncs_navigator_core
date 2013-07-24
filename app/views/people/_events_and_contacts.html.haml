@@ -54,7 +54,8 @@
                 = " - "
                 = blank_safe(event.event_end_date)
               %span.relationship
-                -if @person != event.participant.person
+                - event_person = event.participant.try(:person)
+                - if event_person && @person != event_person
                   = @person.relationship_to_person_via_participant(event.participant.person)
               %div
                 Window:

@@ -12,7 +12,7 @@
     - disposition = DispositionMapper.disposition_text_for_contact(contact)
     = disposition.nil? ? contact.contact_disposition : disposition
   %td
-    -if @person != contact_link.person
+    - if @person != contact_link.person
       = @person.relationship_to_person_via_participant(contact_link.person)
   %td
     - if contact.open? && event.try(:open?)
