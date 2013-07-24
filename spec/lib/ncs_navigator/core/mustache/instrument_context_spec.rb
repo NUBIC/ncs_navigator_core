@@ -347,13 +347,13 @@ module NcsNavigator::Core::Mustache
       describe ".are_you_or_is_guardian_name" do
         let(:survey) { create_participant_verification_survey }
 
-        it "returns guardian name if one exists" do
+        it "returns 'is guardian name' if one exists" do
             take_survey(survey, rs) do |r|
               r.a g_fname, 'Mary'
               r.a g_mname, 'Tyler'
               r.a g_lname, 'Moore'
             end
-            instrument_context.are_you_or_is_guardian_name.should == 'Mary Tyler Moore'
+            instrument_context.are_you_or_is_guardian_name.should == 'is Mary Tyler Moore'
         end
 
         it "returns 'are you' if a guardian name does not exist" do
