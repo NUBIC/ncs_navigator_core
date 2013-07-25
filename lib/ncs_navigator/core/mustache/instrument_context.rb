@@ -661,10 +661,7 @@ module NcsNavigator::Core::Mustache
       guard_name = response_for("#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_CHILD_PREFIX}.G_FNAME") + ' ' +
                    response_for("#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_CHILD_PREFIX}.G_MNAME") + ' ' +
                    response_for("#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_CHILD_PREFIX}.G_LNAME")
-      if guard_name.blank?
-        guard_name = 'are you'
-      end
-      guard_name
+      guard_name.blank? ? 'are you' : "is #{guard_name}"
     end
 
     #Nataliya's comment - not used anywhere
