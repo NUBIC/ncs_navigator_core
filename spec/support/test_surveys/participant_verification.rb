@@ -104,6 +104,16 @@ module ParticipantVerification
     q = Factory(:question, :reference_identifier => "SA_PHONE", :data_export_identifier => "PARTICIPANT_VERIF.SA_PHONE", :survey_section_id => survey_section.id)
     a = Factory(:answer, :question_id => q.id, :text => "Phone Number", :response_class => "string")
 
+    # Guardian First Name
+    q = Factory(:question, :reference_identifier => "G_FNAME", :data_export_identifier => "PARTICIPANT_VERIF_CHILD.G_FNAME", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "First Name", :response_class => "string")
+    # Guardian Middle Name
+    q = Factory(:question, :reference_identifier => "G_MNAME", :data_export_identifier => "PARTICIPANT_VERIF_CHILD.G_MNAME", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "First Name", :response_class => "string")
+    # Guardian Last Name
+    q = Factory(:question, :reference_identifier => "G_LNAME", :data_export_identifier => "PARTICIPANT_VERIF_CHILD.G_LNAME", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "First Name", :response_class => "string")
+
     survey
   end
 

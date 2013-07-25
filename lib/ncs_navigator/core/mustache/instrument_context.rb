@@ -658,7 +658,10 @@ module NcsNavigator::Core::Mustache
 
     # guardian_name is composed of g_fname, g_mname, and g_lname
     def are_you_or_is_guardian_name
-      "[ARE_YOU_OR_IS_GUARDIAN_NAME]"
+      guard_name = response_for("#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_CHILD_PREFIX}.G_FNAME") + ' ' +
+                   response_for("#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_CHILD_PREFIX}.G_MNAME") + ' ' +
+                   response_for("#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_CHILD_PREFIX}.G_LNAME")
+      guard_name.blank? ? 'are you' : "is #{guard_name}"
     end
 
     #Nataliya's comment - not used anywhere
