@@ -73,6 +73,10 @@ jQuery ->
     console.log("calling contact_filter_text")
     console.log(contact_type_val)
     switch(contact_type_val)
+      when "PBS Participant Eligibility Screening"
+        filter = "PBS Eligibility Screening"
+      when "Pregnancy Screener"
+        filter = "Pregnancy Screener Event"
       when "1","4","6"
         filter = "General Study Visit Event"
       when "2"
@@ -95,6 +99,12 @@ jQuery ->
   filter_contact_dispositions = (add_blank) ->
     contact_type_val = $('#contact_contact_type_code :selected').val()
     console.log(contact_type_val)
+
+    # override disposition category filter if event type is a Screener event
+    event_type = $('span#event_type').text().trim()
+    console.log(event_type)
+    if event_type == "PBS Participant Eligibility Screening" || event_type == "Pregnancy Screener"
+      contact_type_val = event_type
 
     filter_text = contact_filter_text(contact_type_val)
     options = $(contact_dispositions).filter(contact_mode_filter(contact_type_val)).html()
