@@ -1606,6 +1606,7 @@ describe Participant do
         @does_not_live_in_county = NcsCode.for_list_name_and_local_code("SCREENER_ELIG_PSU_CL1", 2)
         @not_pregnant = NcsCode.for_list_name_and_local_code("PREGNANCY_STATUS_CL1", 2)
         @not_first_visit = NcsCode.for_list_name_and_local_code("CONFIRM_TYPE_CL7", 2)
+        @dont_know_if_first_visit = NcsCode.for_list_name_and_local_code("CONFIRM_TYPE_CL7", -2)
         @provider_in_frame = NcsCode.for_list_name_and_local_code("PROVIDER_OFFICE_ON_FRAME_CL1", 1)
 
         take_survey(@survey, @response_set) do |r|
@@ -1690,6 +1691,14 @@ describe Participant do
           end
 
           @part.should_not be_first_visit(@pers)
+        end
+
+        it "returns true if participant doesn't know if first visit" do
+          take_survey(@survey, @response_set) do |r|
+            r.a "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.FIRST_VISIT", @dont_know_if_first_visit
+          end
+
+          @part.should be_first_visit(@pers)
         end
       end
 
@@ -1796,12 +1805,13 @@ describe Participant do
         negative_provider_in_frame_question = Factory(:question, :data_export_identifier => provider_prefix + ".PROVIDER_OFFICE_ON_FRAME")
 
         # ineligible answers
-        ineligible_answer = Factory(:answer, :reference_identifier => 2)
-        ineligible_provider_answer = Factory(:answer, :reference_identifier => 1)
+        ineligible_age_answer = Factory(:answer, :question => negative_age_eligible_question, :reference_identifier => 2)
+        ineligible_county_answer = Factory(:answer, :question => negative_psu_county_eligible_question, :reference_identifier => 2)
+        ineligible_provider_answer = Factory(:answer, :question => negative_provider_in_frame_question, :reference_identifier => 1)
 
         # ineligible responses
-        @negative_age_eligible_response = Factory(:response, :question => negative_age_eligible_question, :answer => ineligible_answer)
-        @negative_psu_county_eligible_response = Factory(:response, :question => negative_psu_county_eligible_question, :answer => ineligible_answer)
+        @negative_age_eligible_response = Factory(:response, :question => negative_age_eligible_question, :answer => ineligible_age_answer)
+        @negative_psu_county_eligible_response = Factory(:response, :question => negative_psu_county_eligible_question, :answer => ineligible_county_answer)
         @negative_provider_in_frame_response = Factory(:response, :question => negative_provider_in_frame_question, :answer => ineligible_provider_answer)
 
         # eligible questions
@@ -1810,12 +1820,13 @@ describe Participant do
         positive_provider_in_frame_question = Factory(:question, :data_export_identifier => provider_prefix + ".PROVIDER_OFFICE_ON_FRAME")
 
         #eligible answers
-        eligible_provider_answer = Factory(:answer, :reference_identifier => 3)
-        eligible_answer   = Factory(:answer, :reference_identifier => 1)
+        eligible_provider_answer = Factory(:answer, :question => positive_provider_in_frame_question, :reference_identifier => 3)
+        eligible_age_answer      = Factory(:answer, :question => positive_age_eligible_question, :reference_identifier => 1)
+        eligible_county_answer   = Factory(:answer, :question => positive_psu_county_eligible_question, :reference_identifier => 1)
 
         # eligible responses
-        @positive_age_eligible_response = Factory(:response, :question => positive_age_eligible_question, :answer => eligible_answer)
-        @positive_psu_county_eligible_response = Factory(:response, :question => positive_psu_county_eligible_question, :answer => eligible_answer)
+        @positive_age_eligible_response = Factory(:response, :question => positive_age_eligible_question, :answer => eligible_age_answer)
+        @positive_psu_county_eligible_response = Factory(:response, :question => positive_psu_county_eligible_question, :answer => eligible_county_answer)
         @positive_provider_in_frame_response = Factory(:response, :question => positive_provider_in_frame_question, :answer => eligible_provider_answer)
       end
 
