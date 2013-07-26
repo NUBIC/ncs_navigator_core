@@ -77,6 +77,15 @@ module NcsNavigator::Core::Surveyor
 
         rs.should have_response('2b', nil, 'What colors?')
       end
+
+      it 'fills in string fields when no answer reference identifier is specified' do
+        taker.respond(rs) do |r|
+          r.answer 'montypython3', :value => 'Brave Sir Robin'
+        end
+
+        rs.should have_response('montypython3', '1', 'Brave Sir Robin')
+      end
+
     end
 
     describe 'UnresolvableQuestion' do
