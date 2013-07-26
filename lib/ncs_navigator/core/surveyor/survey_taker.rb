@@ -28,20 +28,22 @@ module NcsNavigator::Core::Surveyor
     #       r.answer 'monthly_income', 'other', :value => 9001
     #     end
     #
-    # Answers are matched using their reference identifiers, except in the case
-    # where only one answer is present for a given question and that answer has
-    # no reference identifier.  In that case, the reference identifier on the
-    # answer is optional:
+    # Answers are matched using their reference identifiers, except in
+    # the case where only one answer is present for a given question
+    # In that case, the reference identifier on the answer is
+    # optional:
     #
     #     q_foo 'what?'
     #     a :string
+    #     q_foo2 'what?'
+    #     a_1 :string
     #
     #     respond(rs) do |r|
     #       r.answer 'foo', :value => 'bar'  # => will fill in "bar" for foo's single answer
+    #       r.answer 'foo2', :value => 'bar'  # => will fill in "bar" for foo2's single answer
     #     end
     #
-    # If foo had more than one answer _or_ that single answer had a reference
-    # identifier, a SurveyTaker::UnresolvableAnswer would be raised.
+    # If foo had more than one answer a SurveyTaker::UnresolvableAnswer would be raised.
     #
     # By default, questions are also matched using reference identifiers.  If
     # needed, you can use data export identifiers to match questions:
@@ -222,6 +224,7 @@ module NcsNavigator::Core::Surveyor
       end
 
       def resolve_answers
+        resolve_nil_arefs_for_questions_with_one_answer
         ers = promises.map(&:aref)
         eqs = promises.map(&:question_id)
 
@@ -234,6 +237,13 @@ module NcsNavigator::Core::Surveyor
 
         promises.each do |p|
           p.answer = index[[p.question_id, p.aref]].first
+        end
+      end
+
+      def resolve_nil_arefs_for_questions_with_one_answer
+        index = survey.answers.where(:question_id => promises.map(&:question_id)).group_by(&:question_id)
+        promises.select{|p| index[p.question_id].size == 1 && p.aref == nil}.each do |p|
+          p.aref = index[p.question_id].first.reference_identifier
         end
       end
 
