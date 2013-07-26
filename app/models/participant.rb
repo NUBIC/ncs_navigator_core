@@ -1368,22 +1368,23 @@ class Participant < ActiveRecord::Base
   end
 
   def first_visit?(person)
-    eligible_for?(person, "FIRST_VISIT")
+    eligible_for?(person, "FIRST_VISIT", [1,-1,-2])
   end
 
   ##
   # If the reference_identifier for the response associated with the
-  # given data_export_identifier is "1" (true) then return true
-  # otherwise false.
+  # given data_export_identifier is "1" (true) or in the collection of
+  # given eligible_criteria values then return true, otherwise false.
   # If the response does not exist, the Participant is assumed eligible
   # until determined otherwise.
   # @param[Person, nil] Person the person associated with the participant
   # @param[String] data_export_identifier for question
+  # @param[Array<Integer>] eligible_criteria
   # @return[Boolean]
-  def eligible_for?(person, reference_identifier)
+  def eligible_for?(person, reference_identifier, eligible_criteria = [NcsCode::YES])
     data_export_identifier = pbs_eligibility_prefix + "." + reference_identifier
     most_recent_response = person.responses_for(data_export_identifier).last
-    most_recent_response.nil? ? true : most_recent_response.answer.reference_identifier.to_i == NcsCode::YES
+    most_recent_response.nil? ? true : eligible_criteria.include?(most_recent_response.answer.reference_identifier.gsub("neg_", "-").to_i)
   end
   private :eligible_for?
 
