@@ -40,7 +40,7 @@ module NcsNavigator::Core::Surveyor
     #
     #     respond(rs) do |r|
     #       r.answer 'foo', :value => 'bar'  # => will fill in "bar" for foo's single answer
-    #       r.answer 'foo2', :value => 'bar'  # => will fill in "bar" for foo's single answer
+    #       r.answer 'foo2', :value => 'bar'  # => will fill in "bar" for foo2's single answer
     #     end
     #
     # If foo had more than one answer a SurveyTaker::UnresolvableAnswer would be raised.
@@ -241,7 +241,7 @@ module NcsNavigator::Core::Surveyor
       end
 
       def resolve_nil_arefs_for_questions_with_one_answer
-        index = survey.answers.where(:question_id => promises.map(&:question_id)).group_by(&:question_id)# {|a| a.question_id}
+        index = survey.answers.where(:question_id => promises.map(&:question_id)).group_by(&:question_id)
         promises.select{|p| index[p.question_id].size == 1 && p.aref == nil}.each do |p|
           p.aref = index[p.question_id].first.reference_identifier
         end
