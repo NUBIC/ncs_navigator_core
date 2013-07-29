@@ -55,7 +55,7 @@ require 'ncs_navigator/configuration'
 class Person < ActiveRecord::Base
   include NcsNavigator::Core::Mdes::MdesRecord
   acts_as_mdes_record :public_id_field => :person_id, :date_fields => [:date_move, :person_dob],
-    :public_id_generator => NcsNavigator::Core::Mdes::HumanReadablePublicIdGenerator.new(:pattern => [4, 4, 4])
+    :public_id_generator => NcsNavigator::Core::Mdes::HumanReadablePublicIdGenerator.new({:pattern => [4, 4, 4], :psu => NcsNavigatorCore.psu})
 
   ncs_coded_attribute :psu,                      'PSU_CL1'
   ncs_coded_attribute :prefix,                   'NAME_PREFIX_CL1'

@@ -54,11 +54,19 @@ class DispositionMapper
     end
     private :should_add
 
+    ##
+    # Given a Survey title or mode of Contact as a String
+    # parameter, return the disposition category (one of the
+    # constants for this class).
+    # @param group [String]
+    # @return [String]
     def determine_event(group)
       case group
       when /_PregScreen_/
         PREGNANCY_SCREENER_EVENT
       when /Telephone/
+        TELEPHONE_INTERVIEW_EVENT
+      when /Text Message/
         TELEPHONE_INTERVIEW_EVENT
       when /Mail/
         MAILED_BACK_SAQ_EVENT

@@ -3,7 +3,7 @@
   %h3
     = @participant.person
 
-  = form_for(@participant, :url => update_arm_participant_path(@participant)) do |f|
+  = form_for(@participant, :url => process_arm_switch_participant_path(@participant)) do |f|
     = render "shared/full_error_messages", :object => f.object
 
     = f.hidden_field :high_intensity
@@ -12,4 +12,4 @@
       = switch_arm_message(@participant)
 
     %p
-      = f.submit "Switch"
+      = f.submit "Switch Protocol Arm"

@@ -46,7 +46,7 @@ class Participant < ActiveRecord::Base
   include NcsNavigator::Core::ImportAware
 
   acts_as_mdes_record :public_id_field => :p_id,
-    :public_id_generator => NcsNavigator::Core::Mdes::HumanReadablePublicIdGenerator.new
+    :public_id_generator => NcsNavigator::Core::Mdes::HumanReadablePublicIdGenerator.new(:psu => NcsNavigatorCore.psu)
 
   ncs_coded_attribute :psu,                 'PSU_CL1'
   ncs_coded_attribute :p_type,              'PARTICIPANT_TYPE_CL1'
@@ -155,7 +155,7 @@ class Participant < ActiveRecord::Base
     end
 
     event :enroll_in_high_intensity_arm do
-      transition [:in_pregnancy_probability_group, :pregnant_low, :following_low_intensity, :consented_low_intensity] => :moved_to_high_intensity_arm
+      transition [:in_pregnancy_probability_group, :pregnant_low, :postnatal, :following_low_intensity, :consented_low_intensity] => :moved_to_high_intensity_arm
     end
 
     event :start_in_high_intensity_arm do
@@ -385,7 +385,15 @@ class Participant < ActiveRecord::Base
 
     if event && self.pending_events.blank?
       update_state_to_next_event(event)
-      Event.schedule_and_create_placeholder(psc, self)
+
+      # quick and dirty hack to not schedule the Child::Child segment
+      # if the Participant has performed the final known event in that
+      # segment - i.e. the 30 month event
+      if completed_30_month?
+        Rails.logger.info("Participant [#{self.p_id}] completed 30 month event - not scheduling any new segment in PSC")
+      else
+        Event.schedule_and_create_placeholder(psc, self)
+      end
     end
   end
 
@@ -499,6 +507,10 @@ class Participant < ActiveRecord::Base
   # @return [Boolean]
   def completed_event?(event_type)
     completed_events(event_type).count > 0
+  end
+
+  def completed_30_month?
+    completed_event?(NcsCode.for_list_name_and_local_code('EVENT_TYPE_CL1', 36))
   end
 
   ##
@@ -1065,6 +1077,7 @@ class Participant < ActiveRecord::Base
   # Helper method to switch from lo intensity to hi intensity protocol and vice-versa
   # @return [true, false]
   def switch_arm(ensure_high_intensity = false)
+    Rails.logger.info("~~~ switch_arm p_id [#{self.p_id}]")
     val = ensure_high_intensity ? true : !self.high_intensity
     self.high_intensity = val
     self.save!
@@ -1572,12 +1585,15 @@ class Participant < ActiveRecord::Base
     # @see Participant#pending_events
     # @see ActiveRecord::Base#destroy
     def destroy_pending_events
+      Rails.logger.info("~~~ destroy_pending_events for p_id [#{self.p_id}]")
       pending_events.each do |e|
         e.destroy if e.contact_links.blank?
       end
     end
 
     def set_switch_arm_state(hi_intensity)
+      Rails.logger.info("~~~ set_switch_arm_state hi_intensity = #{hi_intensity}")
+      Rails.logger.info("~~~ current state = #{state}")
       case hi_intensity
       when true
         enroll_in_high_intensity_arm! if can_enroll_in_high_intensity_arm?

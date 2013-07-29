@@ -194,24 +194,24 @@ module ResponseSetPrepopulation
           init_common_vars
         end
 
-        it "should be TRUE when valid answers to NUM_HH exist" do
+        it "should be FALSE when valid answers to NUM_HH exist" do
           take_num_hh_surveys("24M", true)
+          run_populator
+          get_response_as_string(@response_set,
+                      "prepopulated_should_show_num_hh_group").should == "FALSE"
+        end
+
+        it "should be TRUE when only invalid answers to NUM_HH exist" do
+          take_num_hh_surveys("24M", false)
           run_populator
           get_response_as_string(@response_set,
                       "prepopulated_should_show_num_hh_group").should == "TRUE"
         end
 
-        it "should be FALSE when only invalid answers to NUM_HH exist" do
-          take_num_hh_surveys("24M", false)
+        it "should be TRUE when no responses to NUM_HH exist" do
           run_populator
           get_response_as_string(@response_set,
-                      "prepopulated_should_show_num_hh_group").should == "FALSE"
-        end
-
-        it "should be FALSE when no responses to NUM_HH exist" do
-          run_populator
-          get_response_as_string(@response_set,
-                      "prepopulated_should_show_num_hh_group").should == "FALSE"
+                      "prepopulated_should_show_num_hh_group").should == "TRUE"
         end
       end
 
@@ -224,24 +224,24 @@ module ResponseSetPrepopulation
           init_common_vars
         end
 
-        it "should be TRUE when valid answers to NUM_HH exist" do
+        it "should be FALSE when valid answers to NUM_HH exist" do
           take_num_hh_surveys("18M", true)
+          run_populator
+          get_response_as_string(@response_set,
+                      "prepopulated_should_show_num_hh_group").should == "FALSE"
+        end
+
+        it "should be TRUE when only invalid answers to NUM_HH exist" do
+          take_num_hh_surveys("18M", false)
           run_populator
           get_response_as_string(@response_set,
                       "prepopulated_should_show_num_hh_group").should == "TRUE"
         end
 
-        it "should be FALSE when only invalid answers to NUM_HH exist" do
-          take_num_hh_surveys("18M", false)
+        it "should be TRUE when no responses to NUM_HH exist" do
           run_populator
           get_response_as_string(@response_set,
-                      "prepopulated_should_show_num_hh_group").should == "FALSE"
-        end
-
-        it "should be FALSE when no responses to NUM_HH exist" do
-          run_populator
-          get_response_as_string(@response_set,
-                      "prepopulated_should_show_num_hh_group").should == "FALSE"
+                      "prepopulated_should_show_num_hh_group").should == "TRUE"
         end
       end
 
@@ -650,6 +650,56 @@ module ResponseSetPrepopulation
         it "should be FALSE if response to MOLD question was REFUSED" do
           prepare_and_take_survey("EIGHTEEN_MTH_MOTHER_2.MOLD", "neg_2",
                       :create_18mm_v2_survey_part_three_for_mold_prepopulators)
+          run_populator
+          get_response_as_string(@response_set,
+                        "prepopulated_should_show_room_mold_child"
+                      ).should == "FALSE"
+        end
+        it "should be FALSE if 18MM part 3 survey was not completed" do
+          run_populator
+          get_response_as_string(@response_set,
+                        "prepopulated_should_show_room_mold_child"
+                      ).should == "FALSE"
+        end
+      end
+
+    context "for 18MM v3.x prepopulators"
+      describe "prepopulated_should_show_upper_arm_length" do
+        before(:each) do
+          @survey = create_generic_true_false_prepopulator_survey(
+              "INS_QUE_18MMother_INT_EHPBHI_M3.1_V3.0_EIGHTEEN_MTH_MOTHER_MOLD",
+              "prepopulated_should_show_room_mold_child")
+          init_common_vars
+        end
+
+        it "should be TRUE if response to MOLD question was YES" do
+          prepare_and_take_survey("EIGHTEEN_MTH_MOTHER_3.MOLD", 1,
+                      :create_18mm_v3_survey_part_three_for_mold_prepopulators)
+          run_populator
+          get_response_as_string(@response_set,
+                        "prepopulated_should_show_room_mold_child"
+                      ).should == "TRUE"
+        end
+        it "should be FALSE if response to MOLD question was NO" do
+          prepare_and_take_survey("EIGHTEEN_MTH_MOTHER_3.MOLD", 2,
+                      :create_18mm_v3_survey_part_three_for_mold_prepopulators)
+          run_populator
+          get_response_as_string(@response_set,
+                        "prepopulated_should_show_room_mold_child"
+                      ).should == "FALSE"
+        end
+
+        it "should be FALSE if response to MOLD question was REFUSED" do
+          prepare_and_take_survey("EIGHTEEN_MTH_MOTHER_3.MOLD", "neg_1",
+                      :create_18mm_v3_survey_part_three_for_mold_prepopulators)
+          run_populator
+          get_response_as_string(@response_set,
+                        "prepopulated_should_show_room_mold_child"
+                      ).should == "FALSE"
+        end
+        it "should be FALSE if response to MOLD question was REFUSED" do
+          prepare_and_take_survey("EIGHTEEN_MTH_MOTHER_3.MOLD", "neg_2",
+                      :create_18mm_v3_survey_part_three_for_mold_prepopulators)
           run_populator
           get_response_as_string(@response_set,
                         "prepopulated_should_show_room_mold_child"

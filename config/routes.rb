@@ -49,6 +49,9 @@ NcsNavigatorCore::Application.routes.draw do
     member do
       get :versions
       get :edit_arm
+      get :switch_arm
+      put :process_arm_switch
+      put :schedule_and_create_placeholder
       put :update_psc
       put :update_arm
       put :register_with_psc

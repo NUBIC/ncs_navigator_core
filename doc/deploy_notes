@@ -120,6 +120,11 @@ https://code.bioinformatics.northwestern.edu/redmine/wiki/ncsnavtransition/Navig
 Deploying multiple sites at once?
   $ for i in foo bar baz deploy_site ; do STUDY_CENTER=$i USER=deploy_user cap staging deploy:migrations ; done
 
+Ex: deploying cases to HONOL, SACRA, LOSAN, and CACHE sites, staging environments:
+  $ for i in honol sacra losan cache; do STUDY_CENTER=$i USER=ncs_navigator_cases cap staging deploy:migrations ; done 
+             |----- site list ------|                         |--- app user ----|     | env | |-- deploy step --|
+
+
 
 Ensure that the proper deployment files exist on the deploying computer.
 The naming convention for the file is "STUDY_CENTER_deploy.yml"
