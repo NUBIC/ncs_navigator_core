@@ -1,6 +1,6 @@
 module InstrumentsHelper
   def determine_links_for_editing(instrument, rs)
-    if instrument.person.participant
+    if instrument.person.try(:participant)
       edit_instrument_responses_link(rs)
     else
       restart_link(rs) + edit_instrument_responses_link(rs)
