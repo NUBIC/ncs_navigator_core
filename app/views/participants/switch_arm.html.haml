@@ -1,0 +1,85 @@
+- page_title "Switch Protocol Arm"
+
+= render "participants/header_information", :person => @person, :participant => @participant
+
+.page_section
+  %h3
+    Switch Protocol Arm
+
+  %p
+    To move a Participant from one arm to another please do the following three steps in order.
+  %ol
+    %li
+      Cancel Pending Events
+    %li
+      Switch Protocol Arm
+    %li
+      Schedule Next Event in New Arm
+
+  .switch_section
+    %p
+      %b Step 1. Cancel Pending Events
+    %p
+      Participant has
+      = @participant.pending_events.size
+      pending event(s)
+    %p
+      = @participant.pending_events.map(&:to_s).to_sentence
+    %p
+      Due Date is
+      = @participant.due_date
+    %p
+      Number of children is
+      = @participant.children.count
+    - if @participant.pending_events.empty?
+      %p
+        Participant has no pending events.
+    - else
+      %div
+        = form_for(@participant, :url => nullify_pending_events_participant_path(@participant, :redirect_to => switch_arm_participant_path(@participant))) do |f|
+          = hidden_field_tag :reason, "Step 1 in Switching Arm for Participant"
+          %p
+            - msg = "Are you certain that you would like to cancel all pending events?"
+            - msg << " This process will take some time to complete."
+            = f.submit "Cancel Pending Events",
+              :disable_with => 'Submitting Request...',
+              :confirm => msg
+  .switch_section
+    %p
+      %b Step 2. Switch Protocol Arm
+    %p
+      Participant is currently in the
+      = @participant.high_intensity? ? "High" : "Low"
+      Intensity Arm.
+    %p
+      Participant state is
+      = @participant.state
+    - if @participant.high_intensity?
+      %p
+        Participant is already in the High Intensity Arm
+    - else
+      %div
+        = form_for(@participant, :url => process_arm_switch_participant_path(@participant)) do |f|
+          %p
+            = f.submit "Switch Protocol Arm",
+              :disable_with => 'Submitting Request...',
+              :confirm => "Are you certain that you would like to switch protocol arm?"
+  .switch_section
+    %p
+      %b Step 3. Schedule Next Event in New Arm
+    %p
+      Participant next study segment is
+      = @participant.next_study_segment
+    - if @participant.pending_events.empty?
+      %div
+        = form_for(@participant, :url => schedule_and_create_placeholder_participant_path(@participant, :redirect_to => participant_path(@participant))) do |f|
+          %p
+            = f.submit "Schedule Next Event in New Arm",
+              :disable_with => 'Submitting Request...',
+              :confirm => "Are you certain that you would like to schedule the next event?"
+    - else
+      %p
+        Participant is already scheduled for
+        = @participant.pending_events.size
+        events.
+        = @participant.pending_events.map(&:to_s).to_sentence
