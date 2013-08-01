@@ -45,7 +45,7 @@ gem 'jquery-ui-rails', '4.0.2'
 
 gem 'ncs_mdes', '>= 0.11.0'
 # If you change surveyor, change the instruments project also
-gem 'surveyor', '1.4.0'
+gem 'surveyor', :git => 'git://github.com/NUBIC/surveyor.git', :ref => '98225cd95b23647f8c9818b730c37ccb5e043306'
 
 gem 'psc'
 gem 'ncs_navigator_configuration', '~> 0.4'
@@ -75,7 +75,7 @@ group :staging, :production do
   gem 'therubyracer'
 end
 
-gem 'ncs_mdes_warehouse', '~> 0.13', '>= 0.13.1'
+gem 'ncs_mdes_warehouse', '0.15.0.pre5'
 gem 'aker-cas_cli', '~> 1.0', :require => false
 gem 'dm-ar-finders', '~> 1.2.0'
 
