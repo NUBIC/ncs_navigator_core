@@ -1,4 +1,19 @@
 GIT
+  remote: git://github.com/NUBIC/surveyor.git
+  revision: 98225cd95b23647f8c9818b730c37ccb5e043306
+  ref: 98225cd95b23647f8c9818b730c37ccb5e043306
+  specs:
+    surveyor (1.4.1.pre)
+      fastercsv (~> 1.5.4)
+      formtastic (~> 2.1.0)
+      haml (>= 3.1.3, < 5.0)
+      mustache (= 0.99.4)
+      rabl (~> 0.6.13)
+      rails (~> 3.0)
+      sass
+      uuidtools (~> 2.1)
+
+GIT
   remote: git://github.com/rsutphin/database_cleaner.git
   revision: f451054745a36d361127ddd128c362df7f38547d
   branch: dm-pg-single-trunc
@@ -379,7 +394,7 @@ GEM
       rspec-mocks (~> 2.12.0)
     rubytree (0.7.0)
     rubyzip (0.9.9)
-    sass (3.1.21)
+    sass (3.2.10)
     sass-rails (3.2.6)
       railties (~> 3.2.0)
       sass (>= 3.1.10)
@@ -415,15 +430,6 @@ GEM
       state_machine
     stream (0.5)
     stringex (1.5.1)
-    surveyor (1.4.0)
-      fastercsv (~> 1.5.4)
-      formtastic (~> 2.1.0)
-      haml (>= 3.1.3, < 5.0)
-      mustache (= 0.99.4)
-      rabl (~> 0.6.13)
-      rails (~> 3.0)
-      sass
-      uuidtools (~> 2.1)
     term-ansicolor (1.0.7)
     test-unit (2.4.8)
     therubyracer (0.10.1)
@@ -526,7 +532,7 @@ DEPENDENCIES
   spork (> 0.9.0.rc)
   state_machine
   state_machine-audit_trail
-  surveyor (= 1.4.0)
+  surveyor!
   test-unit (= 2.4.8)
   therubyracer
   uglifier
