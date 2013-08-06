@@ -186,6 +186,7 @@ module NcsNavigator::Core::Warehouse
 
       def initialize(participant, table_ident, table_content, response_group)
         @participant = participant
+        @p_id = @participant.try(:p_id)
         @table_identifier = table_ident
         @table_content = table_content
         @response_group = response_group
@@ -203,7 +204,7 @@ module NcsNavigator::Core::Warehouse
         # Bins are per-repeat
         (self.response_group == response.response_group) &&
         # and are per-participant
-        (self.participant.p_id == response.response_set.participant.p_id) &&
+        (@p_id == response.response_set.participant.try(:p_id)) &&
         # and are per-MDES table
         (self.table_identifier == table_ident_for_response(response)) &&
         # and must have only one response per question
