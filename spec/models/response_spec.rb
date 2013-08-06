@@ -70,40 +70,6 @@ describe Response do
     end
   end
 
-  describe "#ensure_association_integrity" do
-    let!(:q) { Factory(:question,
-      :text => 'What is your date of birth?',
-      :reference_identifier => 'DOB',
-      :data_export_identifier => 'TABLE_NAME.DOB') }
-    let!(:a1) { Factory(:answer, :question => q, :response_class => 'date', :text => 'DATE') }
-
-    let!(:a_other_q) { Factory(:answer, :question => Factory(:question),
-      :response_class => 'answer', :text => 'FOO') }
-
-    describe "on create" do
-      describe "when answer references another question" do
-        let(:response) { Factory.build(:response, :question => q, :answer => a_other_q) }
-        it "raises error on save" do
-          lambda { response.save }.should raise_error
-        end
-      end
-    end
-
-    describe "on update" do
-      describe "when updated answer references another question" do
-        let(:response) { Factory(:response, :question => q, :answer => a1) }
-
-        before do
-          response.answer = a_other_q
-        end
-
-        it "raises error on save" do
-          lambda { response.save }.should raise_error
-        end
-      end
-    end
-  end
-
   it_should_behave_like 'a publicly identified record' do
     let(:q) { Factory(:question) }
     let(:a) { Factory(:answer, :question => q) }
