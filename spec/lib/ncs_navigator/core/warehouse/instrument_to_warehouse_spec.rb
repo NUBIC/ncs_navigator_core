@@ -168,6 +168,13 @@ module NcsNavigator::Core::Warehouse
               a :string
               a_neg_1 "REFUSED"
               a_neg_2 "DON'T KNOW"
+
+              q_ADDRESS_2 "ADDRESS 2",
+              :pick=>:one,
+              :data_export_identifier=>"PBS_ELIG_SCREENER.ADDRESS_2"
+              a :string
+              a_neg_1 "REFUSED"
+              a_neg_2 "DON'T KNOW"
             DSL
           }
           let(:primary) { records.find { |rec| rec.class.mdes_table_name == 'pbs_elig_screener' } }
@@ -196,9 +203,20 @@ module NcsNavigator::Core::Warehouse
           end
 
           describe 'when there is no participant' do
+            let(:question2) { questions_map['ADDRESS_2'] }
+            let!(:response2) {
+              create_response_for(question2) { |r|
+                r.answer = question2.answers.find_by_text('REFUSED')
+              }
+            }
             before do
               response_set.participant = nil
               response_set.save!
+            end
+
+            it 'bins both responses' do
+              primary.address_1.should == '-1'
+              primary.address_2.should == '-1'
             end
 
             it 'uses -4 for PPG_FIRST' do
