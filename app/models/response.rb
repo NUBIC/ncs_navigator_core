@@ -31,8 +31,6 @@ class Response < ActiveRecord::Base
 
   default_scope includes(:answer, :question)
 
-  validate :ensure_association_integrity
-
   ##
   # Raise an error if the answer associated with this Response
   # is not in the set of answers for the associated Question.
