@@ -41,9 +41,10 @@
                     = link_to "Close Event", edit_event_path(event, :close => 'true'),
                       :class => "close_link icon_link",
                       :confirm => "Are you certain that this event should be closed?"
-                  = link_to "Mark Out of Window", mark_event_out_of_window_participant_path(@participant),
-                    :class => "out_of_window_link icon_link",
-                    :confirm => "Are you certain that this event is out of window?"
+                  - if @participant
+                    = link_to "Mark Out of Window", mark_event_out_of_window_participant_path(@participant),
+                      :class => "out_of_window_link icon_link",
+                      :confirm => "Are you certain that this event is out of window?"
                 %span.new_contact_for_previous_event
                   = link_to "New Contact", new_person_contact_path(@person, :event_id => event.id),
                     :class => "add_link icon_link", :title => "New Contact for #{event_name}"
