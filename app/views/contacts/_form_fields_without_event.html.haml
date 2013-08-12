@@ -14,6 +14,10 @@
     = f.label :contact_start_time, "Start Time"
     = f.text_field :contact_start_time, :class => "timepicker"
 
+  %p
+    = f.label :contact_end_time, "End Time"
+    = f.text_field :contact_end_time, :class => "timepicker"
+
   = render "shared/ncs_code_select", { :f => f, :code => :who_contacted_code, :label_text => "How does the contacted person relate to the NCS?", :other => :who_contacted_other, :help_text => "contacts/contact_who_contacted_tooltip" }
 
   = render "shared/ncs_code_select", { :f => f, :code => :contact_type_code, :label_text => "How did you contact them?", :other => :contact_type_other }
