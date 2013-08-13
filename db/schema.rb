@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130723163540) do
+ActiveRecord::Schema.define(:version => 20130813203232) do
 
   create_table "addresses", :force => true do |t|
     t.integer  "psu_code",                                                :null => false
@@ -919,7 +919,7 @@ ActiveRecord::Schema.define(:version => 20130723163540) do
   add_index "ppg_status_histories", ["updated_at"], :name => "index_ppg_status_histories_on_updated_at"
 
   create_table "pre_screening_performeds", :force => true do |t|
-    t.string   "psu_code",                     :limit => 36, :null => false
+    t.integer  "psu_code",                                   :null => false
     t.string   "pre_screening_performed_id",   :limit => 36, :null => false
     t.integer  "provider_id",                                :null => false
     t.integer  "pr_pregnancy_eligible_code",                 :null => false
@@ -1363,8 +1363,8 @@ ActiveRecord::Schema.define(:version => 20130723163540) do
     t.integer  "survey_id"
     t.string   "locale"
     t.text     "translation"
-    t.datetime "created_at",  :null => false
-    t.datetime "updated_at",  :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "surveys", :force => true do |t|
