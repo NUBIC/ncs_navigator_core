@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # == Schema Information
-# Schema version: 20130723163540
+# Schema version: 20130813203232
 #
 # Table name: pre_screening_performeds
 #
@@ -12,7 +12,7 @@
 #  pr_pregnancy_eligible_code   :integer          not null
 #  pre_screening_performed_id   :string(36)       not null
 #  provider_id                  :integer          not null
-#  psu_code                     :string(36)       not null
+#  psu_code                     :integer          not null
 #  transaction_type             :string(36)
 #  updated_at                   :datetime         not null
 #
