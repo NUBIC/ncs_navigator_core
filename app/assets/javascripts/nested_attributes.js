@@ -14,7 +14,7 @@ NestedAttributes = function (config) {
     });
   }
 
-  $(this.config.container).find("input, select, textarea").focus(function () {
+  $(this.config.container).find("input[type='text'], textarea").focus(function () {
     this.select();
   });
 
