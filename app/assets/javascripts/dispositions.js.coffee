@@ -77,6 +77,8 @@ jQuery ->
         filter = "PBS Eligibility Screening"
       when "Pregnancy Screener"
         filter = "Pregnancy Screener Event"
+      when "Provider Recruitment"
+        filter = "Provider Recruitment Event"
       when "1","4","6"
         filter = "General Study Visit Event"
       when "2"
@@ -105,6 +107,10 @@ jQuery ->
     console.log(event_type)
     if event_type == "PBS Participant Eligibility Screening" || event_type == "Pregnancy Screener"
       contact_type_val = event_type
+    # provider recruitment check
+    pr_event = $('h1#page_title').text().trim()
+    if pr_event == 'Provider Recruitment Contact'
+      contact_type_val = 'Provider Recruitment'
 
     filter_text = contact_filter_text(contact_type_val)
     options = $(contact_dispositions).filter(contact_mode_filter(contact_type_val)).html()
