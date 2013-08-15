@@ -78,7 +78,7 @@ jQuery ->
       when "Pregnancy Screener"
         filter = "Pregnancy Screener Event"
       when "Provider Recruitment"
-        filter = "Provider Recruitment Event"
+        filter = "Provider Recruitment"
       when "1","4","6"
         filter = "General Study Visit Event"
       when "2"
