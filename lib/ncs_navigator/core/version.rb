@@ -2,6 +2,6 @@
 
 module NcsNavigator
   module Core
-    VERSION='1.7.0.pbs16'
+    VERSION='1.7.0.pbs18'
   end
 end
