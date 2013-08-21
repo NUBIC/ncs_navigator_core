@@ -1,8 +1,8 @@
 %tr{ :class => "pbs_provider_role fields row" }
   %td.select_col
     %span{ :class => "hide" }
-      = render "shared/inline_ncs_code_select", { :f => f, :code => :psu_code, :label_text => "PSU", :default_value => @psu_code, :inline => true }
-    = render "shared/inline_ncs_code_select", { :f => f, :code => :provider_role_pbs_code, :label_text => "Role", :other => :provider_role_pbs_other, :inline => true }
+      = render "shared/inline_ncs_code_select", { :f => f, :code => :psu_code, :label_text => "PSU", :default_value => @psu_code, :inline => true, :html_attrs => {} }
+    = render "shared/inline_ncs_code_select", { :f => f, :code => :provider_role_pbs_code, :label_text => "Role", :other => :provider_role_pbs_other, :inline => true, :html_attrs => {} }
 
   %td.remove_col
     = link_to_remove_fields 'Remove', f, :pbs_provider_roles

@@ -1,4 +1,4 @@
-= render "shared/ncs_code_select", { :f => f, :code => :psu_code, :label_text => "PSU", :default_value => @psu_code }
+= render "shared/ncs_code_select", { :f => f, :code => :psu_code, :label_text => "PSU", :default_value => @psu_code, :html_attrs => {} }
 
 %p
   = f.label :provider_id, "Provider ID"
@@ -37,7 +37,7 @@
       = address_form.text_field :zip4, :class => "zip4"
 
 
-= render "shared/ncs_code_select", { :f => f, :code => :provider_type_code, :label_text => "Provider Type", :other => :provider_type_other }
+= render "shared/ncs_code_select", { :f => f, :code => :provider_type_code, :label_text => "Provider Type", :other => :provider_type_other, :html_attrs => {} }
 
 - if recruitment_strategy.pbs?
 
@@ -52,15 +52,15 @@
           %td{ :colspan => '2' }
             = link_to_add_fields "Add Provider Role", :pbs_provider_roles
 
-= render "shared/ncs_code_select", { :f => f, :code => :practice_info_code, :label_text => "Practice Information" }
+= render "shared/ncs_code_select", { :f => f, :code => :practice_info_code, :label_text => "Practice Information", :html_attrs => {} }
 
-= render "shared/ncs_code_select", { :f => f, :code => :practice_patient_load_code, :label_text => "Patient Load" }
+= render "shared/ncs_code_select", { :f => f, :code => :practice_patient_load_code, :label_text => "Patient Load", :html_attrs => {} }
 
-= render "shared/ncs_code_select", { :f => f, :code => :practice_size_code, :label_text => "Practice Size" }
+= render "shared/ncs_code_select", { :f => f, :code => :practice_size_code, :label_text => "Practice Size", :html_attrs => {} }
 
-= render "shared/ncs_code_select", { :f => f, :code => :public_practice_code, :label_text => "Public Practice?" }
+= render "shared/ncs_code_select", { :f => f, :code => :public_practice_code, :label_text => "Public Practice?", :html_attrs => {} }
 
-= render "shared/ncs_code_select", { :f => f, :code => :provider_info_source_code, :label_text => "Source of Information", :other => :provider_info_source_other }
+= render "shared/ncs_code_select", { :f => f, :code => :provider_info_source_code, :label_text => "Source of Information", :other => :provider_info_source_other, :html_attrs => {} }
 
 %p
   = f.label :provider_info_date, "Date of initial information"
@@ -72,7 +72,7 @@
   %br
   = f.text_field :provider_info_update, :class => 'datepicker'
 
-= render "shared/ncs_code_select", { :f => f, :code => :list_subsampling_code, :label_text => "Will use subsampling list?" }
+= render "shared/ncs_code_select", { :f => f, :code => :list_subsampling_code, :label_text => "Will use subsampling list?", :html_attrs => {} }
 
 %p
   = f.label :proportion_weeks_sampled, "Nth week sampling performed"

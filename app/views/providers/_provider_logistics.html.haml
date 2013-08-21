@@ -1,8 +1,8 @@
 %tr{ :class => "provider_logistic fields row" }
   %td.select_col
     %span{ :class => "hide" }
-      = render "shared/inline_ncs_code_select", { :f => f, :code => :psu_code, :label_text => "PSU", :default_value => @psu_code, :inline => true }
-    = render "shared/inline_ncs_code_select", { :f => f, :code => :provider_logistics_code, :label_text => "Logistic", :other => :provider_logistics_other }
+      = render "shared/inline_ncs_code_select", { :f => f, :code => :psu_code, :label_text => "PSU", :default_value => @psu_code, :inline => true, :html_attrs => {} }
+    = render "shared/inline_ncs_code_select", { :f => f, :code => :provider_logistics_code, :label_text => "Logistic", :other => :provider_logistics_other, :html_attrs => {} }
 
     .comment
       = f.label :comment
