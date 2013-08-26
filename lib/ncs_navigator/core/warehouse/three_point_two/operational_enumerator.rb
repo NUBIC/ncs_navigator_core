@@ -18,6 +18,12 @@ module NcsNavigator::Core::Warehouse::ThreePointTwo
     on_unused_columns :fail
     ignored_columns :id, :transaction_type, :updated_at, :created_at, :being_processed
 
+    produce_one_for_one(:pre_screening_performeds, :PreScreeningPerformed,
+      :public_ids => [
+        {:table => :providers, :public_id => :provider_id }
+      ]
+    )
+
     produce_one_for_one(:listing_units, :ListingUnit)
 
     produce_one_for_one(:dwelling_units, :DwellingUnit,
