@@ -43,6 +43,21 @@ module NcsNavigator::Core::Warehouse::ThreePointTwo
     let(:producer_names) { [] }
     let(:results) { enumerator.to_a(*producer_names) }
 
+    describe 'for PreScreeningPerformed' do
+      let(:producer_names) { [:pre_screening_performeds] }
+      let(:warehouse_model) { wh_config.model(:PreScreeningPerformed) }
+
+      before do
+        Factory(:pre_screening_performed)
+      end
+
+      include_examples 'one to one'
+
+      it 'uses the public ID for the provider' do
+        results.first.provider_id.should == PreScreeningPerformed.first.provider.provider_id
+      end
+    end
+
     describe 'for ListingUnit' do
       let(:producer_names) { [:listing_units] }
       let(:warehouse_model) { wh_config.model(:ListingUnit) }
