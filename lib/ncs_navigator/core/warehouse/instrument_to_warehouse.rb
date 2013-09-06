@@ -338,6 +338,7 @@ module NcsNavigator::Core::Warehouse
           apply_response_values(record)
           set_missing_values(record)
           transform_exceptional_dts(record)
+          last_ditch_validity_push(record)
         end
       end
 
@@ -406,6 +407,21 @@ module NcsNavigator::Core::Warehouse
         end
       end
       private :set_missing_values
+
+      def last_ditch_validity_push(record)
+        record.class.properties.each do |prop|
+          name = prop.name
+
+          # These are assigned by ncs_mdes_warehouse's ApplyGlobalValuesFilter;
+          # see lib/ncs_navigator/warehouse/filters/apply_global_values_filter.rb:45-61.
+          next if name.to_s == 'psu_id' || name.to_s == 'recruit_type'
+
+          if record.send(name).blank? && record.class.properties[name].required?
+            set_first_valid(record, name, [-4])
+          end
+        end
+      end
+      private :last_ditch_validity_push
 
       # For some questions that should really be MDES-coded dates (or times),
       # we may receive values that aren't dates or times.  This occurs when
