@@ -9,7 +9,7 @@
 #  county_of_residence_code     :integer
 #  created_at                   :date
 #  date_first_visit             :string(255)      not null
-#  date_first_visit_date        :date             not null
+#  date_first_visit_date        :date
 #  first_prenatal_visit_code    :integer
 #  id                           :integer          not null, primary key
 #  ineligible_by_code           :integer
