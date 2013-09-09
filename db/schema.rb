@@ -339,7 +339,7 @@ ActiveRecord::Schema.define(:version => 20130813203232) do
     t.integer  "county_of_residence_code"
     t.date     "created_at",                                 :null => false
     t.string   "date_first_visit",                           :null => false
-    t.date     "date_first_visit_date",                      :null => false
+    t.date     "date_first_visit_date",
     t.integer  "first_prenatal_visit_code"
     t.integer  "ineligible_by_code"
     t.integer  "people_count",                               :null => false
